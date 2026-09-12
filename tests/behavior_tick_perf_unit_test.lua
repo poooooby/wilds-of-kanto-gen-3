@@ -289,6 +289,34 @@ check(entity._lastAiDt ~= nil, "entity received aiDt")
 check(entity._lastAiDt >= BehaviorTick.AI_STEP * 0.9,
       "aiDt roughly AI_STEP (got " .. tostring(entity._lastAiDt) .. ")")
 
+-- Cave reachability rebuild: a regular entity must track the LIVE reachable
+-- table, not a stale per-entity snapshot captured at spawn time. Scenery
+-- entities stay pinned to their own frozen pocket.
+do
+  local liveReachable = { ["8:5"] = true }
+  local staleReachable = { ["8:5"] = true, ["9:5"] = true } -- pre-rebuild snapshot
+  logic.caveReachability = { status = "READY", reachable = liveReachable }
+
+  local ow = mod.world.game.overworld
+  local cfg = {
+    sight = 4, react = 0.35, chaseStep = 0.2, waterSight = 4,
+    waterMons = true, landWaterMax = 3, hasWaterSprite = false,
+  }
+
+  local regular = { caveScenery = false, caveHomeCells = staleReachable }
+  local ctx1 = {}
+  tick:_fillBehaviorCtx(ctx1, ow, mod.world.game, logic, logic.occupancy, cfg, false, regular, 0.033)
+  check(ctx1.reachableCaveCells == liveReachable,
+        "regular cave entity uses the live reachable set, not a stale snapshot")
+
+  local sceneryHome = { ["3:9"] = true }
+  local scenery = { caveScenery = true, caveHomeCells = sceneryHome }
+  local ctx2 = {}
+  tick:_fillBehaviorCtx(ctx2, ow, mod.world.game, logic, logic.occupancy, cfg, false, scenery, 0.033)
+  check(ctx2.reachableCaveCells == sceneryHome,
+        "scenery cave entity stays pinned to its own frozen pocket")
+end
+
 if failures > 0 then
   io.stderr:write(failures .. " failure(s)\n")
   os.exit(1)

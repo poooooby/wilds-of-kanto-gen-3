@@ -237,9 +237,14 @@ function BehaviorTick:_fillBehaviorCtx(ctx, ow, game, logic, occupancy, cfg, saf
     and logic.caveReachability.status ~= "FAILED"
     and logic.caveReachability.reachable
     or nil
+  -- Scenery entities stay pinned to their own isolated pocket (frozen at
+  -- spawn time, by design). Regular entities must track the LIVE reachable
+  -- set: logic.caveReachability is replaced wholesale on rebuild (a same-map
+  -- warp into another component), and entity.caveHomeCells was only ever a
+  -- reference to the reachable table as it existed at spawn time — reusing
+  -- it here left every existing entity validating movement against a stale,
+  -- pre-rebuild snapshot instead of the current reachability mask.
   if entity and entity.caveScenery and entity.caveHomeCells then
-    caveCells = entity.caveHomeCells
-  elseif entity and entity.caveHomeCells then
     caveCells = entity.caveHomeCells
   end
   ctx.map = ow.map
