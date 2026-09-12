@@ -2,7 +2,7 @@ PMDCollab / SpriteCollab attribution for Wilds of Kanto derived assets
 ========================================================================
 
 Source: https://github.com/PMDCollab/SpriteCollab
-Revision: f48c891cc913a1757a9cf6914e21108447bf2b37
+Revision: a3acb77f05fb6649df2790031a1285066ffa32f2
 License: Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
 License URI: https://creativecommons.org/licenses/by-nc/4.0/
 Browse: http://sprites.pmdcollab.org/
@@ -20,12 +20,12 @@ Contributors referenced by imported assets:
 - Magu
   id: <@!108260609241423872>
   contact: @magu_boi
-  assets: portrait/0011 shiny, portrait/0061 shiny, portrait/0062 normal, portrait/0062 shiny, portrait/0116 shiny, portrait/0130 shiny, portrait/0164 normal, portrait/0164 shiny, portrait/0201 normal, portrait/0201 shiny
+  assets: portrait/0011 shiny, portrait/0061 shiny, portrait/0062 normal, portrait/0062 shiny, portrait/0116 shiny, portrait/0130 shiny, portrait/0164 normal, portrait/0164 shiny, portrait/0201 normal, portrait/0201 shiny, portrait/0266 shiny, portrait/0305 normal, ... +3 more
 
 - Audino
   id: <@!117780585635643396>
   contact: https://github.com/audinowho
-  assets: portrait/0065 shiny, sprite/0030 shiny, sprite/0058 shiny, sprite/0069 shiny, sprite/0103 shiny, sprite/0108 shiny, sprite/0124 shiny, sprite/0159 shiny, sprite/0160 shiny, sprite/0249 shiny
+  assets: portrait/0065 shiny, portrait/0382 shiny, portrait/0383 shiny, portrait/0384 shiny, sprite/0030 shiny, sprite/0058 shiny, sprite/0069 shiny, sprite/0103 shiny, sprite/0108 shiny, sprite/0124 shiny, sprite/0159 shiny, sprite/0160 shiny, ... +5 more
 
 - LT
   id: <@!120852359676035072>
@@ -35,12 +35,17 @@ Contributors referenced by imported assets:
 - drawsstuff
   id: <@!128989288665710592>
   contact: https://bugfu.newgrounds.com/
-  assets: portrait/0023 normal, portrait/0096 normal, portrait/0096 shiny
+  assets: portrait/0023 normal, portrait/0096 normal, portrait/0096 shiny, portrait/0285 normal, portrait/0285 shiny
 
 - chikorene
   id: <@!1346022682667388968>
   contact: <@1346022682667388968>
-  assets: portrait/0044 normal, portrait/0111 normal, portrait/0111 shiny
+  assets: portrait/0044 normal, portrait/0111 normal, portrait/0111 shiny, portrait/0339 normal
+
+- smartini
+  id: <@!136476806055198720>
+  contact: https://github.com/CSCMe
+  assets: portrait/0270 normal
 
 - <@!136619914512433152>
   assets: portrait/0079 normal, portrait/0079 shiny
@@ -48,7 +53,7 @@ Contributors referenced by imported assets:
 - JustAGunk
   id: <@!1377429093997477928>
   contact: <@1377429093997477928>
-  assets: portrait/0033 normal, portrait/0033 shiny, portrait/0062 shiny, portrait/0074 normal, portrait/0080 shiny, portrait/0096 shiny, portrait/0120 normal, portrait/0120 shiny
+  assets: portrait/0033 normal, portrait/0033 shiny, portrait/0062 shiny, portrait/0074 normal, portrait/0080 shiny, portrait/0096 shiny, portrait/0120 normal, portrait/0120 shiny, portrait/0256 shiny, portrait/0343 shiny
 
 - skygummi
   id: <@!138236921980649472>
@@ -76,11 +81,16 @@ Contributors referenced by imported assets:
 - Deeshura
   id: <@!157796074457661440>
   contact: https://bsky.app/profile/deeshura.bsky.social
-  assets: portrait/0131 shiny, portrait/0154 shiny, portrait/0248 shiny, sprite/0149 shiny, sprite/0154 shiny, sprite/0250 shiny
+  assets: portrait/0131 shiny, portrait/0154 shiny, portrait/0248 shiny, portrait/0253 shiny, portrait/0254 shiny, portrait/0330 shiny, portrait/0359 shiny, sprite/0149 shiny, sprite/0154 shiny, sprite/0250 shiny, sprite/0253 normal, sprite/0253 shiny, ... +1 more
 
 - Reppamon
   id: <@!162389028061052928>
-  assets: sprite/0116 shiny, sprite/0187 shiny
+  assets: portrait/0304 shiny, portrait/0379 shiny, sprite/0116 shiny, sprite/0187 shiny, sprite/0263 shiny, sprite/0313 shiny, sprite/0324 shiny, sprite/0381 shiny
+
+- Hemlock
+  id: <@!165623433458089984>
+  contact: https://baphomets.neocities.org/
+  assets: sprite/0310 shiny
 
 - Pencil
   id: <@!171030521009274881>
@@ -89,12 +99,27 @@ Contributors referenced by imported assets:
 
 - Frostdrop1
   id: <@!173505019268694016>
-  assets: portrait/0010 normal, portrait/0019 normal, portrait/0138 normal, portrait/0140 normal
+  assets: portrait/0010 normal, portrait/0019 normal, portrait/0138 normal, portrait/0140 normal, portrait/0329 normal, portrait/0347 normal
 
 - RaoKurai
   id: <@!173896352554549248>
   contact: https://twitter.com/RaoKurai
-  assets: portrait/0052 shiny, portrait/0053 shiny, portrait/0081 shiny, portrait/0131 shiny, portrait/0175 shiny, portrait/0176 shiny, sprite/0131 shiny, sprite/0175 shiny
+  assets: portrait/0052 shiny, portrait/0053 shiny, portrait/0081 shiny, portrait/0131 shiny, portrait/0175 shiny, portrait/0176 shiny, portrait/0252 shiny, sprite/0131 shiny, sprite/0175 shiny, sprite/0315 shiny
+
+- Chesyon
+  id: <@!178935491867967490>
+  contact: https://linktr.ee/chesyon
+  assets: sprite/0337 shiny
+
+- chime
+  id: <@!183561486893842432>
+  contact: <@!183561486893842432>
+  assets: portrait/0358 normal, portrait/0358 shiny
+
+- snarbs
+  id: <@!188463527089012737>
+  contact: snarbs.art@gmail.com
+  assets: portrait/0278 normal, portrait/0278 shiny
 
 - frostibirb
   id: <@!192178759376306176>
@@ -104,20 +129,25 @@ Contributors referenced by imported assets:
 - bwappi
   id: <@!193530896211509248>
   contact: https://bsky.app/profile/bwappi.bsky.social
-  assets: portrait/0014 shiny, portrait/0017 shiny, portrait/0018 shiny, portrait/0035 shiny, portrait/0046 normal, portrait/0046 shiny, portrait/0087 shiny, portrait/0103 normal, portrait/0103 shiny, portrait/0233 normal, portrait/0233 shiny, sprite/0017 shiny, ... +2 more
+  assets: portrait/0014 shiny, portrait/0017 shiny, portrait/0018 shiny, portrait/0035 shiny, portrait/0046 normal, portrait/0046 shiny, portrait/0087 shiny, portrait/0103 normal, portrait/0103 shiny, portrait/0233 normal, portrait/0233 shiny, portrait/0351 normal, ... +5 more
 
 - <@!195280695009083392>
   assets: sprite/0054 shiny, sprite/0222 shiny
 
+- Aviivix
+  id: <@!196351316681818112>
+  contact: https://twitter.com/aviivix/
+  assets: portrait/0345 normal
+
 - Anonymous
   id: <@!200318546750865418>
   contact: <@200318546750865418>
-  assets: portrait/0012 shiny, portrait/0021 shiny, portrait/0022 shiny, portrait/0029 shiny, portrait/0033 shiny, portrait/0043 shiny, portrait/0049 shiny, portrait/0055 shiny, portrait/0060 shiny, portrait/0084 shiny, portrait/0085 shiny, portrait/0108 shiny, ... +36 more
+  assets: portrait/0012 shiny, portrait/0021 shiny, portrait/0022 shiny, portrait/0029 shiny, portrait/0033 shiny, portrait/0043 shiny, portrait/0049 shiny, portrait/0055 shiny, portrait/0060 shiny, portrait/0084 shiny, portrait/0085 shiny, portrait/0108 shiny, ... +58 more
 
 - El_Pangoro_Parse
   id: <@!200385851069300736>
   contact: <@200385851069300736>
-  assets: portrait/0092 shiny, portrait/0143 shiny, portrait/0216 shiny, portrait/0217 shiny, portrait/0240 shiny, portrait/0250 shiny, sprite/0050 shiny, sprite/0051 shiny, sprite/0052 shiny, sprite/0053 shiny, sprite/0055 shiny, sprite/0056 shiny, ... +26 more
+  assets: portrait/0092 shiny, portrait/0143 shiny, portrait/0216 shiny, portrait/0217 shiny, portrait/0240 shiny, portrait/0250 shiny, portrait/0291 shiny, portrait/0292 shiny, portrait/0328 shiny, portrait/0329 shiny, portrait/0335 shiny, portrait/0337 shiny, ... +43 more
 
 - SilverDeoxys563
   id: <@!204460364023201793>
@@ -137,17 +167,17 @@ Contributors referenced by imported assets:
 - Prismatic
   id: <@!215699178553212929>
   contact: prismaticphenomenal@gmail.com
-  assets: portrait/0062 shiny, portrait/0068 shiny, portrait/0092 shiny, portrait/0110 shiny, portrait/0125 shiny, portrait/0149 shiny, portrait/0185 shiny, portrait/0187 shiny, portrait/0197 shiny, portrait/0203 shiny, portrait/0219 shiny, portrait/0231 shiny, ... +16 more
+  assets: portrait/0062 shiny, portrait/0068 shiny, portrait/0092 shiny, portrait/0110 shiny, portrait/0125 shiny, portrait/0149 shiny, portrait/0185 shiny, portrait/0187 shiny, portrait/0197 shiny, portrait/0203 shiny, portrait/0219 shiny, portrait/0231 shiny, ... +28 more
 
 - TawnySoup
   id: <@!216640380408430592>
   contact: https://linktr.ee/tawnysoup
-  assets: portrait/0023 normal, portrait/0030 normal
+  assets: portrait/0023 normal, portrait/0030 normal, portrait/0334 normal
 
 - Noo
   id: <@!217899432652308480>
   contact: https://artfight.net/~NooNoo_Skidoo
-  assets: portrait/0016 shiny, portrait/0034 shiny, portrait/0063 shiny, portrait/0083 normal, portrait/0083 shiny, portrait/0100 shiny, portrait/0123 normal, portrait/0150 shiny, portrait/0160 normal, portrait/0160 shiny, portrait/0170 shiny, portrait/0193 shiny, ... +21 more
+  assets: portrait/0016 shiny, portrait/0034 shiny, portrait/0063 shiny, portrait/0083 normal, portrait/0083 shiny, portrait/0100 shiny, portrait/0123 normal, portrait/0150 shiny, portrait/0160 normal, portrait/0160 shiny, portrait/0170 shiny, portrait/0193 shiny, ... +38 more
 
 - Adrian
   id: <@!218764902913802240>
@@ -162,7 +192,12 @@ Contributors referenced by imported assets:
 - Fable
   id: <@!225813236589527041>
   contact: https://twitter.com/fabledpainter
-  assets: portrait/0015 normal
+  assets: portrait/0015 normal, portrait/0298 normal
+
+- FlowerSnek
+  id: <@!228595807132057600>
+  contact: https://twitter.com/EthanLac13
+  assets: portrait/0266 normal, portrait/0370 normal, portrait/0370 shiny
 
 - Soulja
   id: <@!229131140903075840>
@@ -172,31 +207,36 @@ Contributors referenced by imported assets:
 - Novie
   id: <@!229363481852379136>
   contact: <https://twitter.com/themagolord>
-  assets: portrait/0013 normal
+  assets: portrait/0013 normal, portrait/0265 normal, portrait/0265 shiny, portrait/0292 normal, portrait/0292 shiny
 
 - Blanky
   id: <@!230913498916323329>
   contact: https://www.tumblr.com/theblankest123
-  assets: portrait/0011 normal, portrait/0021 normal, portrait/0021 shiny, portrait/0048 normal, portrait/0048 shiny, portrait/0116 normal
+  assets: portrait/0011 normal, portrait/0021 normal, portrait/0021 shiny, portrait/0048 normal, portrait/0048 shiny, portrait/0116 normal, portrait/0256 normal, portrait/0293 normal, portrait/0293 shiny
 
 - lokatts
   id: <@!232091727094218752>
   contact: https://twitter.com/lokatts
-  assets: sprite/0029 shiny, sprite/0152 shiny, sprite/0155 shiny, sprite/0156 shiny
+  assets: sprite/0029 shiny, sprite/0152 shiny, sprite/0155 shiny, sprite/0156 shiny, sprite/0300 shiny, sprite/0358 shiny, sprite/0382 shiny, sprite/0383 shiny, sprite/0384 shiny
 
 - Tacocoa
   id: <@!234720295292895232>
   contact: <@234720295292895232>
-  assets: portrait/0011 shiny, portrait/0015 shiny, portrait/0016 shiny, portrait/0018 shiny, portrait/0020 shiny, portrait/0027 shiny, portrait/0030 shiny, portrait/0031 shiny, portrait/0032 shiny, portrait/0041 shiny, portrait/0042 shiny, portrait/0045 shiny, ... +101 more
+  assets: portrait/0011 shiny, portrait/0015 shiny, portrait/0016 shiny, portrait/0018 shiny, portrait/0020 shiny, portrait/0027 shiny, portrait/0030 shiny, portrait/0031 shiny, portrait/0032 shiny, portrait/0041 shiny, portrait/0042 shiny, portrait/0045 shiny, ... +119 more
 
 - Emboarger
   id: <@!237286997645983744>
-  assets: portrait/0003 shiny, portrait/0010 shiny, portrait/0011 normal, portrait/0031 normal, portrait/0031 shiny, portrait/0034 normal, portrait/0034 shiny, portrait/0038 shiny, portrait/0039 normal, portrait/0039 shiny, portrait/0043 shiny, portrait/0134 shiny, ... +7 more
+  assets: portrait/0003 shiny, portrait/0010 shiny, portrait/0011 normal, portrait/0031 normal, portrait/0031 shiny, portrait/0034 normal, portrait/0034 shiny, portrait/0038 shiny, portrait/0039 normal, portrait/0039 shiny, portrait/0043 shiny, portrait/0134 shiny, ... +11 more
 
 - Okami
   id: <@!238146046146904069>
   contact: okamiromhacks@gmail.com
-  assets: portrait/0028 normal
+  assets: portrait/0028 normal, portrait/0337 normal, portrait/0337 shiny
+
+- lumiscosity
+  id: <@!243013084510289921>
+  contact: https://github.com/lumiscosity
+  assets: portrait/0343 normal
 
 - MeepTheMareep02
   id: <@!251760205082263552>
@@ -233,19 +273,33 @@ Contributors referenced by imported assets:
 - Top_Kec
   id: <@!276369635304275968>
   contact: @topkec.bsky.social
-  assets: portrait/0009 normal, portrait/0085 normal, portrait/0085 shiny, portrait/0115 normal, portrait/0115 shiny, portrait/0178 normal, portrait/0178 shiny, portrait/0191 normal, portrait/0191 shiny, portrait/0224 normal, portrait/0224 shiny, portrait/0244 normal, ... +1 more
+  assets: portrait/0009 normal, portrait/0085 normal, portrait/0085 shiny, portrait/0115 normal, portrait/0115 shiny, portrait/0178 normal, portrait/0178 shiny, portrait/0191 normal, portrait/0191 shiny, portrait/0224 normal, portrait/0224 shiny, portrait/0244 normal, ... +13 more
 
 - Moo
   id: <@!276949114212712449>
   contact: https://twitter.com/MoonMoonMemes
-  assets: portrait/0004 shiny, portrait/0010 shiny, portrait/0017 shiny, portrait/0056 shiny, portrait/0057 shiny, portrait/0067 shiny, portrait/0074 shiny, portrait/0075 shiny, portrait/0093 shiny, portrait/0095 shiny, portrait/0096 shiny, portrait/0152 shiny, ... +8 more
+  assets: portrait/0004 shiny, portrait/0010 shiny, portrait/0017 shiny, portrait/0056 shiny, portrait/0057 shiny, portrait/0067 shiny, portrait/0074 shiny, portrait/0075 shiny, portrait/0093 shiny, portrait/0095 shiny, portrait/0096 shiny, portrait/0152 shiny, ... +43 more
 
 - Tainted#3886
   id: <@!283571466891427841>
-  assets: portrait/0017 normal, portrait/0075 normal, portrait/0106 normal, portrait/0202 normal
+  assets: portrait/0017 normal, portrait/0075 normal, portrait/0106 normal, portrait/0202 normal, portrait/0336 normal, portrait/0356 normal
+
+- Sonikku_A
+  id: <@!288510084273668096>
+  contact: https://bsky.app/profile/knopguy.bsky.social
+  assets: sprite/0386 shiny
+
+- DasK
+  id: <@!294668186219970562>
+  contact: http://reddit.com/u/thedask
+  assets: portrait/0263 normal, portrait/0336 normal
 
 - <@!299261889169588246>
-  assets: portrait/0015 shiny, portrait/0052 shiny, portrait/0151 shiny
+  assets: portrait/0015 shiny, portrait/0052 shiny, portrait/0151 shiny, portrait/0304 shiny
+
+- PixlHoopa
+  id: <@!310773087417270272>
+  assets: portrait/0309 shiny
 
 - Mojo
   id: <@!314519507869761556>
@@ -259,17 +313,17 @@ Contributors referenced by imported assets:
 - C_Pariah
   id: <@!322382592202637322>
   contact: <@322382592202637322>
-  assets: portrait/0131 normal, portrait/0131 shiny, portrait/0153 normal, portrait/0156 normal, portrait/0156 shiny, portrait/0159 normal, portrait/0172 normal, portrait/0172 shiny, portrait/0225 normal, portrait/0225 shiny
+  assets: portrait/0131 normal, portrait/0131 shiny, portrait/0153 normal, portrait/0156 normal, portrait/0156 shiny, portrait/0159 normal, portrait/0172 normal, portrait/0172 shiny, portrait/0225 normal, portrait/0225 shiny, portrait/0259 normal, portrait/0259 shiny, ... +3 more
 
 - 0palite
   id: <@!327927398941196289>
   contact: https://zeropalart.tumblr.com/
-  assets: portrait/0005 normal, portrait/0006 normal, portrait/0064 normal, portrait/0154 normal, portrait/0157 normal, portrait/0196 normal
+  assets: portrait/0005 normal, portrait/0006 normal, portrait/0064 normal, portrait/0154 normal, portrait/0157 normal, portrait/0196 normal, portrait/0254 normal, portrait/0342 normal, portrait/0342 shiny
 
 - Caitemis
   id: <@!330751862590406656>
   contact: https://caitemis-art.tumblr.com/
-  assets: portrait/0014 normal, portrait/0022 normal, portrait/0071 shiny, portrait/0080 normal, portrait/0088 shiny, portrait/0096 normal, portrait/0097 normal, portrait/0109 normal, portrait/0109 shiny, portrait/0126 normal, portrait/0142 normal, portrait/0142 shiny, ... +2 more
+  assets: portrait/0014 normal, portrait/0022 normal, portrait/0071 shiny, portrait/0080 normal, portrait/0088 shiny, portrait/0096 normal, portrait/0097 normal, portrait/0109 normal, portrait/0109 shiny, portrait/0126 normal, portrait/0142 normal, portrait/0142 shiny, ... +20 more
 
 - Meganai
   id: <@!336650663293616140>
@@ -278,7 +332,7 @@ Contributors referenced by imported assets:
 - FalafelPorpoise
   id: <@!338821717365489665>
   contact: https://bsky.app/profile/falafel-porpoise.bsky.social
-  assets: portrait/0018 normal, portrait/0018 shiny
+  assets: portrait/0018 normal, portrait/0018 shiny, portrait/0321 normal, portrait/0321 shiny
 
 - Vynnyal
   id: <@!343150274795405314>
@@ -288,17 +342,26 @@ Contributors referenced by imported assets:
 - G〜
   id: <@!350050109741858829>
   contact: https://bsky.app/profile/justtr4sh.pmd.social
-  assets: portrait/0003 normal, portrait/0003 shiny, portrait/0023 shiny, portrait/0026 normal, portrait/0026 shiny, portrait/0046 normal, portrait/0070 shiny, portrait/0072 shiny, portrait/0078 shiny, portrait/0089 shiny, portrait/0096 normal, portrait/0096 shiny, ... +30 more
+  assets: portrait/0003 normal, portrait/0003 shiny, portrait/0023 shiny, portrait/0026 normal, portrait/0026 shiny, portrait/0046 normal, portrait/0070 shiny, portrait/0072 shiny, portrait/0078 shiny, portrait/0089 shiny, portrait/0096 normal, portrait/0096 shiny, ... +46 more
+
+- <SKREE>
+  id: <@!350778126919401485>
+  contact: <https://www.tumblr.com/blog/skree-like-a-pterodactyl>
+  assets: portrait/0343 shiny
 
 - Cloudy
   id: <@!356187016054046723>
   contact: https://twitter.com/cloudyskys17695
-  assets: portrait/0150 shiny
+  assets: portrait/0150 shiny, portrait/0269 shiny, portrait/0356 shiny
 
 - Emmuffin
   id: <@!356635814668664832>
   contact: https://twitter.com/Ernmuffin
-  assets: portrait/0002 normal, portrait/0002 shiny, portrait/0008 normal, portrait/0008 shiny, portrait/0009 normal, portrait/0009 shiny, portrait/0012 normal, portrait/0012 shiny, portrait/0024 normal, portrait/0024 shiny, portrait/0025 shiny, portrait/0044 shiny, ... +113 more
+  assets: portrait/0002 normal, portrait/0002 shiny, portrait/0008 normal, portrait/0008 shiny, portrait/0009 normal, portrait/0009 shiny, portrait/0012 normal, portrait/0012 shiny, portrait/0024 normal, portrait/0024 shiny, portrait/0025 shiny, portrait/0044 shiny, ... +208 more
+
+- KCN015
+  id: <@!358038459237138432>
+  assets: sprite/0262 normal, sprite/0335 normal, sprite/0335 shiny
 
 - XModxGodX
   id: <@!365627932888268800>
@@ -318,6 +381,10 @@ Contributors referenced by imported assets:
   contact: https://twitter.com/waffluffe
   assets: portrait/0058 shiny
 
+- Sharpen
+  id: <@!389193348474339338>
+  assets: portrait/0380 normal
+
 - Blanca
   id: <@!401608319762038794>
   assets: portrait/0087 normal, portrait/0206 normal, portrait/0233 normal, portrait/0233 shiny
@@ -335,11 +402,11 @@ Contributors referenced by imported assets:
 - gromchurch
   id: <@!421379254077620225>
   contact: https://twitter.com/poongis2
-  assets: portrait/0040 normal, portrait/0182 normal, portrait/0182 shiny
+  assets: portrait/0040 normal, portrait/0182 normal, portrait/0182 shiny, portrait/0334 normal, portrait/0334 shiny
 
 - SuperFabbioGuy
   id: <@!433058189240696835>
-  assets: portrait/0006 shiny
+  assets: portrait/0006 shiny, portrait/0253 shiny
 
 - <@!436940337865293834>
   assets: portrait/0069 normal, portrait/0180 normal
@@ -356,21 +423,24 @@ Contributors referenced by imported assets:
 - silverfox88
   id: <@!476409795239477248>
   contact: https://twitter.com/realsilverfox88
-  assets: portrait/0054 shiny, portrait/0131 normal, portrait/0131 shiny, portrait/0140 shiny, portrait/0153 shiny, portrait/0179 shiny
+  assets: portrait/0054 shiny, portrait/0131 normal, portrait/0131 shiny, portrait/0140 shiny, portrait/0153 shiny, portrait/0179 shiny, portrait/0253 shiny, portrait/0345 shiny, portrait/0358 shiny
 
 - Deltex12
   id: <@!513590747694497792>
   contact: /u/Deltex12
   assets: portrait/0058 normal
 
+- <@!523152081805115403>
+  assets: portrait/0386 normal
+
 - Avery
   id: <@!527611425670037516>
   contact: <@527611425670037516>
-  assets: portrait/0223 shiny, sprite/0223 shiny
+  assets: portrait/0223 shiny, sprite/0223 shiny, sprite/0265 shiny
 
 - CamusZekeSirius
   id: <@!533406104256905257>
-  assets: portrait/0250 normal, portrait/0250 shiny
+  assets: portrait/0250 normal, portrait/0250 shiny, portrait/0377 normal, portrait/0377 shiny, portrait/0378 normal, portrait/0379 normal, portrait/0379 shiny, portrait/0382 shiny, portrait/0384 shiny
 
 - Ray2064
   id: <@!540823632054714388>
@@ -379,12 +449,12 @@ Contributors referenced by imported assets:
 
 - baronessfaron
   id: <@!544245909639397378>
-  assets: portrait/0004 shiny, portrait/0010 normal, portrait/0010 shiny, portrait/0011 normal, portrait/0020 normal, portrait/0020 shiny, portrait/0037 shiny, portrait/0038 normal, portrait/0038 shiny, portrait/0053 normal, portrait/0056 normal, portrait/0059 normal, ... +35 more
+  assets: portrait/0004 shiny, portrait/0010 normal, portrait/0010 shiny, portrait/0011 normal, portrait/0020 normal, portrait/0020 shiny, portrait/0037 shiny, portrait/0038 normal, portrait/0038 shiny, portrait/0053 normal, portrait/0056 normal, portrait/0059 normal, ... +63 more
 
 - deltaflare
   id: <@!555360707617488904>
   contact: <@555360707617488904>
-  assets: portrait/0078 normal
+  assets: portrait/0078 normal, portrait/0262 normal, portrait/0262 shiny
 
 - Gayschlatt
   id: <@!560604377203736617>
@@ -395,15 +465,15 @@ Contributors referenced by imported assets:
 
 - ShyStarryRain
   id: <@!576876006636519434>
-  assets: portrait/0001 shiny, portrait/0005 shiny, portrait/0007 shiny, portrait/0013 shiny, portrait/0019 shiny, portrait/0027 normal, portrait/0027 shiny, portrait/0043 normal, portrait/0043 shiny, portrait/0047 shiny, portrait/0079 shiny, portrait/0124 shiny, ... +22 more
+  assets: portrait/0001 shiny, portrait/0005 shiny, portrait/0007 shiny, portrait/0013 shiny, portrait/0019 shiny, portrait/0027 normal, portrait/0027 shiny, portrait/0043 normal, portrait/0043 shiny, portrait/0047 shiny, portrait/0079 shiny, portrait/0124 shiny, ... +26 more
 
 - <@!589906152708505648>
-  assets: portrait/0185 normal
+  assets: portrait/0185 normal, portrait/0273 normal, portrait/0304 normal, portrait/0374 normal, portrait/0374 shiny
 
 - Morei
   id: <@!593113130213572610>
   contact: https://bsky.app/profile/murpia57.bsky.social
-  assets: portrait/0006 shiny, portrait/0011 shiny, portrait/0028 shiny, portrait/0030 shiny, portrait/0036 shiny, portrait/0042 shiny, portrait/0050 shiny, portrait/0052 shiny, portrait/0054 normal, portrait/0054 shiny, portrait/0056 shiny, portrait/0065 shiny, ... +64 more
+  assets: portrait/0006 shiny, portrait/0011 shiny, portrait/0028 shiny, portrait/0030 shiny, portrait/0036 shiny, portrait/0042 shiny, portrait/0050 shiny, portrait/0052 shiny, portrait/0054 normal, portrait/0054 shiny, portrait/0056 shiny, portrait/0065 shiny, ... +116 more
 
 - Axcel
   id: <@!662304890143375391>
@@ -411,7 +481,11 @@ Contributors referenced by imported assets:
 
 - JFain
   id: <@!702275233125630042>
-  assets: portrait/0016 normal, portrait/0029 normal, portrait/0029 shiny, portrait/0032 normal, portrait/0032 shiny, portrait/0034 normal, portrait/0042 normal, portrait/0055 normal, portrait/0055 shiny, portrait/0061 normal, portrait/0063 normal, portrait/0067 normal, ... +33 more
+  assets: portrait/0016 normal, portrait/0029 normal, portrait/0029 shiny, portrait/0032 normal, portrait/0032 shiny, portrait/0034 normal, portrait/0042 normal, portrait/0055 normal, portrait/0055 shiny, portrait/0061 normal, portrait/0063 normal, portrait/0067 normal, ... +49 more
+
+- Ginnie
+  id: <@!722542425196724289>
+  assets: sprite/0301 shiny
 
 - shimx
   id: <@!722565437925097613>
@@ -426,12 +500,12 @@ Contributors referenced by imported assets:
 - <ElGian>
   id: <@!770438729575563284>
   contact: <gfcobross@gmail.com>
-  assets: portrait/0169 normal
+  assets: portrait/0169 normal, portrait/0375 normal, portrait/0375 shiny
 
 - PhillipsYoung
   id: <@!772726854188400641>
   contact: https://twitter.com/PhilliYoung196
-  assets: portrait/0093 normal, portrait/0093 shiny, portrait/0094 shiny, portrait/0101 normal, portrait/0101 shiny, portrait/0112 normal, portrait/0112 shiny, portrait/0216 shiny, portrait/0217 normal, portrait/0229 normal, portrait/0236 normal, portrait/0236 shiny
+  assets: portrait/0093 normal, portrait/0093 shiny, portrait/0094 shiny, portrait/0101 normal, portrait/0101 shiny, portrait/0112 normal, portrait/0112 shiny, portrait/0216 shiny, portrait/0217 normal, portrait/0229 normal, portrait/0236 normal, portrait/0236 shiny, ... +3 more
 
 - Ichor
   id: <@!779213287576436746>
@@ -447,31 +521,39 @@ Contributors referenced by imported assets:
 
 - Fearless-Quit
   id: <@!801938240562397194>
-  assets: portrait/0023 normal, portrait/0029 normal, portrait/0029 shiny, portrait/0081 normal, portrait/0081 shiny, portrait/0183 normal, portrait/0235 normal, portrait/0235 shiny
+  assets: portrait/0023 normal, portrait/0029 normal, portrait/0029 shiny, portrait/0081 normal, portrait/0081 shiny, portrait/0183 normal, portrait/0235 normal, portrait/0235 shiny, portrait/0283 normal
 
 - Pokejavi.
   id: <@!823932975916777512>
   contact: <@823932975916777512>
-  assets: portrait/0212 shiny, sprite/0165 shiny
+  assets: portrait/0212 shiny, sprite/0165 shiny, sprite/0353 shiny, sprite/0371 shiny
+
+- <@!828520880299966525>
+  assets: portrait/0349 normal
 
 - NOLASMOR
   id: <@!833717817445974046>
-  assets: portrait/0143 normal
+  assets: portrait/0143 normal, portrait/0313 normal, portrait/0313 shiny, portrait/0331 shiny, portrait/0345 normal, sprite/0331 shiny
 
 - Gust
   id: <@!861005464682889266>
   contact: https://twitter.com/Estelaris__
-  assets: portrait/0036 normal, portrait/0040 normal, portrait/0040 shiny, portrait/0050 normal, portrait/0051 normal, portrait/0051 shiny, portrait/0065 normal, portrait/0147 normal, portrait/0174 normal, portrait/0174 shiny, portrait/0192 shiny, portrait/0202 normal, ... +5 more
+  assets: portrait/0036 normal, portrait/0040 normal, portrait/0040 shiny, portrait/0050 normal, portrait/0051 normal, portrait/0051 shiny, portrait/0065 normal, portrait/0147 normal, portrait/0174 normal, portrait/0174 shiny, portrait/0192 shiny, portrait/0202 normal, ... +17 more
+
+- YoukaiMinori
+  id: <@!91001329228464128>
+  contact: <@91001329228464128>
+  assets: sprite/0252 shiny, sprite/0253 shiny
 
 - Chi
   id: <@!95638225439166464>
   contact: <@95638225439166464>
-  assets: portrait/0209 shiny, portrait/0210 shiny, portrait/0243 shiny, sprite/0169 shiny, sprite/0210 shiny, sprite/0218 shiny, sprite/0230 shiny
+  assets: portrait/0209 shiny, portrait/0210 shiny, portrait/0243 shiny, portrait/0349 shiny, portrait/0350 shiny, portrait/0358 shiny, portrait/0363 shiny, portrait/0365 shiny, portrait/0377 shiny, portrait/0385 shiny, portrait/0386 shiny, sprite/0169 shiny, ... +6 more
 
 - Lovi
   id: <@!95650095034273792>
   contact: <@95650095034273792>
-  assets: portrait/0034 shiny, portrait/0037 shiny, portrait/0038 shiny, portrait/0039 shiny, portrait/0083 shiny, portrait/0097 shiny, portrait/0115 shiny, portrait/0122 shiny, portrait/0138 shiny, portrait/0144 shiny, portrait/0147 shiny, portrait/0148 shiny, ... +43 more
+  assets: portrait/0034 shiny, portrait/0037 shiny, portrait/0038 shiny, portrait/0039 shiny, portrait/0083 shiny, portrait/0097 shiny, portrait/0115 shiny, portrait/0122 shiny, portrait/0138 shiny, portrait/0144 shiny, portrait/0147 shiny, portrait/0148 shiny, ... +50 more
 
 - <@!967585139485999154>
   assets: portrait/0098 normal, portrait/0229 normal
@@ -483,7 +565,7 @@ Contributors referenced by imported assets:
 
 - CHUNSOFT
   contact: https://www.spike-chunsoft.com/
-  assets: portrait/0001 normal, portrait/0002 normal, portrait/0003 normal, portrait/0004 normal, portrait/0005 normal, portrait/0006 normal, portrait/0007 normal, portrait/0008 normal, portrait/0009 normal, portrait/0010 normal, portrait/0011 normal, portrait/0012 normal, ... +491 more
+  assets: portrait/0001 normal, portrait/0002 normal, portrait/0003 normal, portrait/0004 normal, portrait/0005 normal, portrait/0006 normal, portrait/0007 normal, portrait/0008 normal, portrait/0009 normal, portrait/0010 normal, portrait/0011 normal, portrait/0012 normal, ... +761 more
 
 - estelstarlight
   id: ESTELSTARLIGHT

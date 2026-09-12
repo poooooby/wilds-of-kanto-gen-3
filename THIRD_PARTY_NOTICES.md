@@ -57,3 +57,16 @@ See the asset-specific documentation and credits for details.
   assets and are not relicensed under MIT.
 - Gen1Recomp engine APIs and Dramatic Shape Voxel Mod contracts belong to
   their respective projects and licenses.
+- **Kanto Reforged** (GNU GPLv3) is an independent companion mod that extends
+  the base Gen1Recomp/Gen2 game's own content registry (`mod.content.pokemon`)
+  with Gen 2 and Gen 3 species — stats, types, moves, abilities, and dex
+  entries — up to National Dex #386. Wilds of Kanto does not bundle, copy, or
+  modify any Kanto Reforged code or data; it only reads already-loaded
+  `game.data.pokemon` fields at runtime (read-only interop, the same pattern
+  used for the base Gen1Recomp/Gold content) to resolve species names to
+  canonical sprite/asset ids in `lib/species_assets.lua`. No GPLv3 obligations
+  attach to this repository from that interop. Kanto Reforged's own battle
+  sprites are intentionally grayscale, hand-authored Game Boy–style art (its
+  README: "wholesale replaces Pokémon battle sprites across Gens 1-3 with
+  custom classic-styled art"), which is a design choice of that project, not
+  a Wilds asset or bug.

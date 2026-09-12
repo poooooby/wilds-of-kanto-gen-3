@@ -192,6 +192,11 @@ Active collaborators on this project:
 - [PMDCollab / SpriteCollab](https://github.com/PMDCollab/SpriteCollab) —
   Mystery Dungeon–style overworld sprites and dialogue portraits (optional
   Sprite Style + talk portraits). Shoutout to that repo and its contributors.
+- **Kanto Reforged** (GPLv3) — companion mod that extends the base
+  Gen1Recomp/Gen2 game's own species data (stats, types, moves, dex entries)
+  through Gen 3. Wilds of Kanto reads that data at runtime
+  (`game.data.pokemon`) to resolve Gen 3 species for spawning and sprites; no
+  Kanto Reforged code or data is copied into this repository.
 
 ## Credits
 

@@ -2,6 +2,7 @@
 /.deps/
 /gen1recomp/
 /DramaticShapeVoxelMod/
+/ReferenceGen1-3/
 
 # Build output
 /dist/
@@ -32,3 +33,6 @@ overworld_wild_spawns-cache/
 /assets/_inspect/
 /.freebuff
 /tests
+
+# Local scratch notes
+/gen3missing.txt

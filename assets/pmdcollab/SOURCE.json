@@ -1,6 +1,6 @@
 {
-  "commit": "f48c891cc913a1757a9cf6914e21108447bf2b37",
-  "dexMax": 251,
+  "commit": "a3acb77f05fb6649df2790031a1285066ffa32f2",
+  "dexMax": 386,
   "dexMin": 1,
   "directionRows": {
     "down": 0,
@@ -18,11 +18,14 @@
   "importerVersion": "3",
   "missingIdle": [
     15,
-    148
+    148,
+    266,
+    268,
+    345
   ],
   "missingPortraitNormal": [],
   "missingWalk": [],
-  "portraitsImported": 251,
+  "portraitsImported": 386,
   "repository": "https://github.com/PMDCollab/SpriteCollab",
   "safePortraitEmotions": [
     "normal",
@@ -31,7 +34,7 @@
     "inspired",
     "determined"
   ],
-  "speciesImported": 251,
+  "speciesImported": 386,
   "walkerLayout": {
     "0": "stand_down",
     "1": "stand_up",

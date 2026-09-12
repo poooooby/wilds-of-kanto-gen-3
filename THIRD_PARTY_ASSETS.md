@@ -4,7 +4,7 @@
 
 - Repository: [PMDCollab/SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
 - Browse: http://sprites.pmdcollab.org/
-- Imported revision: `f48c891cc913a1757a9cf6914e21108447bf2b37`
+- Imported revision: `a3acb77f05fb6649df2790031a1285066ffa32f2`
 - Importer: `scripts/import_pmdcollab.py` (version 3)
 
 ## License
