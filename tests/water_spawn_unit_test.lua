@@ -226,6 +226,20 @@ local wOff = Behavior.weightsFor("TENTACOOL", Surface.WATER, {
 })
 eq(wOff[Behavior.WATER_AGGRESSIVE], 0, "water aggressive disabled")
 
+-- Chase Mons off must win even when a real water_aggressive_chance is also
+-- passed (the real spawn_logic.lua call shape): the chance-based rescale
+-- must not resurrect a non-zero weight from idle/wander after enable_* zeroed it.
+local wOffWithChance = Behavior.weightsFor("TENTACOOL", Surface.WATER, {
+  enable_idle = true,
+  enable_wander = true,
+  enable_aggressive = false,
+  enable_water_aggressive = false,
+  water_aggressive_chance = 0.15,
+  aggressive_frequency = 1,
+})
+eq(wOffWithChance[Behavior.WATER_AGGRESSIVE], 0,
+   "water aggressive stays disabled alongside a real water_aggressive_chance")
+
 print("== canStep water-only ==")
 local waterEnt = {
   surface = Surface.WATER,

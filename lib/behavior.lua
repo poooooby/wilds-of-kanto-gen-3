@@ -171,8 +171,14 @@ function Behavior.weightsFor(species, surface, opts)
 
   local aggMul = tonumber(opts.aggressive_frequency) or 1.0
   weights[Behavior.AGGRESSIVE] = weights[Behavior.AGGRESSIVE] * aggMul
+  local waterAggressiveDisabled = opts.enable_aggressive == false
+    or opts.enable_water_aggressive == false
   local waterAggChance = tonumber(opts.water_aggressive_chance)
-  if waterAggChance ~= nil then
+  if waterAggressiveDisabled then
+    -- Chase Mons (or the water-specific flag) is off: never let the
+    -- chance-based rescale below re-derive a non-zero weight from idle/wander.
+    weights[Behavior.WATER_AGGRESSIVE] = 0
+  elseif waterAggChance ~= nil then
     -- Scale WATER_AGGRESSIVE relative to idle+wander so chance ≈ waterAggChance.
     local base = (weights[Behavior.WATER_IDLE] or 0)
                + (weights[Behavior.WATER_WANDER] or 0)
