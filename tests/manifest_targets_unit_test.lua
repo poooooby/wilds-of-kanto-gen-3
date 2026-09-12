@@ -70,9 +70,9 @@ else
 
   eq(table.concat(ModTargets.expand("gen1"), ","), "red,blue,yellow",
      "gen1 expands to red,blue,yellow")
-  -- Engine ORDER: gold then silver (GameVersion.ORDER / generationVersions).
-  eq(table.concat(ModTargets.expand("gen2"), ","), "gold,silver",
-     "gen2 expands to gold,silver (current engine)")
+  -- Engine ORDER: gold, silver, crystal (GameVersion.ORDER / generationVersions).
+  eq(table.concat(ModTargets.expand("gen2"), ","), "gold,silver,crystal",
+     "gen2 expands to gold,silver,crystal (current engine)")
   eq(table.concat(ModTargets.expand("silver"), ","), "silver",
      "silver is a recognized Gen2 game target")
 
@@ -118,8 +118,8 @@ else
 
   local prodGames = ModTargets.normalize({ "gen1", "gen2" })
   local prod = { games = prodGames }
-  eq(table.concat(prodGames, ","), "red,blue,yellow,gold,silver",
-     "production normalize(gen1,gen2) → red,blue,yellow,gold,silver")
+  eq(table.concat(prodGames, ","), "red,blue,yellow,gold,silver,crystal",
+     "production normalize(gen1,gen2) → red,blue,yellow,gold,silver,crystal")
   eq(ModTargets.label(prod), "Gen 1+2", "production games label Gen 1+2")
   eq(ModTargets.chip(prod), "GEN 1+2", "production games chip GEN 1+2")
   eq(ModTargets.supports(prod, "red"), true, "production supports red")
