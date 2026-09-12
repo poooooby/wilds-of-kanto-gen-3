@@ -1,8 +1,65 @@
 # Changelog
 
+> **This is a fork.** This repository (`poooooby/wilds-of-kanto-gen-3`, mod id
+> `wilds_of_kanto_gen3`) forks
+> [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)
+> ("Wilds of Kanto", mod id `overworld_wild_spawns`) after v2.2.0. Everything
+> through v2.2.0 is the original project's history — full credit to
+> YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
+> onward is fork-specific work, marked **(fork)**.
+
 ## Unreleased
 
-## 2.3.0
+## 2.4.0 (fork)
+
+### Fork identity
+
+- Manifest identity updated for the fork: id `wilds_of_kanto_gen3`,
+  `conflicts: ["overworld_wild_spawns"]` (do not run both at once), github
+  points at `poooooby/wilds-of-kanto-gen-3`. See LICENSE, README.md, and
+  mod.card for fork attribution.
+
+### Gen 3 True Size geometry
+
+- Generated real `species_geometry.json` / `species_table.lua` entries for
+  all 135 Gen 3 species (dex 252–386) from the existing HGSS-format source
+  art in `assets/enhanced_overworld/followsprites`, via
+  `tools/generate_true_size_runtime.py`. HGSS/Pokédex packs: 135/135;
+  Swimming: 105/135; Levitate: 30/135 (matches actual source coverage);
+  Followers: 0/135 (no `poke_followers` art yet for Gen 3 — falls back to
+  HGSS-sized placeholder geometry). None of the existing 1–251 entries changed.
+- `lib/game_compat/gen1.lua` / `gen2.lua`: `MAX_SPECIES` raised from 151/251
+  to 386. This was the actual blocker for Gen 3 True Size sizing — the
+  geometry data alone was unreachable because `SpeciesGeometry.normalizeDex`
+  capped every lookup at the old generation ceiling before ever consulting
+  the table.
+
+### Bug fixes
+
+- Fixed **Chase Mons** (`enable_aggressive`) not disabling aggressive
+  behaviour for water/swimming Pokémon. `Behavior.weightsFor`'s
+  `water_aggressive_chance` rescale unconditionally recomputed
+  `WATER_AGGRESSIVE`'s weight from idle/wander weights, silently
+  resurrecting it after `enable_aggressive` had already zeroed it — since
+  `spawn_logic.lua` always passes a real `water_aggressive_chance` value,
+  this fired on every water spawn regardless of the option.
+- Fixed cave Pokémon spawning/wandering outside reachable areas after a
+  same-map warp into a different cave component. Every cave entity (not
+  just "Mixed"-mode scenery) was pinned to a per-entity snapshot of the
+  reachable-cells table captured at spawn time; `CaveReachability`
+  rebuilding that table on a same-map warp left existing entities validating
+  movement against stale, pre-rebuild data instead of the live mask.
+
+### Terrarium Voxel renderer compatibility
+
+- Added `lib/compat/terrarium_variable_geometry.lua`: True Size support for
+  the [Terrarium](https://github.com/BrenoBertucci/Terrarium) Dramatic Shape
+  fork, alongside the existing Battle Art / Potato / Dramaless / Stadium2
+  adapters. Terrarium exposes the same `exports.lib.require` /
+  `SpriteBillboards` / `Voxel3D` / `VoxelState` contract, so it reuses the
+  shared `compat/voxel_sprite_billboards_adapter` factory.
+
+## 2.3.0 (fork)
 
 ### Gen 3 species preview (PMDCollab)
 

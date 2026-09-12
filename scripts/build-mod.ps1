@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 # Build dist/wilds-of-kanto-v<version>.zip for Gen1Recomp import.
 # Repo root IS the mod (DramaticShapeVoxelMod layout). Prefers modkit pack.
-# Also writes technical-id aliases: overworld_wild_spawns-<version>.zip / .zip
+# Also writes technical-id aliases: wilds_of_kanto_gen3-<version>.zip / .zip
 $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $PSScriptRoot
@@ -23,8 +23,8 @@ Write-Host "==> python3 scripts/validate-manager-ascii.py"
 if ($LASTEXITCODE -ne 0) { throw "validate-manager-ascii failed" }
 
 $manifest = Get-Content -Raw -Path $ManifestPath | ConvertFrom-Json
-if ($manifest.id -ne "overworld_wild_spawns") {
-  throw "manifest id must be overworld_wild_spawns"
+if ($manifest.id -ne "wilds_of_kanto_gen3") {
+  throw "manifest id must be wilds_of_kanto_gen3"
 }
 $entry = if ($manifest.entry) { $manifest.entry } else { "main.lua" }
 if (-not (Test-Path (Join-Path $ModDir $entry))) {
@@ -38,14 +38,14 @@ $OutZip = Join-Path $Dist ("wilds-of-kanto-v{0}.zip" -f $manifest.version)
 $Modkit = Join-Path $Engine "tools/modkit.py"
 
 if (Test-Path $Modkit) {
-  $Link = Join-Path $Engine "mods/overworld_wild_spawns"
+  $Link = Join-Path $Engine "mods/wilds_of_kanto_gen3"
   New-Item -ItemType Directory -Force -Path (Split-Path $Link) | Out-Null
   if (Test-Path $Link) { Remove-Item -Force $Link }
   New-Item -ItemType SymbolicLink -Path $Link -Target $ModDir | Out-Null
-  Write-Host "==> python3 tools/modkit.py pack mods/overworld_wild_spawns"
+  Write-Host "==> python3 tools/modkit.py pack mods/wilds_of_kanto_gen3"
   Push-Location $Engine
   try {
-    & python3 $Modkit --repo $Engine pack mods/overworld_wild_spawns -o $OutZip
+    & python3 $Modkit --repo $Engine pack mods/wilds_of_kanto_gen3 -o $OutZip
     if ($LASTEXITCODE -ne 0) { throw "modkit pack failed" }
   } finally {
     Pop-Location

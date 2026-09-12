@@ -6,7 +6,7 @@ Packs via the official Gen1Recomp modkit so the ZIP has manifest.json at
 the archive root - never a wrapping folder, never the repo/workspace tree.
 
 Public release name: wilds-of-kanto-v<version>.zip
-Technical id aliases: overworld_wild_spawns-<version>.zip / overworld_wild_spawns.zip
+Technical id aliases: wilds_of_kanto_gen3-<version>.zip / wilds_of_kanto_gen3.zip
 """
 from __future__ import annotations
 
@@ -120,10 +120,10 @@ def read_manifest() -> dict:
     for field in REQUIRED_MANIFEST_FIELDS:
         if field not in data or data[field] in (None, ""):
             fail(f"manifest missing required field: {field}")
-    if data.get("id") != "overworld_wild_spawns":
-        fail("manifest id must be overworld_wild_spawns")
-    if data.get("github") != "YoDrehDenSwagAuf/overworld-spawn-mod":
-        fail("manifest github must be YoDrehDenSwagAuf/overworld-spawn-mod")
+    if data.get("id") != "wilds_of_kanto_gen3":
+        fail("manifest id must be wilds_of_kanto_gen3")
+    if data.get("github") != "poooooby/wilds-of-kanto-gen-3":
+        fail("manifest github must be poooooby/wilds-of-kanto-gen-3")
     entry = data["entry"]
     if not (MOD_DIR / entry).is_file():
         fail(f"entry file missing: {entry}")
@@ -148,7 +148,7 @@ def ensure_engine() -> Path:
 
 def ensure_linked() -> Path:
     """Ensure the mod (repo root) is visible under gen1recomp/mods."""
-    target = ENGINE / "mods" / "overworld_wild_spawns"
+    target = ENGINE / "mods" / "wilds_of_kanto_gen3"
     target.parent.mkdir(parents=True, exist_ok=True)
     if target.is_symlink() or target.exists():
         if target.resolve() != MOD_DIR.resolve():
@@ -566,9 +566,9 @@ def main() -> int:
 
     # Prefer Gen1Recomp modkit; fall back to manual pack when luajit/modkit fails.
     modkit_ok = (
-        run_modkit("validate", "mods/overworld_wild_spawns")
-        and run_modkit("lint", "mods/overworld_wild_spawns")
-        and run_modkit("pack", "mods/overworld_wild_spawns", "-o", str(out_zip))
+        run_modkit("validate", "mods/wilds_of_kanto_gen3")
+        and run_modkit("lint", "mods/wilds_of_kanto_gen3")
+        and run_modkit("pack", "mods/wilds_of_kanto_gen3", "-o", str(out_zip))
     )
     if not modkit_ok or not out_zip.is_file():
         print("modkit unavailable/failed; packing manually from repo root")
@@ -579,7 +579,7 @@ def main() -> int:
     verify_zip(out_zip, manifest)
 
     if modkit_ok:
-        run_modkit("validate", "mods/overworld_wild_spawns")
+        run_modkit("validate", "mods/wilds_of_kanto_gen3")
 
     # Prefer a single public release ZIP so Mod Manager update detection has
     # one unambiguous archive. Optional technical-id copies stay local-only.

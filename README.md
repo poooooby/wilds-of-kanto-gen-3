@@ -1,4 +1,14 @@
-# Wilds of Kanto
+# Wilds of Kanto: Gen 3 Fork
+
+> **Fork notice:** this is [poooooby](https://github.com/poooooby)'s fork of
+> [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)
+> ("Wilds of Kanto"), forked after upstream v2.2.0. Full credit for the
+> original mod goes to YoDrehDenSwagAuf and the collaborators listed below —
+> this fork adds Gen 3 species support (via the **Kanto Reforged** companion
+> mod) and additional Voxel renderer compatibility on top of that work. See
+> [CHANGELOG.md](CHANGELOG.md) for exactly what changed and when. Mod id
+> `wilds_of_kanto_gen3`; it declares a manifest conflict with the original
+> `overworld_wild_spawns` so the two are not run side by side.
 
 Wilds of Kanto makes Kanto feel alive in
 [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp).
@@ -155,8 +165,11 @@ battle flow. Safari sessions disable overworld throws.
 
 ## Installation
 
-1. Install the latest release from
-   [GitHub Releases](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod/releases).
+1. Install the latest release of this fork from
+   [GitHub Releases](https://github.com/poooooby/wilds-of-kanto-gen-3/releases)
+   (or the original, unforked mod from
+   [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod/releases) —
+   not both; they declare a manifest conflict).
    Use the packed `wilds-of-kanto-v*.zip` (manifest.json at the archive root).
    Do not import the GitHub "Source code" / `overworld-spawn-mod-main` ZIP.
 2. Place the mod in your Gen1Recomp mods directory.
@@ -172,14 +185,26 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
 - Pokémon Blue
 - Pokémon Yellow
 - Pokémon Gold (beta)
+- **Kanto Reforged** (Gen 3 species extension) — this fork's Gen 3 species
+  support (species IDs 252–386, spawning, and sprites) is tested against
+  [1Jamie](https://github.com/1Jamie)'s
+  [Kanto Reforged](https://github.com/1Jamie/Kanto-Reforged) extended
+  Pokédex, read at runtime via `game.data.pokemon`.
 - Dramatic Shape Voxel Mod (True Size stays on when the **active** Voxel
   renderer can consume variable SpriteDef geometry: Battle Art Voxel, Potato
-  Voxel, Dramaless Shape, and Stadium2 via public `SpriteBillboards`. Original
-  Dramatic Shape stays Classic unless it ships native variable geometry.)
+  Voxel, Dramaless Shape, Stadium2, and Terrarium via public
+  `SpriteBillboards`. Original Dramatic Shape stays Classic unless it ships
+  native variable geometry.)
 
 ## Collaborators
 
-Active collaborators on this project:
+This fork:
+
+- [poooooby](https://github.com/poooooby) — fork maintainer; Gen 3 species
+  support, additional Voxel renderer compatibility (see CHANGELOG.md)
+
+Original project ([YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)) collaborators — full credit for
+everything through v2.2.0:
 
 - [YoDrehDenSwagAuf](https://github.com/YoDrehDenSwagAuf) — Wilds of Kanto /
   overworld systems / integration
@@ -192,11 +217,15 @@ Active collaborators on this project:
 - [PMDCollab / SpriteCollab](https://github.com/PMDCollab/SpriteCollab) —
   Mystery Dungeon–style overworld sprites and dialogue portraits (optional
   Sprite Style + talk portraits). Shoutout to that repo and its contributors.
-- **Kanto Reforged** (GPLv3) — companion mod that extends the base
-  Gen1Recomp/Gen2 game's own species data (stats, types, moves, dex entries)
-  through Gen 3. Wilds of Kanto reads that data at runtime
-  (`game.data.pokemon`) to resolve Gen 3 species for spawning and sprites; no
-  Kanto Reforged code or data is copied into this repository.
+- [1Jamie](https://github.com/1Jamie) —
+  [**Kanto Reforged**](https://github.com/1Jamie/Kanto-Reforged) (GPLv3),
+  the companion mod that extends the base Gen1Recomp/Gen2 game's own species
+  data (stats, types, moves, dex entries) through Gen 3. Wilds of Kanto reads
+  that data at runtime (`game.data.pokemon`) to resolve Gen 3 species for
+  spawning and sprites; no Kanto Reforged code or data is copied into this
+  repository. This fork's Gen 3 species support is tested against her
+  Kanto Reforged extended Pokédex — thank you, 1Jamie, for the work that
+  makes it possible.
 
 ## Credits
 

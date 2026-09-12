@@ -1,7 +1,7 @@
 {
-  "id": "overworld_wild_spawns",
-  "name": "Wilds of Kanto",
-  "version": "2.3.0",
+  "id": "wilds_of_kanto_gen3",
+  "name": "Wilds of Kanto: Gen 3 Fork",
+  "version": "2.4.0",
   "api": 2,
   "entry": "main.lua",
   "profile": "content",
@@ -11,10 +11,10 @@
   "priority": 80,
   "dependencies": [],
   "optional_dependencies": [],
-  "conflicts": [],
+  "conflicts": ["overworld_wild_spawns"],
   "permissions": ["engine_internals"],
   "affects_link": false,
   "options_schema": "options.lua",
-  "description": "Visible and reactive wild Pokemon for the Gen 1 overworld. Experimental Pokemon Gold / Gen 2 support (beta).",
-  "github": "YoDrehDenSwagAuf/overworld-spawn-mod"
+  "description": "Fork of YoDrehDenSwagAuf's Wilds of Kanto, extended with Gen 3 species support (via the Kanto Reforged companion mod) and additional Voxel renderer compatibility. Visible and reactive wild Pokemon for the Gen 1 overworld. Experimental Pokemon Gold / Gen 2 support (beta).",
+  "github": "poooooby/wilds-of-kanto-gen-3"
 }

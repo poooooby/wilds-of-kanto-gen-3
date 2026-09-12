@@ -1,10 +1,10 @@
 -- Sharing metadata. Read by tooling and the manager detail pane;
 -- never by the loader's merge.
 return {
-  summary = "Visible and reactive wild Pokemon for the Gen 1 overworld. Roaming, hidden and aggressive encounters across grass, caves and water. Does not change the player spawn.",
-  author = "YoDrehDenSwagAuf",
-  contact = "https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod",
-  tags = { "overworld", "encounters", "gameplay", "voxel-compatible", "diagnostics" },
+  summary = "Fork of YoDrehDenSwagAuf's Wilds of Kanto, extended with Gen 3 species support and additional Voxel renderer compatibility. Visible and reactive wild Pokemon for the Gen 1 overworld. Roaming, hidden and aggressive encounters across grass, caves and water. Does not change the player spawn.",
+  author = "poooooby",
+  contact = "https://github.com/poooooby/wilds-of-kanto-gen-3",
+  tags = { "overworld", "encounters", "gameplay", "voxel-compatible", "diagnostics", "fork", "gen3" },
   differences = {
     changed = {
       "spawn count scales with eligible encounter tiles and connected regions",
@@ -49,6 +49,8 @@ return {
     },
   },
   credits = {
+    { who = "YoDrehDenSwagAuf/overworld-spawn-mod",
+      for_ = "original Wilds of Kanto - this mod is a fork; see README.md and CHANGELOG.md for what changed" },
     { who = "bryanthaboi/gen1recomp", for_ = "mod API, encounter tables, WorldAPI" },
     { who = "DramaticShape/DramaticShapeVoxelMod",
       for_ = "entity pose()/draw() dual-mode rendering contract" },

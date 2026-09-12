@@ -18,7 +18,7 @@ local Data = T.fixtures.fresh()
 local run = T.sdk.loadMod("mods/overworld_wild_spawns", { data = Data })
 T.eq(#run.errors, 0, "loads clean")
 
-local exports = run.loader.exports["overworld_wild_spawns"]
+local exports = run.loader.exports["wilds_of_kanto_gen3"]
 local Behavior = exports.lib.require("behavior")
 local Movement = exports.lib.require("movement")
 local VoxelAdapter = exports.lib.require("voxel_adapter")

@@ -10,20 +10,20 @@ local Runtime = require("src.mods.Runtime")
 local run = T.sdk.loadMod("mods/overworld_wild_spawns", { data = Data })
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
 
-local modMeta = run.loader.mods["overworld_wild_spawns"]
+local modMeta = run.loader.mods["wilds_of_kanto_gen3"]
 T.check(modMeta ~= nil, "loader discovered mod by manifest id")
 T.eq(modMeta.state, "loaded", "mod reached loaded state")
-T.eq(modMeta.manifest.id, "overworld_wild_spawns", "manifest id")
-T.eq(modMeta.manifest.name, "Wilds of Kanto", "manifest name")
-T.eq(modMeta.manifest.version, "2.3.0", "manifest version")
+T.eq(modMeta.manifest.id, "wilds_of_kanto_gen3", "manifest id")
+T.eq(modMeta.manifest.name, "Wilds of Kanto: Gen 3 Fork", "manifest name")
+T.eq(modMeta.manifest.version, "2.4.0", "manifest version")
 T.eq(modMeta.manifest.entry, "main.lua", "entry path")
 T.eq(modMeta.manifest.category, "MECHANIC", "category")
 T.eq(modMeta.manifest.api, 2, "mod api version")
-T.eq(modMeta.manifest.github, "YoDrehDenSwagAuf/overworld-spawn-mod", "github field")
+T.eq(modMeta.manifest.github, "poooooby/wilds-of-kanto-gen-3", "github field")
 
-local exports = run.loader.exports["overworld_wild_spawns"]
+local exports = run.loader.exports["wilds_of_kanto_gen3"]
 T.check(exports ~= nil, "exports table published")
-T.eq(exports.version, "2.3.0", "version export")
+T.eq(exports.version, "2.4.0", "version export")
 T.check(exports.logic ~= nil, "logic export")
 T.check(exports.render ~= nil, "render export")
 T.check(exports.hud ~= nil, "hud export")
@@ -51,7 +51,7 @@ local modApi = exports.lib.mod
 
 -- ------- options
 
-local schema = run.loader.optionSchemas["overworld_wild_spawns"]
+local schema = run.loader.optionSchemas["wilds_of_kanto_gen3"]
 T.check(schema ~= nil, "option schema registered")
 local enabledRow, debugRow, forceRow, catchCycleRow
 local removedDevKeys = {}
@@ -330,8 +330,8 @@ mockOw.entities = { mockPlayer }
 mockGame.save.pokedex = { seen = {}, owned = {} }
 -- Random Enc OFF ⇒ classic grass/cave rolls suppressed (visible wilds own the map).
 run.loader.modOptions = run.loader.modOptions or {}
-run.loader.modOptions["overworld_wild_spawns"] = run.loader.modOptions["overworld_wild_spawns"] or {}
-run.loader.modOptions["overworld_wild_spawns"].random_encounters = false
+run.loader.modOptions["wilds_of_kanto_gen3"] = run.loader.modOptions["wilds_of_kanto_gen3"] or {}
+run.loader.modOptions["wilds_of_kanto_gen3"].random_encounters = false
 logic:onMapEntered({ mapId = "ROUTE_TEST" })
 T.check(logic:countOnMap("ROUTE_TEST") > 0, "initial spawns on grass map without pokedex")
 T.check(logic:countOnMap("ROUTE_TEST") <= Config.DEFAULTS.max_spawns,
@@ -480,10 +480,10 @@ T.check(not dup, "save.loaded creates no duplicate entity ids")
 
 -- enabled = false clears and blocks.
 run.loader.modOptions = run.loader.modOptions or {}
-run.loader.modOptions["overworld_wild_spawns"] = { enabled = false }
+run.loader.modOptions["wilds_of_kanto_gen3"] = { enabled = false }
 T.eq(Config.get(modApi, "enabled"), false, "enabled option reads false")
 logic:onOptionsChanged({
-  mod = "overworld_wild_spawns", key = "enabled", value = false,
+  mod = "wilds_of_kanto_gen3", key = "enabled", value = false,
 })
 exports.removeHooks()
 T.eq(logic:countOnMap("ROUTE_TEST"), 0, "disabling enabled clears entities")
@@ -491,11 +491,11 @@ T.eq(logic:trySpawn(mockGame), nil, "enabled=false creates no spawns")
 T.check(not exports.canSuppressVanilla(), "vanilla not suppressed when disabled")
 
 -- Re-enable.
-run.loader.modOptions["overworld_wild_spawns"].enabled = true
-run.loader.modOptions["overworld_wild_spawns"].random_encounters = false
+run.loader.modOptions["wilds_of_kanto_gen3"].enabled = true
+run.loader.modOptions["wilds_of_kanto_gen3"].random_encounters = false
 exports.installHooks()
 logic:onOptionsChanged({
-  mod = "overworld_wild_spawns", key = "enabled", value = true,
+  mod = "wilds_of_kanto_gen3", key = "enabled", value = true,
 })
 T.check(logic:countOnMap("ROUTE_TEST") > 0, "re-enable respawns on current map")
 T.check(exports.canSuppressVanilla(), "suppress returns when Random Enc is OFF")
@@ -513,12 +513,12 @@ T.check(exports.logic.touchesPlayerPosition() == false,
 
 -- ------- encounter.roll suppression fail-safe
 
-run.loader.modOptions["overworld_wild_spawns"].enabled = true
-run.loader.modOptions["overworld_wild_spawns"].random_encounters = false
+run.loader.modOptions["wilds_of_kanto_gen3"].enabled = true
+run.loader.modOptions["wilds_of_kanto_gen3"].random_encounters = false
 exports.installHooks()
 
 -- KEY REGRESSION: Random Enc ON ⇒ classic grass rolls remain.
-run.loader.modOptions["overworld_wild_spawns"].random_encounters = true
+run.loader.modOptions["wilds_of_kanto_gen3"].random_encounters = true
 local notSuppressed = Runtime.call("encounter.roll",
   function() return { species = "FIXMON_A", level = 3 } end,
   { grass = { rate = 25, slots = { { species = "FIXMON_A", level = 3 } } } },
@@ -527,7 +527,7 @@ T.check(notSuppressed ~= nil and notSuppressed.species == "FIXMON_A",
         "REGRESSION: vanilla grass remains when Random Enc is ON")
 
 -- Random Enc OFF ⇒ suppress classic grass rolls (visible wilds own the map).
-run.loader.modOptions["overworld_wild_spawns"].random_encounters = false
+run.loader.modOptions["wilds_of_kanto_gen3"].random_encounters = false
 mockOw.map = fakeMap
 mockOw.entities = { mockPlayer }
 logic:onMapEntered({ mapId = "ROUTE_TEST" })
@@ -553,7 +553,7 @@ local fish = Runtime.call("encounter.roll",
 T.eq(fish, nil, "fishing rolls suppressed when Random Enc is OFF")
 
 -- When feature disabled, unwrap hooks and restore vanilla grass rolls.
-run.loader.modOptions["overworld_wild_spawns"].enabled = false
+run.loader.modOptions["wilds_of_kanto_gen3"].enabled = false
 exports.removeHooks()
 local vanillaGrass = Runtime.call("encounter.roll",
   function() return { species = "FIXMON_A", level = 3 } end,
@@ -591,13 +591,13 @@ T.check(modMeta.manifest.entry == "main.lua", "manifest entry is main.lua")
 T.check(modMeta.manifest.options_schema == "options.lua",
         "manifest options_schema is options.lua")
 T.eq(modMeta.manifest.description,
-     "Visible and reactive wild Pokemon for the Gen 1 overworld. Experimental Pokemon Gold / Gen 2 support (beta).",
+     "Fork of YoDrehDenSwagAuf's Wilds of Kanto, extended with Gen 3 species support (via the Kanto Reforged companion mod) and additional Voxel renderer compatibility. Visible and reactive wild Pokemon for the Gen 1 overworld. Experimental Pokemon Gold / Gen 2 support (beta).",
      "manifest description matches")
 
 -- Simulated successful spawn debug snapshot (for the report).
 mockOw.map = fakeMap
 mockOw.entities = { mockPlayer }
-run.loader.modOptions["overworld_wild_spawns"] = {
+run.loader.modOptions["wilds_of_kanto_gen3"] = {
   enabled = true, suppress_random_grass = true, debug_logging = true,
 }
 exports.installHooks()
@@ -664,7 +664,7 @@ mockGame.data.pokemon.MAGIKARP = {
 }
 
 -- Dev Overlay off: HUD hidden, browser gated.
-run.loader.modOptions["overworld_wild_spawns"] = {
+run.loader.modOptions["wilds_of_kanto_gen3"] = {
   enabled = true,
   random_encounters = false,
   dev_overlay = false,
@@ -675,9 +675,9 @@ logic:onMapEntered({ mapId = "ROUTE_TEST" })
 T.check(not exports.hud:shouldShow(), "HUD still hidden after map enter without overlay")
 
 -- Enable Dev Overlay (runtime option change).
-run.loader.modOptions["overworld_wild_spawns"].dev_overlay = true
+run.loader.modOptions["wilds_of_kanto_gen3"].dev_overlay = true
 logic:onOptionsChanged({
-  mod = "overworld_wild_spawns", key = "dev_overlay", value = true,
+  mod = "wilds_of_kanto_gen3", key = "dev_overlay", value = true,
 })
 T.check(Config.devMode(modApi), "dev_overlay true after options_changed")
 T.check(exports.hud:shouldShow(), "HUD appears after map enter with dev_overlay")
@@ -789,8 +789,8 @@ logic.state.rendererAvailable = true
 logic.state.updateCallbackRegistered = true
 logic.state.pipelineVerified = true
 logic.grassCache = Grass.cells(fakeMap)
-run.loader.modOptions["overworld_wild_spawns"].dev_overlay = true
-run.loader.modOptions["overworld_wild_spawns"].allow_debug_spawn_outside_encounter_areas = false
+run.loader.modOptions["wilds_of_kanto_gen3"].dev_overlay = true
+run.loader.modOptions["wilds_of_kanto_gen3"].allow_debug_spawn_outside_encounter_areas = false
 
 local px0, py0 = mockPlayer.cellX, mockPlayer.cellY
 local pokedexBefore = mockGame.save.pokedex
@@ -998,7 +998,7 @@ logic:onMapExited({ mapId = "ROUTE_TEST" })
 mockOw.entities = { mockPlayer }
 logic:onMapEntered({ mapId = "ROUTE_TEST" })
 logic:onOptionsChanged({
-  mod = "overworld_wild_spawns", key = "sprite_opacity", value = 0.9,
+  mod = "wilds_of_kanto_gen3", key = "sprite_opacity", value = 0.9,
 })
 T.eq(registerCalls, 0, "map/options changes do not register sprites")
 
@@ -1049,7 +1049,7 @@ T.check(not testBody:find("content.sprites:register", 1, true),
 
 -- allow_debug_spawn_outside_encounter_areas bypasses only encounter-tile rule.
 -- Blocked / warp / player tiles remain forbidden.
-run.loader.modOptions["overworld_wild_spawns"].allow_debug_spawn_outside_encounter_areas = true
+run.loader.modOptions["wilds_of_kanto_gen3"].allow_debug_spawn_outside_encounter_areas = true
 local okW, reasonW = Grass.validateWalkableTile(
   fakeMap, {}, mockPlayer, 2, 2, 1, 12, nil)
 T.check(not okW and reasonW == "rejected: blocked tile",
@@ -1074,7 +1074,7 @@ local grassStillRequired = select(1, Grass.validateSpawnTile(
 T.check(not grassStillRequired, "normal spawn still requires encounter tile")
 
 -- Spawn-tile overlay public toggle was removed; rebuild must stay a no-op.
-run.loader.modOptions["overworld_wild_spawns"].show_spawn_tile_overlay = true
+run.loader.modOptions["wilds_of_kanto_gen3"].show_spawn_tile_overlay = true
 mockOw.map = fakeMap
 mockOw.entities = { mockPlayer }
 exports.overlay:rebuild()
@@ -1141,10 +1141,10 @@ T.check(spawnSrc:find("Diagnostic only", 1, true)
         "spawn_logic documents pokedex as diagnostic only")
 
 -- Dev Overlay off: detail HUD inactive; Test Spawn stays available.
-run.loader.modOptions["overworld_wild_spawns"].dev_overlay = false
-run.loader.modOptions["overworld_wild_spawns"].debug_hud_always_visible = true
-run.loader.modOptions["overworld_wild_spawns"].allow_debug_spawn_outside_encounter_areas = true
-run.loader.modOptions["overworld_wild_spawns"].show_spawn_tile_overlay = true
+run.loader.modOptions["wilds_of_kanto_gen3"].dev_overlay = false
+run.loader.modOptions["wilds_of_kanto_gen3"].debug_hud_always_visible = true
+run.loader.modOptions["wilds_of_kanto_gen3"].allow_debug_spawn_outside_encounter_areas = true
+run.loader.modOptions["wilds_of_kanto_gen3"].show_spawn_tile_overlay = true
 T.check(not Config.devMode(modApi), "dev_overlay off")
 T.check(not exports.hud:shouldShow(), "HUD off when dev_overlay false even if legacy always_visible set")
 T.check(not Config.allowOutsideEncounter(modApi),
@@ -1606,8 +1606,8 @@ local SpawnLogicMod = exports.lib.require("spawn_logic")
 T.check(SpawnLogicMod.touchesPlayerPosition() == false, "never touches player position")
 
 -- HUD exposes new density fields.
-run.loader.modOptions["overworld_wild_spawns"].dev_mode = true
-run.loader.modOptions["overworld_wild_spawns"].enabled = true
+run.loader.modOptions["wilds_of_kanto_gen3"].dev_mode = true
+run.loader.modOptions["wilds_of_kanto_gen3"].enabled = true
 mockOw.map = fakeMap
 mockOw.entities = { mockPlayer }
 mockOw.player = mockPlayer
@@ -1708,23 +1708,23 @@ local decoded = JsonDecode.decode('{"speciesId":1,"ok":true}')
 T.check(decoded and decoded.speciesId == 1 and decoded.ok == true, "json_decode works")
 
 -- Sprite style live toggle without respawn
-run.loader.modOptions["overworld_wild_spawns"].sprite_style = "pokedex"
+run.loader.modOptions["wilds_of_kanto_gen3"].sprite_style = "pokedex"
 T.eq(Config.spriteStyle(modApi), "pokedex", "sprite_style can select pokedex")
 T.eq(Config.useAnimatedOverworldSprites(modApi), false, "pokedex disables animated helper")
 logic:onOptionsChanged({
   mod = modApi.id, key = "sprite_style", value = "pokedex",
 })
-run.loader.modOptions["overworld_wild_spawns"].sprite_style = "pokemmo"
+run.loader.modOptions["wilds_of_kanto_gen3"].sprite_style = "pokemmo"
 logic:onOptionsChanged({
   mod = modApi.id, key = "sprite_style", value = "pokemmo",
 })
 T.eq(Config.spriteStyle(modApi), "pokemmo", "sprite_style pokemmo")
-run.loader.modOptions["overworld_wild_spawns"].sprite_style = "followers"
+run.loader.modOptions["wilds_of_kanto_gen3"].sprite_style = "followers"
 logic:onOptionsChanged({
   mod = modApi.id, key = "sprite_style", value = "followers",
 })
 T.eq(Config.spriteStyle(modApi), "followers", "sprite_style followers")
-run.loader.modOptions["overworld_wild_spawns"].sprite_style = "pokemmo"
+run.loader.modOptions["wilds_of_kanto_gen3"].sprite_style = "pokemmo"
 logic:onOptionsChanged({
   mod = modApi.id, key = "sprite_style", value = "pokemmo",
 })
@@ -1788,9 +1788,9 @@ T.check(setOk == true, "setSpriteStyle pokemmo ok")
 T.eq(Config.spriteStyle(modApi), "pokemmo", "setSpriteStyle restored pokemmo")
 
 -- Mod disable clears entities.
-run.loader.modOptions["overworld_wild_spawns"].enabled = false
+run.loader.modOptions["wilds_of_kanto_gen3"].enabled = false
 logic:onOptionsChanged({ mod = modApi.id, key = "enabled", value = false })
 T.eq(logic:countOnMap("ROUTE_TEST"), 0, "disable clears entities")
 
 run.release()
-T.finish("overworld_wild_spawns")
+T.finish("wilds_of_kanto_gen3")
