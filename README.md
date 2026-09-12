@@ -19,8 +19,13 @@ by party Pokémon — without replacing the classic Gen 1 feel.
 It also includes **experimental Pokémon Gold / Gen 2 support (beta)**.
 The mod targets **Gen 1 + Gen 2** in Gen1Recomp's Mod Manager.
 
-**2.2.0** adds optional **PMDCollab** overworld sprites and independent
-dialogue portraits, derived from
+**2.4.0** (this fork) adds **Gen 3 species support** — spawning, sprites,
+and True Size geometry for species #252–386 — via the **Kanto Reforged**
+companion mod, plus **Terrarium** Voxel renderer compatibility. See
+[CHANGELOG.md](CHANGELOG.md) for the full list.
+
+Upstream **2.2.0** added optional **PMDCollab** overworld sprites and
+independent dialogue portraits, derived from
 [PMDCollab/SpriteCollab](https://github.com/PMDCollab/SpriteCollab).
 Huge shoutout to that project and its contributors — see below.
 
