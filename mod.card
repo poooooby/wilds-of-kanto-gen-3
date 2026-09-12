@@ -46,6 +46,15 @@ return {
         .. "source follow-sprites may contain artistically distinct right frames",
       "runtime Gen1 shiny selection is not available; preview may force shiny sheets",
       "classic fishing, surf vanilla rolls, static, scripted, and trainer encounters stay available",
+      "KNOWN BUG: True Size / PMDCollab wild Pokemon render floating well above "
+        .. "ground specifically under Battle Art Voxel Fork with Voxel mode ON "
+        .. "(worse the further anchorY sits from frameHeight, e.g. Squirtle, Onix, "
+        .. "Lapras). Confirmed correct with Voxel off, and with Terrarium's Voxel "
+        .. "mode instead of Battle Art's. Root cause not yet isolated: Wilds' own "
+        .. "mesh geometry math is identical between the Battle Art and Terrarium "
+        .. "adapters (verified byte-for-byte), so this looks like a Battle Art "
+        .. "engine-side interaction rather than a Wilds geometry bug. To be "
+        .. "corrected later.",
     },
   },
   credits = {

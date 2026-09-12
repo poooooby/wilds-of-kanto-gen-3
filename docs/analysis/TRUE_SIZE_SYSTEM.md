@@ -132,3 +132,41 @@ Stadium2 support is **renderer compatibility only** (Wilds SpriteDef geometry
 Wilds runtime. Wilds probes public exports (`embeddedWilds` / `wilds` table)
 and logs the situation; it does not disable Stadium2 handlers or rewrite
 Stadium2 files. Dual-runtime coexistence is an external Stadium2 change.
+
+## KNOWN BUG: floating True Size / PMDCollab sprites under Battle Art Voxel
+
+Variable-geometry wild Pokemon (True Size and PMDCollab, i.e. any species
+whose `anchorY` differs from `frameHeight`) render floating well above the
+ground specifically when **Battle Art Voxel Fork** is the active Voxel
+renderer with Voxel mode on. Worse for species whose anchor sits further
+from `frameHeight` (Squirtle, Onix, Lapras all confirmed). Confirmed correct:
+
+- Voxel mode off (Classic 2D path) — correct.
+- Terrarium as the active Voxel renderer — correct.
+- Battle Art as the active Voxel renderer — floating, ~2x too high.
+
+Ruled out during investigation (2026-09-12):
+
+- Wilds' own quad-construction math (`localQuad` / `uvRect` /
+  `resolveGeometry`) is byte-for-byte identical between
+  `compat/battle_art_variable_geometry.lua` and the shared
+  `compat/voxel_sprite_billboards_adapter.lua` factory Terrarium uses — the
+  bug is not Wilds treating the two providers differently.
+- Neither engine reads `def.anchorY` / `sprite.anchorY` directly anywhere in
+  its own source; both only see geometry through the mesh vertices Wilds
+  hands them via the wrapped `SpriteBillboards.mesh()` — no double-counting
+  of the anchor value on the engine side.
+- The ground/feet point is constructed to sit at local mesh origin (Y=0),
+  which should in principle be invariant under any pure rotation.
+
+One confirmed, real difference between the two engines that has not yet been
+proven (or ruled out) as the mechanism: Battle Art's `Mat4.billboard` rotates
+the card by raw `pitch`; Terrarium's `billboardMatrix` rotates by
+`cardPitch() - math.pi / 2` — a 90-degree difference in camera-tilt
+convention between the two forks' own, independently-written camera code.
+Whether/how this interacts with non-origin-pivoted quads (or whether the
+real cause is elsewhere, e.g. in how each engine computes the ground-height
+`y` parameter passed into the billboard matrix) has not been isolated —
+needs either live visual testing at varying camera pitch, or a from-scratch
+reverse-engineering of Battle Art's ground-height calculation for entities.
+To be corrected later.

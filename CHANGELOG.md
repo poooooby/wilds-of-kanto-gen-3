@@ -10,6 +10,15 @@
 
 ## Unreleased
 
+### Known issues
+
+- Variable-geometry wild Pokemon (True Size / PMDCollab) render floating well
+  above ground specifically under **Battle Art Voxel Fork** with Voxel mode
+  on (correct with Voxel off, and correct under Terrarium's Voxel mode).
+  Root cause not yet isolated — see the "KNOWN BUG" section in
+  [docs/analysis/TRUE_SIZE_SYSTEM.md](docs/analysis/TRUE_SIZE_SYSTEM.md).
+  To be corrected later.
+
 ## 2.4.0 (fork)
 
 ### Fork identity
