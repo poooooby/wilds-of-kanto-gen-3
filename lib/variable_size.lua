@@ -26,6 +26,7 @@ VariableSize.PROVIDER_BATTLE_ART = "BATTLE_ART_VOXEL_FORK"
 VariableSize.PROVIDER_POTATO = "potato_voxel"
 VariableSize.PROVIDER_DRAMALESS = "DRAMALESS_SHAPE"
 VariableSize.PROVIDER_STADIUM2 = "STADIUM2_OVERWORLD_MODELS"
+VariableSize.PROVIDER_TERRARIUM = "TERRARIUM"
 
 local _loggedFallback = false
 local _cachedEngine = nil
@@ -41,6 +42,7 @@ VariableSize.VOXEL_RENDERER_IDS = {
   "potato_voxel",
   "DRAMALESS_SHAPE",
   "STADIUM2_OVERWORLD_MODELS",
+  "TERRARIUM",
 }
 
 local ADAPTER_MODULE = {
@@ -48,6 +50,7 @@ local ADAPTER_MODULE = {
   potato_voxel = "compat/potato_voxel_variable_geometry",
   DRAMALESS_SHAPE = "compat/dramaless_variable_geometry",
   STADIUM2_OVERWORLD_MODELS = "compat/stadium2_variable_geometry",
+  TERRARIUM = "compat/terrarium_variable_geometry",
 }
 
 local function adapterFor(id)

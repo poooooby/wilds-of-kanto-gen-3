@@ -106,11 +106,11 @@ drive native True Size draws.
 Scissor restore is guarded with `pcall`. Voxel untouched. Feet-band remains a
 separate native Tall Grass overdraw concern after the geometry fix.
 
-## Dramatic Shape / Battle Art / Potato / Dramaless / Stadium2 Voxel
+## Dramatic Shape / Battle Art / Potato / Dramaless / Stadium2 / Terrarium Voxel
 
 Capability is tied to the **active** Voxel renderer
 (`VariableSize.activeVoxelProvider()`). Installing Battle Art while Potato,
-Dramaless, or Stadium2 is the live pipeline does not enable True Size.
+Dramaless, Stadium2, or Terrarium is the live pipeline does not enable True Size.
 
 | Provider | Mod ID | Public `exports.lib.require` | HGSS in Voxel |
 | --- | --- | --- | --- |
@@ -118,6 +118,7 @@ Dramaless, or Stadium2 is the live pipeline does not enable True Size.
 | Potato Voxel | `potato_voxel` | yes (1.4.0) | True Size via adapter; `shadowBlob()` unchanged |
 | Dramaless Shape | `DRAMALESS_SHAPE` | yes (1.6.4) | True Size via adapter |
 | Stadium2 Overworld Models | `STADIUM2_OVERWORLD_MODELS` | yes (current Gen 2 voxel) | True Size via adapter |
+| Terrarium | `TERRARIUM` | yes (1.35.0-beta) | True Size via adapter |
 | Original Dramatic Shape | `DRAMATIC_SHAPE` | n/a for Wilds wrap | Classic unless native `variableSpriteGeometry` |
 
 Wilds does **not** copy VoxelScene / SpriteBillboards / shaders. Failure or

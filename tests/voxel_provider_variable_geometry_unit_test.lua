@@ -195,12 +195,14 @@ local BattleArt = V.require("compat/battle_art_variable_geometry")
 local Potato = V.require("compat/potato_voxel_variable_geometry")
 local Dramaless = V.require("compat/dramaless_variable_geometry")
 local Stadium2 = V.require("compat/stadium2_variable_geometry")
+local Terrarium = V.require("compat/terrarium_variable_geometry")
 
 local function resetAll()
   BattleArt.reset()
   Potato.reset()
   Dramaless.reset()
   Stadium2.reset()
+  Terrarium.reset()
   VariableSize.clearCaches()
   VariableSize.resetEffectiveModePoll()
   installed = {}
@@ -518,5 +520,24 @@ local _, stadiumId = VariableSize.activeVoxelProvider(mod)
 eq(stadiumId, "STADIUM2_OVERWORLD_MODELS", "active provider Stadium2")
 eq(VariableSize.effectiveMode(mod, { voxelActive = true }), "true_size",
   "stadium2 HGSS True Size")
+
+-- ------------------------------------------------------------------ Terrarium (Dramatic Shape fork)
+resetAll()
+local terrariumPub = makeProvider({
+  version = "1.35.0-beta",
+  shadowBlob = false,
+  voxelState = makeVoxelState(true),
+})
+installed.TERRARIUM = terrariumPub
+local okTe, whyTe = Terrarium.install(mod)
+check(okTe, "terrarium install: " .. tostring(whyTe))
+eq(Terrarium.supportReason(), "wrapped_mesh", "terrarium wrapped_mesh")
+check(Terrarium.supportsVariableGeometry(), "terrarium supports")
+eq(terrariumPub.sb.mesh(onixDef, 0).kind, "variable", "terrarium Onix variable")
+eq(terrariumPub.sb.shadowQuad(onixDef, 0).kind, "variable", "terrarium shadowQuad")
+local _, terrariumId = VariableSize.activeVoxelProvider(mod)
+eq(terrariumId, "TERRARIUM", "active provider Terrarium")
+eq(VariableSize.effectiveMode(mod, { voxelActive = true }), "true_size",
+  "terrarium HGSS True Size")
 
 print("PASS voxel_provider_variable_geometry_unit_test")
