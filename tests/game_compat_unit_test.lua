@@ -386,27 +386,33 @@ do
 end
 
 ----------------------------------------------------------------
--- Gen1 adapter owns the 151 cap (True Size / diagnostic slots)
+-- Gen1/Gen2 adapters own the 386 cap (True Size / diagnostic slots).
+-- Kanto Reforged extends game.data.pokemon to Gen 3 regardless of which
+-- engine generation is hosting it, so neither adapter caps below 386.
 ----------------------------------------------------------------
 do
   setEngineVersion("red")
-  eq(GameCompat.Gen1.MAX_SPECIES, 151, "Gen1.MAX_SPECIES == 151")
+  eq(GameCompat.Gen1.MAX_SPECIES, 386, "Gen1.MAX_SPECIES == 386")
   local SpeciesGeometry = V.require("species_geometry")
   eq(SpeciesGeometry.normalizeDex(1), 1, "normalizeDex 1")
   eq(SpeciesGeometry.normalizeDex(151), 151, "normalizeDex MEW 151")
-  eq(SpeciesGeometry.normalizeDex(152), nil, "normalizeDex 152 is not Gen1")
-  eq(SpeciesGeometry.normalizeDex(251), nil, "normalizeDex 251 is not Gen1")
+  eq(SpeciesGeometry.normalizeDex(152), 152, "normalizeDex 152 (Gen3-extended)")
+  eq(SpeciesGeometry.normalizeDex(251), 251, "normalizeDex 251 (Gen3-extended)")
+  eq(SpeciesGeometry.normalizeDex(386), 386, "normalizeDex 386 DEOXYS_NORMAL")
+  eq(SpeciesGeometry.normalizeDex(387), nil, "normalizeDex 387 beyond Gen3 cap")
   eq(SpeciesGeometry.normalizeDex(0), nil, "normalizeDex 0 invalid")
 end
 
 do
   setEngineVersion("gold")
-  eq(GameCompat.Gen2.MAX_SPECIES, 251, "Gen2.MAX_SPECIES == 251")
+  eq(GameCompat.Gen2.MAX_SPECIES, 386, "Gen2.MAX_SPECIES == 386")
   local SpeciesGeometry = V.require("species_geometry")
   eq(SpeciesGeometry.normalizeDex(152), 152, "Gold normalizeDex CHIKORITA 152")
   eq(SpeciesGeometry.normalizeDex(161), 161, "Gold normalizeDex SENTRET 161")
   eq(SpeciesGeometry.normalizeDex(251), 251, "Gold normalizeDex CELEBI 251")
-  eq(SpeciesGeometry.normalizeDex(252), nil, "Gold normalizeDex 252 still capped")
+  eq(SpeciesGeometry.normalizeDex(252), 252, "Gold normalizeDex TREECKO 252")
+  eq(SpeciesGeometry.normalizeDex(386), 386, "Gold normalizeDex DEOXYS_NORMAL 386")
+  eq(SpeciesGeometry.normalizeDex(387), nil, "Gold normalizeDex 387 beyond Gen3 cap")
 end
 
 ----------------------------------------------------------------

@@ -108,8 +108,9 @@ local function activeMaxSpecies(game)
 end
 
 function SpeciesGeometry.normalizeDex(speciesId, game)
-  -- Cap comes from the active generation adapter (Gen1=151, Gen2=251).
-  -- Shared generated tables may contain 1..251; Gen1 never reads past 151.
+  -- Cap comes from the active generation adapter (Gen1=386, Gen2=386):
+  -- Kanto Reforged extends game.data.pokemon to Gen 3 regardless of engine
+  -- generation, so geometry lookups are not artificially capped below that.
   local n = tonumber(speciesId)
   if not (n and n >= 1 and math.floor(n) == n) then return nil end
   if n <= activeMaxSpecies(game) then return math.floor(n) end

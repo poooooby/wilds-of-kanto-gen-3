@@ -637,7 +637,7 @@ def follower_source(dex: int) -> dict[str, Path]:
     return out
 
 
-def water_sources(kind: str, max_dex: int = 251) -> dict[tuple[int, str], Path]:
+def water_sources(kind: str, max_dex: int = 386) -> dict[tuple[int, str], Path]:
     mapping = WATER_ROOT / kind / f"{kind}_sprite_mapping.json"
     src_dir = WATER_ROOT / kind
     if not mapping.exists():

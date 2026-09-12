@@ -26,9 +26,10 @@ local V = ...
 local Gen2 = {}
 Gen2.supported = true
 Gen2.generation = 2
--- National Dex span Gold actually uses. Shared generated geometry may
--- include 1..251; Gen1 consumers stay capped at Gen1.MAX_SPECIES.
-Gen2.MAX_SPECIES = 251
+-- National Dex span for True Size / geometry consumers. Matches
+-- SpeciesAssets.MAX_ID (386): Kanto Reforged extends game.data.pokemon to
+-- Gen 3 regardless of which engine generation is hosting it.
+Gen2.MAX_SPECIES = 386
 
 Gen2.capabilities = {
   core = true,

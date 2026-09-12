@@ -76,9 +76,9 @@ local Config = V.require("config")
 local SpeciesGeometry = V.require("species_geometry")
 local VariableSize = V.require("variable_size")
 
--- Geometry table covers all 151
+-- Geometry table covers all of Gen1-3
 local summary = SpeciesGeometry.summary(mod)
-eq(summary.species, 251, "251 species geometry")
+eq(summary.species, 386, "386 species geometry")
 check((summary.classes.XL or 0) > 0, "has XL class")
 check((summary.manualOverrides or 0) >= 15, "manual overrides present")
 
