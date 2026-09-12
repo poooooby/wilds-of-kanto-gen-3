@@ -154,8 +154,8 @@ local RuntimeSheets = V.require("runtime_sheets")
 -- SpeciesAssets API
 ------------------------------------------------------------------------
 
-eq(SpeciesAssets.count(), 251, "maps Gen1+Gen2 (251 species)")
-eq(SpeciesAssets.MAX_ID, 251, "MAX_ID is 251")
+eq(SpeciesAssets.count(), 386, "maps Gen1+Gen2+Gen3 (386 species)")
+eq(SpeciesAssets.MAX_ID, 386, "MAX_ID is 386")
 
 eq(SpeciesAssets.idFor("MEWTWO"), 150, "MEWTWO → 150")
 eq(SpeciesAssets.idFor("TYRANITAR"), 248, "TYRANITAR → 248")
@@ -166,6 +166,11 @@ eq(SpeciesAssets.idFor("SENTRET"), 161, "SENTRET → 161")
 eq(SpeciesAssets.idFor("LUGIA"), 249, "LUGIA → 249")
 eq(SpeciesAssets.idFor("HO_OH"), 250, "HO_OH → 250")
 eq(SpeciesAssets.idFor("CELEBI"), 251, "CELEBI → 251")
+eq(SpeciesAssets.idFor("TREECKO"), 252, "TREECKO → 252")
+eq(SpeciesAssets.idFor("SWAMPERT"), 260, "SWAMPERT → 260")
+eq(SpeciesAssets.idFor("RAYQUAZA"), 384, "RAYQUAZA → 384")
+eq(SpeciesAssets.idFor("DEOXYS_NORMAL"), 386, "DEOXYS_NORMAL → 386")
+eq(SpeciesAssets.speciesFor(386), "DEOXYS_NORMAL", "reverse 386 → DEOXYS_NORMAL")
 eq(SpeciesAssets.idFor("mewtwo"), 150, "lowercase MEWTWO still maps")
 eq(SpeciesAssets.idFor(150), 150, "numeric 150 passthrough")
 eq(SpeciesAssets.idFor("150"), 150, "numeric string 150 passthrough")

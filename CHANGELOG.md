@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 2.3.0
+
+### Gen 3 species preview (PMDCollab)
+
+- `lib/species_assets.lua` now maps Gen 1–3 (species IDs 1–386). Preview
+  quality: relies on the companion **Kanto Reforged** mod (GPLv3) for Gen 3
+  species data (stats, types, moves, dex entries) via `game.data.pokemon` at
+  runtime — no Kanto Reforged code or data is copied into this repository.
+- New PMDCollab overworld sprites and independent dialogue portraits for
+  species #252–386.
+- PMDCollab imported revision bumped to `a3acb77f05fb6649df2790031a1285066ffa32f2`.
+
 ## 2.2.0
 
 ### PMDCollab / SpriteCollab support
