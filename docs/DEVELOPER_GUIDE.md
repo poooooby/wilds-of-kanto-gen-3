@@ -15,7 +15,7 @@ Verified NPC contract: `pose()` returns
 Success path:
 1. Entity stays in `ow.entities`
 2. Stable native `SpriteRenderer` (`frames=6`, `walker=true`, static sheet)
-3. `def.image` → `assets/generated/followsprites_runtime/...`
+3. `def.image` → `assets/wilds_generated/followsprites_runtime/...`
 4. Dramatic Shape SpriteBillboards (depth, occlusion, grass, shadows, FP)
 
 `EnhancedWorldSprite` is deprecated and unused for the body.

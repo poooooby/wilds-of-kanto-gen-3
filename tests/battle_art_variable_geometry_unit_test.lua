@@ -255,7 +255,7 @@ eq(mNpcS.kind, "original", "shadowQuad vanilla original")
 
 -- Onix variable card
 local onixDef = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true,
   frameWidth = onix.frameWidth,
   frameHeight = onix.frameHeight,
@@ -326,7 +326,7 @@ eq(eff, "true_size", "effective True Size in Voxel with adapter")
 eq(why, "ok", "voxel ok")
 
 local def = {
-  image = "assets/generated/followsprites_runtime/095-normal.png",
+  image = "assets/wilds_generated/followsprites_runtime/095-normal.png",
   frames = 6, walker = true, trueColor = true,
 }
 local out, info = VariableSize.applyToDef(mod, def, {

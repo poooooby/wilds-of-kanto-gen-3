@@ -25,7 +25,7 @@ See the asset-specific documentation and credits for details.
   overworld walker art integrated for standalone use. Credits follow the
   upstream Followers EX / PokéPC / ShockSlayer (Pokémon Crystal Clear) lineage;
   Wilds does not claim authorship of those sprites.
-- Generated runtime sheets under `assets/generated/followsprites_runtime/`
+- Generated runtime sheets under `assets/wilds_generated/followsprites_runtime/`
   are derived from those third-party follow-sprites and inherit the same
   third-party licensing constraints. In the mod menu these are labeled
   **HGSS / PokeMMO** (Wilds of Kanto's built-in HGSS-style option).

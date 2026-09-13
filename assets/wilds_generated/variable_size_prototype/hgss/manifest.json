@@ -5,7 +5,7 @@
     "6:normal": {
       "dex": 6,
       "variant": "normal",
-      "path": "assets/generated/variable_size_prototype/hgss/006-normal.png",
+      "path": "assets/wilds_generated/variable_size_prototype/hgss/006-normal.png",
       "sourcePath": "assets/enhanced_overworld/followsprites/006-b-n.png",
       "tileWidth": 32,
       "tileHeight": 32,
@@ -35,7 +35,7 @@
     "6:shiny": {
       "dex": 6,
       "variant": "shiny",
-      "path": "assets/generated/variable_size_prototype/hgss/006-shiny.png",
+      "path": "assets/wilds_generated/variable_size_prototype/hgss/006-shiny.png",
       "sourcePath": "assets/enhanced_overworld/followsprites/006-b-s.png",
       "tileWidth": 32,
       "tileHeight": 32,

@@ -424,7 +424,7 @@ local function applySwim(dex, presentation, packId)
   presentation = presentation or "swimming"
   packId = packId or "swimming"
   local def = {
-    image = "assets/generated/followsprites_runtime/016-normal.png",
+    image = "assets/wilds_generated/followsprites_runtime/016-normal.png",
     frames = 6,
     walker = true,
     trueColor = true,

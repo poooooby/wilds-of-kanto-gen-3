@@ -62,7 +62,7 @@ eq(RuntimeSheets.WALK.right, 5, "right mirrors left walk")
 local py = io.popen([[python3 - <<'PY'
 from PIL import Image
 import hashlib, os
-rt='assets/generated/followsprites_runtime'
+rt='assets/wilds_generated/followsprites_runtime'
 ok=True
 for dex in [1,25,151]:
     path=f'{rt}/{dex:03d}-normal.png'

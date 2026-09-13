@@ -5,7 +5,7 @@
   "padding": 2,
   "sheets": {
     "252:normal": {
-      "path": "assets/generated/true_size/hgss/252-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/252-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -17,7 +17,7 @@
       "anchorY": 26.0
     },
     "252:shiny": {
-      "path": "assets/generated/true_size/hgss/252-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/252-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -29,7 +29,7 @@
       "anchorY": 26.0
     },
     "253:normal": {
-      "path": "assets/generated/true_size/hgss/253-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/253-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -41,7 +41,7 @@
       "anchorY": 26.0
     },
     "253:shiny": {
-      "path": "assets/generated/true_size/hgss/253-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/253-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -53,7 +53,7 @@
       "anchorY": 26.0
     },
     "254:normal": {
-      "path": "assets/generated/true_size/hgss/254-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/254-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -65,7 +65,7 @@
       "anchorY": 29.0
     },
     "254:shiny": {
-      "path": "assets/generated/true_size/hgss/254-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/254-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -77,7 +77,7 @@
       "anchorY": 29.0
     },
     "255:normal": {
-      "path": "assets/generated/true_size/hgss/255-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/255-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -89,7 +89,7 @@
       "anchorY": 26.0
     },
     "255:shiny": {
-      "path": "assets/generated/true_size/hgss/255-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/255-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -101,7 +101,7 @@
       "anchorY": 26.0
     },
     "256:normal": {
-      "path": "assets/generated/true_size/hgss/256-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/256-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -113,7 +113,7 @@
       "anchorY": 26.0
     },
     "256:shiny": {
-      "path": "assets/generated/true_size/hgss/256-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/256-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -125,7 +125,7 @@
       "anchorY": 26.0
     },
     "257:normal": {
-      "path": "assets/generated/true_size/hgss/257-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/257-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 30,
@@ -137,7 +137,7 @@
       "anchorY": 28.0
     },
     "257:shiny": {
-      "path": "assets/generated/true_size/hgss/257-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/257-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 30,
@@ -149,7 +149,7 @@
       "anchorY": 28.0
     },
     "258:normal": {
-      "path": "assets/generated/true_size/hgss/258-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/258-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -161,7 +161,7 @@
       "anchorY": 26.0
     },
     "258:shiny": {
-      "path": "assets/generated/true_size/hgss/258-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/258-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -173,7 +173,7 @@
       "anchorY": 26.0
     },
     "259:normal": {
-      "path": "assets/generated/true_size/hgss/259-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/259-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -185,7 +185,7 @@
       "anchorY": 26.0
     },
     "259:shiny": {
-      "path": "assets/generated/true_size/hgss/259-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/259-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -197,7 +197,7 @@
       "anchorY": 26.0
     },
     "260:normal": {
-      "path": "assets/generated/true_size/hgss/260-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/260-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 30,
@@ -209,7 +209,7 @@
       "anchorY": 28.0
     },
     "260:shiny": {
-      "path": "assets/generated/true_size/hgss/260-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/260-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 30,
@@ -221,7 +221,7 @@
       "anchorY": 28.0
     },
     "261:normal": {
-      "path": "assets/generated/true_size/hgss/261-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/261-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -233,7 +233,7 @@
       "anchorY": 26.0
     },
     "261:shiny": {
-      "path": "assets/generated/true_size/hgss/261-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/261-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -245,7 +245,7 @@
       "anchorY": 26.0
     },
     "262:normal": {
-      "path": "assets/generated/true_size/hgss/262-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/262-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 32,
@@ -257,7 +257,7 @@
       "anchorY": 30.0
     },
     "262:shiny": {
-      "path": "assets/generated/true_size/hgss/262-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/262-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 32,
@@ -269,7 +269,7 @@
       "anchorY": 30.0
     },
     "263:normal": {
-      "path": "assets/generated/true_size/hgss/263-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/263-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -281,7 +281,7 @@
       "anchorY": 26.0
     },
     "263:shiny": {
-      "path": "assets/generated/true_size/hgss/263-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/263-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -293,7 +293,7 @@
       "anchorY": 26.0
     },
     "264:normal": {
-      "path": "assets/generated/true_size/hgss/264-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/264-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -305,7 +305,7 @@
       "anchorY": 26.0
     },
     "264:shiny": {
-      "path": "assets/generated/true_size/hgss/264-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/264-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -317,7 +317,7 @@
       "anchorY": 26.0
     },
     "265:normal": {
-      "path": "assets/generated/true_size/hgss/265-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/265-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -329,7 +329,7 @@
       "anchorY": 26.0
     },
     "265:shiny": {
-      "path": "assets/generated/true_size/hgss/265-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/265-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -341,7 +341,7 @@
       "anchorY": 26.0
     },
     "266:normal": {
-      "path": "assets/generated/true_size/hgss/266-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/266-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -353,7 +353,7 @@
       "anchorY": 26.0
     },
     "266:shiny": {
-      "path": "assets/generated/true_size/hgss/266-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/266-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -365,7 +365,7 @@
       "anchorY": 26.0
     },
     "267:normal": {
-      "path": "assets/generated/true_size/hgss/267-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/267-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -377,7 +377,7 @@
       "anchorY": 26.0
     },
     "267:shiny": {
-      "path": "assets/generated/true_size/hgss/267-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/267-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -389,7 +389,7 @@
       "anchorY": 26.0
     },
     "268:normal": {
-      "path": "assets/generated/true_size/hgss/268-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/268-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -401,7 +401,7 @@
       "anchorY": 26.0
     },
     "268:shiny": {
-      "path": "assets/generated/true_size/hgss/268-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/268-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -413,7 +413,7 @@
       "anchorY": 26.0
     },
     "269:normal": {
-      "path": "assets/generated/true_size/hgss/269-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/269-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 29,
@@ -425,7 +425,7 @@
       "anchorY": 27.0
     },
     "269:shiny": {
-      "path": "assets/generated/true_size/hgss/269-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/269-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 29,
@@ -437,7 +437,7 @@
       "anchorY": 27.0
     },
     "270:normal": {
-      "path": "assets/generated/true_size/hgss/270-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/270-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -449,7 +449,7 @@
       "anchorY": 26.0
     },
     "270:shiny": {
-      "path": "assets/generated/true_size/hgss/270-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/270-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -461,7 +461,7 @@
       "anchorY": 26.0
     },
     "271:normal": {
-      "path": "assets/generated/true_size/hgss/271-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/271-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -473,7 +473,7 @@
       "anchorY": 26.0
     },
     "271:shiny": {
-      "path": "assets/generated/true_size/hgss/271-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/271-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -485,7 +485,7 @@
       "anchorY": 26.0
     },
     "272:normal": {
-      "path": "assets/generated/true_size/hgss/272-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/272-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 31,
@@ -497,7 +497,7 @@
       "anchorY": 29.0
     },
     "272:shiny": {
-      "path": "assets/generated/true_size/hgss/272-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/272-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 31,
@@ -509,7 +509,7 @@
       "anchorY": 29.0
     },
     "273:normal": {
-      "path": "assets/generated/true_size/hgss/273-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/273-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -521,7 +521,7 @@
       "anchorY": 26.0
     },
     "273:shiny": {
-      "path": "assets/generated/true_size/hgss/273-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/273-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -533,7 +533,7 @@
       "anchorY": 26.0
     },
     "274:normal": {
-      "path": "assets/generated/true_size/hgss/274-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/274-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -545,7 +545,7 @@
       "anchorY": 26.0
     },
     "274:shiny": {
-      "path": "assets/generated/true_size/hgss/274-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/274-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -557,7 +557,7 @@
       "anchorY": 26.0
     },
     "275:normal": {
-      "path": "assets/generated/true_size/hgss/275-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/275-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 28,
@@ -569,7 +569,7 @@
       "anchorY": 26.0
     },
     "275:shiny": {
-      "path": "assets/generated/true_size/hgss/275-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/275-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 28,
@@ -581,7 +581,7 @@
       "anchorY": 26.0
     },
     "276:normal": {
-      "path": "assets/generated/true_size/hgss/276-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/276-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -593,7 +593,7 @@
       "anchorY": 26.0
     },
     "276:shiny": {
-      "path": "assets/generated/true_size/hgss/276-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/276-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -605,7 +605,7 @@
       "anchorY": 26.0
     },
     "277:normal": {
-      "path": "assets/generated/true_size/hgss/277-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/277-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 29,
@@ -617,7 +617,7 @@
       "anchorY": 27.0
     },
     "277:shiny": {
-      "path": "assets/generated/true_size/hgss/277-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/277-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 29,
@@ -629,7 +629,7 @@
       "anchorY": 27.0
     },
     "278:normal": {
-      "path": "assets/generated/true_size/hgss/278-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/278-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -641,7 +641,7 @@
       "anchorY": 26.0
     },
     "278:shiny": {
-      "path": "assets/generated/true_size/hgss/278-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/278-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -653,7 +653,7 @@
       "anchorY": 26.0
     },
     "279:normal": {
-      "path": "assets/generated/true_size/hgss/279-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/279-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 35,
       "runtimeFrameHeight": 29,
@@ -665,7 +665,7 @@
       "anchorY": 27.0
     },
     "279:shiny": {
-      "path": "assets/generated/true_size/hgss/279-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/279-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 35,
       "runtimeFrameHeight": 29,
@@ -677,7 +677,7 @@
       "anchorY": 27.0
     },
     "280:normal": {
-      "path": "assets/generated/true_size/hgss/280-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/280-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -689,7 +689,7 @@
       "anchorY": 26.0
     },
     "280:shiny": {
-      "path": "assets/generated/true_size/hgss/280-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/280-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -701,7 +701,7 @@
       "anchorY": 26.0
     },
     "281:normal": {
-      "path": "assets/generated/true_size/hgss/281-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/281-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -713,7 +713,7 @@
       "anchorY": 26.0
     },
     "281:shiny": {
-      "path": "assets/generated/true_size/hgss/281-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/281-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -725,7 +725,7 @@
       "anchorY": 26.0
     },
     "282:normal": {
-      "path": "assets/generated/true_size/hgss/282-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/282-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -737,7 +737,7 @@
       "anchorY": 26.0
     },
     "282:shiny": {
-      "path": "assets/generated/true_size/hgss/282-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/282-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -749,7 +749,7 @@
       "anchorY": 26.0
     },
     "283:normal": {
-      "path": "assets/generated/true_size/hgss/283-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/283-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -761,7 +761,7 @@
       "anchorY": 26.0
     },
     "283:shiny": {
-      "path": "assets/generated/true_size/hgss/283-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/283-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -773,7 +773,7 @@
       "anchorY": 26.0
     },
     "284:normal": {
-      "path": "assets/generated/true_size/hgss/284-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/284-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 29,
@@ -785,7 +785,7 @@
       "anchorY": 27.0
     },
     "284:shiny": {
-      "path": "assets/generated/true_size/hgss/284-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/284-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 29,
@@ -797,7 +797,7 @@
       "anchorY": 27.0
     },
     "285:normal": {
-      "path": "assets/generated/true_size/hgss/285-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/285-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -809,7 +809,7 @@
       "anchorY": 26.0
     },
     "285:shiny": {
-      "path": "assets/generated/true_size/hgss/285-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/285-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -821,7 +821,7 @@
       "anchorY": 26.0
     },
     "286:normal": {
-      "path": "assets/generated/true_size/hgss/286-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/286-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -833,7 +833,7 @@
       "anchorY": 26.0
     },
     "286:shiny": {
-      "path": "assets/generated/true_size/hgss/286-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/286-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -845,7 +845,7 @@
       "anchorY": 26.0
     },
     "287:normal": {
-      "path": "assets/generated/true_size/hgss/287-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/287-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -857,7 +857,7 @@
       "anchorY": 26.0
     },
     "287:shiny": {
-      "path": "assets/generated/true_size/hgss/287-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/287-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -869,7 +869,7 @@
       "anchorY": 26.0
     },
     "288:normal": {
-      "path": "assets/generated/true_size/hgss/288-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/288-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -881,7 +881,7 @@
       "anchorY": 26.0
     },
     "288:shiny": {
-      "path": "assets/generated/true_size/hgss/288-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/288-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -893,7 +893,7 @@
       "anchorY": 26.0
     },
     "289:normal": {
-      "path": "assets/generated/true_size/hgss/289-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/289-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 33,
@@ -905,7 +905,7 @@
       "anchorY": 31.0
     },
     "289:shiny": {
-      "path": "assets/generated/true_size/hgss/289-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/289-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 33,
@@ -917,7 +917,7 @@
       "anchorY": 31.0
     },
     "290:normal": {
-      "path": "assets/generated/true_size/hgss/290-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/290-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -929,7 +929,7 @@
       "anchorY": 26.0
     },
     "290:shiny": {
-      "path": "assets/generated/true_size/hgss/290-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/290-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -941,7 +941,7 @@
       "anchorY": 26.0
     },
     "291:normal": {
-      "path": "assets/generated/true_size/hgss/291-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/291-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -953,7 +953,7 @@
       "anchorY": 26.0
     },
     "291:shiny": {
-      "path": "assets/generated/true_size/hgss/291-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/291-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -965,7 +965,7 @@
       "anchorY": 26.0
     },
     "292:normal": {
-      "path": "assets/generated/true_size/hgss/292-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/292-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -977,7 +977,7 @@
       "anchorY": 26.0
     },
     "292:shiny": {
-      "path": "assets/generated/true_size/hgss/292-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/292-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -989,7 +989,7 @@
       "anchorY": 26.0
     },
     "293:normal": {
-      "path": "assets/generated/true_size/hgss/293-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/293-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1001,7 +1001,7 @@
       "anchorY": 26.0
     },
     "293:shiny": {
-      "path": "assets/generated/true_size/hgss/293-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/293-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1013,7 +1013,7 @@
       "anchorY": 26.0
     },
     "294:normal": {
-      "path": "assets/generated/true_size/hgss/294-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/294-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -1025,7 +1025,7 @@
       "anchorY": 26.0
     },
     "294:shiny": {
-      "path": "assets/generated/true_size/hgss/294-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/294-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -1037,7 +1037,7 @@
       "anchorY": 26.0
     },
     "295:normal": {
-      "path": "assets/generated/true_size/hgss/295-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/295-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 32,
@@ -1049,7 +1049,7 @@
       "anchorY": 30.0
     },
     "295:shiny": {
-      "path": "assets/generated/true_size/hgss/295-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/295-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 32,
@@ -1061,7 +1061,7 @@
       "anchorY": 30.0
     },
     "296:normal": {
-      "path": "assets/generated/true_size/hgss/296-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/296-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1073,7 +1073,7 @@
       "anchorY": 26.0
     },
     "296:shiny": {
-      "path": "assets/generated/true_size/hgss/296-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/296-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1085,7 +1085,7 @@
       "anchorY": 26.0
     },
     "297:normal": {
-      "path": "assets/generated/true_size/hgss/297-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/297-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 35,
       "runtimeFrameHeight": 31,
@@ -1097,7 +1097,7 @@
       "anchorY": 29.0
     },
     "297:shiny": {
-      "path": "assets/generated/true_size/hgss/297-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/297-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 35,
       "runtimeFrameHeight": 31,
@@ -1109,7 +1109,7 @@
       "anchorY": 29.0
     },
     "298:normal": {
-      "path": "assets/generated/true_size/hgss/298-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/298-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -1121,7 +1121,7 @@
       "anchorY": 26.0
     },
     "298:shiny": {
-      "path": "assets/generated/true_size/hgss/298-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/298-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -1133,7 +1133,7 @@
       "anchorY": 26.0
     },
     "299:normal": {
-      "path": "assets/generated/true_size/hgss/299-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/299-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1145,7 +1145,7 @@
       "anchorY": 26.0
     },
     "299:shiny": {
-      "path": "assets/generated/true_size/hgss/299-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/299-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1157,7 +1157,7 @@
       "anchorY": 26.0
     },
     "300:normal": {
-      "path": "assets/generated/true_size/hgss/300-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/300-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -1169,7 +1169,7 @@
       "anchorY": 26.0
     },
     "300:shiny": {
-      "path": "assets/generated/true_size/hgss/300-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/300-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -1181,7 +1181,7 @@
       "anchorY": 26.0
     },
     "301:normal": {
-      "path": "assets/generated/true_size/hgss/301-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/301-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 27,
       "runtimeFrameHeight": 30,
@@ -1193,7 +1193,7 @@
       "anchorY": 28.0
     },
     "301:shiny": {
-      "path": "assets/generated/true_size/hgss/301-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/301-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 27,
       "runtimeFrameHeight": 30,
@@ -1205,7 +1205,7 @@
       "anchorY": 28.0
     },
     "302:normal": {
-      "path": "assets/generated/true_size/hgss/302-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/302-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1217,7 +1217,7 @@
       "anchorY": 26.0
     },
     "302:shiny": {
-      "path": "assets/generated/true_size/hgss/302-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/302-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1229,7 +1229,7 @@
       "anchorY": 26.0
     },
     "303:normal": {
-      "path": "assets/generated/true_size/hgss/303-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/303-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 28,
@@ -1241,7 +1241,7 @@
       "anchorY": 26.0
     },
     "303:shiny": {
-      "path": "assets/generated/true_size/hgss/303-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/303-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 28,
@@ -1253,7 +1253,7 @@
       "anchorY": 26.0
     },
     "304:normal": {
-      "path": "assets/generated/true_size/hgss/304-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/304-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1265,7 +1265,7 @@
       "anchorY": 26.0
     },
     "304:shiny": {
-      "path": "assets/generated/true_size/hgss/304-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/304-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1277,7 +1277,7 @@
       "anchorY": 26.0
     },
     "305:normal": {
-      "path": "assets/generated/true_size/hgss/305-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/305-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 30,
@@ -1289,7 +1289,7 @@
       "anchorY": 28.0
     },
     "305:shiny": {
-      "path": "assets/generated/true_size/hgss/305-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/305-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 30,
@@ -1301,7 +1301,7 @@
       "anchorY": 28.0
     },
     "306:normal": {
-      "path": "assets/generated/true_size/hgss/306-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/306-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 34,
@@ -1313,7 +1313,7 @@
       "anchorY": 32.0
     },
     "306:shiny": {
-      "path": "assets/generated/true_size/hgss/306-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/306-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 34,
@@ -1325,7 +1325,7 @@
       "anchorY": 32.0
     },
     "307:normal": {
-      "path": "assets/generated/true_size/hgss/307-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/307-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1337,7 +1337,7 @@
       "anchorY": 26.0
     },
     "307:shiny": {
-      "path": "assets/generated/true_size/hgss/307-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/307-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1349,7 +1349,7 @@
       "anchorY": 26.0
     },
     "308:normal": {
-      "path": "assets/generated/true_size/hgss/308-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/308-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 30,
@@ -1361,7 +1361,7 @@
       "anchorY": 28.0
     },
     "308:shiny": {
-      "path": "assets/generated/true_size/hgss/308-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/308-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 30,
@@ -1373,7 +1373,7 @@
       "anchorY": 28.0
     },
     "309:normal": {
-      "path": "assets/generated/true_size/hgss/309-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/309-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -1385,7 +1385,7 @@
       "anchorY": 26.0
     },
     "309:shiny": {
-      "path": "assets/generated/true_size/hgss/309-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/309-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 28,
@@ -1397,7 +1397,7 @@
       "anchorY": 26.0
     },
     "310:normal": {
-      "path": "assets/generated/true_size/hgss/310-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/310-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 31,
@@ -1409,7 +1409,7 @@
       "anchorY": 29.0
     },
     "310:shiny": {
-      "path": "assets/generated/true_size/hgss/310-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/310-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 31,
@@ -1421,7 +1421,7 @@
       "anchorY": 29.0
     },
     "311:normal": {
-      "path": "assets/generated/true_size/hgss/311-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/311-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1433,7 +1433,7 @@
       "anchorY": 26.0
     },
     "311:shiny": {
-      "path": "assets/generated/true_size/hgss/311-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/311-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1445,7 +1445,7 @@
       "anchorY": 26.0
     },
     "312:normal": {
-      "path": "assets/generated/true_size/hgss/312-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/312-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1457,7 +1457,7 @@
       "anchorY": 26.0
     },
     "312:shiny": {
-      "path": "assets/generated/true_size/hgss/312-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/312-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1469,7 +1469,7 @@
       "anchorY": 26.0
     },
     "313:normal": {
-      "path": "assets/generated/true_size/hgss/313-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/313-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -1481,7 +1481,7 @@
       "anchorY": 26.0
     },
     "313:shiny": {
-      "path": "assets/generated/true_size/hgss/313-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/313-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -1493,7 +1493,7 @@
       "anchorY": 26.0
     },
     "314:normal": {
-      "path": "assets/generated/true_size/hgss/314-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/314-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1505,7 +1505,7 @@
       "anchorY": 26.0
     },
     "314:shiny": {
-      "path": "assets/generated/true_size/hgss/314-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/314-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1517,7 +1517,7 @@
       "anchorY": 26.0
     },
     "315:normal": {
-      "path": "assets/generated/true_size/hgss/315-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/315-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -1529,7 +1529,7 @@
       "anchorY": 26.0
     },
     "315:shiny": {
-      "path": "assets/generated/true_size/hgss/315-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/315-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -1541,7 +1541,7 @@
       "anchorY": 26.0
     },
     "316:normal": {
-      "path": "assets/generated/true_size/hgss/316-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/316-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1553,7 +1553,7 @@
       "anchorY": 26.0
     },
     "316:shiny": {
-      "path": "assets/generated/true_size/hgss/316-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/316-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1565,7 +1565,7 @@
       "anchorY": 26.0
     },
     "317:normal": {
-      "path": "assets/generated/true_size/hgss/317-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/317-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 32,
@@ -1577,7 +1577,7 @@
       "anchorY": 30.0
     },
     "317:shiny": {
-      "path": "assets/generated/true_size/hgss/317-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/317-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 32,
@@ -1589,7 +1589,7 @@
       "anchorY": 30.0
     },
     "318:normal": {
-      "path": "assets/generated/true_size/hgss/318-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/318-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 27,
       "runtimeFrameHeight": 28,
@@ -1601,7 +1601,7 @@
       "anchorY": 26.0
     },
     "318:shiny": {
-      "path": "assets/generated/true_size/hgss/318-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/318-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 27,
       "runtimeFrameHeight": 28,
@@ -1613,7 +1613,7 @@
       "anchorY": 26.0
     },
     "319:normal": {
-      "path": "assets/generated/true_size/hgss/319-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/319-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -1625,7 +1625,7 @@
       "anchorY": 30.0
     },
     "319:shiny": {
-      "path": "assets/generated/true_size/hgss/319-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/319-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -1637,7 +1637,7 @@
       "anchorY": 30.0
     },
     "320:normal": {
-      "path": "assets/generated/true_size/hgss/320-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/320-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 28,
@@ -1649,7 +1649,7 @@
       "anchorY": 26.0
     },
     "320:shiny": {
-      "path": "assets/generated/true_size/hgss/320-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/320-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 28,
@@ -1661,7 +1661,7 @@
       "anchorY": 26.0
     },
     "321:normal": {
-      "path": "assets/generated/true_size/hgss/321-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/321-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 45,
       "runtimeFrameHeight": 40,
@@ -1673,7 +1673,7 @@
       "anchorY": 38.0
     },
     "321:shiny": {
-      "path": "assets/generated/true_size/hgss/321-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/321-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 45,
       "runtimeFrameHeight": 40,
@@ -1685,7 +1685,7 @@
       "anchorY": 38.0
     },
     "322:normal": {
-      "path": "assets/generated/true_size/hgss/322-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/322-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 29,
@@ -1697,7 +1697,7 @@
       "anchorY": 27.0
     },
     "322:shiny": {
-      "path": "assets/generated/true_size/hgss/322-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/322-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 29,
@@ -1709,7 +1709,7 @@
       "anchorY": 27.0
     },
     "323:normal": {
-      "path": "assets/generated/true_size/hgss/323-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/323-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 34,
@@ -1721,7 +1721,7 @@
       "anchorY": 32.0
     },
     "323:shiny": {
-      "path": "assets/generated/true_size/hgss/323-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/323-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 34,
@@ -1733,7 +1733,7 @@
       "anchorY": 32.0
     },
     "324:normal": {
-      "path": "assets/generated/true_size/hgss/324-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/324-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 28,
@@ -1745,7 +1745,7 @@
       "anchorY": 26.0
     },
     "324:shiny": {
-      "path": "assets/generated/true_size/hgss/324-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/324-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 28,
@@ -1757,7 +1757,7 @@
       "anchorY": 26.0
     },
     "325:normal": {
-      "path": "assets/generated/true_size/hgss/325-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/325-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1769,7 +1769,7 @@
       "anchorY": 26.0
     },
     "325:shiny": {
-      "path": "assets/generated/true_size/hgss/325-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/325-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1781,7 +1781,7 @@
       "anchorY": 26.0
     },
     "326:normal": {
-      "path": "assets/generated/true_size/hgss/326-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/326-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1793,7 +1793,7 @@
       "anchorY": 26.0
     },
     "326:shiny": {
-      "path": "assets/generated/true_size/hgss/326-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/326-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1805,7 +1805,7 @@
       "anchorY": 26.0
     },
     "327:normal": {
-      "path": "assets/generated/true_size/hgss/327-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/327-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1817,7 +1817,7 @@
       "anchorY": 26.0
     },
     "327:shiny": {
-      "path": "assets/generated/true_size/hgss/327-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/327-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1829,7 +1829,7 @@
       "anchorY": 26.0
     },
     "328:normal": {
-      "path": "assets/generated/true_size/hgss/328-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/328-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1841,7 +1841,7 @@
       "anchorY": 26.0
     },
     "328:shiny": {
-      "path": "assets/generated/true_size/hgss/328-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/328-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1853,7 +1853,7 @@
       "anchorY": 26.0
     },
     "329:normal": {
-      "path": "assets/generated/true_size/hgss/329-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/329-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 29,
@@ -1865,7 +1865,7 @@
       "anchorY": 27.0
     },
     "329:shiny": {
-      "path": "assets/generated/true_size/hgss/329-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/329-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 29,
@@ -1877,7 +1877,7 @@
       "anchorY": 27.0
     },
     "330:normal": {
-      "path": "assets/generated/true_size/hgss/330-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/330-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 31,
@@ -1889,7 +1889,7 @@
       "anchorY": 29.0
     },
     "330:shiny": {
-      "path": "assets/generated/true_size/hgss/330-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/330-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 31,
@@ -1901,7 +1901,7 @@
       "anchorY": 29.0
     },
     "331:normal": {
-      "path": "assets/generated/true_size/hgss/331-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/331-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -1913,7 +1913,7 @@
       "anchorY": 26.0
     },
     "331:shiny": {
-      "path": "assets/generated/true_size/hgss/331-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/331-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -1925,7 +1925,7 @@
       "anchorY": 26.0
     },
     "332:normal": {
-      "path": "assets/generated/true_size/hgss/332-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/332-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1937,7 +1937,7 @@
       "anchorY": 26.0
     },
     "332:shiny": {
-      "path": "assets/generated/true_size/hgss/332-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/332-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -1949,7 +1949,7 @@
       "anchorY": 26.0
     },
     "333:normal": {
-      "path": "assets/generated/true_size/hgss/333-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/333-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 28,
@@ -1961,7 +1961,7 @@
       "anchorY": 26.0
     },
     "333:shiny": {
-      "path": "assets/generated/true_size/hgss/333-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/333-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 28,
@@ -1973,7 +1973,7 @@
       "anchorY": 26.0
     },
     "334:normal": {
-      "path": "assets/generated/true_size/hgss/334-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/334-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 34,
@@ -1985,7 +1985,7 @@
       "anchorY": 32.0
     },
     "334:shiny": {
-      "path": "assets/generated/true_size/hgss/334-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/334-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 34,
@@ -1997,7 +1997,7 @@
       "anchorY": 32.0
     },
     "335:normal": {
-      "path": "assets/generated/true_size/hgss/335-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/335-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -2009,7 +2009,7 @@
       "anchorY": 26.0
     },
     "335:shiny": {
-      "path": "assets/generated/true_size/hgss/335-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/335-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -2021,7 +2021,7 @@
       "anchorY": 26.0
     },
     "336:normal": {
-      "path": "assets/generated/true_size/hgss/336-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/336-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 32,
@@ -2033,7 +2033,7 @@
       "anchorY": 30.0
     },
     "336:shiny": {
-      "path": "assets/generated/true_size/hgss/336-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/336-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 32,
@@ -2045,7 +2045,7 @@
       "anchorY": 30.0
     },
     "337:normal": {
-      "path": "assets/generated/true_size/hgss/337-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/337-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2057,7 +2057,7 @@
       "anchorY": 26.0
     },
     "337:shiny": {
-      "path": "assets/generated/true_size/hgss/337-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/337-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2069,7 +2069,7 @@
       "anchorY": 26.0
     },
     "338:normal": {
-      "path": "assets/generated/true_size/hgss/338-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/338-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2081,7 +2081,7 @@
       "anchorY": 26.0
     },
     "338:shiny": {
-      "path": "assets/generated/true_size/hgss/338-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/338-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2093,7 +2093,7 @@
       "anchorY": 26.0
     },
     "339:normal": {
-      "path": "assets/generated/true_size/hgss/339-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/339-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2105,7 +2105,7 @@
       "anchorY": 26.0
     },
     "339:shiny": {
-      "path": "assets/generated/true_size/hgss/339-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/339-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2117,7 +2117,7 @@
       "anchorY": 26.0
     },
     "340:normal": {
-      "path": "assets/generated/true_size/hgss/340-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/340-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -2129,7 +2129,7 @@
       "anchorY": 26.0
     },
     "340:shiny": {
-      "path": "assets/generated/true_size/hgss/340-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/340-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -2141,7 +2141,7 @@
       "anchorY": 26.0
     },
     "341:normal": {
-      "path": "assets/generated/true_size/hgss/341-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/341-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -2153,7 +2153,7 @@
       "anchorY": 26.0
     },
     "341:shiny": {
-      "path": "assets/generated/true_size/hgss/341-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/341-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -2165,7 +2165,7 @@
       "anchorY": 26.0
     },
     "342:normal": {
-      "path": "assets/generated/true_size/hgss/342-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/342-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -2177,7 +2177,7 @@
       "anchorY": 29.0
     },
     "342:shiny": {
-      "path": "assets/generated/true_size/hgss/342-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/342-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -2189,7 +2189,7 @@
       "anchorY": 29.0
     },
     "343:normal": {
-      "path": "assets/generated/true_size/hgss/343-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/343-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2201,7 +2201,7 @@
       "anchorY": 26.0
     },
     "343:shiny": {
-      "path": "assets/generated/true_size/hgss/343-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/343-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2213,7 +2213,7 @@
       "anchorY": 26.0
     },
     "344:normal": {
-      "path": "assets/generated/true_size/hgss/344-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/344-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2225,7 +2225,7 @@
       "anchorY": 26.0
     },
     "344:shiny": {
-      "path": "assets/generated/true_size/hgss/344-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/344-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2237,7 +2237,7 @@
       "anchorY": 26.0
     },
     "345:normal": {
-      "path": "assets/generated/true_size/hgss/345-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/345-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2249,7 +2249,7 @@
       "anchorY": 26.0
     },
     "345:shiny": {
-      "path": "assets/generated/true_size/hgss/345-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/345-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2261,7 +2261,7 @@
       "anchorY": 26.0
     },
     "346:normal": {
-      "path": "assets/generated/true_size/hgss/346-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/346-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 34,
@@ -2273,7 +2273,7 @@
       "anchorY": 32.0
     },
     "346:shiny": {
-      "path": "assets/generated/true_size/hgss/346-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/346-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 28,
       "runtimeFrameHeight": 34,
@@ -2285,7 +2285,7 @@
       "anchorY": 32.0
     },
     "347:normal": {
-      "path": "assets/generated/true_size/hgss/347-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/347-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -2297,7 +2297,7 @@
       "anchorY": 26.0
     },
     "347:shiny": {
-      "path": "assets/generated/true_size/hgss/347-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/347-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 28,
@@ -2309,7 +2309,7 @@
       "anchorY": 26.0
     },
     "348:normal": {
-      "path": "assets/generated/true_size/hgss/348-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/348-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 29,
@@ -2321,7 +2321,7 @@
       "anchorY": 27.0
     },
     "348:shiny": {
-      "path": "assets/generated/true_size/hgss/348-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/348-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 29,
@@ -2333,7 +2333,7 @@
       "anchorY": 27.0
     },
     "349:normal": {
-      "path": "assets/generated/true_size/hgss/349-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/349-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2345,7 +2345,7 @@
       "anchorY": 26.0
     },
     "349:shiny": {
-      "path": "assets/generated/true_size/hgss/349-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/349-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2357,7 +2357,7 @@
       "anchorY": 26.0
     },
     "350:normal": {
-      "path": "assets/generated/true_size/hgss/350-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/350-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 31,
@@ -2369,7 +2369,7 @@
       "anchorY": 29.0
     },
     "350:shiny": {
-      "path": "assets/generated/true_size/hgss/350-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/350-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 31,
@@ -2381,7 +2381,7 @@
       "anchorY": 29.0
     },
     "351:normal": {
-      "path": "assets/generated/true_size/hgss/351-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/351-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2393,7 +2393,7 @@
       "anchorY": 26.0
     },
     "351:shiny": {
-      "path": "assets/generated/true_size/hgss/351-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/351-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2405,7 +2405,7 @@
       "anchorY": 26.0
     },
     "352:normal": {
-      "path": "assets/generated/true_size/hgss/352-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/352-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2417,7 +2417,7 @@
       "anchorY": 26.0
     },
     "352:shiny": {
-      "path": "assets/generated/true_size/hgss/352-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/352-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2429,7 +2429,7 @@
       "anchorY": 26.0
     },
     "353:normal": {
-      "path": "assets/generated/true_size/hgss/353-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/353-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2441,7 +2441,7 @@
       "anchorY": 26.0
     },
     "353:shiny": {
-      "path": "assets/generated/true_size/hgss/353-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/353-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2453,7 +2453,7 @@
       "anchorY": 26.0
     },
     "354:normal": {
-      "path": "assets/generated/true_size/hgss/354-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/354-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2465,7 +2465,7 @@
       "anchorY": 26.0
     },
     "354:shiny": {
-      "path": "assets/generated/true_size/hgss/354-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/354-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2477,7 +2477,7 @@
       "anchorY": 26.0
     },
     "355:normal": {
-      "path": "assets/generated/true_size/hgss/355-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/355-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2489,7 +2489,7 @@
       "anchorY": 26.0
     },
     "355:shiny": {
-      "path": "assets/generated/true_size/hgss/355-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/355-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2501,7 +2501,7 @@
       "anchorY": 26.0
     },
     "356:normal": {
-      "path": "assets/generated/true_size/hgss/356-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/356-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 30,
@@ -2513,7 +2513,7 @@
       "anchorY": 28.0
     },
     "356:shiny": {
-      "path": "assets/generated/true_size/hgss/356-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/356-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 30,
@@ -2525,7 +2525,7 @@
       "anchorY": 28.0
     },
     "357:normal": {
-      "path": "assets/generated/true_size/hgss/357-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/357-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -2537,7 +2537,7 @@
       "anchorY": 29.0
     },
     "357:shiny": {
-      "path": "assets/generated/true_size/hgss/357-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/357-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -2549,7 +2549,7 @@
       "anchorY": 29.0
     },
     "358:normal": {
-      "path": "assets/generated/true_size/hgss/358-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/358-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2561,7 +2561,7 @@
       "anchorY": 26.0
     },
     "358:shiny": {
-      "path": "assets/generated/true_size/hgss/358-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/358-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2573,7 +2573,7 @@
       "anchorY": 26.0
     },
     "359:normal": {
-      "path": "assets/generated/true_size/hgss/359-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/359-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 31,
@@ -2585,7 +2585,7 @@
       "anchorY": 29.0
     },
     "359:shiny": {
-      "path": "assets/generated/true_size/hgss/359-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/359-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 30,
       "runtimeFrameHeight": 31,
@@ -2597,7 +2597,7 @@
       "anchorY": 29.0
     },
     "360:normal": {
-      "path": "assets/generated/true_size/hgss/360-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/360-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2609,7 +2609,7 @@
       "anchorY": 26.0
     },
     "360:shiny": {
-      "path": "assets/generated/true_size/hgss/360-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/360-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2621,7 +2621,7 @@
       "anchorY": 26.0
     },
     "361:normal": {
-      "path": "assets/generated/true_size/hgss/361-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/361-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2633,7 +2633,7 @@
       "anchorY": 26.0
     },
     "361:shiny": {
-      "path": "assets/generated/true_size/hgss/361-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/361-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2645,7 +2645,7 @@
       "anchorY": 26.0
     },
     "362:normal": {
-      "path": "assets/generated/true_size/hgss/362-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/362-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -2657,7 +2657,7 @@
       "anchorY": 26.0
     },
     "362:shiny": {
-      "path": "assets/generated/true_size/hgss/362-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/362-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 28,
@@ -2669,7 +2669,7 @@
       "anchorY": 26.0
     },
     "363:normal": {
-      "path": "assets/generated/true_size/hgss/363-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/363-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2681,7 +2681,7 @@
       "anchorY": 26.0
     },
     "363:shiny": {
-      "path": "assets/generated/true_size/hgss/363-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/363-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2693,7 +2693,7 @@
       "anchorY": 26.0
     },
     "364:normal": {
-      "path": "assets/generated/true_size/hgss/364-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/364-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 29,
@@ -2705,7 +2705,7 @@
       "anchorY": 27.0
     },
     "364:shiny": {
-      "path": "assets/generated/true_size/hgss/364-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/364-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 32,
       "runtimeFrameHeight": 29,
@@ -2717,7 +2717,7 @@
       "anchorY": 27.0
     },
     "365:normal": {
-      "path": "assets/generated/true_size/hgss/365-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/365-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -2729,7 +2729,7 @@
       "anchorY": 30.0
     },
     "365:shiny": {
-      "path": "assets/generated/true_size/hgss/365-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/365-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -2741,7 +2741,7 @@
       "anchorY": 30.0
     },
     "366:normal": {
-      "path": "assets/generated/true_size/hgss/366-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/366-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2753,7 +2753,7 @@
       "anchorY": 26.0
     },
     "366:shiny": {
-      "path": "assets/generated/true_size/hgss/366-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/366-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2765,7 +2765,7 @@
       "anchorY": 26.0
     },
     "367:normal": {
-      "path": "assets/generated/true_size/hgss/367-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/367-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 34,
@@ -2777,7 +2777,7 @@
       "anchorY": 32.0
     },
     "367:shiny": {
-      "path": "assets/generated/true_size/hgss/367-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/367-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 31,
       "runtimeFrameHeight": 34,
@@ -2789,7 +2789,7 @@
       "anchorY": 32.0
     },
     "368:normal": {
-      "path": "assets/generated/true_size/hgss/368-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/368-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 34,
@@ -2801,7 +2801,7 @@
       "anchorY": 32.0
     },
     "368:shiny": {
-      "path": "assets/generated/true_size/hgss/368-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/368-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 34,
@@ -2813,7 +2813,7 @@
       "anchorY": 32.0
     },
     "369:normal": {
-      "path": "assets/generated/true_size/hgss/369-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/369-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 31,
@@ -2825,7 +2825,7 @@
       "anchorY": 29.0
     },
     "369:shiny": {
-      "path": "assets/generated/true_size/hgss/369-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/369-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 29,
       "runtimeFrameHeight": 31,
@@ -2837,7 +2837,7 @@
       "anchorY": 29.0
     },
     "370:normal": {
-      "path": "assets/generated/true_size/hgss/370-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/370-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2849,7 +2849,7 @@
       "anchorY": 26.0
     },
     "370:shiny": {
-      "path": "assets/generated/true_size/hgss/370-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/370-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2861,7 +2861,7 @@
       "anchorY": 26.0
     },
     "371:normal": {
-      "path": "assets/generated/true_size/hgss/371-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/371-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2873,7 +2873,7 @@
       "anchorY": 26.0
     },
     "371:shiny": {
-      "path": "assets/generated/true_size/hgss/371-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/371-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2885,7 +2885,7 @@
       "anchorY": 26.0
     },
     "372:normal": {
-      "path": "assets/generated/true_size/hgss/372-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/372-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2897,7 +2897,7 @@
       "anchorY": 26.0
     },
     "372:shiny": {
-      "path": "assets/generated/true_size/hgss/372-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/372-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -2909,7 +2909,7 @@
       "anchorY": 26.0
     },
     "373:normal": {
-      "path": "assets/generated/true_size/hgss/373-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/373-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -2921,7 +2921,7 @@
       "anchorY": 30.0
     },
     "373:shiny": {
-      "path": "assets/generated/true_size/hgss/373-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/373-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -2933,7 +2933,7 @@
       "anchorY": 30.0
     },
     "374:normal": {
-      "path": "assets/generated/true_size/hgss/374-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/374-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -2945,7 +2945,7 @@
       "anchorY": 26.0
     },
     "374:shiny": {
-      "path": "assets/generated/true_size/hgss/374-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/374-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 26,
       "runtimeFrameHeight": 28,
@@ -2957,7 +2957,7 @@
       "anchorY": 26.0
     },
     "375:normal": {
-      "path": "assets/generated/true_size/hgss/375-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/375-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 28,
@@ -2969,7 +2969,7 @@
       "anchorY": 26.0
     },
     "375:shiny": {
-      "path": "assets/generated/true_size/hgss/375-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/375-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 28,
@@ -2981,7 +2981,7 @@
       "anchorY": 26.0
     },
     "376:normal": {
-      "path": "assets/generated/true_size/hgss/376-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/376-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 31,
@@ -2993,7 +2993,7 @@
       "anchorY": 29.0
     },
     "376:shiny": {
-      "path": "assets/generated/true_size/hgss/376-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/376-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 31,
@@ -3005,7 +3005,7 @@
       "anchorY": 29.0
     },
     "377:normal": {
-      "path": "assets/generated/true_size/hgss/377-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/377-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -3017,7 +3017,7 @@
       "anchorY": 30.0
     },
     "377:shiny": {
-      "path": "assets/generated/true_size/hgss/377-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/377-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 32,
@@ -3029,7 +3029,7 @@
       "anchorY": 30.0
     },
     "378:normal": {
-      "path": "assets/generated/true_size/hgss/378-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/378-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 30,
@@ -3041,7 +3041,7 @@
       "anchorY": 28.0
     },
     "378:shiny": {
-      "path": "assets/generated/true_size/hgss/378-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/378-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 30,
@@ -3053,7 +3053,7 @@
       "anchorY": 28.0
     },
     "379:normal": {
-      "path": "assets/generated/true_size/hgss/379-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/379-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 30,
@@ -3065,7 +3065,7 @@
       "anchorY": 28.0
     },
     "379:shiny": {
-      "path": "assets/generated/true_size/hgss/379-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/379-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 30,
@@ -3077,7 +3077,7 @@
       "anchorY": 28.0
     },
     "380:normal": {
-      "path": "assets/generated/true_size/hgss/380-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/380-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 32,
@@ -3089,7 +3089,7 @@
       "anchorY": 30.0
     },
     "380:shiny": {
-      "path": "assets/generated/true_size/hgss/380-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/380-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 32,
@@ -3101,7 +3101,7 @@
       "anchorY": 30.0
     },
     "381:normal": {
-      "path": "assets/generated/true_size/hgss/381-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/381-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 32,
@@ -3113,7 +3113,7 @@
       "anchorY": 30.0
     },
     "381:shiny": {
-      "path": "assets/generated/true_size/hgss/381-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/381-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 34,
       "runtimeFrameHeight": 32,
@@ -3125,7 +3125,7 @@
       "anchorY": 30.0
     },
     "382:normal": {
-      "path": "assets/generated/true_size/hgss/382-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/382-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 52,
       "runtimeFrameHeight": 43,
@@ -3137,7 +3137,7 @@
       "anchorY": 41.0
     },
     "382:shiny": {
-      "path": "assets/generated/true_size/hgss/382-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/382-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 52,
       "runtimeFrameHeight": 43,
@@ -3149,7 +3149,7 @@
       "anchorY": 41.0
     },
     "383:normal": {
-      "path": "assets/generated/true_size/hgss/383-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/383-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 51,
       "runtimeFrameHeight": 43,
@@ -3161,7 +3161,7 @@
       "anchorY": 41.0
     },
     "383:shiny": {
-      "path": "assets/generated/true_size/hgss/383-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/383-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 51,
       "runtimeFrameHeight": 43,
@@ -3173,7 +3173,7 @@
       "anchorY": 41.0
     },
     "384:normal": {
-      "path": "assets/generated/true_size/hgss/384-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/384-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 51,
       "runtimeFrameHeight": 48,
@@ -3185,7 +3185,7 @@
       "anchorY": 46.0
     },
     "384:shiny": {
-      "path": "assets/generated/true_size/hgss/384-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/384-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 51,
       "runtimeFrameHeight": 48,
@@ -3197,7 +3197,7 @@
       "anchorY": 46.0
     },
     "385:normal": {
-      "path": "assets/generated/true_size/hgss/385-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/385-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -3209,7 +3209,7 @@
       "anchorY": 26.0
     },
     "385:shiny": {
-      "path": "assets/generated/true_size/hgss/385-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/385-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 25,
       "runtimeFrameHeight": 28,
@@ -3221,7 +3221,7 @@
       "anchorY": 26.0
     },
     "386:normal": {
-      "path": "assets/generated/true_size/hgss/386-normal.png",
+      "path": "assets/wilds_generated/true_size/hgss/386-normal.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,
@@ -3233,7 +3233,7 @@
       "anchorY": 29.0
     },
     "386:shiny": {
-      "path": "assets/generated/true_size/hgss/386-shiny.png",
+      "path": "assets/wilds_generated/true_size/hgss/386-shiny.png",
       "status": "cached",
       "runtimeFrameWidth": 33,
       "runtimeFrameHeight": 31,

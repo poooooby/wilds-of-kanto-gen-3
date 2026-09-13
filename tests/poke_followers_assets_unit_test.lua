@@ -194,12 +194,12 @@ end
 do
   local missing = {}
   for i = 1, 151 do
-    local path = string.format("assets/generated/followsprites_runtime/%03d-normal.png", i)
+    local path = string.format("assets/wilds_generated/followsprites_runtime/%03d-normal.png", i)
     local f = io.open(path, "rb")
     if not f then missing[#missing + 1] = i else f:close() end
   end
   eq(#missing, 0, "HGSS runtime normal sheets 1..151 present")
-  local man = io.open("assets/generated/followsprites_runtime/manifest.json", "r")
+  local man = io.open("assets/wilds_generated/followsprites_runtime/manifest.json", "r")
   check(man ~= nil, "HGSS manifest present")
   if man then
     local body = man:read("*a")

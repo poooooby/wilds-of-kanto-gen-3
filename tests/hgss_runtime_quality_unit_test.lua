@@ -18,7 +18,7 @@ end
 local json = dofile("lib/json_decode.lua")
 -- Minimal JSON via io + Python for reliability if needed; prefer file presence.
 
-local OUT = "assets/generated/followsprites_runtime"
+local OUT = "assets/wilds_generated/followsprites_runtime"
 local SRC = "assets/enhanced_overworld/followsprites"
 local MAPPING = "assets/enhanced_overworld/followsprites_mapping/followsprites_mapping.json"
 

@@ -72,7 +72,7 @@ What DS needs (separate task):
 
 - Option **Pokémon Size**: `Classic` (default) | `True Size`
 - Prototype species: **Charizard (dex 6)** only, pack **HGSS / PokeMMO**
-- Assets: `assets/generated/variable_size_prototype/hgss/006-{normal,shiny}.png` — **32×192** (6×32×32)
+- Assets: `assets/wilds_generated/variable_size_prototype/hgss/006-{normal,shiny}.png` — **32×192** (6×32×32)
 - Source: **original** `assets/enhanced_overworld/followsprites/006-b-{n,s}.png` (128×128 / 32×32 tiles)
 - **Not** sourced from degraded `followsprites_runtime` 16×16 sheets
 - Generator: `tools/generate_variable_size_prototype.py` (nearest-neighbor, shared bbox, feet on bottom)

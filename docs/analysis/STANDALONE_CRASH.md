@@ -41,7 +41,7 @@ NPC / SpriteRenderer resolve SPRITE_PIKACHU → nil / error
 ## Fix requirements
 
 1. Register/patch `SPRITE_PIKACHU` in load phase using Wilds walker sheets
-   (`assets/generated/followsprites_runtime/` — already 16×96, frames=6).
+   (`assets/wilds_generated/followsprites_runtime/` — already 16×96, frames=6).
 2. Guard `shouldSpawn` if sprite def missing.
 3. Prefer entity-local rebinds afterward; do not mutate global def every update.
 4. Automated standalone boot test with `mod:find` always nil.

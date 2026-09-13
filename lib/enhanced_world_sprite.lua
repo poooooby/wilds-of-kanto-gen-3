@@ -1,6 +1,6 @@
 -- DEPRECATED for Pokemon body rendering (0.7.0+).
 -- Kept for unit tests / emergency reference only.
--- Primary path: native SpriteRenderer + assets/generated/followsprites_runtime.
+-- Primary path: native SpriteRenderer + assets/wilds_generated/followsprites_runtime.
 --
 -- Historical note: Dramatic Shape reads sprite.def + sprite:resolveImage().
 -- This adapter swapped per-frame 16×16 card Images; that path is no longer used.

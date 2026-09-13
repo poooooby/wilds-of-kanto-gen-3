@@ -9,9 +9,9 @@ Sources:
   assets/enhanced_overworld/water_sprites/levitates/
 
 Outputs:
-  assets/generated/water_runtime/swimming/{dex:03d}-{variant}[-form].png
-  assets/generated/water_runtime/levitates/{dex:03d}-{variant}[-form].png
-  assets/generated/water_runtime/manifest.json
+  assets/wilds_generated/water_runtime/swimming/{dex:03d}-{variant}[-form].png
+  assets/wilds_generated/water_runtime/levitates/{dex:03d}-{variant}[-form].png
+  assets/wilds_generated/water_runtime/manifest.json
 """
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ from generate_runtime_sprite_sheets import (  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 WATER_ROOT = ROOT / "assets/enhanced_overworld/water_sprites"
-OUT_ROOT = ROOT / "assets/generated/water_runtime"
+OUT_ROOT = ROOT / "assets/wilds_generated/water_runtime"
 
 KINDS = (
     {
@@ -169,7 +169,7 @@ def main() -> int:
             src_path = source_dir / target
             out_name = out_file_name(sid, variant, suffix)
             out_path = out_dir / out_name
-            rel_out = f"assets/generated/water_runtime/{kind}/{out_name}"
+            rel_out = f"assets/wilds_generated/water_runtime/{kind}/{out_name}"
             key = manifest_key(sid, variant, kind, suffix)
 
             pref_kind = None

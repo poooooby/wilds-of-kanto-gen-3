@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate the Voxel Hidden Silhouettes underwater shadow marker.
 
-Output: assets/generated/water_hidden_runtime/hidden-water-shadow.png
+Output: assets/wilds_generated/water_hidden_runtime/hidden-water-shadow.png
   - 16×96 RGBA (6 stacked 16×16 frames)
   - Flat dark blue-teal ellipse, soft transparent rim
   - No question mark / Pokémon detail
@@ -16,7 +16,7 @@ import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "assets/generated/water_hidden_runtime/hidden-water-shadow.png"
+OUT = ROOT / "assets/wilds_generated/water_hidden_runtime/hidden-water-shadow.png"
 
 W, H_FRAME, FRAMES = 16, 16, 6
 H = H_FRAME * FRAMES

@@ -100,7 +100,7 @@ check(expectH and expectH > 16, "Onix frameHeight > 16 (got " .. tostring(expect
 -- A) BUG REPRO (pre-fix behavior): name string without resolve → no_geometry
 --    We now resolve names inside applyToDef, so this must SUCCEED.
 local defName = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true, trueColor = true,
   frameWidth = expectW, frameHeight = expectH,
   anchorX = onixPack.anchorX, anchorY = onixPack.anchorY,
@@ -114,7 +114,7 @@ eq(outName.frameHeight, expectH, "ONIX name keeps frameHeight")
 
 -- B) Control: numeric dex
 local defDex = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true, trueColor = true,
 }
 local outDex, infoDex = VariableSize.applyToDef(V.mod, defDex, {
@@ -125,7 +125,7 @@ eq(outDex.frameWidth, expectW, "dex 95 frameWidth")
 
 -- C) Preserve existing geometry when species is completely unknown
 local defKeep = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true, trueColor = true,
   frameWidth = 35, frameHeight = 38, anchorX = 17.5, anchorY = 36,
 }
@@ -146,7 +146,7 @@ check(spr.frameWidth ~= 16, "INSTANCE is not default 16")
 
 -- E) Simulate the old destructive path: strip while keeping image → 16×16 instance
 local bad = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true, trueColor = true,
 }
 local badSpr = package.loaded["src.render.SpriteRenderer"].new(bad, "broken")

@@ -5,9 +5,9 @@ Uses ORIGINAL assets under assets/enhanced_overworld/followsprites — never the
 degraded 16×16 followsprites_runtime output.
 
 Output:
-  assets/generated/variable_size_prototype/hgss/006-normal.png  (32×192)
-  assets/generated/variable_size_prototype/hgss/006-shiny.png
-  assets/generated/variable_size_prototype/hgss/manifest.json
+  assets/wilds_generated/variable_size_prototype/hgss/006-normal.png  (32×192)
+  assets/wilds_generated/variable_size_prototype/hgss/006-shiny.png
+  assets/wilds_generated/variable_size_prototype/hgss/manifest.json
 
 Frame tables match SpriteRenderer STAND/WALK (right = mirror left).
 Nearest-neighbor only; shared opaque union; feet on bottom edge.
@@ -24,7 +24,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT / "assets/enhanced_overworld/followsprites"
 MAPPING = ROOT / "assets/enhanced_overworld/followsprites_mapping/followsprites_mapping.json"
-OUT_DIR = ROOT / "assets/generated/variable_size_prototype/hgss"
+OUT_DIR = ROOT / "assets/wilds_generated/variable_size_prototype/hgss"
 
 FRAME_SPECS = (
     ("idle", "down"),
@@ -204,7 +204,7 @@ def main(argv: list[str] | None = None) -> int:
         manifest["species"][key] = {
             "dex": args.dex,
             "variant": variant,
-            "path": f"assets/generated/variable_size_prototype/hgss/{out_name}",
+            "path": f"assets/wilds_generated/variable_size_prototype/hgss/{out_name}",
             "sourcePath": str(path.relative_to(ROOT)),
             "tileWidth": tw,
             "tileHeight": th,

@@ -14,15 +14,15 @@
   "sink": "1-3px per frame from free pixels below visible bounds",
   "kinds": {
     "swimming": {
-      "source": "assets/generated/water_runtime/swimming",
-      "output": "assets/generated/swimming_silhouette_runtime",
+      "source": "assets/wilds_generated/water_runtime/swimming",
+      "output": "assets/wilds_generated/swimming_silhouette_runtime",
       "written": 2093,
       "skippedExisting": 0,
       "totalSource": 2093
     },
     "levitates": {
-      "source": "assets/generated/water_runtime/levitates",
-      "output": "assets/generated/levitates_silhouette_runtime",
+      "source": "assets/wilds_generated/water_runtime/levitates",
+      "output": "assets/wilds_generated/levitates_silhouette_runtime",
       "written": 523,
       "skippedExisting": 0,
       "totalSource": 523

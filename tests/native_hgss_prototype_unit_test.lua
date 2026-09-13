@@ -114,7 +114,7 @@ check(SpeciesGeometry.followGap(19) >= 1, "Rattata follow gap >= 1")
 saved.pokemon_size = "classic"
 SpeciesGeometry.clearCache()
 local classicDef = {
-  image = "assets/generated/true_size/hgss/019-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/019-normal.png",
   frames = 6, walker = true, trueColor = true,
   frameWidth = 25, frameHeight = 28,
 }

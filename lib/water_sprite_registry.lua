@@ -18,12 +18,12 @@ WaterSpriteRegistry.SHEET_W = RuntimeSheets.SHEET_W or 16
 WaterSpriteRegistry.SHEET_H = RuntimeSheets.SHEET_H or 96
 
 WaterSpriteRegistry.ROOT_REL = "assets/enhanced_overworld/water_sprites"
-WaterSpriteRegistry.RUNTIME_REL = "assets/generated/water_runtime"
+WaterSpriteRegistry.RUNTIME_REL = "assets/wilds_generated/water_runtime"
 WaterSpriteRegistry.MANIFEST_REL = WaterSpriteRegistry.RUNTIME_REL .. "/manifest.json"
 -- Native Voxel silhouette sheets (pre-rendered; filenames match water_runtime).
 WaterSpriteRegistry.SILHOUETTE_RUNTIME = {
-  swimming = "assets/generated/swimming_silhouette_runtime",
-  levitates = "assets/generated/levitates_silhouette_runtime",
+  swimming = "assets/wilds_generated/swimming_silhouette_runtime",
+  levitates = "assets/wilds_generated/levitates_silhouette_runtime",
 }
 
 local KIND_META = {

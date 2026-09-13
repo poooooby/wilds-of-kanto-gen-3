@@ -15,7 +15,7 @@ local function eq(a, b, msg)
   check(a == b, string.format("%s (got %s expected %s)", msg, tostring(a), tostring(b)))
 end
 
-local src = assert(loadfile("assets/generated/true_size/species_table.lua"))
+local src = assert(loadfile("assets/wilds_generated/true_size/species_table.lua"))
 local table = src()
 check(type(table) == "table", "species_table.lua loads")
 

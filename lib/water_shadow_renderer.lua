@@ -19,7 +19,7 @@ WaterShadowRenderer.MODE = {
 
 -- Hidden marker asset (16×96, 6 identical/minimally animated ovals).
 WaterShadowRenderer.HIDDEN_RELATIVE =
-  "assets/generated/water_hidden_runtime/hidden-water-shadow.png"
+  "assets/wilds_generated/water_hidden_runtime/hidden-water-shadow.png"
 WaterShadowRenderer.HIDDEN_ID = "SPRITE_OW_WATER_HIDDEN_SHADOW"
 
 -- Tilt onto the water plane (radians). π/2 = fully horizontal.

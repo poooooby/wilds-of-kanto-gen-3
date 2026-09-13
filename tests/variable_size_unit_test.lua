@@ -91,13 +91,13 @@ check(pikachu.frameHeight >= 17 and pikachu.frameHeight <= 20, "Pikachu S height
 
 -- Asset presence samples
 for _, pack in ipairs({ "hgss", "followers", "pokedex" }) do
-  local rel = string.format("assets/generated/true_size/%s/006-normal.png", pack)
+  local rel = string.format("assets/wilds_generated/true_size/%s/006-normal.png", pack)
   local f = io.open(rel, "rb")
   check(f ~= nil, "asset exists " .. rel)
   if f then f:close() end
 end
-check(io.open("assets/generated/true_size/swimming/131-normal.png", "rb"), "Lapras swimming")
-check(io.open("assets/generated/true_size/levitate/006-normal.png", "rb"), "Charizard levitate")
+check(io.open("assets/wilds_generated/true_size/swimming/131-normal.png", "rb"), "Lapras swimming")
+check(io.open("assets/wilds_generated/true_size/levitate/006-normal.png", "rb"), "Charizard levitate")
 
 -- Engine stub
 VariableSize.clearCaches()
@@ -117,7 +117,7 @@ eq(eff, "true_size", "effective true_size flat")
 eq(why, "ok", "flat ok")
 
 local def = {
-  image = "assets/generated/followsprites_runtime/006-normal.png",
+  image = "assets/wilds_generated/followsprites_runtime/006-normal.png",
   frames = 6, walker = true, trueColor = true,
 }
 local out, info = VariableSize.applyToDef(mod, def, {
@@ -166,7 +166,7 @@ eq(savedOpts.sprite_style, beforeOpt, "saved option NOT rewritten")
 eq(VariableSize.requestedMode(mod), "true_size", "requested still true_size")
 
 local outV, infoV = VariableSize.applyToDef(mod, {
-  image = "assets/generated/followsprites_runtime/006-normal.png",
+  image = "assets/wilds_generated/followsprites_runtime/006-normal.png",
   frames = 6, walker = true, trueColor = true,
 }, { speciesId = 6, style = "pokemmo", variant = "normal", voxelActive = true })
 eq(infoV.applied, false, "voxel does not apply True Size")
@@ -184,7 +184,7 @@ eq(e2, "true_size", "poll flat true_size")
 
 -- Missing asset → Classic fallback for that species/pack
 local outM, infoM = VariableSize.applyToDef(mod, {
-  image = "assets/generated/followsprites_runtime/001-normal.png",
+  image = "assets/wilds_generated/followsprites_runtime/001-normal.png",
   frames = 6, walker = true, trueColor = true,
 }, { speciesId = 1, packId = "swimming", variant = "shiny", voxelActive = false })
 -- May or may not have shiny swim; either applied or missing fallback — no crash
@@ -203,7 +203,7 @@ check(mf:find('"version"', 1, true), "manifest has version")
 
 -- HGSS quality: native philosophy prefers pad-only (no default resize).
 do
-  local raw = assert(io.open("assets/generated/true_size/generation_report.json"):read("*a"))
+  local raw = assert(io.open("assets/wilds_generated/true_size/generation_report.json"):read("*a"))
   local pad = tonumber(raw:match('"hgss_pad_only"%s*:%s*(%d+)'))
   local resized = tonumber(raw:match('"hgss_resized"%s*:%s*(%d+)'))
   check(pad ~= nil, "hgss_pad_only present")

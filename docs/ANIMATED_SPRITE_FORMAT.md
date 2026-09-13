@@ -120,5 +120,5 @@ store file paths and dimensions.
 - Fallback: follow variant → follow normal → legacy Pokédex PNG → black
 - Runtime shiny support: **NOT AVAILABLE** for Gen1 wild spawns (preview may force shiny)
 - Build-time conversion writes Gen1Recomp SpriteRenderer sheets
-  (`assets/generated/followsprites_runtime/`, 16×96, 6 frames, walker) used by
+  (`assets/wilds_generated/followsprites_runtime/`, 16×96, 6 frames, walker) used by
   Dramatic Shape and the preferred flat draw path

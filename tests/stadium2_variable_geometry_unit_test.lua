@@ -337,7 +337,7 @@ local origShadow = pub.sb.shadowQuad
 check(Stadium2.install(mod), "install for shadow")
 check(pub.sb.shadowQuad ~= origShadow, "shadowQuad re-pointed")
 local onixDef = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true,
   frameWidth = onix.frameWidth, frameHeight = onix.frameHeight,
   anchorX = onix.anchorX, anchorY = onix.anchorY,
@@ -511,7 +511,7 @@ check((mRat.verts[2][1] - mRat.verts[1][1])
   "small HGSS species billboard narrower than Onix")
 
 local applied, info = VariableSize.applyToDef(mod, {
-  image = "assets/generated/followsprites_runtime/095-normal.png",
+  image = "assets/wilds_generated/followsprites_runtime/095-normal.png",
   frames = 6, walker = true, trueColor = true,
 }, { speciesId = 95, style = "pokemmo", variant = "normal", voxelActive = true })
 check(info.applied, "Onix True Size applied under Stadium2 Voxel")
@@ -524,7 +524,7 @@ pub = makeProvider()
 installed.STADIUM2_OVERWORLD_MODELS = pub
 check(Stadium2.install(mod), "install for water")
 local swimDef = {
-  image = "assets/generated/true_size/swimming/095-normal.png",
+  image = "assets/wilds_generated/true_size/swimming/095-normal.png",
   frames = 6, walker = true, trueColor = true,
 }
 local swimOut, swimInfo = VariableSize.applyToDef(mod, swimDef, {

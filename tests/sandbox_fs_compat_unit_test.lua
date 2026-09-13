@@ -121,13 +121,13 @@ check(tostring(fsErr):find("mod.storage", 1, true) ~= nil,
   "sandbox error names mod.storage / mod:read")
 
 local okRead, data = pcall(WildsFs.readAsset, V.mod,
-  "assets/generated/followsprites_runtime/manifest.json")
+  "assets/wilds_generated/followsprites_runtime/manifest.json")
 check(noFsErr(okRead, data), "readAsset does not touch love.filesystem")
 check(okRead and type(data) == "string" and #data > 0,
   "readAsset returns packaged manifest bytes")
 
 local okExists, exists = pcall(WildsFs.assetExists, V.mod,
-  "assets/generated/followsprites_runtime/001-normal.png")
+  "assets/wilds_generated/followsprites_runtime/001-normal.png")
 check(noFsErr(okExists, exists), "assetExists does not touch love.filesystem")
 check(okExists and exists == true, "packaged HGSS sheet exists via cacheable probe")
 

@@ -106,7 +106,7 @@ local fakeSheets = {
   spriteDef = function(_, dex, variant, spriteId)
     return {
       id = spriteId or "SPRITE_OW_WILD_RT",
-      image = string.format("assets/generated/followsprites_runtime/%03d-%s.png",
+      image = string.format("assets/wilds_generated/followsprites_runtime/%03d-%s.png",
                             tonumber(dex) or 4, variant or "normal"),
       frames = 6,
       walker = true,
@@ -114,7 +114,7 @@ local fakeSheets = {
     }
   end,
   resolveAssetPath = function(_, dex, variant)
-    return string.format("assets/generated/followsprites_runtime/%03d-%s.png",
+    return string.format("assets/wilds_generated/followsprites_runtime/%03d-%s.png",
                          tonumber(dex) or 4, variant or "normal"),
            variant, nil
   end,

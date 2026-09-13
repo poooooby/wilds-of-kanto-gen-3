@@ -4,7 +4,7 @@
   "sheets": {
     "252:normal": {
       "speciesId": 252,
-      "path": "assets/generated/true_size/pokedex/252-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/252-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\252-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 11,
@@ -40,7 +40,7 @@
     },
     "252:shiny": {
       "speciesId": 252,
-      "path": "assets/generated/true_size/pokedex/252-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/252-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\252-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -76,7 +76,7 @@
     },
     "253:normal": {
       "speciesId": 253,
-      "path": "assets/generated/true_size/pokedex/253-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/253-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\253-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 18,
@@ -112,7 +112,7 @@
     },
     "253:shiny": {
       "speciesId": 253,
-      "path": "assets/generated/true_size/pokedex/253-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/253-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\253-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -148,7 +148,7 @@
     },
     "254:normal": {
       "speciesId": 254,
-      "path": "assets/generated/true_size/pokedex/254-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/254-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\254-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -184,7 +184,7 @@
     },
     "254:shiny": {
       "speciesId": 254,
-      "path": "assets/generated/true_size/pokedex/254-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/254-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\254-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -220,7 +220,7 @@
     },
     "255:normal": {
       "speciesId": 255,
-      "path": "assets/generated/true_size/pokedex/255-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/255-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\255-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -256,7 +256,7 @@
     },
     "255:shiny": {
       "speciesId": 255,
-      "path": "assets/generated/true_size/pokedex/255-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/255-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\255-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -292,7 +292,7 @@
     },
     "256:normal": {
       "speciesId": 256,
-      "path": "assets/generated/true_size/pokedex/256-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/256-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\256-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -328,7 +328,7 @@
     },
     "256:shiny": {
       "speciesId": 256,
-      "path": "assets/generated/true_size/pokedex/256-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/256-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\256-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -364,7 +364,7 @@
     },
     "257:normal": {
       "speciesId": 257,
-      "path": "assets/generated/true_size/pokedex/257-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/257-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\257-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 26,
@@ -400,7 +400,7 @@
     },
     "257:shiny": {
       "speciesId": 257,
-      "path": "assets/generated/true_size/pokedex/257-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/257-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\257-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 26,
@@ -436,7 +436,7 @@
     },
     "258:normal": {
       "speciesId": 258,
-      "path": "assets/generated/true_size/pokedex/258-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/258-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\258-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -472,7 +472,7 @@
     },
     "258:shiny": {
       "speciesId": 258,
-      "path": "assets/generated/true_size/pokedex/258-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/258-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\258-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -508,7 +508,7 @@
     },
     "259:normal": {
       "speciesId": 259,
-      "path": "assets/generated/true_size/pokedex/259-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/259-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\259-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -544,7 +544,7 @@
     },
     "259:shiny": {
       "speciesId": 259,
-      "path": "assets/generated/true_size/pokedex/259-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/259-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\259-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -580,7 +580,7 @@
     },
     "260:normal": {
       "speciesId": 260,
-      "path": "assets/generated/true_size/pokedex/260-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/260-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\260-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -616,7 +616,7 @@
     },
     "260:shiny": {
       "speciesId": 260,
-      "path": "assets/generated/true_size/pokedex/260-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/260-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\260-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -652,7 +652,7 @@
     },
     "261:normal": {
       "speciesId": 261,
-      "path": "assets/generated/true_size/pokedex/261-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/261-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\261-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -688,7 +688,7 @@
     },
     "261:shiny": {
       "speciesId": 261,
-      "path": "assets/generated/true_size/pokedex/261-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/261-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\261-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -724,7 +724,7 @@
     },
     "262:normal": {
       "speciesId": 262,
-      "path": "assets/generated/true_size/pokedex/262-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/262-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\262-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 18,
@@ -760,7 +760,7 @@
     },
     "262:shiny": {
       "speciesId": 262,
-      "path": "assets/generated/true_size/pokedex/262-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/262-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\262-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -796,7 +796,7 @@
     },
     "263:normal": {
       "speciesId": 263,
-      "path": "assets/generated/true_size/pokedex/263-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/263-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\263-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 18,
@@ -832,7 +832,7 @@
     },
     "263:shiny": {
       "speciesId": 263,
-      "path": "assets/generated/true_size/pokedex/263-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/263-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\263-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -868,7 +868,7 @@
     },
     "264:normal": {
       "speciesId": 264,
-      "path": "assets/generated/true_size/pokedex/264-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/264-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\264-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -904,7 +904,7 @@
     },
     "264:shiny": {
       "speciesId": 264,
-      "path": "assets/generated/true_size/pokedex/264-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/264-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\264-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -940,7 +940,7 @@
     },
     "265:normal": {
       "speciesId": 265,
-      "path": "assets/generated/true_size/pokedex/265-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/265-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\265-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 11,
@@ -976,7 +976,7 @@
     },
     "265:shiny": {
       "speciesId": 265,
-      "path": "assets/generated/true_size/pokedex/265-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/265-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\265-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1012,7 +1012,7 @@
     },
     "266:normal": {
       "speciesId": 266,
-      "path": "assets/generated/true_size/pokedex/266-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/266-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\266-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -1048,7 +1048,7 @@
     },
     "266:shiny": {
       "speciesId": 266,
-      "path": "assets/generated/true_size/pokedex/266-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/266-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\266-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1084,7 +1084,7 @@
     },
     "267:normal": {
       "speciesId": 267,
-      "path": "assets/generated/true_size/pokedex/267-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/267-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\267-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1120,7 +1120,7 @@
     },
     "267:shiny": {
       "speciesId": 267,
-      "path": "assets/generated/true_size/pokedex/267-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/267-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\267-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1156,7 +1156,7 @@
     },
     "268:normal": {
       "speciesId": 268,
-      "path": "assets/generated/true_size/pokedex/268-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/268-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\268-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -1192,7 +1192,7 @@
     },
     "268:shiny": {
       "speciesId": 268,
-      "path": "assets/generated/true_size/pokedex/268-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/268-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\268-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1228,7 +1228,7 @@
     },
     "269:normal": {
       "speciesId": 269,
-      "path": "assets/generated/true_size/pokedex/269-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/269-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\269-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -1264,7 +1264,7 @@
     },
     "269:shiny": {
       "speciesId": 269,
-      "path": "assets/generated/true_size/pokedex/269-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/269-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\269-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -1300,7 +1300,7 @@
     },
     "270:normal": {
       "speciesId": 270,
-      "path": "assets/generated/true_size/pokedex/270-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/270-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\270-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -1336,7 +1336,7 @@
     },
     "270:shiny": {
       "speciesId": 270,
-      "path": "assets/generated/true_size/pokedex/270-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/270-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\270-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1372,7 +1372,7 @@
     },
     "271:normal": {
       "speciesId": 271,
-      "path": "assets/generated/true_size/pokedex/271-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/271-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\271-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -1408,7 +1408,7 @@
     },
     "271:shiny": {
       "speciesId": 271,
-      "path": "assets/generated/true_size/pokedex/271-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/271-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\271-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1444,7 +1444,7 @@
     },
     "272:normal": {
       "speciesId": 272,
-      "path": "assets/generated/true_size/pokedex/272-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/272-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\272-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -1480,7 +1480,7 @@
     },
     "272:shiny": {
       "speciesId": 272,
-      "path": "assets/generated/true_size/pokedex/272-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/272-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\272-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -1516,7 +1516,7 @@
     },
     "273:normal": {
       "speciesId": 273,
-      "path": "assets/generated/true_size/pokedex/273-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/273-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\273-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -1552,7 +1552,7 @@
     },
     "273:shiny": {
       "speciesId": 273,
-      "path": "assets/generated/true_size/pokedex/273-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/273-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\273-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1588,7 +1588,7 @@
     },
     "274:normal": {
       "speciesId": 274,
-      "path": "assets/generated/true_size/pokedex/274-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/274-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\274-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -1624,7 +1624,7 @@
     },
     "274:shiny": {
       "speciesId": 274,
-      "path": "assets/generated/true_size/pokedex/274-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/274-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\274-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1660,7 +1660,7 @@
     },
     "275:normal": {
       "speciesId": 275,
-      "path": "assets/generated/true_size/pokedex/275-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/275-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\275-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -1696,7 +1696,7 @@
     },
     "275:shiny": {
       "speciesId": 275,
-      "path": "assets/generated/true_size/pokedex/275-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/275-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\275-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -1732,7 +1732,7 @@
     },
     "276:normal": {
       "speciesId": 276,
-      "path": "assets/generated/true_size/pokedex/276-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/276-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\276-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 11,
@@ -1768,7 +1768,7 @@
     },
     "276:shiny": {
       "speciesId": 276,
-      "path": "assets/generated/true_size/pokedex/276-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/276-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\276-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -1804,7 +1804,7 @@
     },
     "277:normal": {
       "speciesId": 277,
-      "path": "assets/generated/true_size/pokedex/277-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/277-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\277-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -1840,7 +1840,7 @@
     },
     "277:shiny": {
       "speciesId": 277,
-      "path": "assets/generated/true_size/pokedex/277-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/277-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\277-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -1876,7 +1876,7 @@
     },
     "278:normal": {
       "speciesId": 278,
-      "path": "assets/generated/true_size/pokedex/278-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/278-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\278-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -1912,7 +1912,7 @@
     },
     "278:shiny": {
       "speciesId": 278,
-      "path": "assets/generated/true_size/pokedex/278-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/278-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\278-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -1948,7 +1948,7 @@
     },
     "279:normal": {
       "speciesId": 279,
-      "path": "assets/generated/true_size/pokedex/279-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/279-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\279-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 31,
@@ -1984,7 +1984,7 @@
     },
     "279:shiny": {
       "speciesId": 279,
-      "path": "assets/generated/true_size/pokedex/279-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/279-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\279-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 31,
@@ -2020,7 +2020,7 @@
     },
     "280:normal": {
       "speciesId": 280,
-      "path": "assets/generated/true_size/pokedex/280-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/280-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\280-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -2056,7 +2056,7 @@
     },
     "280:shiny": {
       "speciesId": 280,
-      "path": "assets/generated/true_size/pokedex/280-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/280-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\280-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2092,7 +2092,7 @@
     },
     "281:normal": {
       "speciesId": 281,
-      "path": "assets/generated/true_size/pokedex/281-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/281-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\281-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -2128,7 +2128,7 @@
     },
     "281:shiny": {
       "speciesId": 281,
-      "path": "assets/generated/true_size/pokedex/281-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/281-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\281-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2164,7 +2164,7 @@
     },
     "282:normal": {
       "speciesId": 282,
-      "path": "assets/generated/true_size/pokedex/282-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/282-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\282-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -2200,7 +2200,7 @@
     },
     "282:shiny": {
       "speciesId": 282,
-      "path": "assets/generated/true_size/pokedex/282-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/282-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\282-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2236,7 +2236,7 @@
     },
     "283:normal": {
       "speciesId": 283,
-      "path": "assets/generated/true_size/pokedex/283-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/283-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\283-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -2272,7 +2272,7 @@
     },
     "283:shiny": {
       "speciesId": 283,
-      "path": "assets/generated/true_size/pokedex/283-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/283-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\283-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2308,7 +2308,7 @@
     },
     "284:normal": {
       "speciesId": 284,
-      "path": "assets/generated/true_size/pokedex/284-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/284-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\284-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -2344,7 +2344,7 @@
     },
     "284:shiny": {
       "speciesId": 284,
-      "path": "assets/generated/true_size/pokedex/284-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/284-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\284-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -2380,7 +2380,7 @@
     },
     "285:normal": {
       "speciesId": 285,
-      "path": "assets/generated/true_size/pokedex/285-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/285-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\285-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -2416,7 +2416,7 @@
     },
     "285:shiny": {
       "speciesId": 285,
-      "path": "assets/generated/true_size/pokedex/285-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/285-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\285-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2452,7 +2452,7 @@
     },
     "286:normal": {
       "speciesId": 286,
-      "path": "assets/generated/true_size/pokedex/286-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/286-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\286-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -2488,7 +2488,7 @@
     },
     "286:shiny": {
       "speciesId": 286,
-      "path": "assets/generated/true_size/pokedex/286-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/286-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\286-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2524,7 +2524,7 @@
     },
     "287:normal": {
       "speciesId": 287,
-      "path": "assets/generated/true_size/pokedex/287-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/287-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\287-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -2560,7 +2560,7 @@
     },
     "287:shiny": {
       "speciesId": 287,
-      "path": "assets/generated/true_size/pokedex/287-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/287-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\287-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2596,7 +2596,7 @@
     },
     "288:normal": {
       "speciesId": 288,
-      "path": "assets/generated/true_size/pokedex/288-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/288-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\288-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -2632,7 +2632,7 @@
     },
     "288:shiny": {
       "speciesId": 288,
-      "path": "assets/generated/true_size/pokedex/288-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/288-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\288-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2668,7 +2668,7 @@
     },
     "289:normal": {
       "speciesId": 289,
-      "path": "assets/generated/true_size/pokedex/289-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/289-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\289-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -2704,7 +2704,7 @@
     },
     "289:shiny": {
       "speciesId": 289,
-      "path": "assets/generated/true_size/pokedex/289-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/289-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\289-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -2740,7 +2740,7 @@
     },
     "290:normal": {
       "speciesId": 290,
-      "path": "assets/generated/true_size/pokedex/290-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/290-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\290-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -2776,7 +2776,7 @@
     },
     "290:shiny": {
       "speciesId": 290,
-      "path": "assets/generated/true_size/pokedex/290-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/290-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\290-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2812,7 +2812,7 @@
     },
     "291:normal": {
       "speciesId": 291,
-      "path": "assets/generated/true_size/pokedex/291-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/291-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\291-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -2848,7 +2848,7 @@
     },
     "291:shiny": {
       "speciesId": 291,
-      "path": "assets/generated/true_size/pokedex/291-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/291-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\291-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -2884,7 +2884,7 @@
     },
     "292:normal": {
       "speciesId": 292,
-      "path": "assets/generated/true_size/pokedex/292-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/292-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\292-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -2920,7 +2920,7 @@
     },
     "292:shiny": {
       "speciesId": 292,
-      "path": "assets/generated/true_size/pokedex/292-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/292-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\292-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -2956,7 +2956,7 @@
     },
     "293:normal": {
       "speciesId": 293,
-      "path": "assets/generated/true_size/pokedex/293-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/293-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\293-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -2992,7 +2992,7 @@
     },
     "293:shiny": {
       "speciesId": 293,
-      "path": "assets/generated/true_size/pokedex/293-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/293-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\293-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3028,7 +3028,7 @@
     },
     "294:normal": {
       "speciesId": 294,
-      "path": "assets/generated/true_size/pokedex/294-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/294-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\294-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -3064,7 +3064,7 @@
     },
     "294:shiny": {
       "speciesId": 294,
-      "path": "assets/generated/true_size/pokedex/294-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/294-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\294-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -3100,7 +3100,7 @@
     },
     "295:normal": {
       "speciesId": 295,
-      "path": "assets/generated/true_size/pokedex/295-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/295-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\295-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -3136,7 +3136,7 @@
     },
     "295:shiny": {
       "speciesId": 295,
-      "path": "assets/generated/true_size/pokedex/295-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/295-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\295-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -3172,7 +3172,7 @@
     },
     "296:normal": {
       "speciesId": 296,
-      "path": "assets/generated/true_size/pokedex/296-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/296-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\296-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3208,7 +3208,7 @@
     },
     "296:shiny": {
       "speciesId": 296,
-      "path": "assets/generated/true_size/pokedex/296-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/296-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\296-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3244,7 +3244,7 @@
     },
     "297:normal": {
       "speciesId": 297,
-      "path": "assets/generated/true_size/pokedex/297-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/297-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\297-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -3280,7 +3280,7 @@
     },
     "297:shiny": {
       "speciesId": 297,
-      "path": "assets/generated/true_size/pokedex/297-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/297-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\297-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -3316,7 +3316,7 @@
     },
     "298:normal": {
       "speciesId": 298,
-      "path": "assets/generated/true_size/pokedex/298-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/298-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\298-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -3352,7 +3352,7 @@
     },
     "298:shiny": {
       "speciesId": 298,
-      "path": "assets/generated/true_size/pokedex/298-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/298-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\298-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3388,7 +3388,7 @@
     },
     "299:normal": {
       "speciesId": 299,
-      "path": "assets/generated/true_size/pokedex/299-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/299-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\299-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -3424,7 +3424,7 @@
     },
     "299:shiny": {
       "speciesId": 299,
-      "path": "assets/generated/true_size/pokedex/299-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/299-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\299-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3460,7 +3460,7 @@
     },
     "300:normal": {
       "speciesId": 300,
-      "path": "assets/generated/true_size/pokedex/300-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/300-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\300-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -3496,7 +3496,7 @@
     },
     "300:shiny": {
       "speciesId": 300,
-      "path": "assets/generated/true_size/pokedex/300-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/300-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\300-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3532,7 +3532,7 @@
     },
     "301:normal": {
       "speciesId": 301,
-      "path": "assets/generated/true_size/pokedex/301-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/301-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\301-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3568,7 +3568,7 @@
     },
     "301:shiny": {
       "speciesId": 301,
-      "path": "assets/generated/true_size/pokedex/301-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/301-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\301-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3604,7 +3604,7 @@
     },
     "302:normal": {
       "speciesId": 302,
-      "path": "assets/generated/true_size/pokedex/302-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/302-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\302-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -3640,7 +3640,7 @@
     },
     "302:shiny": {
       "speciesId": 302,
-      "path": "assets/generated/true_size/pokedex/302-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/302-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\302-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3676,7 +3676,7 @@
     },
     "303:normal": {
       "speciesId": 303,
-      "path": "assets/generated/true_size/pokedex/303-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/303-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\303-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3712,7 +3712,7 @@
     },
     "303:shiny": {
       "speciesId": 303,
-      "path": "assets/generated/true_size/pokedex/303-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/303-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\303-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -3748,7 +3748,7 @@
     },
     "304:normal": {
       "speciesId": 304,
-      "path": "assets/generated/true_size/pokedex/304-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/304-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\304-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 11,
@@ -3784,7 +3784,7 @@
     },
     "304:shiny": {
       "speciesId": 304,
-      "path": "assets/generated/true_size/pokedex/304-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/304-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\304-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3820,7 +3820,7 @@
     },
     "305:normal": {
       "speciesId": 305,
-      "path": "assets/generated/true_size/pokedex/305-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/305-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\305-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -3856,7 +3856,7 @@
     },
     "305:shiny": {
       "speciesId": 305,
-      "path": "assets/generated/true_size/pokedex/305-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/305-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\305-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -3892,7 +3892,7 @@
     },
     "306:normal": {
       "speciesId": 306,
-      "path": "assets/generated/true_size/pokedex/306-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/306-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\306-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -3928,7 +3928,7 @@
     },
     "306:shiny": {
       "speciesId": 306,
-      "path": "assets/generated/true_size/pokedex/306-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/306-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\306-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -3964,7 +3964,7 @@
     },
     "307:normal": {
       "speciesId": 307,
-      "path": "assets/generated/true_size/pokedex/307-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/307-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\307-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -4000,7 +4000,7 @@
     },
     "307:shiny": {
       "speciesId": 307,
-      "path": "assets/generated/true_size/pokedex/307-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/307-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\307-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4036,7 +4036,7 @@
     },
     "308:normal": {
       "speciesId": 308,
-      "path": "assets/generated/true_size/pokedex/308-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/308-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\308-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -4072,7 +4072,7 @@
     },
     "308:shiny": {
       "speciesId": 308,
-      "path": "assets/generated/true_size/pokedex/308-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/308-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\308-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4108,7 +4108,7 @@
     },
     "309:normal": {
       "speciesId": 309,
-      "path": "assets/generated/true_size/pokedex/309-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/309-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\309-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -4144,7 +4144,7 @@
     },
     "309:shiny": {
       "speciesId": 309,
-      "path": "assets/generated/true_size/pokedex/309-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/309-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\309-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4180,7 +4180,7 @@
     },
     "310:normal": {
       "speciesId": 310,
-      "path": "assets/generated/true_size/pokedex/310-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/310-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\310-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -4216,7 +4216,7 @@
     },
     "310:shiny": {
       "speciesId": 310,
-      "path": "assets/generated/true_size/pokedex/310-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/310-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\310-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4252,7 +4252,7 @@
     },
     "311:normal": {
       "speciesId": 311,
-      "path": "assets/generated/true_size/pokedex/311-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/311-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\311-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -4288,7 +4288,7 @@
     },
     "311:shiny": {
       "speciesId": 311,
-      "path": "assets/generated/true_size/pokedex/311-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/311-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\311-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4324,7 +4324,7 @@
     },
     "312:normal": {
       "speciesId": 312,
-      "path": "assets/generated/true_size/pokedex/312-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/312-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\312-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -4360,7 +4360,7 @@
     },
     "312:shiny": {
       "speciesId": 312,
-      "path": "assets/generated/true_size/pokedex/312-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/312-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\312-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4396,7 +4396,7 @@
     },
     "313:normal": {
       "speciesId": 313,
-      "path": "assets/generated/true_size/pokedex/313-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/313-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\313-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -4432,7 +4432,7 @@
     },
     "313:shiny": {
       "speciesId": 313,
-      "path": "assets/generated/true_size/pokedex/313-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/313-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\313-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -4468,7 +4468,7 @@
     },
     "314:normal": {
       "speciesId": 314,
-      "path": "assets/generated/true_size/pokedex/314-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/314-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\314-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4504,7 +4504,7 @@
     },
     "314:shiny": {
       "speciesId": 314,
-      "path": "assets/generated/true_size/pokedex/314-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/314-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\314-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4540,7 +4540,7 @@
     },
     "315:normal": {
       "speciesId": 315,
-      "path": "assets/generated/true_size/pokedex/315-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/315-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\315-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4576,7 +4576,7 @@
     },
     "315:shiny": {
       "speciesId": 315,
-      "path": "assets/generated/true_size/pokedex/315-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/315-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\315-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -4612,7 +4612,7 @@
     },
     "316:normal": {
       "speciesId": 316,
-      "path": "assets/generated/true_size/pokedex/316-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/316-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\316-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 14,
@@ -4648,7 +4648,7 @@
     },
     "316:shiny": {
       "speciesId": 316,
-      "path": "assets/generated/true_size/pokedex/316-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/316-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\316-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -4684,7 +4684,7 @@
     },
     "317:normal": {
       "speciesId": 317,
-      "path": "assets/generated/true_size/pokedex/317-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/317-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\317-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -4720,7 +4720,7 @@
     },
     "317:shiny": {
       "speciesId": 317,
-      "path": "assets/generated/true_size/pokedex/317-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/317-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\317-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -4756,7 +4756,7 @@
     },
     "318:normal": {
       "speciesId": 318,
-      "path": "assets/generated/true_size/pokedex/318-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/318-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\318-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -4792,7 +4792,7 @@
     },
     "318:shiny": {
       "speciesId": 318,
-      "path": "assets/generated/true_size/pokedex/318-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/318-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\318-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -4828,7 +4828,7 @@
     },
     "319:normal": {
       "speciesId": 319,
-      "path": "assets/generated/true_size/pokedex/319-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/319-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\319-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -4864,7 +4864,7 @@
     },
     "319:shiny": {
       "speciesId": 319,
-      "path": "assets/generated/true_size/pokedex/319-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/319-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\319-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -4900,7 +4900,7 @@
     },
     "320:normal": {
       "speciesId": 320,
-      "path": "assets/generated/true_size/pokedex/320-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/320-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\320-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -4936,7 +4936,7 @@
     },
     "320:shiny": {
       "speciesId": 320,
-      "path": "assets/generated/true_size/pokedex/320-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/320-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\320-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -4972,7 +4972,7 @@
     },
     "321:normal": {
       "speciesId": 321,
-      "path": "assets/generated/true_size/pokedex/321-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/321-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\321-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -5008,7 +5008,7 @@
     },
     "321:shiny": {
       "speciesId": 321,
-      "path": "assets/generated/true_size/pokedex/321-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/321-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\321-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -5044,7 +5044,7 @@
     },
     "322:normal": {
       "speciesId": 322,
-      "path": "assets/generated/true_size/pokedex/322-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/322-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\322-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -5080,7 +5080,7 @@
     },
     "322:shiny": {
       "speciesId": 322,
-      "path": "assets/generated/true_size/pokedex/322-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/322-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\322-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5116,7 +5116,7 @@
     },
     "323:normal": {
       "speciesId": 323,
-      "path": "assets/generated/true_size/pokedex/323-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/323-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\323-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -5152,7 +5152,7 @@
     },
     "323:shiny": {
       "speciesId": 323,
-      "path": "assets/generated/true_size/pokedex/323-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/323-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\323-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5188,7 +5188,7 @@
     },
     "324:normal": {
       "speciesId": 324,
-      "path": "assets/generated/true_size/pokedex/324-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/324-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\324-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -5224,7 +5224,7 @@
     },
     "324:shiny": {
       "speciesId": 324,
-      "path": "assets/generated/true_size/pokedex/324-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/324-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\324-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5260,7 +5260,7 @@
     },
     "325:normal": {
       "speciesId": 325,
-      "path": "assets/generated/true_size/pokedex/325-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/325-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\325-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -5296,7 +5296,7 @@
     },
     "325:shiny": {
       "speciesId": 325,
-      "path": "assets/generated/true_size/pokedex/325-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/325-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\325-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5332,7 +5332,7 @@
     },
     "326:normal": {
       "speciesId": 326,
-      "path": "assets/generated/true_size/pokedex/326-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/326-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\326-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -5368,7 +5368,7 @@
     },
     "326:shiny": {
       "speciesId": 326,
-      "path": "assets/generated/true_size/pokedex/326-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/326-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\326-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5404,7 +5404,7 @@
     },
     "327:normal": {
       "speciesId": 327,
-      "path": "assets/generated/true_size/pokedex/327-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/327-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\327-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -5440,7 +5440,7 @@
     },
     "327:shiny": {
       "speciesId": 327,
-      "path": "assets/generated/true_size/pokedex/327-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/327-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\327-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5476,7 +5476,7 @@
     },
     "328:normal": {
       "speciesId": 328,
-      "path": "assets/generated/true_size/pokedex/328-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/328-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\328-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -5512,7 +5512,7 @@
     },
     "328:shiny": {
       "speciesId": 328,
-      "path": "assets/generated/true_size/pokedex/328-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/328-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\328-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5548,7 +5548,7 @@
     },
     "329:normal": {
       "speciesId": 329,
-      "path": "assets/generated/true_size/pokedex/329-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/329-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\329-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -5584,7 +5584,7 @@
     },
     "329:shiny": {
       "speciesId": 329,
-      "path": "assets/generated/true_size/pokedex/329-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/329-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\329-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -5620,7 +5620,7 @@
     },
     "330:normal": {
       "speciesId": 330,
-      "path": "assets/generated/true_size/pokedex/330-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/330-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\330-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -5656,7 +5656,7 @@
     },
     "330:shiny": {
       "speciesId": 330,
-      "path": "assets/generated/true_size/pokedex/330-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/330-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\330-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -5692,7 +5692,7 @@
     },
     "331:normal": {
       "speciesId": 331,
-      "path": "assets/generated/true_size/pokedex/331-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/331-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\331-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5728,7 +5728,7 @@
     },
     "331:shiny": {
       "speciesId": 331,
-      "path": "assets/generated/true_size/pokedex/331-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/331-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\331-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -5764,7 +5764,7 @@
     },
     "332:normal": {
       "speciesId": 332,
-      "path": "assets/generated/true_size/pokedex/332-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/332-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\332-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -5800,7 +5800,7 @@
     },
     "332:shiny": {
       "speciesId": 332,
-      "path": "assets/generated/true_size/pokedex/332-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/332-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\332-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -5836,7 +5836,7 @@
     },
     "333:normal": {
       "speciesId": 333,
-      "path": "assets/generated/true_size/pokedex/333-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/333-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\333-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -5872,7 +5872,7 @@
     },
     "333:shiny": {
       "speciesId": 333,
-      "path": "assets/generated/true_size/pokedex/333-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/333-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\333-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -5908,7 +5908,7 @@
     },
     "334:normal": {
       "speciesId": 334,
-      "path": "assets/generated/true_size/pokedex/334-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/334-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\334-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -5944,7 +5944,7 @@
     },
     "334:shiny": {
       "speciesId": 334,
-      "path": "assets/generated/true_size/pokedex/334-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/334-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\334-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -5980,7 +5980,7 @@
     },
     "335:normal": {
       "speciesId": 335,
-      "path": "assets/generated/true_size/pokedex/335-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/335-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\335-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -6016,7 +6016,7 @@
     },
     "335:shiny": {
       "speciesId": 335,
-      "path": "assets/generated/true_size/pokedex/335-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/335-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\335-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -6052,7 +6052,7 @@
     },
     "336:normal": {
       "speciesId": 336,
-      "path": "assets/generated/true_size/pokedex/336-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/336-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\336-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -6088,7 +6088,7 @@
     },
     "336:shiny": {
       "speciesId": 336,
-      "path": "assets/generated/true_size/pokedex/336-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/336-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\336-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6124,7 +6124,7 @@
     },
     "337:normal": {
       "speciesId": 337,
-      "path": "assets/generated/true_size/pokedex/337-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/337-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\337-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 9,
@@ -6160,7 +6160,7 @@
     },
     "337:shiny": {
       "speciesId": 337,
-      "path": "assets/generated/true_size/pokedex/337-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/337-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\337-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6196,7 +6196,7 @@
     },
     "338:normal": {
       "speciesId": 338,
-      "path": "assets/generated/true_size/pokedex/338-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/338-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\338-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6232,7 +6232,7 @@
     },
     "338:shiny": {
       "speciesId": 338,
-      "path": "assets/generated/true_size/pokedex/338-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/338-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\338-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6268,7 +6268,7 @@
     },
     "339:normal": {
       "speciesId": 339,
-      "path": "assets/generated/true_size/pokedex/339-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/339-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\339-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 12,
@@ -6304,7 +6304,7 @@
     },
     "339:shiny": {
       "speciesId": 339,
-      "path": "assets/generated/true_size/pokedex/339-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/339-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\339-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6340,7 +6340,7 @@
     },
     "340:normal": {
       "speciesId": 340,
-      "path": "assets/generated/true_size/pokedex/340-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/340-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\340-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -6376,7 +6376,7 @@
     },
     "340:shiny": {
       "speciesId": 340,
-      "path": "assets/generated/true_size/pokedex/340-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/340-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\340-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -6412,7 +6412,7 @@
     },
     "341:normal": {
       "speciesId": 341,
-      "path": "assets/generated/true_size/pokedex/341-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/341-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\341-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -6448,7 +6448,7 @@
     },
     "341:shiny": {
       "speciesId": 341,
-      "path": "assets/generated/true_size/pokedex/341-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/341-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\341-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -6484,7 +6484,7 @@
     },
     "342:normal": {
       "speciesId": 342,
-      "path": "assets/generated/true_size/pokedex/342-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/342-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\342-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -6520,7 +6520,7 @@
     },
     "342:shiny": {
       "speciesId": 342,
-      "path": "assets/generated/true_size/pokedex/342-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/342-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\342-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 27,
@@ -6556,7 +6556,7 @@
     },
     "343:normal": {
       "speciesId": 343,
-      "path": "assets/generated/true_size/pokedex/343-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/343-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\343-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -6592,7 +6592,7 @@
     },
     "343:shiny": {
       "speciesId": 343,
-      "path": "assets/generated/true_size/pokedex/343-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/343-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\343-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6628,7 +6628,7 @@
     },
     "344:normal": {
       "speciesId": 344,
-      "path": "assets/generated/true_size/pokedex/344-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/344-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\344-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -6664,7 +6664,7 @@
     },
     "344:shiny": {
       "speciesId": 344,
-      "path": "assets/generated/true_size/pokedex/344-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/344-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\344-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6700,7 +6700,7 @@
     },
     "345:normal": {
       "speciesId": 345,
-      "path": "assets/generated/true_size/pokedex/345-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/345-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\345-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -6736,7 +6736,7 @@
     },
     "345:shiny": {
       "speciesId": 345,
-      "path": "assets/generated/true_size/pokedex/345-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/345-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\345-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6772,7 +6772,7 @@
     },
     "346:normal": {
       "speciesId": 346,
-      "path": "assets/generated/true_size/pokedex/346-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/346-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\346-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 24,
@@ -6808,7 +6808,7 @@
     },
     "346:shiny": {
       "speciesId": 346,
-      "path": "assets/generated/true_size/pokedex/346-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/346-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\346-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 24,
@@ -6844,7 +6844,7 @@
     },
     "347:normal": {
       "speciesId": 347,
-      "path": "assets/generated/true_size/pokedex/347-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/347-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\347-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 20,
@@ -6880,7 +6880,7 @@
     },
     "347:shiny": {
       "speciesId": 347,
-      "path": "assets/generated/true_size/pokedex/347-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/347-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\347-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -6916,7 +6916,7 @@
     },
     "348:normal": {
       "speciesId": 348,
-      "path": "assets/generated/true_size/pokedex/348-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/348-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\348-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -6952,7 +6952,7 @@
     },
     "348:shiny": {
       "speciesId": 348,
-      "path": "assets/generated/true_size/pokedex/348-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/348-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\348-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -6988,7 +6988,7 @@
     },
     "349:normal": {
       "speciesId": 349,
-      "path": "assets/generated/true_size/pokedex/349-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/349-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\349-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -7024,7 +7024,7 @@
     },
     "349:shiny": {
       "speciesId": 349,
-      "path": "assets/generated/true_size/pokedex/349-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/349-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\349-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7060,7 +7060,7 @@
     },
     "350:normal": {
       "speciesId": 350,
-      "path": "assets/generated/true_size/pokedex/350-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/350-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\350-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -7096,7 +7096,7 @@
     },
     "350:shiny": {
       "speciesId": 350,
-      "path": "assets/generated/true_size/pokedex/350-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/350-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\350-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 23,
@@ -7132,7 +7132,7 @@
     },
     "351:normal": {
       "speciesId": 351,
-      "path": "assets/generated/true_size/pokedex/351-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/351-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\351-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 11,
@@ -7168,7 +7168,7 @@
     },
     "351:shiny": {
       "speciesId": 351,
-      "path": "assets/generated/true_size/pokedex/351-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/351-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\351-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7204,7 +7204,7 @@
     },
     "352:normal": {
       "speciesId": 352,
-      "path": "assets/generated/true_size/pokedex/352-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/352-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\352-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -7240,7 +7240,7 @@
     },
     "352:shiny": {
       "speciesId": 352,
-      "path": "assets/generated/true_size/pokedex/352-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/352-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\352-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7276,7 +7276,7 @@
     },
     "353:normal": {
       "speciesId": 353,
-      "path": "assets/generated/true_size/pokedex/353-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/353-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\353-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -7312,7 +7312,7 @@
     },
     "353:shiny": {
       "speciesId": 353,
-      "path": "assets/generated/true_size/pokedex/353-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/353-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\353-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7348,7 +7348,7 @@
     },
     "354:normal": {
       "speciesId": 354,
-      "path": "assets/generated/true_size/pokedex/354-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/354-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\354-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 18,
@@ -7384,7 +7384,7 @@
     },
     "354:shiny": {
       "speciesId": 354,
-      "path": "assets/generated/true_size/pokedex/354-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/354-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\354-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7420,7 +7420,7 @@
     },
     "355:normal": {
       "speciesId": 355,
-      "path": "assets/generated/true_size/pokedex/355-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/355-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\355-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -7456,7 +7456,7 @@
     },
     "355:shiny": {
       "speciesId": 355,
-      "path": "assets/generated/true_size/pokedex/355-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/355-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\355-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7492,7 +7492,7 @@
     },
     "356:normal": {
       "speciesId": 356,
-      "path": "assets/generated/true_size/pokedex/356-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/356-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\356-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -7528,7 +7528,7 @@
     },
     "356:shiny": {
       "speciesId": 356,
-      "path": "assets/generated/true_size/pokedex/356-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/356-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\356-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -7564,7 +7564,7 @@
     },
     "357:normal": {
       "speciesId": 357,
-      "path": "assets/generated/true_size/pokedex/357-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/357-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\357-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 28,
@@ -7600,7 +7600,7 @@
     },
     "357:shiny": {
       "speciesId": 357,
-      "path": "assets/generated/true_size/pokedex/357-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/357-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\357-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 28,
@@ -7636,7 +7636,7 @@
     },
     "358:normal": {
       "speciesId": 358,
-      "path": "assets/generated/true_size/pokedex/358-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/358-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\358-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 11,
@@ -7672,7 +7672,7 @@
     },
     "358:shiny": {
       "speciesId": 358,
-      "path": "assets/generated/true_size/pokedex/358-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/358-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\358-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7708,7 +7708,7 @@
     },
     "359:normal": {
       "speciesId": 359,
-      "path": "assets/generated/true_size/pokedex/359-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/359-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\359-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 18,
@@ -7744,7 +7744,7 @@
     },
     "359:shiny": {
       "speciesId": 359,
-      "path": "assets/generated/true_size/pokedex/359-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/359-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\359-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 22,
@@ -7780,7 +7780,7 @@
     },
     "360:normal": {
       "speciesId": 360,
-      "path": "assets/generated/true_size/pokedex/360-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/360-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\360-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 16,
@@ -7816,7 +7816,7 @@
     },
     "360:shiny": {
       "speciesId": 360,
-      "path": "assets/generated/true_size/pokedex/360-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/360-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\360-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7852,7 +7852,7 @@
     },
     "361:normal": {
       "speciesId": 361,
-      "path": "assets/generated/true_size/pokedex/361-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/361-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\361-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -7888,7 +7888,7 @@
     },
     "361:shiny": {
       "speciesId": 361,
-      "path": "assets/generated/true_size/pokedex/361-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/361-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\361-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -7924,7 +7924,7 @@
     },
     "362:normal": {
       "speciesId": 362,
-      "path": "assets/generated/true_size/pokedex/362-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/362-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\362-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -7960,7 +7960,7 @@
     },
     "362:shiny": {
       "speciesId": 362,
-      "path": "assets/generated/true_size/pokedex/362-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/362-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\362-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -7996,7 +7996,7 @@
     },
     "363:normal": {
       "speciesId": 363,
-      "path": "assets/generated/true_size/pokedex/363-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/363-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\363-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -8032,7 +8032,7 @@
     },
     "363:shiny": {
       "speciesId": 363,
-      "path": "assets/generated/true_size/pokedex/363-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/363-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\363-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8068,7 +8068,7 @@
     },
     "364:normal": {
       "speciesId": 364,
-      "path": "assets/generated/true_size/pokedex/364-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/364-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\364-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -8104,7 +8104,7 @@
     },
     "364:shiny": {
       "speciesId": 364,
-      "path": "assets/generated/true_size/pokedex/364-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/364-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\364-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 25,
@@ -8140,7 +8140,7 @@
     },
     "365:normal": {
       "speciesId": 365,
-      "path": "assets/generated/true_size/pokedex/365-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/365-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\365-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 26,
@@ -8176,7 +8176,7 @@
     },
     "365:shiny": {
       "speciesId": 365,
-      "path": "assets/generated/true_size/pokedex/365-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/365-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\365-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 26,
@@ -8212,7 +8212,7 @@
     },
     "366:normal": {
       "speciesId": 366,
-      "path": "assets/generated/true_size/pokedex/366-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/366-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\366-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -8248,7 +8248,7 @@
     },
     "366:shiny": {
       "speciesId": 366,
-      "path": "assets/generated/true_size/pokedex/366-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/366-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\366-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8284,7 +8284,7 @@
     },
     "367:normal": {
       "speciesId": 367,
-      "path": "assets/generated/true_size/pokedex/367-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/367-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\367-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -8320,7 +8320,7 @@
     },
     "367:shiny": {
       "speciesId": 367,
-      "path": "assets/generated/true_size/pokedex/367-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/367-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\367-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8356,7 +8356,7 @@
     },
     "368:normal": {
       "speciesId": 368,
-      "path": "assets/generated/true_size/pokedex/368-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/368-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\368-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 15,
@@ -8392,7 +8392,7 @@
     },
     "368:shiny": {
       "speciesId": 368,
-      "path": "assets/generated/true_size/pokedex/368-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/368-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\368-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8428,7 +8428,7 @@
     },
     "369:normal": {
       "speciesId": 369,
-      "path": "assets/generated/true_size/pokedex/369-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/369-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\369-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -8464,7 +8464,7 @@
     },
     "369:shiny": {
       "speciesId": 369,
-      "path": "assets/generated/true_size/pokedex/369-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/369-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\369-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8500,7 +8500,7 @@
     },
     "370:normal": {
       "speciesId": 370,
-      "path": "assets/generated/true_size/pokedex/370-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/370-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\370-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 8,
@@ -8536,7 +8536,7 @@
     },
     "370:shiny": {
       "speciesId": 370,
-      "path": "assets/generated/true_size/pokedex/370-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/370-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\370-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8572,7 +8572,7 @@
     },
     "371:normal": {
       "speciesId": 371,
-      "path": "assets/generated/true_size/pokedex/371-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/371-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\371-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -8608,7 +8608,7 @@
     },
     "371:shiny": {
       "speciesId": 371,
-      "path": "assets/generated/true_size/pokedex/371-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/371-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\371-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8644,7 +8644,7 @@
     },
     "372:normal": {
       "speciesId": 372,
-      "path": "assets/generated/true_size/pokedex/372-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/372-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\372-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 17,
@@ -8680,7 +8680,7 @@
     },
     "372:shiny": {
       "speciesId": 372,
-      "path": "assets/generated/true_size/pokedex/372-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/372-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\372-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8716,7 +8716,7 @@
     },
     "373:normal": {
       "speciesId": 373,
-      "path": "assets/generated/true_size/pokedex/373-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/373-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\373-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -8752,7 +8752,7 @@
     },
     "373:shiny": {
       "speciesId": 373,
-      "path": "assets/generated/true_size/pokedex/373-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/373-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\373-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -8788,7 +8788,7 @@
     },
     "374:normal": {
       "speciesId": 374,
-      "path": "assets/generated/true_size/pokedex/374-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/374-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\374-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 13,
@@ -8824,7 +8824,7 @@
     },
     "374:shiny": {
       "speciesId": 374,
-      "path": "assets/generated/true_size/pokedex/374-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/374-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\374-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -8860,7 +8860,7 @@
     },
     "375:normal": {
       "speciesId": 375,
-      "path": "assets/generated/true_size/pokedex/375-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/375-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\375-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -8896,7 +8896,7 @@
     },
     "375:shiny": {
       "speciesId": 375,
-      "path": "assets/generated/true_size/pokedex/375-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/375-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\375-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -8932,7 +8932,7 @@
     },
     "376:normal": {
       "speciesId": 376,
-      "path": "assets/generated/true_size/pokedex/376-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/376-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\376-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -8968,7 +8968,7 @@
     },
     "376:shiny": {
       "speciesId": 376,
-      "path": "assets/generated/true_size/pokedex/376-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/376-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\376-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -9004,7 +9004,7 @@
     },
     "377:normal": {
       "speciesId": 377,
-      "path": "assets/generated/true_size/pokedex/377-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/377-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\377-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -9040,7 +9040,7 @@
     },
     "377:shiny": {
       "speciesId": 377,
-      "path": "assets/generated/true_size/pokedex/377-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/377-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\377-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -9076,7 +9076,7 @@
     },
     "378:normal": {
       "speciesId": 378,
-      "path": "assets/generated/true_size/pokedex/378-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/378-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\378-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -9112,7 +9112,7 @@
     },
     "378:shiny": {
       "speciesId": 378,
-      "path": "assets/generated/true_size/pokedex/378-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/378-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\378-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -9148,7 +9148,7 @@
     },
     "379:normal": {
       "speciesId": 379,
-      "path": "assets/generated/true_size/pokedex/379-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/379-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\379-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -9184,7 +9184,7 @@
     },
     "379:shiny": {
       "speciesId": 379,
-      "path": "assets/generated/true_size/pokedex/379-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/379-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\379-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 29,
@@ -9220,7 +9220,7 @@
     },
     "380:normal": {
       "speciesId": 380,
-      "path": "assets/generated/true_size/pokedex/380-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/380-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\380-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -9256,7 +9256,7 @@
     },
     "380:shiny": {
       "speciesId": 380,
-      "path": "assets/generated/true_size/pokedex/380-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/380-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\380-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -9292,7 +9292,7 @@
     },
     "381:normal": {
       "speciesId": 381,
-      "path": "assets/generated/true_size/pokedex/381-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/381-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\381-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -9328,7 +9328,7 @@
     },
     "381:shiny": {
       "speciesId": 381,
-      "path": "assets/generated/true_size/pokedex/381-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/381-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\381-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -9364,7 +9364,7 @@
     },
     "382:normal": {
       "speciesId": 382,
-      "path": "assets/generated/true_size/pokedex/382-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/382-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\382-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 48,
@@ -9400,7 +9400,7 @@
     },
     "382:shiny": {
       "speciesId": 382,
-      "path": "assets/generated/true_size/pokedex/382-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/382-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\382-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 48,
@@ -9436,7 +9436,7 @@
     },
     "383:normal": {
       "speciesId": 383,
-      "path": "assets/generated/true_size/pokedex/383-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/383-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\383-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 30,
@@ -9472,7 +9472,7 @@
     },
     "383:shiny": {
       "speciesId": 383,
-      "path": "assets/generated/true_size/pokedex/383-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/383-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\383-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 31,
@@ -9508,7 +9508,7 @@
     },
     "384:normal": {
       "speciesId": 384,
-      "path": "assets/generated/true_size/pokedex/384-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/384-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\384-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 40,
@@ -9544,7 +9544,7 @@
     },
     "384:shiny": {
       "speciesId": 384,
-      "path": "assets/generated/true_size/pokedex/384-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/384-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\384-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 40,
@@ -9580,7 +9580,7 @@
     },
     "385:normal": {
       "speciesId": 385,
-      "path": "assets/generated/true_size/pokedex/385-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/385-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\385-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 19,
@@ -9616,7 +9616,7 @@
     },
     "385:shiny": {
       "speciesId": 385,
-      "path": "assets/generated/true_size/pokedex/385-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/385-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\385-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 21,
@@ -9652,7 +9652,7 @@
     },
     "386:normal": {
       "speciesId": 386,
-      "path": "assets/generated/true_size/pokedex/386-normal.png",
+      "path": "assets/wilds_generated/true_size/pokedex/386-normal.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\386-b-n.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 28,
@@ -9688,7 +9688,7 @@
     },
     "386:shiny": {
       "speciesId": 386,
-      "path": "assets/generated/true_size/pokedex/386-shiny.png",
+      "path": "assets/wilds_generated/true_size/pokedex/386-shiny.png",
       "sourceImage": "assets\\enhanced_overworld\\followsprites\\386-b-s.png",
       "artFamily": "hgss_water",
       "nativeVisualWidth": 28,

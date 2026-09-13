@@ -101,7 +101,7 @@ for _, dex in ipairs({ 1, 25, 151 }) do
   local rel, used, ent = sheets:resolveRelativePath(dex, "normal")
   check(rel ~= nil, "relative path for dex " .. dex)
   eq(used, "normal", "used variant normal for " .. dex)
-  check(rel:find("assets/generated/followsprites_runtime/", 1, true) == 1,
+  check(rel:find("assets/wilds_generated/followsprites_runtime/", 1, true) == 1,
         "relative path under generated dir for " .. dex)
 
   local loadPath, used2, rel2 = sheets:resolveAssetPath(dex, "normal")
@@ -148,20 +148,20 @@ local function pngSize(path)
   assert(hdr:sub(1, 8) == "\137PNG\r\n\26\n", "bad png sig")
   return u32be(hdr, 17), u32be(hdr, 21)
 end
-local w, h = pngSize("assets/generated/followsprites_runtime/001-normal.png")
+local w, h = pngSize("assets/wilds_generated/followsprites_runtime/001-normal.png")
 eq(w, 16, "generated sheet width 16")
 eq(h, 96, "generated sheet height 96")
-w, h = pngSize("assets/generated/followsprites_runtime/025-normal.png")
+w, h = pngSize("assets/wilds_generated/followsprites_runtime/025-normal.png")
 eq(w, 16, "025 width")
 eq(h, 96, "025 height")
-w, h = pngSize("assets/generated/followsprites_runtime/151-normal.png")
+w, h = pngSize("assets/wilds_generated/followsprites_runtime/151-normal.png")
 eq(w, 16, "151 width")
 eq(h, 96, "151 height")
 
 -- Packaged relative existence must succeed via mod.read; a relative-only
 -- engine existence probe is not required.
 -- Simulate: relative getInfo would miss, but mod.read still finds the file.
-local relOnly = "assets/generated/followsprites_runtime/001-normal.png"
+local relOnly = "assets/wilds_generated/followsprites_runtime/001-normal.png"
 check(sheets:_assetPresent(relOnly) == true,
       "asset present via mod.read even without love getInfo on relative")
 

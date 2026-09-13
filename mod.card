@@ -33,7 +33,7 @@ return {
       "Voxel-compatible: Dramatic Shape SpriteBillboards, First Person, depth, grass, shadows",
     },
     known = {
-      "species overworld sprites prefer assets/generated/followsprites_runtime/ "
+      "species overworld sprites prefer assets/wilds_generated/followsprites_runtime/ "
         .. "(16x96, frames=6, walker=true); legacy battle fronts remain as fallback",
       "follow-sprite source PNGs stay in the package for rebuild / flat optional paths",
       "when no real image is available, assets/fallback/pokemon_missing.png is used "

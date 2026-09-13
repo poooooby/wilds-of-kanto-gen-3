@@ -201,31 +201,35 @@ def should_include(rel: str) -> bool:
     return False
 
 
+SKIP_TOP_DIRS = {
+    ".git",
+    ".deps",
+    "gen1recomp",
+    "DramaticShapeVoxelMod",
+    "dist",
+    "release",
+    "scripts",
+    "tests",
+    "tools",
+    "mods",
+    ".github",
+    "ReferenceGen1-3",
+}
+
+
 def pack_manual(out_zip: Path) -> None:
     files = []
-    for base, _dirs, names in os.walk(MOD_DIR):
+    for base, dirs, names in os.walk(MOD_DIR):
         base_path = Path(base)
-        # Never walk into nested clones / build output / VCS.
         try:
             rel_dir = base_path.relative_to(MOD_DIR).as_posix()
         except ValueError:
             continue
-        if rel_dir != ".":
-            top = rel_dir.split("/", 1)[0]
-            if top in {
-                ".git",
-                ".deps",
-                "gen1recomp",
-                "DramaticShapeVoxelMod",
-                "dist",
-                "release",
-                "scripts",
-                "tests",
-                "tools",
-                "mods",
-                ".github",
-            }:
-                continue
+        if rel_dir == ".":
+            # Prune skip dirs in-place so os.walk never descends into them
+            # (e.g. .deps and ReferenceGen1-3 hold hundreds of thousands of
+            # files from bootstrapped engine clones / reference repos).
+            dirs[:] = [d for d in dirs if d not in SKIP_TOP_DIRS]
         for name in names:
             full = base_path / name
             rel = full.relative_to(MOD_DIR).as_posix()
@@ -333,12 +337,12 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
     else:
         print(f"  follow-sprite PNGs: {len(follow_pngs)}")
 
-    runtime_manifest = "assets/generated/followsprites_runtime/manifest.json"
+    runtime_manifest = "assets/wilds_generated/followsprites_runtime/manifest.json"
     if runtime_manifest not in names:
         fail(f"ZIP missing required runtime sheet manifest: {runtime_manifest}")
     runtime_pngs = [
         n for n in names
-        if n.startswith("assets/generated/followsprites_runtime/")
+        if n.startswith("assets/wilds_generated/followsprites_runtime/")
         and n.lower().endswith(".png")
     ]
     if len(runtime_pngs) < 151:
@@ -347,7 +351,7 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
             "expected generated 16x96 SpriteRenderer sheets"
         )
     print(f"  native runtime sheets: {len(runtime_pngs)}")
-    sample = "assets/generated/followsprites_runtime/001-normal.png"
+    sample = "assets/wilds_generated/followsprites_runtime/001-normal.png"
     if sample not in names:
         fail(f"ZIP missing sample runtime sheet: {sample}")
 
@@ -391,20 +395,20 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
     if len(water_src) < 100:
         fail(f"ZIP water source PNGs too few ({len(water_src)})")
     print(f"  water source PNGs: {len(water_src)}")
-    water_runtime_manifest = "assets/generated/water_runtime/manifest.json"
+    water_runtime_manifest = "assets/wilds_generated/water_runtime/manifest.json"
     if water_runtime_manifest not in names:
         fail(f"ZIP missing water runtime manifest: {water_runtime_manifest}")
     water_runtime = [
         n for n in names
-        if n.startswith("assets/generated/water_runtime/")
+        if n.startswith("assets/wilds_generated/water_runtime/")
         and n.lower().endswith(".png")
     ]
     if len(water_runtime) < 100:
         fail(f"ZIP water runtime sheets too few ({len(water_runtime)})")
     print(f"  water runtime sheets: {len(water_runtime)}")
     for sample_water in (
-        "assets/generated/water_runtime/swimming/001-normal.png",
-        "assets/generated/water_runtime/levitates/063-normal.png",
+        "assets/wilds_generated/water_runtime/swimming/001-normal.png",
+        "assets/wilds_generated/water_runtime/levitates/063-normal.png",
     ):
         if sample_water not in names:
             fail(f"ZIP missing sample water runtime sheet: {sample_water}")
@@ -514,7 +518,7 @@ def verify_follow_sprite_assets() -> None:
 def ensure_runtime_sheets() -> None:
     """Build Gen1Recomp 16×96 SpriteRenderer sheets from follow-sprites."""
     script = ROOT / "tools" / "generate_runtime_sprite_sheets.py"
-    out_dir = ROOT / "assets" / "generated" / "followsprites_runtime"
+    out_dir = ROOT / "assets" / "wilds_generated" / "followsprites_runtime"
     manifest = out_dir / "manifest.json"
     if not script.is_file():
         fail(f"missing sheet generator: {script}")
@@ -531,7 +535,7 @@ def ensure_water_runtime_sheets() -> None:
     """Build water swimming/levitates 16×96 SpriteRenderer sheets."""
     script = ROOT / "tools" / "generate_water_runtime_sheets.py"
     validate = ROOT / "tools" / "validate_water_sprites.py"
-    out_dir = ROOT / "assets" / "generated" / "water_runtime"
+    out_dir = ROOT / "assets" / "wilds_generated" / "water_runtime"
     manifest = out_dir / "manifest.json"
     if not script.is_file():
         fail(f"missing water sheet generator: {script}")
@@ -575,7 +579,7 @@ def main() -> int:
     # Prefer Gen1Recomp modkit; fall back to manual pack when luajit/modkit
     # fails, is unavailable, or --skip-modkit is passed (e.g. local pre-release
     # testing where a real ROM-populated engine tree makes MK301's no-ROM-cache
-    # gate certain to fail on assets/generated/ and re-confirming that against
+    # gate certain to fail on assets/wilds_generated/ and re-confirming that against
     # the bare CI engine clone is a known, slow, redundant check).
     modkit_ok = False
     if not skip_modkit:

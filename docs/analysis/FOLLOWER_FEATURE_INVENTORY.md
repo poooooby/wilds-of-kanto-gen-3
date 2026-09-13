@@ -34,7 +34,7 @@ Icon global mutate              | n/a                              | generated.i
 
 | Source | Action |
 |--------|--------|
-| Wilds `assets/generated/followsprites_runtime/*.png` | **Reused** as standalone walker sheets (16×96, frames=6) |
+| Wilds `assets/wilds_generated/followsprites_runtime/*.png` | **Reused** as standalone walker sheets (16×96, frames=6) |
 | PokéPC `follower_NNN.png` | **Not copied** — optional via style `followers` when pack installed; otherwise fallback chain |
 | Credits | ShockSlayer / Pokémon Crystal Clear (via PokéPC lineage); Wilds HGSS follow-sprites under existing THIRD_PARTY_NOTICES |
 

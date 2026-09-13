@@ -13,7 +13,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 WATER_ROOT = ROOT / "assets/enhanced_overworld/water_sprites"
-RUNTIME_ROOT = ROOT / "assets/generated/water_runtime"
+RUNTIME_ROOT = ROOT / "assets/wilds_generated/water_runtime"
 
 KINDS = {
     "swimming": {

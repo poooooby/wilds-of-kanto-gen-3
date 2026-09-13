@@ -25,10 +25,10 @@ local function read(path)
   return d
 end
 
-local swimMan = assert(json.decode(read("assets/generated/true_size/swimming/manifest.json")))
-local levMan = assert(json.decode(read("assets/generated/true_size/levitate/manifest.json")))
-local swimAudit = assert(json.decode(read("assets/generated/true_size/swimming_size_audit.json")))
-local levAudit = assert(json.decode(read("assets/generated/true_size/levitate_size_audit.json")))
+local swimMan = assert(json.decode(read("assets/wilds_generated/true_size/swimming/manifest.json")))
+local levMan = assert(json.decode(read("assets/wilds_generated/true_size/levitate/manifest.json")))
+local swimAudit = assert(json.decode(read("assets/wilds_generated/true_size/swimming_size_audit.json")))
+local levAudit = assert(json.decode(read("assets/wilds_generated/true_size/levitate_size_audit.json")))
 
 local HEIGHT_TOL = 1
 local PERC_LO = 0.90

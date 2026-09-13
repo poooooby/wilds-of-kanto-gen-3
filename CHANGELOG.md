@@ -25,6 +25,31 @@
 - Minor description wording ("Gen 3 dex support").
 - `.gitignore`: ignore `.claude/` and the local `/release` pre-release build
   output folder.
+- **Generated asset path renamed**: `assets/generated/` is a path
+  Gen1Recomp's modkit reserves exclusively for the player's own ROM-derived
+  cache (rule MK301). This mod had shipped its own build output under that
+  same path since its first release, meaning real modkit validation had
+  always failed and every prior release was actually packed by
+  `scripts/build-mod.py`'s manual fallback rather than the validated modkit
+  path. Renamed to `assets/wilds_generated/` across the whole codebase (Lua,
+  Python tooling, docs, tests, CI workflow, mod.card) so real modkit
+  `validate`/`lint`/`pack` can now succeed against this mod's own files.
+- Fixed `scripts/build-mod.py`: two post-generation manifest-existence
+  checks (`ensure_runtime_sheets`, `ensure_water_runtime_sheets`) still
+  pointed at the old `assets/generated/...` path after the rename above,
+  which the generators themselves no longer wrote to.
+- Fixed `scripts/build-mod.py`'s manual-pack fallback: its directory walk
+  never pruned `os.walk`'s traversal (only filtered files after the fact),
+  so it fully descended into huge local-only directories (a bootstrapped
+  engine clone, a reference research checkout) that have nothing to do with
+  the mod payload, making local rebuilds dramatically slower than
+  necessary. Directories are now pruned in-place so the walk skips them
+  entirely.
+- Fixed `tools/generate_true_size_runtime.py` crashing on Windows
+  (`UnicodeEncodeError`) whenever it printed a unicode arrow in its
+  `--help` text or audit log, because Windows consoles default to the
+  system codepage rather than UTF-8; stdout/stderr are now forced to UTF-8
+  at startup.
 
 ## 2.4.0 (fork)
 
@@ -651,7 +676,7 @@ water/follower polish — with two final scale fixes below.
   authority (True Size). GSC / Pokédex stay Classic 16×16.
 - Pokémon Size is no longer a separate option — size follows Sprite Style.
 - Wilds, followers, and Town Pokémon share generated geometry under
-  `assets/generated/true_size/`.
+  `assets/wilds_generated/true_size/`.
 - Voxel + incompatible Dramatic Shape still falls back to Classic geometry
   without rewriting saved options.
 
@@ -690,7 +715,7 @@ water/follower polish — with two final scale fixes below.
 - **requestedMode** vs **effectiveMode**: Voxel with incompatible Dramatic Shape
   uses Classic geometry automatically; the saved `pokemon_size` preference is
   never rewritten, and Flat restores True Size on live rebind.
-- New runtime assets under `assets/generated/true_size/` (HGSS from original
+- New runtime assets under `assets/wilds_generated/true_size/` (HGSS from original
   followsprites, Followers/GSC, Pokédex 1-frame stand-ins, swimming, levitate).
 - Wilds, followers, and Town Pokémon share `lib/species_geometry.lua`.
 - Classic 16×16 pipelines and Voxel stability remain unchanged.
@@ -1374,7 +1399,7 @@ saved values keep working.
 - **Question-mark fallback despite generated sheets**: `RuntimeSheets` now
   resolves sheets through `mod.assets:path(relative)` (the same load path
   Gen1Recomp `Assets.image` / `SpriteRenderer` expect) instead of registering
-  bare `assets/generated/...` relative paths. Existence checks use `mod.read`
+  bare `assets/wilds_generated/...` relative paths. Existence checks use `mod.read`
   / resolved load paths — `love.filesystem.getInfo(relative)` alone no longer
   decides that a packaged mod asset is missing.
 - Registration for valid dex IDs writes `kind=native_runtime_sheet`,
@@ -1397,7 +1422,7 @@ saved values keep working.
   same trainer/NPC contract Dramatic Shape already supports: a stable
   `SpriteRenderer` with `frames=6`, `walker=true`, and a static 16×96 sheet.
 - Build-time generator writes
-  `assets/generated/followsprites_runtime/{dex}-{normal|shiny}.png` from the
+  `assets/wilds_generated/followsprites_runtime/{dex}-{normal|shiny}.png` from the
   follow-sprite source atlas (nearest-neighbor, bottom-center, shared scale).
 - `pose()` returns NPC-compatible `facing` / `phase` / `flip` (`Movement.walkPhase`
   + `stepFlip`). Right-facing uses the engine left-frame mirror.

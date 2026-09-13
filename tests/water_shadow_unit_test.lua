@@ -90,7 +90,7 @@ eq(def[WaterShadowRenderer.DEF_KIND], "hidden", "hidden kind")
 eq(WaterShadowRenderer.sinkFor(def), WaterShadowRenderer.HIDDEN_SINK, "hidden sink")
 
 local silDef = WaterShadowRenderer.tagDef({
-  image = "assets/generated/swimming_silhouette_runtime/054-normal.png",
+  image = "assets/wilds_generated/swimming_silhouette_runtime/054-normal.png",
   frames = 6, walker = true, trueColor = true,
 }, "silhouette")
 check(WaterShadowRenderer.isWaterShadowDef(silDef), "silhouette def tagged")

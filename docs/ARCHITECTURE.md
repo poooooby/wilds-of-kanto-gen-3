@@ -139,15 +139,15 @@ Primary Pokemon renderer: `NATIVE_SPRITE_RENDERER`.
 ```text
 Source:  assets/enhanced_overworld/followsprites/{dex}-{form}-{n|s}.png
 Build:   tools/generate_runtime_sprite_sheets.py
-Output:  assets/generated/followsprites_runtime/{dex:03d}-{normal|shiny}.png
+Output:  assets/wilds_generated/followsprites_runtime/{dex:03d}-{normal|shiny}.png
 ```
 
 Path types:
 
 ```text
-relativePath = assets/generated/followsprites_runtime/001-normal.png
+relativePath = assets/wilds_generated/followsprites_runtime/001-normal.png
 loadPath     = mod.assets:path(relativePath)
-             = mods/overworld_wild_spawns/assets/generated/.../001-normal.png
+             = mods/overworld_wild_spawns/assets/wilds_generated/.../001-normal.png
 ```
 
 `SpriteRenderer.def.image` and `Assets.image` always use `loadPath`.

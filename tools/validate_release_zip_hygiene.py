@@ -136,7 +136,7 @@ def self_test() -> int:
 
     check(build_mod.should_include("main.lua") is True, "include main.lua")
     check(build_mod.should_include("lib/wilds_fs.lua") is True, "include lib/wilds_fs.lua")
-    check(build_mod.should_include("assets/generated/true_size/species_table.lua") is True,
+    check(build_mod.should_include("assets/wilds_generated/true_size/species_table.lua") is True,
           "include generated lua table")
     check(build_mod.should_include("scripts/bootstrap.sh") is False, "exclude bootstrap.sh")
     check(build_mod.should_include("scripts/build-mod.ps1") is False, "exclude build-mod.ps1")
@@ -169,7 +169,7 @@ def self_test() -> int:
         "options.lua",
         "LICENSE",
         "lib/wilds_fs.lua",
-        "assets/generated/followsprites_runtime/001-normal.png",
+        "assets/wilds_generated/followsprites_runtime/001-normal.png",
     ]
     check(validate_names(clean) == [], "accept packed mod file list")
 

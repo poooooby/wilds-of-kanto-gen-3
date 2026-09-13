@@ -232,19 +232,19 @@ check(WaterDisplay.needsNativeHiddenShadow(V.mod, waterEnt),
       "hidden needs native flat shadow marker")
 check(not WaterDisplay.needsNativeSilhouetteSheet(V.mod, waterEnt),
       "hidden does not use native silhouette sheet")
-local hiddenAsset = "assets/generated/water_hidden_runtime/hidden-water-shadow.png"
+local hiddenAsset = "assets/wilds_generated/water_hidden_runtime/hidden-water-shadow.png"
 local hf = io.open(hiddenAsset, "rb")
 check(hf ~= nil, "hidden water shadow asset exists")
 if hf then hf:close() end
 
 -- ------- Silhouette assets exist -------
-local sil = "assets/generated/swimming_silhouette_runtime/130-normal.png"
+local sil = "assets/wilds_generated/swimming_silhouette_runtime/130-normal.png"
 local f = io.open(sil, "rb")
 check(f ~= nil, "swimming silhouette sample exists")
 if f then f:close() end
-local sil2 = "assets/generated/levitates_silhouette_runtime/092-shiny.png"
+local sil2 = "assets/wilds_generated/levitates_silhouette_runtime/092-shiny.png"
 -- 092 may or may not exist; check any levitates file
-local handle = io.popen("ls assets/generated/levitates_silhouette_runtime | head -1")
+local handle = io.popen("ls assets/wilds_generated/levitates_silhouette_runtime | head -1")
 local first = handle and handle:read("*l")
 if handle then handle:close() end
 check(first ~= nil and first ~= "", "levitates silhouette dir populated")

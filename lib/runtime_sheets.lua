@@ -1,10 +1,10 @@
 -- Resolve pre-built Gen1Recomp SpriteRenderer sheets for follow-sprites.
--- Sheets live under assets/generated/followsprites_runtime/ (build-time).
+-- Sheets live under assets/wilds_generated/followsprites_runtime/ (build-time).
 --
 -- Path types (do not mix):
---   relativePath  — mod-root relative, e.g. assets/generated/.../001-normal.png
+--   relativePath  — mod-root relative, e.g. assets/wilds_generated/.../001-normal.png
 --   loadPath      — engine asset path via mod.assets:path(relativePath)
---                   e.g. mods/overworld_wild_spawns/assets/generated/.../001-normal.png
+--                   e.g. mods/overworld_wild_spawns/assets/wilds_generated/.../001-normal.png
 --
 -- SpriteRenderer / Assets.image MUST receive loadPath, never a bare relativePath
 -- and never an OS absolute path.
@@ -16,7 +16,7 @@ local WildsFs = V.require("wilds_fs")
 local RuntimeSheets = {}
 RuntimeSheets.__index = RuntimeSheets
 
-RuntimeSheets.DIR_REL = "assets/generated/followsprites_runtime"
+RuntimeSheets.DIR_REL = "assets/wilds_generated/followsprites_runtime"
 RuntimeSheets.MANIFEST_REL = RuntimeSheets.DIR_REL .. "/manifest.json"
 RuntimeSheets.FRAMES = 6
 RuntimeSheets.WALKER = true

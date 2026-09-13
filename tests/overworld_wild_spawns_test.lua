@@ -14,8 +14,8 @@ local modMeta = run.loader.mods["wilds_of_kanto_gen3"]
 T.check(modMeta ~= nil, "loader discovered mod by manifest id")
 T.eq(modMeta.state, "loaded", "mod reached loaded state")
 T.eq(modMeta.manifest.id, "wilds_of_kanto_gen3", "manifest id")
-T.eq(modMeta.manifest.name, "Wilds of Kanto: Gen 3 Fork", "manifest name")
-T.eq(modMeta.manifest.version, "2.4.0", "manifest version")
+T.eq(modMeta.manifest.name, "Wilds of Kanto Revival", "manifest name")
+T.eq(modMeta.manifest.version, "2.4.1", "manifest version")
 T.eq(modMeta.manifest.entry, "main.lua", "entry path")
 T.eq(modMeta.manifest.category, "MECHANIC", "category")
 T.eq(modMeta.manifest.api, 2, "mod api version")
@@ -23,7 +23,7 @@ T.eq(modMeta.manifest.github, "poooooby/wilds-of-kanto-gen-3", "github field")
 
 local exports = run.loader.exports["wilds_of_kanto_gen3"]
 T.check(exports ~= nil, "exports table published")
-T.eq(exports.version, "2.4.0", "version export")
+T.eq(exports.version, "2.4.1", "version export")
 T.check(exports.logic ~= nil, "logic export")
 T.check(exports.render ~= nil, "render export")
 T.check(exports.hud ~= nil, "hud export")
@@ -591,7 +591,7 @@ T.check(modMeta.manifest.entry == "main.lua", "manifest entry is main.lua")
 T.check(modMeta.manifest.options_schema == "options.lua",
         "manifest options_schema is options.lua")
 T.eq(modMeta.manifest.description,
-     "Fork of YoDrehDenSwagAuf's Wilds of Kanto, extended with Gen 3 species support (via the Kanto Reforged companion mod) and additional Voxel renderer compatibility. Visible and reactive wild Pokemon for the Gen 1 overworld. Experimental Pokemon Gold / Gen 2 support (beta).",
+     "Fork of YoDrehDenSwagAuf's Wilds of Kanto, extended with Gen 3 dex support (Kanto Reforged) and additional Voxel renderer compatibility. Visible and reactive wild Pokemon for the Gen 1 overworld. Experimental Pokemon Gold / Gen 2 support (beta).",
      "manifest description matches")
 
 -- Simulated successful spawn debug snapshot (for the report).
@@ -967,7 +967,7 @@ do
   -- exercise sanitize via candidates for a synthetic mon
   mockGame.data.pokemon.MR_MIME = {
     id = "MR_MIME", name = "Mr. Mime", dex = 122,
-    spriteFront = "assets/generated/battle/front/mr_mime.png",
+    spriteFront = "assets/wilds_generated/battle/front/mr_mime.png",
   }
   local cands = exports.render:assetCandidates("MR_MIME", mockGame)
   local hasDisplay = false

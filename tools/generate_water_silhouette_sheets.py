@@ -2,12 +2,12 @@
 """Bake native 16×96 water silhouette sheets from water_runtime sources.
 
 Sources:
-  assets/generated/water_runtime/swimming/*.png
-  assets/generated/water_runtime/levitates/*.png
+  assets/wilds_generated/water_runtime/swimming/*.png
+  assets/wilds_generated/water_runtime/levitates/*.png
 
 Outputs (filenames preserved):
-  assets/generated/swimming_silhouette_runtime/{name}.png
-  assets/generated/levitates_silhouette_runtime/{name}.png
+  assets/wilds_generated/swimming_silhouette_runtime/{name}.png
+  assets/wilds_generated/levitates_silhouette_runtime/{name}.png
 
 Per 16×16 frame:
   - recolor every opaque pixel to a dark blue-teal
@@ -24,17 +24,17 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC_ROOT = ROOT / "assets/generated/water_runtime"
+SRC_ROOT = ROOT / "assets/wilds_generated/water_runtime"
 KINDS = (
     {
         "kind": "swimming",
         "src": SRC_ROOT / "swimming",
-        "out": ROOT / "assets/generated/swimming_silhouette_runtime",
+        "out": ROOT / "assets/wilds_generated/swimming_silhouette_runtime",
     },
     {
         "kind": "levitates",
         "src": SRC_ROOT / "levitates",
-        "out": ROOT / "assets/generated/levitates_silhouette_runtime",
+        "out": ROOT / "assets/wilds_generated/levitates_silhouette_runtime",
     },
 )
 
@@ -189,7 +189,7 @@ def main() -> int:
         total += written
         print(f"{meta['kind']}: wrote {written}, skipped {skipped}, sources {len(files)}")
 
-    out_manifest = ROOT / "assets/generated/water_silhouette_runtime_manifest.json"
+    out_manifest = ROOT / "assets/wilds_generated/water_silhouette_runtime_manifest.json"
     out_manifest.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"total written: {total}")
     print(f"manifest: {out_manifest.relative_to(ROOT)}")

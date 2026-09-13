@@ -110,9 +110,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/generate_runtime_sprite_sheets.py
-          test -f assets/generated/followsprites_runtime/manifest.json
-          test -f assets/generated/followsprites_runtime/001-normal.png
-          count=$(find assets/generated/followsprites_runtime -name '*.png' | wc -l)
+          test -f assets/wilds_generated/followsprites_runtime/manifest.json
+          test -f assets/wilds_generated/followsprites_runtime/001-normal.png
+          count=$(find assets/wilds_generated/followsprites_runtime -name '*.png' | wc -l)
           echo "runtime sheets: $count"
           test "$count" -ge 151
 

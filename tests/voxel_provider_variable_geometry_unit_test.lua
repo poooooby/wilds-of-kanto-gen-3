@@ -240,7 +240,7 @@ eq(potatoPub.sb.mesh(npc, 0).kind, "original", "potato vanilla original mesh")
 eq(origMeshCalls, 1, "potato vanilla one orig call")
 
 local onixDef = {
-  image = "assets/generated/true_size/hgss/095-normal.png",
+  image = "assets/wilds_generated/true_size/hgss/095-normal.png",
   frames = 6, walker = true,
   frameWidth = onix.frameWidth, frameHeight = onix.frameHeight,
   anchorX = onix.anchorX, anchorY = onix.anchorY,
@@ -478,7 +478,7 @@ local effFlat, whyFlat = VariableSize.effectiveMode(mod, { voxelActive = false }
 eq(effFlat, "true_size", "Flat HGSS True Size")
 eq(whyFlat, "ok", "flat ok despite unsupported Potato")
 local def = {
-  image = "assets/generated/followsprites_runtime/095-normal.png",
+  image = "assets/wilds_generated/followsprites_runtime/095-normal.png",
   frames = 6, walker = true, trueColor = true,
 }
 local out, info = VariableSize.applyToDef(mod, def, {

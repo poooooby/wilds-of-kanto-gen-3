@@ -28,9 +28,9 @@ Quality rules (this rebuild):
   * Source under assets/enhanced_overworld/followsprites is never modified.
 
 Output:
-  assets/generated/followsprites_runtime/{dex:03d}-normal.png
-  assets/generated/followsprites_runtime/{dex:03d}-shiny.png
-  assets/generated/followsprites_runtime/manifest.json
+  assets/wilds_generated/followsprites_runtime/{dex:03d}-normal.png
+  assets/wilds_generated/followsprites_runtime/{dex:03d}-shiny.png
+  assets/wilds_generated/followsprites_runtime/manifest.json
 """
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 MAPPING = ROOT / "assets/enhanced_overworld/followsprites_mapping/followsprites_mapping.json"
-OUT_DIR = ROOT / "assets/generated/followsprites_runtime"
+OUT_DIR = ROOT / "assets/wilds_generated/followsprites_runtime"
 
 FRAME_SPECS = (
     ("idle", "down"),
@@ -311,7 +311,7 @@ def main() -> int:
             src_path = ROOT / meta["path"]
             out_name = f"{sid:03d}-{variant}.png"
             out_path = args.out / out_name
-            rel_out = f"assets/generated/followsprites_runtime/{out_name}"
+            rel_out = f"assets/wilds_generated/followsprites_runtime/{out_name}"
             if out_path.is_file() and not args.force:
                 skipped += 1
                 manifest["sheets"][f"{sid}:{variant}"] = {

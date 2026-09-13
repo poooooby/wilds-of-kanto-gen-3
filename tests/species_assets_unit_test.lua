@@ -310,7 +310,7 @@ eq(SpeciesGeometry.normalizeDex(SpeciesAssets.idFor("TYRANITAR"), goldGame), 248
 -- VariableSize must use species string → asset id, not runtime dex
 local landRel = select(1, SpeciesGeometry.relativePath(150, "pokemmo", "normal", V.mod))
 local landDef = {
-  image = landRel or "assets/generated/true_size/hgss/150-normal.png",
+  image = landRel or "assets/wilds_generated/true_size/hgss/150-normal.png",
   frames = 6, walker = true, trueColor = true, id = "T150",
 }
 landDef = VariableSize.applyToDef(V.mod, landDef, {
