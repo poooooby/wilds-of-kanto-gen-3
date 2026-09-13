@@ -20,6 +20,7 @@ __pycache__/
 *.pyc
 .DS_Store
 .modkit/
+.claude/
 
 # Love save / bake cache
 overworld-spawns-cache/
@@ -33,6 +34,4 @@ overworld_wild_spawns-cache/
 /assets/_inspect/
 /.freebuff
 /tests
-
-# Local scratch notes
-/gen3missing.txt
+/release

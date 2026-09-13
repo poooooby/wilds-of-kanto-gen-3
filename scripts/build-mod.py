@@ -20,7 +20,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD_DIR = ROOT  # repo root == mod root (DramaticShape layout)
-DIST = ROOT / "dist"
 # Engine clone lives under .deps/ so modkit never packs it (dot-dirs skipped).
 ENGINE = ROOT / ".deps" / "gen1recomp"
 
@@ -67,6 +66,7 @@ FORBIDDEN_PREFIXES = (
     "gen1recomp/",
     "DramaticShapeVoxelMod/",
     "dist/",
+    "release/",
     "assets/_inspect/",
 )
 FORBIDDEN_NAMES = {
@@ -218,6 +218,7 @@ def pack_manual(out_zip: Path) -> None:
                 "gen1recomp",
                 "DramaticShapeVoxelMod",
                 "dist",
+                "release",
                 "scripts",
                 "tests",
                 "tools",
@@ -547,6 +548,13 @@ def ensure_water_runtime_sheets() -> None:
 
 
 def main() -> int:
+    skip_modkit = "--skip-modkit" in sys.argv
+    out_dir_name = "dist"
+    for i, arg in enumerate(sys.argv):
+        if arg == "--out-dir" and i + 1 < len(sys.argv):
+            out_dir_name = sys.argv[i + 1]
+    dist = ROOT / out_dir_name
+
     if not (MOD_DIR / "manifest.json").is_file():
         fail(f"missing mod manifest at repo root: {MOD_DIR / 'manifest.json'}")
     manifest = read_manifest()
@@ -557,21 +565,27 @@ def main() -> int:
     ensure_runtime_sheets()
     ensure_water_runtime_sheets()
 
-    if DIST.exists():
-        shutil.rmtree(DIST)
-    DIST.mkdir(parents=True)
+    if dist.exists():
+        shutil.rmtree(dist)
+    dist.mkdir(parents=True)
     # Public release filename (product name). Keep technical-id aliases too.
     out_name = f"wilds-of-kanto-v{manifest['version']}.zip"
-    out_zip = DIST / out_name
+    out_zip = dist / out_name
 
-    # Prefer Gen1Recomp modkit; fall back to manual pack when luajit/modkit fails.
-    modkit_ok = (
-        run_modkit("validate", "mods/wilds_of_kanto_gen3")
-        and run_modkit("lint", "mods/wilds_of_kanto_gen3")
-        and run_modkit("pack", "mods/wilds_of_kanto_gen3", "-o", str(out_zip))
-    )
+    # Prefer Gen1Recomp modkit; fall back to manual pack when luajit/modkit
+    # fails, is unavailable, or --skip-modkit is passed (e.g. local pre-release
+    # testing where a real ROM-populated engine tree makes MK301's no-ROM-cache
+    # gate certain to fail on assets/generated/ and re-confirming that against
+    # the bare CI engine clone is a known, slow, redundant check).
+    modkit_ok = False
+    if not skip_modkit:
+        modkit_ok = (
+            run_modkit("validate", "mods/wilds_of_kanto_gen3")
+            and run_modkit("lint", "mods/wilds_of_kanto_gen3")
+            and run_modkit("pack", "mods/wilds_of_kanto_gen3", "-o", str(out_zip))
+        )
     if not modkit_ok or not out_zip.is_file():
-        print("modkit unavailable/failed; packing manually from repo root")
+        print("modkit unavailable/failed/skipped; packing manually from repo root")
         pack_manual(out_zip)
 
     if not out_zip.is_file():
@@ -583,8 +597,8 @@ def main() -> int:
 
     # Prefer a single public release ZIP so Mod Manager update detection has
     # one unambiguous archive. Optional technical-id copies stay local-only.
-    id_versioned = DIST / f"{manifest['id']}-{manifest['version']}.zip"
-    id_alias = DIST / f"{manifest['id']}.zip"
+    id_versioned = dist / f"{manifest['id']}-{manifest['version']}.zip"
+    id_alias = dist / f"{manifest['id']}.zip"
     shutil.copy2(out_zip, id_versioned)
     shutil.copy2(out_zip, id_alias)
 

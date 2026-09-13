@@ -19,6 +19,13 @@
   [docs/analysis/TRUE_SIZE_SYSTEM.md](docs/analysis/TRUE_SIZE_SYSTEM.md).
   To be corrected later.
 
+## 2.4.1 (fork)
+
+- Renamed to "Wilds of Kanto Revival" in manifest.json / mod.card.
+- Minor description wording ("Gen 3 dex support").
+- `.gitignore`: ignore `.claude/` and the local `/release` pre-release build
+  output folder.
+
 ## 2.4.0 (fork)
 
 ### Fork identity

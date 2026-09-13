@@ -531,7 +531,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.4.0"
+  mod.exports.version = "2.4.1"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)
