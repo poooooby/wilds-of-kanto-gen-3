@@ -110,7 +110,31 @@ function CaveReachability.collectSeeds(map, player, opts)
   return seeds, sx, sy, source
 end
 
-local function bfsFromSeeds(map, seeds)
+-- Gen1 elevation/ledge collisions are a directional TILE-PAIR rule, not a
+-- per-cell walkability fact: e.g. CAVERN tile 32 -> tile 5 is a one-way
+-- ledge the real player can hop down but never climb back through, yet
+-- isWalkableCell reports both tiles as plain floor. Without this check the
+-- BFS freely crosses ledges in both directions, fabricating connectivity
+-- between pockets a real player can only reach via a completely different
+-- route (typically a staircase elsewhere on the map).
+local function tilePairBlocked(map, tilePairs, sx, sy, tx, ty)
+  if not tilePairs or #tilePairs == 0 then return false end
+  if not (map and map.def and type(map.cellTile) == "function") then return false end
+  local tileset = map.def.tileset
+  local ok, a = pcall(map.cellTile, map, sx, sy)
+  if not ok then return false end
+  local ok2, b = pcall(map.cellTile, map, tx, ty)
+  if not ok2 then return false end
+  for _, p in ipairs(tilePairs) do
+    if p.tileset == tileset
+       and ((p.a == a and p.b == b) or (p.a == b and p.b == a)) then
+      return true
+    end
+  end
+  return false
+end
+
+local function bfsFromSeeds(map, seeds, tilePairs)
   local reachable = {}
   local queue = {}
   for _, s in ipairs(seeds or {}) do
@@ -127,7 +151,8 @@ local function bfsFromSeeds(map, seeds)
     for _, d in ipairs(DIRS) do
       local nx, ny = c.x + d[1], c.y + d[2]
       local nk = CaveReachability.cellKey(nx, ny)
-      if not reachable[nk] and CaveReachability.isPassableCaveCell(map, nx, ny) then
+      if not reachable[nk] and CaveReachability.isPassableCaveCell(map, nx, ny)
+         and not tilePairBlocked(map, tilePairs, c.x, c.y, nx, ny) then
         reachable[nk] = true
         queue[#queue + 1] = { x = nx, y = ny }
       end
@@ -186,6 +211,9 @@ function CaveReachability.buildUnreachableComponents(map, reachable)
 end
 
 -- Build reachableCaveCells["x:y"] = true via BFS from verified player seeds.
+-- opts.tilePairs: the tileset's directional elevation/ledge pair list
+-- (game.data.field.tilePairs.land) so the BFS never crosses a one-way
+-- ledge in both directions; omit to fall back to plain per-cell walkability.
 function CaveReachability.build(map, player, opts)
   opts = opts or {}
   local result = {
@@ -229,7 +257,7 @@ function CaveReachability.build(map, player, opts)
     result.reason = "seeded from player neighbors"
   end
 
-  local reachable = bfsFromSeeds(map, seeds)
+  local reachable = bfsFromSeeds(map, seeds, opts.tilePairs)
   local count = 0
   for _ in pairs(reachable) do count = count + 1 end
   result.reachable = reachable

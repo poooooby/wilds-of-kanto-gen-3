@@ -10,6 +10,37 @@
 
 ## Unreleased
 
+### Bug fixes
+
+- Fixed wild Pokemon spawning onto, and wandering onto, cells occupied by
+  native map NPCs (Strength boulders, stationary trainers, signs) in caves
+  — visually indistinguishable from solid wall. Those objects live in the
+  engine's own `ow.npcs` list, never in Wilds' own `ow.entities`, so
+  neither the initial spawn-tile picker nor the wander/chase/flee
+  collision check had any visibility into them.
+  - Movement: `lib/behavior.lua`'s `occupiedBlocked` now also checks a
+    `mapNpcs` list (`lib/behavior_tick.lua` fills it from `ow.npcs`)
+    before allowing a step.
+  - Spawn placement: `lib/grass.lua`'s `validateWalkableTile` /
+    `validateEligibleTile` (and `pickFree` / `pickFreeWalkable`) now
+    reject a candidate tile the same way.
+  Reported live in MT_MOON_1F (wander first, then four mons found
+  spawned directly on wall-like NPC-occupied tiles).
+- Fixed cave reachability BFS crossing Gen1's directional elevation/ledge
+  collisions (a one-way tile pair, e.g. hopping down a ledge you can't
+  climb back through) as if they were plain two-way floor. `isWalkableCell`
+  only reports single-cell walkability and has no concept of *direction*,
+  so a pocket only reachable by looping through a completely different
+  route (typically a staircase) could read as directly connected to the
+  player's position, wrongly letting Pokemon spawn/wander there.
+  `lib/cave_reachability.lua`'s BFS now also checks the tileset's
+  directional tile-pair table (`game.data.field.tilePairs.land`, the same
+  data the engine's own player-movement collision uses) before crossing
+  between two cells, via `CaveReachability.build(map, player, { tilePairs
+  = ... })`. Verified against real MT_MOON_1F data: the exact pocket
+  reported live (`(17,20)`, `(17,28)`, `(17,31)`, `(18,34)`) now correctly
+  classifies as unreachable, while unrelated reachable cells are unaffected.
+
 ### Known issues
 
 - Variable-geometry wild Pokemon (True Size / PMDCollab) render floating well

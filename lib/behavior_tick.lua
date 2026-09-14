@@ -249,6 +249,11 @@ function BehaviorTick:_fillBehaviorCtx(ctx, ow, game, logic, occupancy, cfg, saf
   end
   ctx.map = ow.map
   ctx.entities = ow.entities
+  -- Native map NPCs (trainers, signs, Strength boulders) live in the
+  -- engine's own list, never in ow.entities; wander/chase must see them too
+  -- or wild Pokemon walk straight onto boulder-occupied cells that look
+  -- like solid cave wall.
+  ctx.mapNpcs = ow.npcs
   ctx.player = ow.player
   ctx.dt = extraDt
   ctx.sightRange = cfg.sight
@@ -417,7 +422,9 @@ function BehaviorTick:step(ctx)
     if logic.caveReachability and ow.map and ow.player then
       local CaveReachability = V.require("cave_reachability")
       if CaveReachability.needsRebuild(logic.caveReachability, ow.map, ow.player) then
-        logic.caveReachability = CaveReachability.build(ow.map, ow.player)
+        local tilePairs = game and game.data and game.data.field
+          and game.data.field.tilePairs and game.data.field.tilePairs.land
+        logic.caveReachability = CaveReachability.build(ow.map, ow.player, { tilePairs = tilePairs })
         logic._caveRebuilds = (logic._caveRebuilds or 0) + 1
         if logic.caveMode == "mixed" then
           local caveAll = Grass.caveCells(ow.map)

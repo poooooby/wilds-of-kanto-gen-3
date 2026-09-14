@@ -1469,7 +1469,9 @@ function SpawnLogic:initializeForMap(mapId, game)
     self.eligibleCache = Grass.waterCells(ow.map)
   elseif surfaceInfo.tileMode == "walkable" then
     local caveAll = Grass.caveCells(ow.map)
-    self.caveReachability = CaveReachability.build(ow.map, ow.player)
+    local tilePairs = game and game.data and game.data.field
+      and game.data.field.tilePairs and game.data.field.tilePairs.land
+    self.caveReachability = CaveReachability.build(ow.map, ow.player, { tilePairs = tilePairs })
     local reachable, unreachable, invalid = CaveReachability.partitionCells(
       caveAll, ow.map, self.caveReachability)
     local status = self.caveReachability.status
@@ -1890,7 +1892,7 @@ function SpawnLogic:trySpawn(game, opts)
       ow.map, ow.entities, ow.player,
       opts.force and 1 or Config.DEFAULTS.min_player_distance,
       nil, Config.DEFAULTS.max_player_distance,
-      function(r) st:noteReject(r) end)
+      function(r) st:noteReject(r) end, ow.npcs)
   else
     if #tileList == 0 then
       st:noteReject("rejected: not encounter tile")
@@ -1909,6 +1911,7 @@ function SpawnLogic:trySpawn(game, opts)
         minSeparation = SpawnRegions.minSeparation(),
         preferFar = not opts.force,
         occupancy = occupancy,
+        mapNpcs = ow.npcs,
         isBlocked = function(cx, cy)
           return SpecialSpawnSafety.isReserved(game, mapId, cx, cy)
         end,
@@ -2644,10 +2647,10 @@ function SpawnLogic:testSpawn(species, opts)
     local okTile, tileReason
     if tileMode == "water" then
       okTile, tileReason = Grass.validateEligibleTile(
-        ow.map, ow.entities, ow.player, nx, ny, 1, nil, nil, nil, "water", occupancy)
+        ow.map, ow.entities, ow.player, nx, ny, 1, nil, nil, nil, "water", occupancy, ow.npcs)
     elseif tileMode == "walkable" then
       okTile, tileReason = Grass.validateWalkableTile(
-        ow.map, ow.entities, ow.player, nx, ny, 1, nil, nil)
+        ow.map, ow.entities, ow.player, nx, ny, 1, nil, nil, ow.npcs)
       if okTile and self.caveReachability
          and self.caveReachability.status ~= "FAILED"
          and not CaveReachability.isReachable(self.caveReachability, nx, ny) then

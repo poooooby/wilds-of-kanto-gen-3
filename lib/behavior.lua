@@ -414,7 +414,7 @@ function Behavior.clearSafariFlee(entity)
   end
 end
 
-local function occupiedBlocked(entities, x, y, ignore, occupancy)
+local function occupiedBlocked(entities, x, y, ignore, occupancy, mapNpcs)
   if occupancy then
     if occupancy:isOccupied(x, y, ignore) then return true, "occupied" end
     if occupancy:isReserved(x, y, ignore) then return true, "reserved" end
@@ -430,6 +430,15 @@ local function occupiedBlocked(entities, x, y, ignore, occupancy)
       end
     end
   end
+  -- Native map NPCs (trainers, signs, Strength boulders, ...) live in the
+  -- engine's own ow.npcs list, never in Wilds' ow.entities -- without this,
+  -- wander/chase treat a boulder-occupied cell (visually indistinguishable
+  -- from a cave wall) as free floor and walk wild Pokemon straight onto it.
+  for _, npc in ipairs(mapNpcs or {}) do
+    local same = (npc.cellX == x and npc.cellY == y)
+              or (npc.targetX == x and npc.targetY == y)
+    if same then return true, "map_npc" end
+  end
   return false
 end
 
@@ -439,6 +448,7 @@ local function isTemporaryOccupancyBlock(reason)
       or reason == "swap_blocked"
       or reason == "follower"
       or reason == "npc"
+      or reason == "map_npc"
       or reason == "pokemon"
       or reason == "blocked"
 end
@@ -461,7 +471,7 @@ local function canStep(map, entities, entity, player, nx, ny, region, allowLeave
     return false, "story_reserved"
   end
   -- Hard occupancy first (canStep is read-only; never writes reservations).
-  local blocked, blockWhy = occupiedBlocked(entities, nx, ny, entity, opts.occupancy)
+  local blocked, blockWhy = occupiedBlocked(entities, nx, ny, entity, opts.occupancy, opts.mapNpcs)
   if blocked then return false, blockWhy or "occupied" end
 
   -- Water-surface entities stay on water. Land aggro must never inherit
@@ -900,6 +910,7 @@ local function planWanderStep(entity, ctx, bx, t, opts)
 
   local stepOpts = {
     occupancy = ctx.occupancy,
+    mapNpcs = ctx.mapNpcs,
     game = ctx.game,
     mapId = ctx.mapId,
     waterOnly = waterOnly,
@@ -1372,6 +1383,7 @@ local function tickLandAggressive(entity, ctx, bx, t)
 
     local stepOpts = {
       occupancy = ctx.occupancy,
+      mapNpcs = ctx.mapNpcs,
       logic = ctx.logic,
       game = ctx.game,
       mapId = ctx.mapId,
@@ -1534,6 +1546,7 @@ local function tickWaterAggressive(entity, ctx, bx, t)
         waterOnly = true,
         expandOrthogonal = true,
         occupancy = ctx.occupancy,
+        mapNpcs = ctx.mapNpcs,
         logic = ctx.logic,
         game = ctx.game,
         mapId = ctx.mapId,
@@ -1839,6 +1852,7 @@ local function tickSafariFlee(entity, ctx, bx, t)
     sf.active = true
     local moved = stepAwayFrom(entity, map, entities, player, region, {
       occupancy = ctx.occupancy,
+      mapNpcs = ctx.mapNpcs,
       reachableCaveCells = (entity.surface == Surface.CAVE) and ctx.reachableCaveCells or nil,
     })
     if not moved then
@@ -1857,6 +1871,7 @@ local function tickSafariFlee(entity, ctx, bx, t)
     end
     local moved, why = stepAwayFrom(entity, map, entities, player, region, {
       occupancy = ctx.occupancy,
+      mapNpcs = ctx.mapNpcs,
       reachableCaveCells = (entity.surface == Surface.CAVE) and ctx.reachableCaveCells or nil,
     })
     if not moved then
@@ -1948,6 +1963,7 @@ local function tickSafariWander(entity, ctx, bx, t)
   end
   local stepOpts = {
     occupancy = ctx.occupancy,
+    mapNpcs = ctx.mapNpcs,
     reachableCaveCells = (entity.surface == Surface.CAVE) and ctx.reachableCaveCells or nil,
   }
   for _, d in ipairs(dirs) do
@@ -2090,6 +2106,7 @@ function Behavior.tick(entity, ctx)
     end
     local stepOpts = {
       occupancy = ctx.occupancy,
+      mapNpcs = ctx.mapNpcs,
       game = ctx.game,
       mapId = ctx.mapId,
       waterOnly = bx.behavior == Behavior.WATER_WANDER or entity.surface == Surface.WATER,

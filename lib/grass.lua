@@ -73,6 +73,20 @@ local function occupiedByWildSpawn(entities, x, y, ignore)
   return false
 end
 
+-- Native map NPCs (trainers, signs, Strength boulders) live in the engine's
+-- own ow.npcs list, never in Wilds' own ow.entities -- without this, a spawn
+-- can land directly on a boulder/trainer-occupied cell that looks like solid
+-- cave wall (see lib/behavior.lua's mapNpcs check for the movement half).
+local function mapNpcOccupied(mapNpcs, x, y)
+  for _, npc in ipairs(mapNpcs or {}) do
+    if (npc.cellX == x and npc.cellY == y)
+       or (npc.targetX == x and npc.targetY == y) then
+      return true
+    end
+  end
+  return false
+end
+
 -- Followers EX trailers / Yellow Pikachu follower are passable=true but still
 -- block wild spawns and steps. Matches CellOccupancy.isFollowerEntity markers.
 local function isFollowerMarker(entity)
@@ -187,12 +201,15 @@ end
 
 -- Validate against an optional membership predicate (home region / surface).
 function Grass.validateEligibleTile(map, entities, player, x, y, minDist, maxDist,
-                                    ignore, membership, mode, occupancy)
+                                    ignore, membership, mode, occupancy, mapNpcs)
   mode = mode or "grass"
   if membership and not membership[x .. "," .. y] then
     return false, "rejected: outside region"
   end
   if occupancyBlocks(occupancy, x, y, ignore) then
+    return false, "rejected: occupied by NPC"
+  end
+  if mapNpcOccupied(mapNpcs, x, y) then
     return false, "rejected: occupied by NPC"
   end
   if mode == "grass" then
@@ -243,7 +260,7 @@ end
 -- then expand maxDist so small maps are not left with zero candidates.
 -- opts: { membership, mode, occupiedSpawns, minSeparation, preferFar,
 --         strictSeparation, separationMetric ("chebyshev"|"manhattan"),
---         occupancy, isBlocked(x,y) }
+--         occupancy, mapNpcs (ow.npcs -- trainers/signs/boulders), isBlocked(x,y) }
 function Grass.pickFree(map, entities, player, minDist, rng, grassList, maxDist, onReject, opts)
   opts = opts or {}
   grassList = grassList or Grass.cells(map)
@@ -259,6 +276,7 @@ function Grass.pickFree(map, entities, player, minDist, rng, grassList, maxDist,
   local occupiedSpawns = opts.occupiedSpawns
   local minSep = opts.minSeparation or 0
   local occupancy = opts.occupancy
+  local mapNpcs = opts.mapNpcs
   local strictSep = opts.strictSeparation == true
   local sepMetric = opts.separationMetric or "chebyshev"
 
@@ -267,7 +285,7 @@ function Grass.pickFree(map, entities, player, minDist, rng, grassList, maxDist,
     for _, cell in ipairs(grassList) do
       local ok, reason = Grass.validateEligibleTile(
         map, entities, player, cell.x, cell.y, useMin, useMax, nil,
-        membership, mode, occupancy)
+        membership, mode, occupancy, mapNpcs)
       if ok and opts.isBlocked and opts.isBlocked(cell.x, cell.y) then
         ok = false
         reason = "rejected: story trigger reserved"
@@ -349,7 +367,7 @@ end
 
 -- Validate a free walkable tile without requiring an encounter/grass cell.
 -- Used only by developer Test spawn when allow_debug_spawn_outside_encounter_areas.
-function Grass.validateWalkableTile(map, entities, player, x, y, minDist, maxDist, ignore)
+function Grass.validateWalkableTile(map, entities, player, x, y, minDist, maxDist, ignore, mapNpcs)
   if not map then
     return false, "rejected: outside map"
   end
@@ -374,6 +392,9 @@ function Grass.validateWalkableTile(map, entities, player, x, y, minDist, maxDis
     return false, "rejected: occupied by NPC"
   end
   if occupiedByFollower(entities, x, y, ignore) then
+    return false, "rejected: occupied by NPC"
+  end
+  if mapNpcOccupied(mapNpcs, x, y) then
     return false, "rejected: occupied by NPC"
   end
   local px = player and player.cellX
@@ -412,7 +433,7 @@ function Grass.walkableCells(map)
   return out
 end
 
-function Grass.pickFreeWalkable(map, entities, player, minDist, rng, maxDist, onReject)
+function Grass.pickFreeWalkable(map, entities, player, minDist, rng, maxDist, onReject, mapNpcs)
   local list = Grass.walkableCells(map)
   if #list == 0 then
     if onReject then onReject("rejected: no eligible tiles") end
@@ -426,7 +447,7 @@ function Grass.pickFreeWalkable(map, entities, player, minDist, rng, maxDist, on
     local candidates = {}
     for _, cell in ipairs(list) do
       local ok, reason = Grass.validateWalkableTile(
-        map, entities, player, cell.x, cell.y, useMin, useMax, nil)
+        map, entities, player, cell.x, cell.y, useMin, useMax, nil, mapNpcs)
       if ok then
         candidates[#candidates + 1] = cell
       elseif onReject and reason then
