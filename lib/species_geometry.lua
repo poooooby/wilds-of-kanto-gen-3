@@ -33,6 +33,7 @@ SpeciesGeometry.FOLLOW_GAP_OVERRIDES = {
   [130] = 3, -- Gyarados
   [131] = 2, -- Lapras
   [143] = 2, -- Snorlax
+  [321] = 4, -- Wailord
 }
 
 SpeciesGeometry.TABLE_REL = "assets/wilds_generated/true_size/species_table.lua"
