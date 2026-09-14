@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+## 2.4.2 (fork)
+
 ### Bug fixes
 
 - Fixed wild Pokemon spawning onto, and wandering onto, cells occupied by
