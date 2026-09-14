@@ -10,6 +10,22 @@
 
 ## Unreleased
 
+### Bug fixes
+
+- Fixed noisy `World billboard failed ...; spatial overlay emergency
+  (pose() returned nil sprite)` warning spam under Voxel renderers
+  (Terrarium, Battle Art) whenever wild Pokemon spawn — most visible in
+  dense-grass maps like Viridian Forest. Verified via live simulation:
+  every freshly-spawned entity has no billboard for its first ~0.3-0.6s by
+  design (`SpawnFx` keeps the body hidden until its reveal animation
+  finishes), so a Voxel renderer polling `pose()` during that exact window
+  always sees a transient nil sprite that self-heals a moment later — 12/12
+  simulated spawns failed at frame zero and 12/12 succeeded one second
+  later, regardless of species. `lib/voxel_adapter.lua`'s `markFallback`
+  now only logs when the entity's body is actually supposed to be visible
+  already (`SpawnFx.bodyVisible`), so a genuinely missing sprite still
+  surfaces while the expected spawn-reveal window stays silent.
+
 ## 2.4.2 (fork)
 
 ### Bug fixes

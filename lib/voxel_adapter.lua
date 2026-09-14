@@ -15,6 +15,7 @@ local DebugLog = V.require("debug_log")
 local Movement = V.require("movement")
 local Config = V.require("config")
 local RenderDiagnostics = V.require("render_diagnostics")
+local SpawnFx = V.require("spawn_fx")
 
 local VoxelAdapter = {}
 VoxelAdapter.__index = VoxelAdapter
@@ -214,10 +215,18 @@ function VoxelAdapter:markFallback(entity, err)
     or (entity.usingEnhancedSprite and "FOLLOW_SPRITES")
     or (entity.usingFallback and "BLACK_FALLBACK")
     or "LEGACY_PNG"
-  pcall(DebugLog.warn, self.mod,
-    "World billboard failed for %s; spatial overlay emergency. (%s)",
-    tostring(entity.id or entity.spawnId or "?"),
-    tostring(err))
+  -- Every freshly-spawned entity has no billboard for its first ~0.3-0.6s
+  -- by design (SpawnFx keeps the body hidden until its reveal animation
+  -- finishes), so Terrarium/Battle Art polling for a pose() during that
+  -- exact window always sees a nil sprite. That is expected and self-heals
+  -- next frame; only log when the body is supposed to be visible already,
+  -- so a genuinely missing sprite still surfaces.
+  if SpawnFx.bodyVisible(entity) then
+    pcall(DebugLog.warn, self.mod,
+      "World billboard failed for %s; spatial overlay emergency. (%s)",
+      tostring(entity.id or entity.spawnId or "?"),
+      tostring(err))
+  end
 end
 
 function VoxelAdapter:updateEntity(entity)
