@@ -211,9 +211,25 @@ local function walkPhaseOf(ent)
 end
 
 --- Install a one-time sprite.draw / npc.draw wrap that reads `_wildsPresentationFx`.
-function PresentationFx.installDrawWrap(npc)
+function PresentationFx.installDrawWrap(npc, mod)
   if not npc or npc._wildsPresentationDrawWrapped then return npc end
   npc._wildsPresentationDrawWrapped = true
+  npc._wildsFxMod = npc._wildsFxMod or mod
+  local VariableSize = V.require("variable_size")
+
+  -- The follower's SpriteDef already reaches the active Voxel renderer's
+  -- SpriteBillboards.mesh() every frame (same ow.entities / pose() pipeline
+  -- wild spawns use) and gets billboard-drawn there. Without this check the
+  -- flat 2D sprite below draws on top of that billboard every frame too —
+  -- harmless while both are the same size, but it masks any Voxel-only
+  -- display-size shrink applied to the billboard mesh. Mirrors
+  -- Entity:_voxelBillboardOwnsBody() in spawn_render.lua for wild spawns.
+  local function voxelBillboardOwnsBody(ent)
+    local m = ent._wildsFxMod
+    if not m then return false end
+    local ok, active = pcall(VariableSize.isVoxelActive, m)
+    return ok and active == true
+  end
 
   local function activeSample(ent)
     local fx = ent and ent._wildsPresentationFx
@@ -307,6 +323,9 @@ function PresentationFx.installDrawWrap(npc)
   local baseDraw = npc.draw
   if type(baseDraw) == "function" then
     function npc:draw(ox, oy, scale)
+      if voxelBillboardOwnsBody(self) then
+        return
+      end
       local sample = activeSample(self)
       if not sample then
         return baseDraw(self, ox, oy, scale)

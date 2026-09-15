@@ -477,10 +477,13 @@ function SettingsMenus:_openWildsRoot(game)
       label = "GFX STYLE",
       stepper = true,
       wrap = true,
+      -- Pokedex ("DEX") is not a cyclable choice here, but the right= label
+      -- map below still knows it so a legacy save/off-toggle normalized to
+      -- "pokedex" (Config.normalizeSpriteStyle) still displays correctly
+      -- instead of falling back to "GSC".
       choices = {
         { label = "GSC",  value = "followers" },
         { label = "HGSS", value = "pokemmo" },
-        { label = "DEX",  value = "pokedex" },
         { label = "PMD",  value = "pmdcollab" },
       },
       current = Config.spriteStyle(mod),
@@ -1072,7 +1075,6 @@ function SettingsMenus:register()
       return menus:_openChoice(game, "SPRITE STYLE", {
         { label = "FOLLOWERS/GSC", value = "followers" },
         { label = "HGSS / POKEMMO", value = "pokemmo" },
-        { label = "POKEDEX", value = "pokedex" },
         { label = "PMDCOLLAB", value = "pmdcollab" },
       }, Config.spriteStyle(mod), function(v)
         Config.setSpriteStyle(mod, v, "options_menu", {

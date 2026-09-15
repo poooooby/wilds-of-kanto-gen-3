@@ -512,7 +512,9 @@ eq(wraps, 0, "start menu hook not registered by sprite style menu")
 check(screens >= 4, "style/spawn/random/water screens registered")
 eq(menu._registered, true, "menu marked registered")
 
--- options.lua exposes the four public styles
+-- options.lua exposes the three public styles (Pokedex is no longer
+-- selectable, but stays valid via Config.normalizeSpriteStyle / stays
+-- registered as the internal fallback provider other styles use).
 local schema = assert(loadfile("options.lua"))()
 local styleOpt
 for _, row in ipairs(schema) do
@@ -520,7 +522,7 @@ for _, row in ipairs(schema) do
 end
 check(styleOpt ~= nil, "options has sprite_style")
 eq(styleOpt.default, "followers", "options default is followers")
-eq(#styleOpt.choices, 4, "exactly four public sprite styles")
+eq(#styleOpt.choices, 3, "exactly three public sprite styles")
 local saw = {}
 for _, choice in ipairs(styleOpt.choices) do
   -- Mod Settings shows the full GSC label; Gen1 ListMenu uses ≤14 abbrev.
@@ -533,10 +535,12 @@ for _, choice in ipairs(styleOpt.choices) do
 end
 check(saw.pokemmo == "HGSS / PokeMMO", "options includes HGSS / PokeMMO")
 check(saw.followers == "Poke Followers / GSC", "options includes Poke Followers / GSC")
-check(saw.pokedex == "Pokédex" or saw.pokedex == "Pokedex", "options includes Pokedex")
+check(saw.pokedex == nil, "options no longer includes Pokedex as a choice")
 check(saw.pmdcollab == "PMDCollab", "options includes PMDCollab")
 check(saw.auto == nil and saw.gold == nil and saw.followers_ex == nil,
       "legacy styles removed from public options")
+check(Config.VALID_SPRITE_STYLES.pokedex == true,
+  "pokedex stays a valid normalized style (legacy saves / fallback provider)")
 
 -- No hard dependency cycle in manifest
 local manifest = assert(io.open("manifest.json", "r")):read("*a")

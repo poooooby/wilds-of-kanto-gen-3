@@ -329,6 +329,109 @@ eq(pub.sb.mesh({
   image = "same.png", frameWidth = 20, frameHeight = 20, anchorX = 10, anchorY = 20,
 }, 0), a, "same geometry reuses mesh")
 
+-- ------------------------------------------------------------------ 6b. Display geometry decoupling
+resetAll()
+pub = makeProvider()
+installed.STADIUM2_OVERWORLD_MODELS = pub
+check(Stadium2.install(mod), "install for display geometry")
+
+-- Charizard-shaped def: true 32x32 art, requested to DISPLAY at 16x16.
+check(Stadium2.needsVariableGeometry({
+  image = "charizard.png",
+  frameWidth = 32, frameHeight = 32, anchorX = 16, anchorY = 32,
+  displayWidth = 16, displayHeight = 16, displayAnchorX = 8, displayAnchorY = 16,
+}), "display override needs variable")
+
+local fw, fh, ax, ay, dw, dh, dax, day = Stadium2.resolveGeometry({
+  frameWidth = 32, frameHeight = 32, anchorX = 16, anchorY = 32,
+  displayWidth = 16, displayHeight = 16, displayAnchorX = 8, displayAnchorY = 16,
+})
+eq(fw, 32, "display: real fw unchanged")
+eq(fh, 32, "display: real fh unchanged")
+eq(dw, 16, "display: dw from override")
+eq(dh, 16, "display: dh from override")
+eq(dax, 8, "display: dax from override")
+eq(day, 16, "display: day from override")
+
+-- Quad uses DISPLAY size; UVs still slice the REAL 32x32 frame (every
+-- source pixel stays addressable; only the billboard's world-space size
+-- shrinks).
+imageSizes["charizard.png"] = { 32, 32 * 6 }
+local charDef = {
+  image = "charizard.png", frames = 6,
+  frameWidth = 32, frameHeight = 32, anchorX = 16, anchorY = 32,
+  displayWidth = 16, displayHeight = 16, displayAnchorX = 8, displayAnchorY = 16,
+}
+local charMesh = pub.sb.mesh(charDef, 2)
+eq(charMesh.kind, "variable", "display: Charizard variable mesh")
+close(charMesh.verts[2][1] - charMesh.verts[1][1], 16, "display: quad W uses display size")
+close(charMesh.verts[3][2] - charMesh.verts[1][2], 16, "display: quad H uses display size")
+local du0, _dv0, du1, _dv1, dfy = Stadium2.uvRect(32, 32, 2, 32, 32 * 6)
+check(du0 ~= nil, "display: UVs from real frame")
+eq(dfy, 2 * 32, "display: fy uses real frameHeight, not display")
+
+-- Onix-shaped def (anchorY=36 < frameHeight=38: 2px of transparent padding
+-- below the feet). Passthrough (no display override) must reproduce the
+-- real anchor exactly -- a naive "anchor flush with display edge" default
+-- would silently shift the ground-contact point even with no scale in play.
+local _pfw, _pfh, _pax, _pay, pdw, pdh, pdax, pday =
+  Stadium2.resolveGeometry({ frameWidth = 35, frameHeight = 38, anchorX = 17.5, anchorY = 36 })
+eq(pdw, 35, "padded-anchor passthrough: dw == fw")
+eq(pdh, 38, "padded-anchor passthrough: dh == fh")
+eq(pdax, 17.5, "padded-anchor passthrough: dax == ax exactly")
+eq(pday, 36, "padded-anchor passthrough: day == ay exactly (2px gap preserved)")
+
+-- Same shape, now scaled 0.5x via displayWidth/displayHeight only (no
+-- explicit displayAnchorX/Y): the anchor must scale proportionally with
+-- the frame, not reset to flush-with-edge, so the 2px gap shrinks with it
+-- instead of vanishing or misplacing the sprite's feet.
+local _sfw, _sfh, _sax, _say, sdw, sdh, sdax, sday = Stadium2.resolveGeometry({
+  frameWidth = 35, frameHeight = 38, anchorX = 17.5, anchorY = 36,
+  displayWidth = 17.5, displayHeight = 19,
+})
+eq(sdw, 18, "padded-anchor scaled: dw quantized")
+eq(sdh, 19, "padded-anchor scaled: dh quantized")
+
+-- Mirror-symmetry regression: a centered real anchor (ax == fw/2, true for
+-- most species on X) must stay EXACTLY centered (dax == dw/2) no matter how
+-- the quantized dw rounds, including to an odd number. Independently
+-- rounding dax used to land it off-center by up to half a pixel here;
+-- since facing left/right mirrors the quad around the pivot, that made a
+-- follower sit closer to the player facing one direction and farther
+-- facing the other.
+local _mfw, _mfh, _max, _may, mdw, _mdh, mdax = Stadium2.resolveGeometry({
+  frameWidth = 35, frameHeight = 38, anchorX = 17.5, anchorY = 38,
+  displayWidth = 21.3, displayHeight = 23,
+})
+eq(mdw, 21, "mirror-symmetry: dw quantizes to an odd number (test premise)")
+eq(mdax, 10.5, "mirror-symmetry: dax stays exactly dw/2, not independently rounded")
+close(sdax, 9, "padded-anchor scaled: dax scales proportionally with width", 1)
+close(sday, 18, "padded-anchor scaled: day scales proportionally with height (not flush)", 1)
+
+-- No displayWidth/displayHeight set: behavior identical to before (dw==fw),
+-- so every existing adapter caller is unaffected.
+local fw2, fh2, ax2, ay2, dw2, dh2, dax2, day2 = Stadium2.resolveGeometry({
+  frameWidth = 32, frameHeight = 32, anchorX = 16, anchorY = 32,
+})
+eq(dw2, fw2, "display: defaults to real fw when unset")
+eq(dh2, fh2, "display: defaults to real fh when unset")
+eq(dax2, ax2, "display: defaults to real ax when unset")
+eq(day2, ay2, "display: defaults to real ay when unset")
+
+-- Cache keys distinguish display-only differences (same real geometry).
+local dk1 = Stadium2.cacheKey({ image = "same2.png" }, 0, 32, 32, 16, 32, 16, 16, 8, 16)
+local dk2 = Stadium2.cacheKey({ image = "same2.png" }, 0, 32, 32, 16, 32, 24, 24, 12, 24)
+check(dk1 ~= dk2, "display: cache keys differ on display size alone")
+
+-- Fractional display size is quantized to whole pixels (avoids the
+-- per-frame rasterizer pinch/stretch HGSS_SPRITES documents at 0.6x/0.7x).
+local _, _, _, _, dwF, dhF = Stadium2.resolveGeometry({
+  frameWidth = 32, frameHeight = 32, anchorX = 16, anchorY = 32,
+  displayWidth = 22.4, displayHeight = 22.4,
+})
+eq(dwF, 22, "display: fractional width quantized")
+eq(dhF, 22, "display: fractional height quantized")
+
 -- ------------------------------------------------------------------ 7. shadowQuad shares variable geometry
 resetAll()
 pub = makeProvider()
@@ -537,8 +640,15 @@ eq(swimOut.frameHeight, onixSwim.frameHeight, "swim fh from SpeciesGeometry")
 imageSizes[swimOut.image] = { onixSwim.frameWidth, onixSwim.frameHeight * 6 }
 local mSwim = pub.sb.mesh(swimOut, 1)
 eq(mSwim.kind, "variable", "swimming variable mesh")
-close(mSwim.verts[2][1] - mSwim.verts[1][1], onixSwim.frameWidth, "swim mesh W")
-close(mSwim.verts[3][2] - mSwim.verts[1][2], onixSwim.frameHeight, "swim mesh H")
+-- Onix (dex 95) carries a shared display-size scale (lib/species_display_scale.lua)
+-- applied by VariableSize.applyToDef, so the mesh quad is smaller than the
+-- real frameWidth/frameHeight while frameWidth/frameHeight themselves (and
+-- therefore the UVs) stay at Onix's real True Size, asserted above.
+local swimScale = SpeciesGeometry.displayScale(95)
+close(mSwim.verts[2][1] - mSwim.verts[1][1],
+  math.floor(onixSwim.frameWidth * swimScale + 0.5), "swim mesh W")
+close(mSwim.verts[3][2] - mSwim.verts[1][2],
+  math.floor(onixSwim.frameHeight * swimScale + 0.5), "swim mesh H")
 eq(pub.sb.shadowQuad(swimOut, 1), mSwim, "swim shadowQuad same mesh")
 local _, _, _, _, swimFy = Stadium2.uvRect(
   onixSwim.frameWidth, onixSwim.frameHeight, 1,

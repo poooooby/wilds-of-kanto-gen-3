@@ -135,23 +135,42 @@ function Factory.create(spec)
     return _state
   end
 
+  -- displayWidth/displayHeight/displayAnchorX/displayAnchorY let a caller
+  -- request a billboard quad SMALLER or LARGER than the real frameWidth/
+  -- frameHeight/anchorX/anchorY. They default to the real values, so every
+  -- existing caller (Battle Art, Potato, Dramaless, Stadium2, non-native
+  -- Terrarium) is unaffected unless it sets them. Unlike a 2D canvas scale,
+  -- this changes only the 3D quad's world-space size (Adapter.localQuad);
+  -- Adapter.uvRect always slices the texture from the real frameWidth/
+  -- frameHeight, so every source pixel is still sampled at native
+  -- resolution — no resampling of the underlying image.
   function Adapter.needsVariableGeometry(def)
     if type(def) ~= "table" then return false end
     local fw = tonumber(def.frameWidth)
     local fh = tonumber(def.frameHeight)
     local ax = tonumber(def.anchorX)
     local ay = tonumber(def.anchorY)
-    if fw == nil and fh == nil and ax == nil and ay == nil then
+    local dw = tonumber(def.displayWidth)
+    local dh = tonumber(def.displayHeight)
+    local dax = tonumber(def.displayAnchorX)
+    local day = tonumber(def.displayAnchorY)
+    if fw == nil and fh == nil and ax == nil and ay == nil
+        and dw == nil and dh == nil and dax == nil and day == nil then
       return false
     end
     fw = fw or 16
     fh = fh or 16
     if ax == nil then ax = fw / 2 end
     if ay == nil then ay = fh end
-    if fw == 16 and fh == 16 and ax == 8 and ay == 16 then
+    dw = dw or fw
+    dh = dh or fh
+    if dax == nil then dax = dw / 2 end
+    if day == nil then day = dh end
+    if fw == 16 and fh == 16 and ax == 8 and ay == 16
+        and dw == 16 and dh == 16 and dax == 8 and day == 16 then
       return false
     end
-    return fw > 0 and fh > 0
+    return fw > 0 and fh > 0 and dw > 0 and dh > 0
   end
 
   function Adapter.resolveGeometry(def)
@@ -161,10 +180,55 @@ function Factory.create(spec)
     local ay = tonumber(def.anchorY)
     if ax == nil then ax = fw / 2 end
     if ay == nil then ay = fh end
-    return fw, fh, ax, ay
+    local dw = tonumber(def.displayWidth) or fw
+    local dh = tonumber(def.displayHeight) or fh
+    local dax = tonumber(def.displayAnchorX)
+    local day = tonumber(def.displayAnchorY)
+    local hasDisplay = def.displayWidth ~= nil or def.displayHeight ~= nil
+      or def.displayAnchorX ~= nil or def.displayAnchorY ~= nil
+    if hasDisplay then
+      -- Quantize SIZE only (never a separately-computed anchor) to whole
+      -- pixels: a fractional quad extent makes the rasterizer sample a
+      -- different pixel column per frame (HGSS_SPRITES hit this at
+      -- 0.6x/0.7x scales), which looks like the card pinching or
+      -- stretching across the walk cycle. Only when a display override is
+      -- actually set — otherwise this would round every plain (no
+      -- override) real size too, for every caller that never opted in.
+      dw = math.floor(dw + 0.5)
+      dh = math.floor(dh + 0.5)
+    end
+    -- Default anchor: derive from the (already-quantized) display size as
+    -- an exact proportion of the real anchor, rather than independently
+    -- rounding a separately-computed anchor value. Two things break
+    -- otherwise: (1) most species have ay == fh (anchor flush with the
+    -- frame bottom) — but a species with real transparent padding below
+    -- its feet (e.g. Onix: anchorY=36, frameHeight=38) needs that same 2px
+    -- gap preserved at the display size, or its ground contact point
+    -- shifts and it visibly floats/sinks. (2) for a centered real anchor
+    -- (ax == fw/2, true for most species on X), deriving dax from the
+    -- quantized dw guarantees dax == dw/2 exactly, however dw rounds —
+    -- independently rounding dax can land it off-center by up to half a
+    -- pixel when dw quantizes to an odd number, and since facing left/right
+    -- mirrors the quad around the pivot, an off-center quad shifts one way
+    -- when mirrored and the other way when not: too close facing one
+    -- direction, too far facing the other. A fractional result here (e.g.
+    -- dax = 10.5) is fine — a stable fractional offset never causes jitter,
+    -- only a per-frame *varying* one does, which is what the dw/dh
+    -- quantization above already prevents.
+    if dax == nil then
+      dax = (fw ~= 0) and (ax * (dw / fw)) or (dw / 2)
+    elseif hasDisplay then
+      dax = math.floor(dax + 0.5)
+    end
+    if day == nil then
+      day = (fh ~= 0) and (ay * (dh / fh)) or dh
+    elseif hasDisplay then
+      day = math.floor(day + 0.5)
+    end
+    return fw, fh, ax, ay, dw, dh, dax, day
   end
 
-  function Adapter.cacheKey(def, frame, fw, fh, ax, ay)
+  function Adapter.cacheKey(def, frame, fw, fh, ax, ay, dw, dh, dax, day)
     return table.concat({
       tostring(def.image),
       tostring(frame or 0),
@@ -172,6 +236,10 @@ function Factory.create(spec)
       tostring(fh),
       tostring(ax),
       tostring(ay),
+      tostring(dw),
+      tostring(dh),
+      tostring(dax),
+      tostring(day),
     }, "#")
   end
 
@@ -221,7 +289,7 @@ function Factory.create(spec)
   end
 
   local function buildVariableCard(def, frame)
-    local fw, fh, ax, ay = Adapter.resolveGeometry(def)
+    local fw, fh, ax, ay, dw, dh, dax, day = Adapter.resolveGeometry(def)
     local iw, ih = getImageSize(def.image)
     if not iw or not ih or iw <= 0 or ih <= 0 then
       return nil, "image_unavailable"
@@ -230,7 +298,7 @@ function Factory.create(spec)
     if not u0 then
       return nil, v0 or "frame_overflow"
     end
-    local x0, y0, x1, y1 = Adapter.localQuad(fw, fh, ax, ay)
+    local x0, y0, x1, y1 = Adapter.localQuad(dw, dh, dax, day)
     local verts = {
       { x0, y0, 0, u0, v1, 1 }, { x1, y0, 0, u1, v1, 1 },
       { x1, y1, 0, u1, v0, 1 }, { x0, y1, 0, u0, v0, 1 },
@@ -251,8 +319,8 @@ function Factory.create(spec)
     if not Adapter.needsVariableGeometry(def) then
       return _origMesh(def, frame)
     end
-    local fw, fh, ax, ay = Adapter.resolveGeometry(def)
-    local key = Adapter.cacheKey(def, frame, fw, fh, ax, ay)
+    local fw, fh, ax, ay, dw, dh, dax, day = Adapter.resolveGeometry(def)
+    local key = Adapter.cacheKey(def, frame, fw, fh, ax, ay, dw, dh, dax, day)
     if _varMeshes[key] == nil then
       local ok, meshOrErr = pcall(buildVariableCard, def, frame)
       if ok and meshOrErr then

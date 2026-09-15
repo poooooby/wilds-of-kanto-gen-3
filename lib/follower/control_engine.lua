@@ -153,7 +153,18 @@ end
 -- frameHeight / anchorX / anchorY) so follower sprites render at the
 -- effective species size (HGSS style → True Size).  Geometry travels from
 -- the resolver; extras are merged on top.
-local function spriteDefWithGeometry(resolved, extras)
+--
+-- species (internal id like "CHARIZARD", or a numeric dex) is optional and
+-- drives the shared Voxel-only display-size scale (lib/species_display_scale.lua
+-- + lib/species_display_scale_style_overrides.lua, same tables wild spawns
+-- use via VariableSize.applyToDef). The active sprite style is resolved
+-- internally (Config.spriteStyle) rather than threaded in, so every call
+-- site only needs to remember species. Every call site that (re)builds a
+-- follower's SpriteDef must pass species — water/land surface swaps and
+-- species changes rebuild this def from scratch, so omitting species here
+-- silently drops any custom display size back to plain True Size on the
+-- next rebuild.
+local function spriteDefWithGeometry(resolved, extras, species)
   local def = {
     id = resolved.id or "SPRITE_WILDS_FOLLOWER_MON",
     image = resolved.image,
@@ -174,6 +185,18 @@ local function spriteDefWithGeometry(resolved, extras)
   }
   if type(extras) == "table" then
     for k, v in pairs(extras) do def[k] = v end
+  end
+  if species then
+    local okDs, SpeciesGeometry = pcall(function() return V.require("species_geometry") end)
+    if okDs and SpeciesGeometry and SpeciesGeometry.resolveDisplayGeometry then
+      local okSa, SpeciesAssets = pcall(function() return V.require("species_assets") end)
+      local dex = (okSa and SpeciesAssets and SpeciesAssets.idFor(species)) or species
+      local okCfg, Config = pcall(function() return V.require("config") end)
+      local style = okCfg and Config and Config.spriteStyle and Config.spriteStyle(V.mod) or nil
+      def.displayWidth, def.displayHeight, def.displayAnchorX, def.displayAnchorY =
+        SpeciesGeometry.resolveDisplayGeometry(dex, style,
+          def.frameWidth, def.frameHeight, def.anchorX, def.anchorY)
+    end
   end
   return def
 end
@@ -1183,7 +1206,7 @@ function ControlEngine:forceYellowStockPikachuArt(ow, game)
     frames = resolvedFrames,
     walker = resolvedWalker,
     trueColor = resolvedTrueColor,
-  }), npc.id or Constants.ENTITY_ID)
+  }, species), npc.id or Constants.ENTITY_ID)
   if ok and sprite then
     npc.sprite = sprite
     npc.spriteId = Constants.SPRITE_ID
@@ -1572,7 +1595,7 @@ function ControlEngine:applyPlayerAsPokemon(game, ow, force)
       or (GameCompat.isGen2(self.mod, game) and "SPRITE_WILDS_PLAYER_MON"
         or "SPRITE_PLAYER_POKEMON"),
     pokepcShiny = shiny and true or false,
-  })
+  }, species)
   -- Gold: Player:setSprite(def). Do not require a Gen1 SpriteRenderer
   -- assignment and do not register SPRITE_PLAYER_POKEMON.
   if GameCompat.isGen2(self.mod, game) then
@@ -1731,7 +1754,7 @@ function ControlEngine:makeTrailer(game, ow, x, y, facing, kind, mon, slot, opts
   if kind ~= "trainer" and resolved and resolved.image then
     spriteDef = spriteDefWithGeometry(resolved, {
       pokepcShiny = isShinyMon(mon) and true or false,
-    })
+    }, species)
   end
 
   if gen2 then
@@ -1867,9 +1890,9 @@ function ControlEngine:makeTrailer(game, ow, x, y, facing, kind, mon, slot, opts
         npc.spriteDef = npc.spriteDef or spriteDef
         attachPresentation(npc, resolved)
       else
-        local ok, sprite = pcall(SpriteRenderer.new, spriteDefWithGeometry(resolved, {
-          pokepcShiny = npc.pokepcShiny,
-        }), npc.id)
+        local ok, sprite = pcall(SpriteRenderer.new,
+          spriteDefWithGeometry(resolved, { pokepcShiny = npc.pokepcShiny }, species),
+          npc.id)
         if not ok then
           logWarn(self.mod, "SpriteRenderer.new failed (party trailer %s): %s",
             tostring(species), tostring(sprite))
@@ -1933,7 +1956,7 @@ function ControlEngine:makeTrailer(game, ow, x, y, facing, kind, mon, slot, opts
   npc._wildsFollowerStepOwned = true
   -- Cheap no-op until a release FX is attached; enables draw-time tint/scale.
   if PresentationFx and PresentationFx.installDrawWrap then
-    pcall(PresentationFx.installDrawWrap, npc)
+    pcall(PresentationFx.installDrawWrap, npc, self.mod)
   end
   return npc
 end
@@ -3922,7 +3945,7 @@ function ControlEngine:_refreshTrailerWaterSprites(game, ow, surface)
       if resolved and resolved.image then
         local ok, sprite = pcall(SpriteRenderer.new, spriteDefWithGeometry(resolved, {
           pokepcShiny = shiny and true or false,
-        }), npc.id)
+        }, species), npc.id)
         if ok and sprite then
           npc.sprite = sprite
           npc._wildsFollowerSpecies = species
@@ -3966,7 +3989,7 @@ function ControlEngine:_refreshTrailerMonSprites(game, ow, surface)
         if resolved and resolved.image then
           local ok, sprite = pcall(SpriteRenderer.new, spriteDefWithGeometry(resolved, {
             pokepcShiny = shiny and true or false,
-          }), npc.id)
+          }, species), npc.id)
           if ok and sprite then
             npc.sprite = sprite
             npc._wildsFollowerSpecies = species

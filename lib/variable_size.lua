@@ -399,6 +399,10 @@ local function stripGeometry(def)
   def.frameHeight = nil
   def.anchorX = nil
   def.anchorY = nil
+  def.displayWidth = nil
+  def.displayHeight = nil
+  def.displayAnchorX = nil
+  def.displayAnchorY = nil
   return def
 end
 
@@ -560,6 +564,13 @@ function VariableSize.applyToDef(mod, def, opts)
   if def.anchorX == nil then def.anchorX = def.frameWidth / 2 end
   def.anchorY = tonumber(pack.anchorY)
   if def.anchorY == nil then def.anchorY = def.frameHeight end
+  -- Voxel-only billboard shrink, shared with followers (see
+  -- lib/species_display_scale.lua / _style_overrides.lua): quad size only,
+  -- UVs stay on the real frame so no source pixels are resampled. Flat 2D
+  -- never reads these.
+  def.displayWidth, def.displayHeight, def.displayAnchorX, def.displayAnchorY =
+    SpeciesGeometry.resolveDisplayGeometry(dex or speciesId, style,
+      def.frameWidth, def.frameHeight, def.anchorX, def.anchorY)
   if opts.spriteId then def.id = opts.spriteId end
   -- Luminance-based shading for the True Size sheets (parity with the
   -- Classic/GSC art path): Gen1 COLORS modes EXCEPT ADVANCED derive the

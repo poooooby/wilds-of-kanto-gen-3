@@ -23,6 +23,7 @@ local AnimatedSprites = V.require("animated_sprites")
 local DebugLog = V.require("debug_log")
 local LuminanceSheet = V.require("luminance_sheet")
 local WildsFs = V.require("wilds_fs")
+local SpeciesGeometry = V.require("species_geometry")
 
 local SpriteProviders = {}
 SpriteProviders.__index = SpriteProviders
@@ -530,6 +531,15 @@ function SpriteProviders:_makePmdCollabProvider()
         walkDurations = entry.walkDurations,
         walkCycleBase = tonumber(entry.walkCycleBase),
       }
+      -- Voxel-only billboard shrink (lib/species_display_scale.lua /
+      -- _style_overrides.lua), keyed to this PMD def's own native geometry
+      -- above — never applyTrueSizeToProvider's HGSS pack geometry, which
+      -- PMD deliberately never swaps onto (see comment below). "pmdcollab"
+      -- style lets a species be tuned differently for PMD's native art than
+      -- for HGSS / Poke Followers.
+      def.displayWidth, def.displayHeight, def.displayAnchorX, def.displayAnchorY =
+        SpeciesGeometry.resolveDisplayGeometry(dex, SpriteProviders.STYLE.PMDCOLLAB,
+          def.frameWidth, def.frameHeight, def.anchorX, def.anchorY)
       local meta = {
         providerId = SpriteProviders.ID.PMDCOLLAB,
         usedVariant = usedVariant or want,

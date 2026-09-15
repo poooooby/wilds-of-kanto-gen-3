@@ -88,6 +88,35 @@ eq(SpeciesGeometry.followGapBetween(9, 25), 1, "Pikachu behind Blastoise uses ma
 eq(SpeciesGeometry.followGapBetween(nil, 25), 1, "first follower Pikachu gap=1")
 eq(SpeciesGeometry.followGapBetween(nil, 9), 1, "first follower Blastoise gap=1")
 
+-- Charizard's exact value is hand-tunable in lib/species_display_scale.lua,
+-- so only assert it's a real, non-default override, not a specific number.
+check(SpeciesGeometry.displayScale(6) ~= 1, "Charizard has a display scale override")
+eq(SpeciesGeometry.displayScale(25), 1, "Pikachu display scale default")
+eq(SpeciesGeometry.displayScale(nil), 1, "nil species display scale default")
+
+-- Per-style overrides layer on top of the shared base table.
+modules["species_display_scale_style_overrides"] = { [143] = { pmdcollab = 0.4 } }
+eq(SpeciesGeometry.displayScale(143, "pmdcollab"), 0.4, "Snorlax PMD-specific override wins")
+check(SpeciesGeometry.displayScale(143, "pokemmo") ~= 0.4,
+  "Snorlax HGSS style unaffected by PMD-only override")
+eq(SpeciesGeometry.displayScale(25, "pmdcollab"), 1,
+  "species with no override AND no base entry stays at 1 under pmdcollab")
+-- PMD does NOT inherit the shared base table at all (it's calibrated
+-- against HGSS/True Size's own pixel dimensions, unrelated to PMD's own
+-- native art) -- Charizard's non-1x base value must not leak into PMD.
+eq(SpeciesGeometry.displayScale(6, "pokemmo"), SpeciesGeometry.displayScale(6),
+  "Charizard base value still applies under pokemmo (a True Size style)")
+eq(SpeciesGeometry.displayScale(6, "pmdcollab"), 1,
+  "Charizard base value does NOT leak into pmdcollab")
+local rdw, rdh, rax, ray = SpeciesGeometry.resolveDisplayGeometry(143, "pmdcollab", 20, 20, 10, 20)
+eq(rdw, 8, "resolveDisplayGeometry width uses per-style scale")
+eq(rdh, 8, "resolveDisplayGeometry height uses per-style scale")
+eq(rax, 4, "resolveDisplayGeometry anchorX scales with width")
+eq(ray, 8, "resolveDisplayGeometry anchorY scales with height")
+local ndw = SpeciesGeometry.resolveDisplayGeometry(25, "pmdcollab", 20, 20, 10, 20)
+eq(ndw, nil, "resolveDisplayGeometry returns nil at scale 1")
+SpeciesGeometry.clearCache()
+
 -- Classic effective → visualFollowGap always 1
 savedOpts.pokemon_size = "classic"
 eq(VariableSize.visualFollowGap(V.mod, 95), 1, "Classic mode Onix gap=1")

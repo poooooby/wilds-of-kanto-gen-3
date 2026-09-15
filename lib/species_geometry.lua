@@ -36,6 +36,82 @@ SpeciesGeometry.FOLLOW_GAP_OVERRIDES = {
   [321] = 4, -- Wailord
 }
 
+local _displayScaleTable = nil
+local _displayScaleStyleOverrides = nil
+
+-- Styles whose art shares the True Size pipeline the base scale table
+-- (lib/species_display_scale.lua) was generated from — i.e. their native
+-- pixel dimensions were what the table's height data actually measured.
+-- A style NOT in this set (PMDCollab: its own independent art asset,
+-- confirmed elsewhere to carry no SpeciesGeometry/True Size entry at all)
+-- has no relationship to those measurements, so the base table is not a
+-- meaningful fallback for it — applying an HGSS-calibrated scale to a
+-- differently-sized, unrelated native frame doesn't correct anything, it
+-- just distorts a different-sized problem by an unrelated amount.
+local TRUE_SIZE_STYLES = {
+  pokemmo = true,
+  followers = true,
+}
+
+--- Shared per-species Voxel display scale (dex → scale, 1 = no change).
+-- Drives followers (lib/follower/control_engine.lua), wild spawns
+-- (lib/variable_size.lua), and PMDCollab (lib/sprite_providers.lua). See
+-- lib/species_display_scale.lua for the full base table.
+--
+-- style (optional: "pokemmo" | "followers" | "pmdcollab" | ...) looks up
+-- lib/species_display_scale_style_overrides.lua first — a species can list
+-- a scale just for one style there. If nothing is listed: styles sharing
+-- the True Size pipeline (see TRUE_SIZE_STYLES above) fall back to the
+-- shared base table; any other style (PMDCollab) falls back to 1 (no
+-- change) instead, since the base table was never measured against that
+-- style's own native art.
+function SpeciesGeometry.displayScale(speciesId, style)
+  local dex = SpeciesGeometry.normalizeDex(speciesId)
+  if not dex then return 1 end
+  if style then
+    if _displayScaleStyleOverrides == nil then
+      local ok, t = pcall(function()
+        return V.require("species_display_scale_style_overrides")
+      end)
+      _displayScaleStyleOverrides = (ok and type(t) == "table") and t or false
+    end
+    local perDex = _displayScaleStyleOverrides and _displayScaleStyleOverrides[dex]
+    local override = perDex and perDex[style]
+    if type(override) == "number" and override > 0 then
+      return override
+    end
+    if not TRUE_SIZE_STYLES[style] then
+      return 1
+    end
+  end
+  if _displayScaleTable == nil then
+    local ok, t = pcall(function() return V.require("species_display_scale") end)
+    _displayScaleTable = (ok and type(t) == "table") and t or false
+  end
+  local scale = _displayScaleTable and _displayScaleTable[dex]
+  if type(scale) == "number" and scale > 0 then return scale end
+  return 1
+end
+
+--- Resolve the Voxel-only displayWidth/displayHeight/displayAnchorX/
+-- displayAnchorY for a real (frameWidth, frameHeight, anchorX, anchorY),
+-- honoring the per-species (and optionally per-style) scale above. Returns
+-- nil,nil,nil,nil when the resolved scale is 1 or geometry is missing, so
+-- callers can uniformly clear their def's display fields in that case.
+-- Centralizing this avoids the display fields being computed slightly
+-- differently (or forgotten) at any one of the several call sites that
+-- build a SpriteDef (follower rebuild paths, wild spawns, PMD provider).
+function SpeciesGeometry.resolveDisplayGeometry(speciesId, style, frameWidth, frameHeight, anchorX, anchorY)
+  frameWidth = tonumber(frameWidth)
+  frameHeight = tonumber(frameHeight)
+  if not frameWidth or not frameHeight then return nil, nil, nil, nil end
+  local scale = SpeciesGeometry.displayScale(speciesId, style)
+  if scale == 1 then return nil, nil, nil, nil end
+  local ax = tonumber(anchorX) or (frameWidth / 2)
+  local ay = tonumber(anchorY) or frameHeight
+  return frameWidth * scale, frameHeight * scale, ax * scale, ay * scale
+end
+
 SpeciesGeometry.TABLE_REL = "assets/wilds_generated/true_size/species_table.lua"
 SpeciesGeometry.JSON_REL = "assets/wilds_generated/true_size/species_geometry.json"
 
@@ -87,6 +163,8 @@ end
 function SpeciesGeometry.clearCache()
   _table = nil
   _loadError = nil
+  _displayScaleTable = nil
+  _displayScaleStyleOverrides = nil
 end
 
 local _cachedMaxSpecies

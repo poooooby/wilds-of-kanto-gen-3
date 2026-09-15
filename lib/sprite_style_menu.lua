@@ -27,10 +27,15 @@ SpriteStyleMenu.LABEL_WATER = "WATER MONS"
 SpriteStyleMenu.MENU_LABEL = SpriteStyleMenu.LABEL_STYLE
 SpriteStyleMenu.LABEL_GRASS = SpriteStyleMenu.LABEL_RANDOM
 
+-- Pokedex is not a selectable choice here, but stays a valid normalized
+-- style (Config.normalizeSpriteStyle) and an active provider: it is the
+-- last-resort fallback the other three styles fall through to when their
+-- own art is missing for a species, and legacy saves/off-toggles can still
+-- normalize to it. STYLE_CONFIRM / providerAvailable / activeFallbackLabel
+-- below intentionally still know about "pokedex" for that reason.
 SpriteStyleMenu.STYLE_CHOICES = {
   { label = "FOLLOWERS/GSC", value = "followers" },
   { label = "HGSS / POKEMMO", value = "pokemmo" },
-  { label = "POKEDEX", value = "pokedex" },
   { label = "PMDCOLLAB", value = "pmdcollab" },
 }
 SpriteStyleMenu.CHOICES = SpriteStyleMenu.STYLE_CHOICES
