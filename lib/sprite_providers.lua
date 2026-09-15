@@ -256,8 +256,22 @@ function SpriteProviders:list()
   return out
 end
 
+-- Late-loading companion packs are still caught within this window; the
+-- throttle only stops finalize (which runs on EVERY trySpawn via
+-- ensureStyleOwnedMakeEntity) from re-running _discoverGoldRoot per spawn.
+-- With no Gold pack installed that discovery is an uncached miss costing
+-- 300-900 ms per spawn attempt (#95).
+SpriteProviders.AVAILABILITY_REFRESH_SEC = 10
+
 function SpriteProviders:finalize(game)
   self.finalized = true
+  local now = (love and love.timer and love.timer.getTime and love.timer.getTime())
+    or os.clock()
+  if self._availabilityRefreshedAt
+     and (now - self._availabilityRefreshedAt) < SpriteProviders.AVAILABILITY_REFRESH_SEC then
+    return
+  end
+  self._availabilityRefreshedAt = now
   for _, id in ipairs({ SpriteProviders.ID.GOLD, SpriteProviders.ID.FOLLOWERS_EX }) do
     local provider = self.providers[id]
     if provider and type(provider.refreshAvailability) == "function" then
@@ -925,12 +939,23 @@ function SpriteProviders:_modRelPath(rel, render)
 end
 
 function SpriteProviders:_builtinPokeFollowersReady()
+  -- Memoized: this sits on the per-frame follower sprite resolution path and
+  -- each un-cached call re-reads the probe PNG through mod:read (~2 ms on
+  -- Windows). Packaged assets cannot appear or vanish mid-session, so the
+  -- first answer is the answer (#95).
+  if self._builtinPokeFollowersOk ~= nil then
+    return self._builtinPokeFollowersOk
+  end
   local mod = self.mod
   if mod and mod.read then
     local ok, data = pcall(function() return mod:read(POKE_FOLLOWERS_PROBE) end)
-    if ok and data then return true end
+    if ok and data then
+      self._builtinPokeFollowersOk = true
+      return true
+    end
   end
-  return fsExists(POKE_FOLLOWERS_PROBE)
+  self._builtinPokeFollowersOk = fsExists(POKE_FOLLOWERS_PROBE) == true
+  return self._builtinPokeFollowersOk
 end
 
 function SpriteProviders:_makeFollowersExProvider()
