@@ -1942,6 +1942,27 @@ function ControlEngine:makeTrailer(game, ow, x, y, facing, kind, mon, slot, opts
   if type(basePose) == "function" then
     npc.pose = function(ent)
       local sprite, px, py, face, phase, flip = basePose(ent)
+      -- Voxel/Battle Art billboards read pose()'s flip directly and never
+      -- call sprite:draw(), so SpritePresentation.attach's draw-wrap (which
+      -- backs disableVerticalStepFlip) never runs for them. Apply the same
+      -- effective-flip override here too, matching spawn_render.lua's pose().
+      -- Only down/up ever exercise the native "mirror the entire walk frame"
+      -- gait-alternation quirk disableVerticalStepFlip exists to suppress
+      -- (see lib/sprite_presentation.lua's header comment). Left/right reuse
+      -- the SAME frame index for both facings (lib/runtime_sheets.lua) and
+      -- rely on a real, legitimate facing-based mirror to tell them apart —
+      -- forcing flip off there too made left and right render identically.
+      if face == "down" or face == "up" then
+        local okP, SpritePresentation = pcall(function() return V.require("sprite_presentation") end)
+        if okP and SpritePresentation and SpritePresentation.effectiveStepFlip then
+          flip = SpritePresentation.effectiveStepFlip(sprite, flip)
+          -- Mirror spawn_render.lua's pose(): keep the raw fields consistent
+          -- with the effective value for any other code reading ent.flip
+          -- directly (water-surface preservation, diagnostics, etc.).
+          ent.flip = flip
+          ent.walkFlip = flip
+        end
+      end
       local hopping = ent.hopStep == true and ent.moving == true
       if hopping then
         local total = math.max(1, tonumber(ent.stepFrames) or 16)

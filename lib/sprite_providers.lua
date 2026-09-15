@@ -315,6 +315,13 @@ function SpriteProviders:_makePokemmoProvider()
       if not def then
         return nil, nil, "no pokemmo sheet for dex " .. tostring(dex)
       end
+      -- Gen1Recomp mirrors the entire up/down walk frame on stepFlip (see
+      -- lib/sprite_presentation.lua). HGSS/PokeMMO True Size art is not
+      -- authored left/right-symmetric, so that native mirror trick visibly
+      -- "snaps" the whole sprite sideways — most noticeable once Voxel
+      -- display scaling amplifies the same pixel offset. Same opt-out
+      -- PMDCollab already uses, applied here for the same reason.
+      def.disableVerticalStepFlip = true
       -- Prefer mod.assets:path when render helper exists.
       if rel and render and render._modAssetPath then
         local via = render:_modAssetPath(rel)
@@ -1049,7 +1056,8 @@ function SpriteProviders:_makeFollowersExProvider()
         -- is true so it draws raw.
         trueColor = not lumaServed,
         -- Native Gen1Recomp walker (stand/walk + stepFlip). Do NOT set
-        -- disableVerticalStepFlip here — that is a PMDCollab-only opt-out.
+        -- disableVerticalStepFlip here — Poke Followers art hasn't shown
+        -- the asymmetric-mirror snap that PMDCollab and pokemmo opt out of.
         id = "SPRITE_OW_WILD_" .. tostring(dex),
       }
       local meta = {

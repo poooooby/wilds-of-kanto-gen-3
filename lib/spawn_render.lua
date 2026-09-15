@@ -1637,7 +1637,12 @@ function Entity:pose()
   self._lastLift = (self.py or 0) - visualY
   local phase = Movement.walkPhase(self)
   local flip = self.stepFlip == true
-  do
+  -- Only down/up exercise the native "mirror the entire walk frame" gait
+  -- quirk disableVerticalStepFlip suppresses (lib/sprite_presentation.lua).
+  -- Left/right share one frame index per RuntimeSheets and rely on a real
+  -- facing-based mirror to render correctly — forcing flip off there too
+  -- makes both facings render identically (wrong orientation vs movement).
+  if self.facing == "down" or self.facing == "up" then
     local okP, SpritePresentation = pcall(function() return V.require("sprite_presentation") end)
     if okP and SpritePresentation and SpritePresentation.effectiveStepFlip then
       flip = SpritePresentation.effectiveStepFlip(sprite, flip)
