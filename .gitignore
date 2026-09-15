@@ -34,3 +34,6 @@ overworld_wild_spawns-cache/
 /assets/_inspect/
 /.freebuff
 /release
+
+# mod scanner
+/mod-scanner/

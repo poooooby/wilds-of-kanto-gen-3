@@ -1783,6 +1783,26 @@ function ControlEngine:makeTrailer(game, ow, x, y, facing, kind, mon, slot, opts
     })
   end
   -- Legacy occupancy/water compat + Wilds role markers.
+  -- frozen only ever gates an NPC's OWN autonomous step/animation logic
+  -- (verified against every engine reader of it); Wilds already drives
+  -- every trailer's position itself, so this is free. Third-party town-life
+  -- mods (e.g. Terrarium's AGENDA system) key their own "leave this one
+  -- alone" checks off frozen/moving, but have no way to recognize a Wilds
+  -- follower on their own -- without this a stationary trailer reads as an
+  -- ordinary idle townsperson and can get paired into their NPC-chat system.
+  npc.frozen = true
+  -- NPC.new's own wanders formula is true for our exact def (movement=
+  -- "STAY", range="NONE" -> ROAM_DIRS.NONE is a real 4-direction table,
+  -- not nil, so it reads as a legitimate wandering NPC despite never being
+  -- given a WALK movement). Third-party town-life mods key their own
+  -- "who gets sent wandering to a scheduled post" logic off exactly this
+  -- field (Terrarium's Routines.walkers(), which never even looks at
+  -- frozen), so left alone a trailer gets pulled toward its post the
+  -- moment the player stops walking -- fighting Wilds' own control every
+  -- frame for the same npc. Overriding it after construction is the only
+  -- lever Wilds has; the engine's own idle-turn-in-place code (the only
+  -- other reader) already no-ops on a frozen npc regardless.
+  npc.wanders = false
   npc.pokepcTrailer = true
   npc.wildsFollower = true
   npc.wildsFollowerRole = (kind == "trainer") and "trainer_trailer" or "party_trailer"

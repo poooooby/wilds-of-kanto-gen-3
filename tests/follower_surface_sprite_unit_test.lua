@@ -252,6 +252,10 @@ do
     surface = "water",
   })
   check(npc ~= nil, "makeTrailer water returns npc")
+  check(npc.frozen == true,
+    "makeTrailer freezes the npc so third-party town-life mods (e.g. Terrarium AGENDA) leave it alone")
+  check(npc.wanders == false,
+    "makeTrailer clears wanders so town-life mods never send the trailer wandering to a scheduled post")
   local call = lastCall(svc)
   check(call ~= nil, "makeTrailer water called resolver")
   eq(call.surface, "water", "makeTrailer water resolver surface")
