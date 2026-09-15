@@ -23,6 +23,9 @@ VariableSize.MODE_TRUE_SIZE = "true_size"
 
 VariableSize.PROVIDER_DRAMATIC_SHAPE = "DRAMATIC_SHAPE"
 VariableSize.PROVIDER_BATTLE_ART = "BATTLE_ART_VOXEL_FORK"
+-- Battle Art's Gen2 fork ships under a genuinely separate mod id (own
+-- manifest.json id) from the Gen1 fork above, same adapter/contract.
+VariableSize.PROVIDER_BATTLE_ART_GEN2 = "BATTLE_ART_VOXEL_GEN2"
 VariableSize.PROVIDER_POTATO = "potato_voxel"
 VariableSize.PROVIDER_DRAMALESS = "DRAMALESS_SHAPE"
 VariableSize.PROVIDER_STADIUM2 = "STADIUM2_OVERWORLD_MODELS"
@@ -39,6 +42,7 @@ local _lastProviderId = nil
 VariableSize.VOXEL_RENDERER_IDS = {
   "DRAMATIC_SHAPE",
   "BATTLE_ART_VOXEL_FORK",
+  "BATTLE_ART_VOXEL_GEN2",
   "potato_voxel",
   "DRAMALESS_SHAPE",
   "STADIUM2_OVERWORLD_MODELS",
@@ -47,6 +51,9 @@ VariableSize.VOXEL_RENDERER_IDS = {
 
 local ADAPTER_MODULE = {
   BATTLE_ART_VOXEL_FORK = "compat/battle_art_variable_geometry",
+  -- Separate file, not a shared branch: Gen2 has real behavioral differences
+  -- (SpriteBillboards.halfWidth) the Gen1 fork does not, see that file's header.
+  BATTLE_ART_VOXEL_GEN2 = "compat/battle_art_gen2_geometry",
   potato_voxel = "compat/potato_voxel_variable_geometry",
   DRAMALESS_SHAPE = "compat/dramaless_variable_geometry",
   STADIUM2_OVERWORLD_MODELS = "compat/stadium2_variable_geometry",

@@ -1,10 +1,12 @@
 -- Shared in-memory SpriteBillboards.mesh wrap for Voxel forks that expose
 -- the same public module table Battle Art does: exports.lib.require.
 --
--- Battle Art keeps its own adapter (lib/compat/battle_art_variable_geometry.lua)
--- and is not routed through this factory. Potato / Dramaless / Stadium2 use
--- this so their wrap contract stays aligned without touching the known-good
--- Battle Art path.
+-- Battle Art keeps its own adapters, one per fork (lib/compat/
+-- battle_art_variable_geometry.lua for Gen1, lib/compat/battle_art_gen2_geometry.lua
+-- for Gen2 -- real behavioral differences between the two, see that Gen2
+-- file's header) and neither is routed through this factory. Potato /
+-- Dramaless / Stadium2 / Terrarium use this so their wrap contract stays
+-- aligned without touching the known-good Battle Art paths.
 --
 -- Wilds does NOT copy VoxelScene, shaders, camera, or mesher code.
 -- Vanilla 16×16 defs call the original mesh() unchanged.
