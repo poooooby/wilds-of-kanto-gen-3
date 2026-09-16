@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+## 2.5.1 (fork)
+
 ### Features
 
 - Added a **Sprite Scale** option (on by default) that toggles the per-species
