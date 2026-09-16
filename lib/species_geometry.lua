@@ -38,19 +38,27 @@ SpeciesGeometry.FOLLOW_GAP_OVERRIDES = {
 
 local _displayScaleTable = nil
 local _displayScaleStyleOverrides = nil
+local _cachedDynamicMaxSpecies = nil
 
 -- Styles whose art shares the True Size pipeline the base scale table
 -- (lib/species_display_scale.lua) was generated from — i.e. their native
 -- pixel dimensions were what the table's height data actually measured.
--- A style NOT in this set (PMDCollab: its own independent art asset,
--- confirmed elsewhere to carry no SpeciesGeometry/True Size entry at all)
--- has no relationship to those measurements, so the base table is not a
--- meaningful fallback for it — applying an HGSS-calibrated scale to a
--- differently-sized, unrelated native frame doesn't correct anything, it
--- just distorts a different-sized problem by an unrelated amount.
+-- A style NOT in this set has no relationship to those measurements, so the
+-- base table is not a meaningful fallback for it — applying an HGSS-
+-- calibrated scale to a differently-sized, unrelated native frame doesn't
+-- correct anything, it just distorts a different-sized problem by an
+-- unrelated amount. Deliberately HGSS-only (not "followers"): Poke
+-- Followers' own provider (_makeFollowersExProvider) never sets real
+-- frameWidth/frameHeight on its def in the first place (no True Size data,
+-- unlike pokemmo's applyTrueSizeToProvider), so resolveDisplayGeometry's own
+-- frameWidth/frameHeight guard already returns nil,nil,nil,nil for it before
+-- this flag would even be consulted -- "followers" here would be a currently-
+-- inert flag, not a real inclusion, and inert-until-something-upstream-
+-- changes is exactly the kind of thing that turns into a silent bug later.
+-- PMDCollab is excluded for the same base reason (its own independent art
+-- asset, confirmed elsewhere to carry no SpeciesGeometry/True Size entry).
 local TRUE_SIZE_STYLES = {
   pokemmo = true,
-  followers = true,
 }
 
 --- Shared per-species Voxel display scale (dex → scale, 1 = no change).
@@ -60,11 +68,10 @@ local TRUE_SIZE_STYLES = {
 --
 -- style (optional: "pokemmo" | "followers" | "pmdcollab" | ...) looks up
 -- lib/species_display_scale_style_overrides.lua first — a species can list
--- a scale just for one style there. If nothing is listed: styles sharing
--- the True Size pipeline (see TRUE_SIZE_STYLES above) fall back to the
--- shared base table; any other style (PMDCollab) falls back to 1 (no
--- change) instead, since the base table was never measured against that
--- style's own native art.
+-- a scale just for one style there. If nothing is listed: only "pokemmo"
+-- (see TRUE_SIZE_STYLES above) falls back to the shared base table; every
+-- other style falls back to 1 (no change) instead, since the base table
+-- was never measured against that style's own native art.
 function SpeciesGeometry.displayScale(speciesId, style)
   local dex = SpeciesGeometry.normalizeDex(speciesId)
   if not dex then return 1 end
@@ -165,31 +172,78 @@ function SpeciesGeometry.clearCache()
   _loadError = nil
   _displayScaleTable = nil
   _displayScaleStyleOverrides = nil
+  _cachedDynamicMaxSpecies = nil
+end
+
+-- The engine exposes no "how many species are registered" API: game.data.pokemon
+-- (Gen1Recomp src/mods/DatasetViews.lua) is a merged view of ROM data plus every
+-- mod's own content.pokemon registrations, keyed by species NAME, frozen after
+-- mod load -- there is no stored count, only individual .dex fields to scan.
+-- The adapters' own MAX_SPECIES is the TRUE vanilla count per generation
+-- (Gen1=151, Gen2=251) -- a floor, not a hardcoded accommodation for any one
+-- mod. This scan detects ANY expansion mod (Kanto Reforged included) that
+-- registers more, without needing its name or species count hardcoded here.
+-- Cached once content registries are frozen (a session-long fact, never
+-- shrinks), and never returns LOWER than the static baseline even if
+-- scanning finds nothing (e.g. game not ready yet, or a genuinely
+-- unexpanded install).
+local function scanMaxSpeciesFromGame(mod, game)
+  if _cachedDynamicMaxSpecies then return _cachedDynamicMaxSpecies end
+  local maxDex = 0
+  if game and game.data and type(game.data.pokemon) == "table" then
+    for _, def in pairs(game.data.pokemon) do
+      local d = type(def) == "table" and tonumber(def.dex)
+      if d and d > maxDex then maxDex = d end
+    end
+  end
+  if mod and mod.content and mod.content.pokemon and mod.content.pokemon.each then
+    local ok = pcall(function()
+      for _, def in mod.content.pokemon:each() do
+        local d = type(def) == "table" and tonumber(def.dex)
+        if d and d > maxDex then maxDex = d end
+      end
+    end)
+    if not ok then return nil end
+  end
+  if maxDex > 0 then
+    _cachedDynamicMaxSpecies = maxDex
+  end
+  return _cachedDynamicMaxSpecies
 end
 
 local _cachedMaxSpecies
 local function activeMaxSpecies(game)
+  local baseline = 151
   local ok, GameCompat = pcall(function() return V.require("game_compat") end)
   if ok and GameCompat and GameCompat.current then
     local adapter = GameCompat.current(nil, game)
     if adapter and type(adapter.MAX_SPECIES) == "number" then
-      return adapter.MAX_SPECIES
+      baseline = adapter.MAX_SPECIES
     end
-  end
-  if _cachedMaxSpecies then return _cachedMaxSpecies end
-  local ok1, Gen1 = pcall(function() return V.require("game_compat/gen1") end)
-  if ok1 and Gen1 and type(Gen1.MAX_SPECIES) == "number" then
-    _cachedMaxSpecies = Gen1.MAX_SPECIES
+  elseif _cachedMaxSpecies then
+    baseline = _cachedMaxSpecies
   else
-    _cachedMaxSpecies = 151
+    local ok1, Gen1 = pcall(function() return V.require("game_compat/gen1") end)
+    if ok1 and Gen1 and type(Gen1.MAX_SPECIES) == "number" then
+      _cachedMaxSpecies = Gen1.MAX_SPECIES
+    else
+      _cachedMaxSpecies = 151
+    end
+    baseline = _cachedMaxSpecies
   end
-  return _cachedMaxSpecies
+  local dynamic = scanMaxSpeciesFromGame(V.mod, game)
+  if dynamic and dynamic > baseline then
+    return dynamic
+  end
+  return baseline
 end
 
 function SpeciesGeometry.normalizeDex(speciesId, game)
-  -- Cap comes from the active generation adapter (Gen1=386, Gen2=386):
-  -- Kanto Reforged extends game.data.pokemon to Gen 3 regardless of engine
-  -- generation, so geometry lookups are not artificially capped below that.
+  -- Cap is the active generation adapter's TRUE vanilla count (Gen1=151,
+  -- Gen2=251) OR a live scan of game.data.pokemon's actual highest .dex,
+  -- whichever is higher -- see activeMaxSpecies / scanMaxSpeciesFromGame
+  -- above. Any species-count expansion mod (Kanto Reforged included) is
+  -- picked up automatically; nothing here is hardcoded to a specific mod.
   local n = tonumber(speciesId)
   if not (n and n >= 1 and math.floor(n) == n) then return nil end
   if n <= activeMaxSpecies(game) then return math.floor(n) end

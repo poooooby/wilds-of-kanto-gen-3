@@ -8,10 +8,12 @@ local Gen1 = {}
 Gen1.supported = true
 Gen1.generation = 1
 -- National Dex cap for Gen1-only consumers (True Size, etc.). Shared
--- GameCompat.speciesId does not apply this cap. Matches
--- SpeciesAssets.MAX_ID (386): Kanto Reforged extends game.data.pokemon to
--- Gen 3 regardless of which engine generation is hosting it.
-Gen1.MAX_SPECIES = 386
+-- GameCompat.speciesId does not apply this cap. This is the TRUE vanilla
+-- Gen1 count (151) -- a static baseline, not a ceiling: SpeciesGeometry's
+-- activeMaxSpecies() live-scans game.data.pokemon and raises the effective
+-- cap when an expansion mod (Kanto Reforged and others) actually registers
+-- more, so this constant never needs bumping by hand for a specific mod.
+Gen1.MAX_SPECIES = 151
 
 Gen1.capabilities = {
   core = true,

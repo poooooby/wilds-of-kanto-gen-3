@@ -443,6 +443,35 @@ check(SpeciesAssets.idFor("Mewtwo") == nil
    and SpeciesAssets.idFor("MEWTWO") == 150,
   "display-name vs internal-key separation")
 
+------------------------------------------------------------------------
+-- Dynamic max-species detection: an expansion mod beyond the TRUE vanilla
+-- baseline (Gen1=151) is picked up by scanning game.data.pokemon's actual
+-- highest .dex, not hardcoded per mod (Kanto Reforged or any other).
+------------------------------------------------------------------------
+
+SpeciesGeometry.clearCache()
+check(SpeciesGeometry.normalizeDex(400) == nil,
+  "no game data: still capped at the static vanilla baseline (Gen1=151)")
+
+local expandedPokemon = {}
+for k, v in pairs(reorderedPokemon) do expandedPokemon[k] = v end
+expandedPokemon.FAKEMON_400 = { name = "Fakemon 400", dex = 400, index = 400 }
+local expandedGame = {
+  data = { pokemon = expandedPokemon },
+  save = { options = { modOptions = {} } },
+}
+
+SpeciesGeometry.clearCache()
+eq(SpeciesGeometry.normalizeDex(400, expandedGame), 400,
+  "expansion mod's dex 400 accepted once live-scanned from game.data.pokemon")
+eq(SpeciesGeometry.normalizeDex(401, expandedGame), nil,
+  "still rejects a dex just past the highest one actually registered")
+
+-- Scan result is cached per session: a later call with SMALLER game data
+-- (or no game at all) must not regress below what was already detected.
+eq(SpeciesGeometry.normalizeDex(400), 400,
+  "detected max-species is cached and applies even without passing game again")
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

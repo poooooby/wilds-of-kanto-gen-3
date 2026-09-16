@@ -26,10 +26,13 @@ local V = ...
 local Gen2 = {}
 Gen2.supported = true
 Gen2.generation = 2
--- National Dex span for True Size / geometry consumers. Matches
--- SpeciesAssets.MAX_ID (386): Kanto Reforged extends game.data.pokemon to
--- Gen 3 regardless of which engine generation is hosting it.
-Gen2.MAX_SPECIES = 386
+-- National Dex span for True Size / geometry consumers. This is the TRUE
+-- vanilla Gen1+2 count (251) -- a static baseline, not a ceiling:
+-- SpeciesGeometry's activeMaxSpecies() live-scans game.data.pokemon and
+-- raises the effective cap when an expansion mod (Kanto Reforged and
+-- others) actually registers more, so this constant never needs bumping
+-- by hand for a specific mod.
+Gen2.MAX_SPECIES = 251
 
 Gen2.capabilities = {
   core = true,

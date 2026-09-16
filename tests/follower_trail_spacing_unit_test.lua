@@ -91,7 +91,10 @@ eq(SpeciesGeometry.followGapBetween(nil, 9), 1, "first follower Blastoise gap=1"
 -- Charizard's exact value is hand-tunable in lib/species_display_scale.lua,
 -- so only assert it's a real, non-default override, not a specific number.
 check(SpeciesGeometry.displayScale(6) ~= 1, "Charizard has a display scale override")
-eq(SpeciesGeometry.displayScale(25), 1, "Pikachu display scale default")
+-- The base table is now a complete, hand-authored 386-entry set (every
+-- valid species has a real value) -- so "no entry" can only be tested via a
+-- species id outside the valid range, not a real species like Pikachu.
+eq(SpeciesGeometry.displayScale(9999), 1, "out-of-range species display scale default")
 eq(SpeciesGeometry.displayScale(nil), 1, "nil species display scale default")
 
 -- Per-style overrides layer on top of the shared base table.
@@ -99,8 +102,8 @@ modules["species_display_scale_style_overrides"] = { [143] = { pmdcollab = 0.4 }
 eq(SpeciesGeometry.displayScale(143, "pmdcollab"), 0.4, "Snorlax PMD-specific override wins")
 check(SpeciesGeometry.displayScale(143, "pokemmo") ~= 0.4,
   "Snorlax HGSS style unaffected by PMD-only override")
-eq(SpeciesGeometry.displayScale(25, "pmdcollab"), 1,
-  "species with no override AND no base entry stays at 1 under pmdcollab")
+eq(SpeciesGeometry.displayScale(9999, "pmdcollab"), 1,
+  "out-of-range species with no override stays at 1 under pmdcollab")
 -- PMD does NOT inherit the shared base table at all (it's calibrated
 -- against HGSS/True Size's own pixel dimensions, unrelated to PMD's own
 -- native art) -- Charizard's non-1x base value must not leak into PMD.
@@ -108,6 +111,12 @@ eq(SpeciesGeometry.displayScale(6, "pokemmo"), SpeciesGeometry.displayScale(6),
   "Charizard base value still applies under pokemmo (a True Size style)")
 eq(SpeciesGeometry.displayScale(6, "pmdcollab"), 1,
   "Charizard base value does NOT leak into pmdcollab")
+-- Poke Followers does NOT inherit the shared base table either: its own
+-- provider (_makeFollowersExProvider) never sets real frameWidth/frameHeight
+-- on its def (no True Size data, unlike pokemmo), so the base table -- HGSS-
+-- calibrated -- would apply to an unrelated native art size if it leaked in.
+eq(SpeciesGeometry.displayScale(6, "followers"), 1,
+  "Charizard base value does NOT leak into followers")
 local rdw, rdh, rax, ray = SpeciesGeometry.resolveDisplayGeometry(143, "pmdcollab", 20, 20, 10, 20)
 eq(rdw, 8, "resolveDisplayGeometry width uses per-style scale")
 eq(rdh, 8, "resolveDisplayGeometry height uses per-style scale")

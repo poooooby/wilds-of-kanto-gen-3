@@ -386,33 +386,65 @@ do
 end
 
 ----------------------------------------------------------------
--- Gen1/Gen2 adapters own the 386 cap (True Size / diagnostic slots).
--- Kanto Reforged extends game.data.pokemon to Gen 3 regardless of which
--- engine generation is hosting it, so neither adapter caps below 386.
+-- Gen1/Gen2 adapters own the TRUE vanilla National Dex baseline (151/251
+-- -- True Size / diagnostic slots). This is a floor, not a per-mod ceiling:
+-- SpeciesGeometry live-scans game.data.pokemon and raises the effective cap
+-- when an expansion mod (Kanto Reforged or any other) actually registers
+-- more, so neither adapter needs its own MAX_SPECIES hand-bumped per mod.
 ----------------------------------------------------------------
 do
   setEngineVersion("red")
-  eq(GameCompat.Gen1.MAX_SPECIES, 386, "Gen1.MAX_SPECIES == 386")
+  eq(GameCompat.Gen1.MAX_SPECIES, 151, "Gen1.MAX_SPECIES == 151 (true vanilla)")
   local SpeciesGeometry = V.require("species_geometry")
+  SpeciesGeometry.clearCache()
   eq(SpeciesGeometry.normalizeDex(1), 1, "normalizeDex 1")
   eq(SpeciesGeometry.normalizeDex(151), 151, "normalizeDex MEW 151")
-  eq(SpeciesGeometry.normalizeDex(152), 152, "normalizeDex 152 (Gen3-extended)")
-  eq(SpeciesGeometry.normalizeDex(251), 251, "normalizeDex 251 (Gen3-extended)")
-  eq(SpeciesGeometry.normalizeDex(386), 386, "normalizeDex 386 DEOXYS_NORMAL")
-  eq(SpeciesGeometry.normalizeDex(387), nil, "normalizeDex 387 beyond Gen3 cap")
+  eq(SpeciesGeometry.normalizeDex(152), nil,
+    "normalizeDex 152 rejected with no game data confirming an expansion")
   eq(SpeciesGeometry.normalizeDex(0), nil, "normalizeDex 0 invalid")
+
+  -- An expansion mod (Kanto Reforged or otherwise) registers species past
+  -- the vanilla 151 into game.data.pokemon; normalizeDex must pick that up
+  -- from a live scan rather than needing a hardcoded per-mod ceiling.
+  SpeciesGeometry.clearCache()
+  local expandedPokemon = {}
+  for i = 1, 386 do
+    expandedPokemon["SPECIES_" .. i] = { dex = i }
+  end
+  local expandedGame = { data = { pokemon = expandedPokemon } }
+  eq(SpeciesGeometry.normalizeDex(152, expandedGame), 152,
+    "normalizeDex 152 accepted once game data shows it registered")
+  eq(SpeciesGeometry.normalizeDex(386, expandedGame), 386,
+    "normalizeDex 386 DEOXYS_NORMAL accepted with matching game data")
+  eq(SpeciesGeometry.normalizeDex(387, expandedGame), nil,
+    "normalizeDex 387 still rejected: one past what is actually registered")
+  SpeciesGeometry.clearCache()
 end
 
 do
   setEngineVersion("gold")
-  eq(GameCompat.Gen2.MAX_SPECIES, 386, "Gen2.MAX_SPECIES == 386")
+  eq(GameCompat.Gen2.MAX_SPECIES, 251, "Gen2.MAX_SPECIES == 251 (true vanilla)")
   local SpeciesGeometry = V.require("species_geometry")
+  SpeciesGeometry.clearCache()
   eq(SpeciesGeometry.normalizeDex(152), 152, "Gold normalizeDex CHIKORITA 152")
   eq(SpeciesGeometry.normalizeDex(161), 161, "Gold normalizeDex SENTRET 161")
   eq(SpeciesGeometry.normalizeDex(251), 251, "Gold normalizeDex CELEBI 251")
-  eq(SpeciesGeometry.normalizeDex(252), 252, "Gold normalizeDex TREECKO 252")
-  eq(SpeciesGeometry.normalizeDex(386), 386, "Gold normalizeDex DEOXYS_NORMAL 386")
-  eq(SpeciesGeometry.normalizeDex(387), nil, "Gold normalizeDex 387 beyond Gen3 cap")
+  eq(SpeciesGeometry.normalizeDex(252), nil,
+    "Gold normalizeDex 252 rejected with no game data confirming an expansion")
+
+  SpeciesGeometry.clearCache()
+  local expandedPokemon = {}
+  for i = 1, 386 do
+    expandedPokemon["SPECIES_" .. i] = { dex = i }
+  end
+  local expandedGame = { data = { pokemon = expandedPokemon } }
+  eq(SpeciesGeometry.normalizeDex(252, expandedGame), 252,
+    "Gold normalizeDex TREECKO 252 accepted once game data shows it registered")
+  eq(SpeciesGeometry.normalizeDex(386, expandedGame), 386,
+    "Gold normalizeDex DEOXYS_NORMAL 386 accepted with matching game data")
+  eq(SpeciesGeometry.normalizeDex(387, expandedGame), nil,
+    "Gold normalizeDex 387 still rejected: one past what is actually registered")
+  SpeciesGeometry.clearCache()
 end
 
 ----------------------------------------------------------------
