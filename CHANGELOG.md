@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+## 2.5.0 (fork)
+
 ### Features
 
 - Added a per-species, per-sprite-style Voxel-only display-size scale
