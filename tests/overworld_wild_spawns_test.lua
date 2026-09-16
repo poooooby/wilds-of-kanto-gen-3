@@ -900,8 +900,8 @@ local renderSrcBake = modApi:read("lib/spawn_render.lua")
 T.check(not renderSrcBake:find("getSaveDirectory() ..", 1, true)
         and not renderSrcBake:find("getSaveDirectory()..", 1, true),
         "bakeSheet does not concatenate getSaveDirectory() into image paths")
-T.check(renderSrcBake:find('overworld_wild_spawns-cache', 1, true),
-        "optional cache uses overworld_wild_spawns-cache virtual dir")
+T.check(renderSrcBake:find('wilds_of_kanto_gen3-cache', 1, true),
+        "optional cache uses wilds_of_kanto_gen3-cache virtual dir")
 T.check(renderSrcBake:find("assets/fallback/pokemon_missing.png", 1, true),
         "static fallback asset path present")
 -- Documented: never return OS absolute bake paths.
@@ -1765,10 +1765,10 @@ local styleChoices = {}
 for _, choice in ipairs(styleOpt.choices) do
   styleChoices[choice[2]] = choice[1]
 end
-T.eq(#styleOpt.choices, 4, "exactly four public sprite styles")
+T.eq(#styleOpt.choices, 3, "exactly three public sprite styles")
 T.check(styleChoices.pokemmo == "HGSS / PokeMMO", "HGSS / PokeMMO choice present")
 T.check(styleChoices.followers == "Poke Followers / GSC", "Poke Followers / GSC choice present")
-T.check(styleChoices.pokedex == "Pokedex", "Pokedex choice present")
+T.check(styleChoices.pokedex == nil, "Pokedex removed from selectable choices")
 T.check(styleChoices.pmdcollab == "PMDCollab", "PMDCollab choice present")
 T.check(styleChoices.auto == nil and styleChoices.gold == nil, "legacy styles removed")
 T.eq(#("SPRITE STYLE"), 12, "SPRITE STYLE menu length")
