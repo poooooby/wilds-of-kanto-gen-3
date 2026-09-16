@@ -12,10 +12,10 @@ local DebugLog = V.require("debug_log")
 local SpriteStyleMenu = {}
 SpriteStyleMenu.__index = SpriteStyleMenu
 
-SpriteStyleMenu.SCREEN_STYLE = "overworld_wild_spawns:sprite_style"
-SpriteStyleMenu.SCREEN_SPAWN = "overworld_wild_spawns:spawn_amount"
-SpriteStyleMenu.SCREEN_RANDOM = "overworld_wild_spawns:random_enc"
-SpriteStyleMenu.SCREEN_WATER = "overworld_wild_spawns:water_mons"
+SpriteStyleMenu.SCREEN_STYLE = "wilds_of_kanto_gen3:sprite_style"
+SpriteStyleMenu.SCREEN_SPAWN = "wilds_of_kanto_gen3:spawn_amount"
+SpriteStyleMenu.SCREEN_RANDOM = "wilds_of_kanto_gen3:random_enc"
+SpriteStyleMenu.SCREEN_WATER = "wilds_of_kanto_gen3:water_mons"
 -- Back-compat aliases.
 SpriteStyleMenu.SCREEN = SpriteStyleMenu.SCREEN_STYLE
 SpriteStyleMenu.SCREEN_GRASS = SpriteStyleMenu.SCREEN_RANDOM

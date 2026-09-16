@@ -301,7 +301,7 @@ function SpriteProviders:_makePokemmoProvider()
   return {
     id = SpriteProviders.ID.POKEMMO,
     builtin = true,
-    modId = mod and mod.id or "overworld_wild_spawns",
+    modId = mod and mod.id or "wilds_of_kanto_gen3",
     isAvailable = function(_self, _game)
       local sheets = render and render.runtimeSheets
       if sheets and not sheets.ready and sheets.load then
@@ -374,7 +374,7 @@ function SpriteProviders:_makePokedexProvider()
   return {
     id = SpriteProviders.ID.POKEDEX,
     builtin = true,
-    modId = mod and mod.id or "overworld_wild_spawns",
+    modId = mod and mod.id or "wilds_of_kanto_gen3",
     isAvailable = function()
       return true, "pokedex / battle-front resolver"
     end,
@@ -494,7 +494,7 @@ function SpriteProviders:_makePmdCollabProvider()
   return {
     id = SpriteProviders.ID.PMDCOLLAB,
     builtin = true,
-    modId = mod and mod.id or "overworld_wild_spawns",
+    modId = mod and mod.id or "wilds_of_kanto_gen3",
     isAvailable = function(_self, _game)
       local Assets = V.require("pmdcollab_assets")
       if not Assets.isReady() then
@@ -600,7 +600,7 @@ function SpriteProviders:_makeBlackProvider()
   return {
     id = SpriteProviders.ID.BLACK,
     builtin = true,
-    modId = mod and mod.id or "overworld_wild_spawns",
+    modId = mod and mod.id or "wilds_of_kanto_gen3",
     isAvailable = function()
       return true, "black fallback"
     end,
@@ -972,7 +972,7 @@ function SpriteProviders:_makeFollowersExProvider()
   local provider = {
     id = SpriteProviders.ID.FOLLOWERS_EX,
     builtin = true,
-    modId = mod and mod.id or "overworld_wild_spawns",
+    modId = mod and mod.id or "wilds_of_kanto_gen3",
     _state = state,
   }
 
@@ -1093,7 +1093,7 @@ function SpriteProviders:_makeFollowersExProvider()
         frames = 6,
         walker = true,
         bodyRenderer = "NATIVE_SPRITE_RENDERER",
-        providerMod = "overworld_wild_spawns",
+        providerMod = "wilds_of_kanto_gen3",
         pack = "poke_followers",
       }
       def, meta = applyTrueSizeToProvider(mod, def, meta, {
@@ -1246,7 +1246,7 @@ function SpriteProviders:_makeFollowersExProvider()
       frames = 6,
       walker = true,
       bodyRenderer = "NATIVE_SPRITE_RENDERER",
-      providerMod = "overworld_wild_spawns",
+      providerMod = "wilds_of_kanto_gen3",
       pack = "poke_followers_submerged",
     }, nil
   end

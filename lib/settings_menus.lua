@@ -14,8 +14,8 @@ local DebugLog = V.require("debug_log")
 local SettingsMenus = {}
 SettingsMenus.__index = SettingsMenus
 
-SettingsMenus.SCREEN_FOLLOWERS = "overworld_wild_spawns:followers_ex_menu"
-SettingsMenus.SCREEN_WILDS = "overworld_wild_spawns:wilds_menu"
+SettingsMenus.SCREEN_FOLLOWERS = "wilds_of_kanto_gen3:followers_ex_menu"
+SettingsMenus.SCREEN_WILDS = "wilds_of_kanto_gen3:wilds_menu"
 
 -- Gen1 ListMenu truncates past 14 characters; full names live in README.
 SettingsMenus.LABEL_FOLLOWERS = "POKE FOLLOW EX"
@@ -813,7 +813,7 @@ function SettingsMenus:_wrapOptionsRows()
     -- if ListMenu submenus are unavailable. Gen1 keeps OPEN-only rows.
     if goldLayout then
       out = menus:_insertOptionsRow(out, {
-        id = "overworld_wild_spawns:enabled",
+        id = "wilds_of_kanto_gen3:enabled",
         label = "SHOW WILD MONS",
         text = function()
           return optGet(mod, "enabled", true) ~= false and "ON" or "OFF"
@@ -831,7 +831,7 @@ function SettingsMenus:_wrapOptionsRows()
         end,
       })
       out = menus:_insertOptionsRow(out, {
-        id = "overworld_wild_spawns:random",
+        id = "wilds_of_kanto_gen3:random",
         label = "RANDOM ENC",
         text = function()
           return Config.randomEncountersEnabled(mod) and "ON" or "OFF"
@@ -864,9 +864,9 @@ function SettingsMenus:_wrapOptionsRows()
       })
     end
     addOpen(SettingsMenus.OPTIONS_LABEL_FOLLOWERS, SettingsMenus.SCREEN_FOLLOWERS,
-            "overworld_wild_spawns:followers_ex_open")
+            "wilds_of_kanto_gen3:followers_ex_open")
     addOpen(SettingsMenus.OPTIONS_LABEL_WILDS, SettingsMenus.SCREEN_WILDS,
-            "overworld_wild_spawns:wilds_open")
+            "wilds_of_kanto_gen3:wilds_open")
     return out
   end)
 end

@@ -1,4 +1,4 @@
--- Wilds of Kanto (id: overworld_wild_spawns): visible wild Pokemon in the overworld.
+-- Wilds of Kanto (id: wilds_of_kanto_gen3): visible wild Pokemon in the overworld.
 --
 -- Architecture
 --   lib/spawn_state.lua     - fail-safe readiness flags (vanilla suppress gate)
@@ -29,12 +29,12 @@ return function(mod)
   local function chunkFor(rel)
     local source = mod:read(rel)
     if not source then
-      error(("overworld_wild_spawns: %s is missing"):format(rel), 0)
+      error(("wilds_of_kanto_gen3: %s is missing"):format(rel), 0)
     end
     local loadcode = loadstring or load
     local chunk, err = loadcode(source, "@" .. mod.path .. "/" .. rel)
     if not chunk then
-      error(("overworld_wild_spawns: %s did not compile: %s"):format(rel, tostring(err)), 0)
+      error(("wilds_of_kanto_gen3: %s did not compile: %s"):format(rel, tostring(err)), 0)
     end
     return chunk
   end
@@ -123,7 +123,7 @@ return function(mod)
   -- Gen1Recomp freezes content registries after mod load.
   local regOk, regErr = render:registerContent()
   if not regOk then
-    error("overworld_wild_spawns: sprite content registration failed: "
+    error("wilds_of_kanto_gen3: sprite content registration failed: "
           .. tostring(regErr), 0)
   end
 
@@ -191,7 +191,7 @@ return function(mod)
   end
   devOverlay:register()
 
-  mod.log:info("overworld_wild_spawns loaded (enabled=%s overlay=%s debug=%s sprites=%d missing=%d)",
+  mod.log:info("wilds_of_kanto_gen3 loaded (enabled=%s overlay=%s debug=%s sprites=%d missing=%d)",
                tostring(Config.isEnabled(mod)),
                tostring(Config.devOverlay(mod)),
                tostring(Config.debug(mod)),
@@ -672,6 +672,6 @@ return function(mod)
     return logic.occupancy
   end
 
-  mod.log:info("overworld_wild_spawns ready (sprite_style=%s)",
+  mod.log:info("wilds_of_kanto_gen3 ready (sprite_style=%s)",
                tostring(Config.spriteStyle(mod)))
 end

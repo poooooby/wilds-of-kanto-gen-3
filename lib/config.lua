@@ -1,4 +1,4 @@
--- Tunables and option helpers for overworld_wild_spawns.
+-- Tunables and option helpers for wilds_of_kanto_gen3.
 local V = ...
 
 local Config = {}
@@ -170,12 +170,12 @@ Config.HUD_SHOW_SECONDS = 8
 function Config.schema()
   local source = V.mod:read("options.lua")
   if not source then
-    error("overworld_wild_spawns: options.lua is missing", 0)
+    error("wilds_of_kanto_gen3: options.lua is missing", 0)
   end
   local loadcode = loadstring or load
   local chunk, err = loadcode(source, "@" .. V.path .. "/options.lua")
   if not chunk then
-    error(("overworld_wild_spawns: options.lua did not compile: %s"):format(tostring(err)), 0)
+    error(("wilds_of_kanto_gen3: options.lua did not compile: %s"):format(tostring(err)), 0)
   end
   return chunk()
 end

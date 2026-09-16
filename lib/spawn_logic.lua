@@ -1,4 +1,4 @@
--- Logic half of overworld_wild_spawns: map enter, periodic spawn, optional
+-- Logic half of wilds_of_kanto_gen3: map enter, periodic spawn, optional
 -- wander, touch -> battle, developer test spawn. Rendering is delegated to
 -- SpawnRender.
 --

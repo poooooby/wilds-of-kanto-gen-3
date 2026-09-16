@@ -1,4 +1,4 @@
--- Option schema for Wilds of Kanto (id: overworld_wild_spawns).
+-- Option schema for Wilds of Kanto (id: wilds_of_kanto_gen3).
 -- Loaded via mod.options:define() from main.lua and referenced by
 -- manifest options_schema for Mod Manager lazy-load.
 --

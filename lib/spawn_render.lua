@@ -1,4 +1,4 @@
--- Presentational half of overworld_wild_spawns.
+-- Presentational half of wilds_of_kanto_gen3.
 -- Base Gen1Recomp path: SpriteRenderer + pose()/draw() on OverworldState.entities.
 -- DramaticShapeVoxelMod is optional: when VOXEL is active it billboards via pose().
 --
@@ -74,7 +74,7 @@ SpawnRender.__index = SpawnRender
 local CELL = Tile.CELL
 local PLACEHOLDER_ID = "SPRITE_OW_WILD_PLACEHOLDER"
 local FALLBACK_ID = "SPRITE_OW_WILD_FALLBACK"
-local CACHE_DIR = "overworld_wild_spawns-cache"
+local CACHE_DIR = "wilds_of_kanto_gen3-cache"
 local FALLBACK_REL = "assets/fallback/pokemon_missing.png"
 local PLACEHOLDER_REL = "assets/spawn_placeholder.png"
 local BILLBOARD_BASE_REL = EnhancedWorldSprite.BASE_ASSET_REL
@@ -1192,7 +1192,7 @@ function Entity.new(game, mod, render, record)
   end
   if not spriteDef then
     self.entityPhase = "ASSET_LOAD_ERROR"
-    error("overworld_wild_spawns: pre-registered sprite missing from data: "
+    error("wilds_of_kanto_gen3: pre-registered sprite missing from data: "
           .. tostring(spriteId), 0)
   end
 
