@@ -155,9 +155,8 @@ end
 -- the resolver; extras are merged on top.
 --
 -- species (internal id like "CHARIZARD", or a numeric dex) is optional and
--- drives the shared Voxel-only display-size scale (lib/species_display_scale.lua
--- + lib/species_display_scale_style_overrides.lua, same tables wild spawns
--- use via VariableSize.applyToDef). The active sprite style is resolved
+-- drives the shared Voxel-only display-size scale (lib/species_display_scale.lua,
+-- same table wild spawns use via VariableSize.applyToDef). The active sprite style is resolved
 -- internally (Config.spriteStyle) rather than threaded in, so every call
 -- site only needs to remember species. Every call site that (re)builds a
 -- follower's SpriteDef must pass species — water/land surface swaps and

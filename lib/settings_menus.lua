@@ -500,6 +500,20 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
+      label = "SPRITE SCALE",
+      stepper = true,
+      wrap = true,
+      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
+      current = Config.dynScaleEnabled(mod),
+      right = Config.dynScaleEnabled(mod) and "ON" or "OFF",
+      apply = function(v)
+        Config.setDynScale(mod, v == true, "options_menu", {
+          game = game, logic = menus.logic,
+          render = menus.logic and menus.logic.render, confirm = true,
+        })
+      end,
+    },
+    {
       label = "SPRITE FADE",
       stepper = true,
       wrap = true,
@@ -1184,7 +1198,7 @@ SettingsMenus.FOLLOWERS_OPTION_KEYS = {
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
   "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "sprite_style", "sprite_fade", "town_pokemon",
+  "cave_spawns", "sprite_style", "dyn_scale", "sprite_fade", "town_pokemon",
   "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
   "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
   "catch_hud_size",

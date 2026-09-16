@@ -394,6 +394,29 @@ eq(Config.normalizeSpriteStyle("followers_ex"), "followers", "migrate followers_
 eq(Config.normalizeSpriteStyle("poke_followers"), "followers", "migrate poke_followers")
 eq(Config.normalizeSpriteStyle("followers"), "followers", "followers stays")
 eq(Config.normalizeSpriteStyle("weird"), "followers", "migrate unknown → followers")
+
+-- SPRITE SCALE: master switch for the Voxel-only per-species display scale.
+savedOpts = {}
+eq(Config.dynScaleEnabled(V.mod), true, "dyn_scale defaults on")
+savedOpts.dyn_scale = false
+eq(Config.dynScaleEnabled(V.mod), false, "dyn_scale off once saved false")
+local dsOk, dsOn, dsRefreshed = Config.setDynScale(V.mod, true, "test", {})
+check(dsOk == true, "setDynScale succeeds with no game context")
+eq(dsOn, true, "setDynScale reports the value it set")
+eq(dsRefreshed, 0, "setDynScale skips refresh without render/logic")
+
+modules.species_geometry = nil
+local SpeciesGeometry = V.require("species_geometry")
+savedOpts.dyn_scale = true
+local scaleOn = SpeciesGeometry.displayScale(6, "pokemmo")
+check(scaleOn ~= 1, "Charizard has a real base-table scale when dyn_scale is on")
+savedOpts.dyn_scale = false
+eq(SpeciesGeometry.displayScale(6, "pokemmo"), 1,
+  "Charizard falls back to native True Size (scale 1) when dyn_scale is off")
+eq(SpeciesGeometry.displayScale(6), 1, "style-less lookup also honors dyn_scale off")
+savedOpts.dyn_scale = true
+eq(SpeciesGeometry.displayScale(6, "pokemmo"), scaleOn,
+  "re-enabling dyn_scale restores the base-table scale")
 savedOpts = { use_animated_overworld_sprites = false }
 V.mod.world = {
   game = {

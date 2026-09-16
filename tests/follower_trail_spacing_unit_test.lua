@@ -97,19 +97,12 @@ check(SpeciesGeometry.displayScale(6) ~= 1, "Charizard has a display scale overr
 eq(SpeciesGeometry.displayScale(9999), 1, "out-of-range species display scale default")
 eq(SpeciesGeometry.displayScale(nil), 1, "nil species display scale default")
 
--- Per-style overrides layer on top of the shared base table. "custom_style"
--- here is a placeholder for any hypothetical non-True-Size style -- the
--- mechanism itself does not validate style names against a real registry.
-modules["species_display_scale_style_overrides"] = { [143] = { custom_style = 0.4 } }
-eq(SpeciesGeometry.displayScale(143, "custom_style"), 0.4, "Snorlax custom-style override wins")
-check(SpeciesGeometry.displayScale(143, "pokemmo") ~= 0.4,
-  "Snorlax HGSS style unaffected by the custom-style-only override")
-eq(SpeciesGeometry.displayScale(9999, "custom_style"), 1,
-  "out-of-range species with no override stays at 1 under custom_style")
 -- A style outside TRUE_SIZE_STYLES does NOT inherit the shared base table at
 -- all (it's calibrated against HGSS/True Size's own pixel dimensions,
 -- unrelated to some other style's native art) -- Charizard's non-1x base
--- value must not leak into it.
+-- value must not leak into it. "custom_style" is a placeholder for any
+-- hypothetical non-True-Size style -- the function does not validate style
+-- names against a real registry, it just gates on TRUE_SIZE_STYLES.
 eq(SpeciesGeometry.displayScale(6, "pokemmo"), SpeciesGeometry.displayScale(6),
   "Charizard base value still applies under pokemmo (a True Size style)")
 eq(SpeciesGeometry.displayScale(6, "custom_style"), 1,
@@ -120,11 +113,12 @@ eq(SpeciesGeometry.displayScale(6, "custom_style"), 1,
 -- calibrated -- would apply to an unrelated native art size if it leaked in.
 eq(SpeciesGeometry.displayScale(6, "followers"), 1,
   "Charizard base value does NOT leak into followers")
-local rdw, rdh, rax, ray = SpeciesGeometry.resolveDisplayGeometry(143, "custom_style", 20, 20, 10, 20)
-eq(rdw, 8, "resolveDisplayGeometry width uses per-style scale")
-eq(rdh, 8, "resolveDisplayGeometry height uses per-style scale")
-eq(rax, 4, "resolveDisplayGeometry anchorX scales with width")
-eq(ray, 8, "resolveDisplayGeometry anchorY scales with height")
+local rdw, rdh, rax, ray = SpeciesGeometry.resolveDisplayGeometry(6, "pokemmo", 20, 20, 10, 20)
+local expectScale = SpeciesGeometry.displayScale(6)
+eq(rdw, 20 * expectScale, "resolveDisplayGeometry width uses the base scale")
+eq(rdh, 20 * expectScale, "resolveDisplayGeometry height uses the base scale")
+eq(rax, 10 * expectScale, "resolveDisplayGeometry anchorX scales with width")
+eq(ray, 20 * expectScale, "resolveDisplayGeometry anchorY scales with height")
 local ndw = SpeciesGeometry.resolveDisplayGeometry(25, "custom_style", 20, 20, 10, 20)
 eq(ndw, nil, "resolveDisplayGeometry returns nil at scale 1")
 SpeciesGeometry.clearCache()

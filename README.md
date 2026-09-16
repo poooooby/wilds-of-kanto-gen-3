@@ -117,6 +117,7 @@ There is no second settings store. Defaults match `options.lua`.
 |---------|--------|---------|-------------|
 | Show Wild Mons | On / Off | On | Spawn visible wild Pokémon in eligible areas. |
 | Sprite Style | Poke Followers / GSC · HGSS / PokeMMO | Poke Followers / GSC | Overworld sprite style for wilds and followers. GSC uses Classic (16×16); HGSS uses True Size. Dialogue portraits are separate (always PMDCollab for supported Wilds Pokémon talk). |
+| Sprite Scale | On / Off | On | Custom per-species display-size tuning for HGSS / PokeMMO under Voxel renderers. Off renders every species at native True Size instead. |
 | Sprite Fade | Solid / Faded | Solid | Opacity of normal wild sprites (Solid = fully opaque). Does not affect followers, Town Pokémon, silhouettes, or UI. |
 | Spawn Amount | Low / Normal / High / Very High | Normal | How many visible overworld Pokémon can appear (including water). |
 | Random Enc | On / Off | On | Classic step-based random encounters. Visible overworld Pokémon stay active. |

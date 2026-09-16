@@ -17,8 +17,8 @@
 --   Poke Followers EX -> follow_control, trainer_trail, follower_count
 --                       (+ Leader via party menu hint)
 --   Wilds of Kanto    -> enabled, spawn_density, random_encounters,
---                       water_spawns, cave_spawns, sprite_style, sprite_fade,
---                       town_pokemon, pokemon_grass_render_mode,
+--                       water_spawns, cave_spawns, sprite_style, dyn_scale,
+--                       sprite_fade, town_pokemon, pokemon_grass_render_mode,
 --                       wild_silhouettes,
 --                       overworld_catching, catch_throw_key, catch_cycle_key,
 --                       catch_throw_combo, catch_cycle_combo, catch_hud_size,
@@ -52,6 +52,13 @@ return {
       { "HGSS / PokeMMO", "pokemmo" },
     },
     description = "Overworld sprite style for wild Pokemon and followers. Poke Followers / GSC is the built-in default. Sprite size follows the style: GSC Classic (16x16), HGSS True Size. PMDCollab dialogue portraits are separate and appear for Wilds Pokemon talk regardless of Sprite Style. Water Pokemon still use Swimming or Levitates sprites when available.",
+  },
+  {
+    key = "dyn_scale",
+    label = "Sprite Scale",
+    type = "toggle",
+    default = true,
+    description = "Custom per-species display-size tuning for HGSS / PokeMMO sprites under Voxel renderers (lib/species_display_scale.lua). Turn off to render every species at native True Size instead.",
   },
   {
     key = "sprite_fade",

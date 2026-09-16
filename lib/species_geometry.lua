@@ -37,7 +37,6 @@ SpeciesGeometry.FOLLOW_GAP_OVERRIDES = {
 }
 
 local _displayScaleTable = nil
-local _displayScaleStyleOverrides = nil
 local _cachedDynamicMaxSpecies = nil
 
 -- Styles whose art shares the True Size pipeline the base scale table
@@ -64,30 +63,23 @@ local TRUE_SIZE_STYLES = {
 -- (lib/variable_size.lua). See lib/species_display_scale.lua for the full
 -- base table.
 --
--- style (optional: "pokemmo" | "followers" | ...) looks up
--- lib/species_display_scale_style_overrides.lua first — a species can list
--- a scale just for one style there. If nothing is listed: only "pokemmo"
--- (see TRUE_SIZE_STYLES above) falls back to the shared base table; every
--- other style falls back to 1 (no change) instead, since the base table
--- was never measured against that style's own native art.
+-- style (optional: "pokemmo" | "followers" | ...): only "pokemmo" (see
+-- TRUE_SIZE_STYLES above) ever consults the shared base table; every other
+-- style stays at 1 (no change), since the table was only ever measured
+-- against HGSS/True Size art.
+--
+-- Also returns 1 unconditionally when the player has turned off the
+-- "Sprite Scale" option (Config.dynScaleEnabled) -- the master switch for
+-- this whole custom-sizing system, falling back to native True Size.
 function SpeciesGeometry.displayScale(speciesId, style)
   local dex = SpeciesGeometry.normalizeDex(speciesId)
   if not dex then return 1 end
-  if style then
-    if _displayScaleStyleOverrides == nil then
-      local ok, t = pcall(function()
-        return V.require("species_display_scale_style_overrides")
-      end)
-      _displayScaleStyleOverrides = (ok and type(t) == "table") and t or false
-    end
-    local perDex = _displayScaleStyleOverrides and _displayScaleStyleOverrides[dex]
-    local override = perDex and perDex[style]
-    if type(override) == "number" and override > 0 then
-      return override
-    end
-    if not TRUE_SIZE_STYLES[style] then
-      return 1
-    end
+  if style and not TRUE_SIZE_STYLES[style] then
+    return 1
+  end
+  local okCfg, Config = pcall(function() return V.require("config") end)
+  if okCfg and Config and Config.dynScaleEnabled and not Config.dynScaleEnabled(V.mod) then
+    return 1
   end
   if _displayScaleTable == nil then
     local ok, t = pcall(function() return V.require("species_display_scale") end)
@@ -169,7 +161,6 @@ function SpeciesGeometry.clearCache()
   _table = nil
   _loadError = nil
   _displayScaleTable = nil
-  _displayScaleStyleOverrides = nil
   _cachedDynamicMaxSpecies = nil
 end
 

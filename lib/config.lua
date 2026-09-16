@@ -31,6 +31,10 @@ Config.DEFAULTS = {
   -- sprite_color removed: sheets always render true-color (24-bit PNG packs
   -- must never be force-baked to the 4-shade DMG ramp).
   sprite_style = "followers",
+  -- Voxel-only per-species display-size scale (lib/species_display_scale.lua).
+  -- ON = custom-tuned sizing per species; OFF = native True Size for every
+  -- HGSS/PokeMMO species (SpeciesGeometry.displayScale always returns 1).
+  dyn_scale = true,
   -- Pokémon size is tied to Sprite Style (no separate option):
   --   GSC sprites (followers) → Classic (one-tile 16×16 presentation)
   --   HGSS sprites (pokemmo)  → True Size (variable-size SpriteDef geometry
@@ -464,6 +468,14 @@ end
 
 Config.VALID_POKEMON_SIZES = VALID_POKEMON_SIZES
 
+--- Master switch for the Voxel-only per-species display-size scale
+-- (lib/species_display_scale.lua, consulted by SpeciesGeometry.displayScale).
+-- OFF disables custom sizing entirely -- every HGSS/PokeMMO species renders
+-- at native True Size (scale 1) instead.
+function Config.dynScaleEnabled(mod)
+  return Config.get(mod, "dyn_scale") ~= false
+end
+
 function Config.spriteStyle(mod)
   local rawStyle, stylePresent = Config.peekSavedOption(mod, "sprite_style")
   if stylePresent and type(rawStyle) == "string" then
@@ -665,6 +677,46 @@ end
 
 Config.VALID_SPRITE_STYLES = VALID_SPRITE_STYLES
 Config.SPRITE_STYLE_CONFIRM = SPRITE_STYLE_CONFIRM
+
+--- Toggle the Voxel-only per-species display-size scale. Refreshes already-
+-- spawned entities the same way setSpriteStyle does, since the scale is
+-- baked into each entity's SpriteDef (displayWidth/Height) at resolve time
+-- and would otherwise only take effect on the next map re-enter.
+function Config.setDynScale(mod, value, source, opts)
+  opts = opts or {}
+  local on = value == true
+  local game = resolveGame(mod, opts)
+  writeOptionBucket(mod, game, "dyn_scale", on)
+
+  local render = opts.render
+  local logic = opts.logic
+  if (not render or not logic) and mod and mod.exports then
+    render = render or mod.exports.render
+    logic = logic or mod.exports.logic
+  end
+  local refreshed = 0
+  if render and logic and type(render.refreshAllEntitySprites) == "function" then
+    if type(render.invalidateAssetCache) == "function" then
+      pcall(render.invalidateAssetCache, render)
+    end
+    local ok, n = pcall(render.refreshAllEntitySprites, render, logic, game)
+    if ok and type(n) == "number" then refreshed = n end
+  end
+
+  local confirmMsg = opts.message
+  if not confirmMsg and opts.confirm ~= false then
+    confirmMsg = "SPRITE SCALE: " .. (on and "ON" or "OFF")
+  end
+  confirmText(game, mod, confirmMsg)
+
+  if source and mod and mod.log and type(mod.log.info) == "function" then
+    pcall(mod.log.info, mod.log,
+      "dyn_scale set to %s via %s (refreshed=%d)",
+      tostring(on), tostring(source), refreshed)
+  end
+
+  return true, on, refreshed
+end
 
 local VALID_SPAWN_AMOUNTS = {
   low = true,

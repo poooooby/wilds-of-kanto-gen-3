@@ -10,7 +10,27 @@
 
 ## Unreleased
 
+### Features
+
+- Added a **Sprite Scale** option (on by default) that toggles the per-species
+  Voxel-only display-size scale (`lib/species_display_scale.lua`). Turning
+  it off makes `SpeciesGeometry.displayScale` return 1 unconditionally, so
+  every HGSS/PokeMMO species renders at native True Size instead of its
+  hand-tuned custom size — a full escape hatch for players who prefer
+  unmodified True Size proportions. Live-toggleable from the Start Menu
+  (Wilds of Kanto → SPRITE SCALE) or Mod Settings; flipping it refreshes
+  already-spawned entities immediately, the same way changing Sprite Style
+  does, since the scale is baked into each entity's SpriteDef at resolve
+  time.
+
 ### Removed
+
+- Removed `lib/species_display_scale_style_overrides.lua` (the per-style
+  override layer on top of the shared display-scale table). Since only
+  HGSS/PokeMMO ever consults the base table now (PMDCollab, the other style
+  that used to need its own differently-tuned values, was removed above),
+  there was no longer a second style for the override mechanism to
+  differentiate — it was pure unused indirection.
 
 - Removed PMDCollab as a selectable overworld Sprite Style (wild spawns,
   followers, and ambient/town Pokemon). It was redundant with the existing

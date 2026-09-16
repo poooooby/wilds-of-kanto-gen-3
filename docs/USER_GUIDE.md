@@ -123,6 +123,7 @@ Gameplay settings live in **Mod Settings** only (not duplicated in the Start men
 |---|---|---|---|---|
 | Show Wild Mons | `enabled` | true | on/off | Master switch |
 | Sprite Style | `sprite_style` | followers | Poke Followers / GSC · HGSS / PokeMMO | Overworld wild + follower land sprites. Size follows style (GSC Classic, HGSS True Size). |
+| Sprite Scale | `dyn_scale` | true | on/off | Custom per-species display-size tuning for HGSS/PokeMMO under Voxel renderers; off = native True Size |
 | Spawn Amount | `spawn_density` | normal | Low / Normal / High / Very High | Visible land + water density |
 | Random Enc | `random_encounters` | true | on/off | Classic step RNG (grass / cave / water) |
 | Water Mons | `water_spawns` | swimming_sprites | Swim Sprites / Hid Silhouette / Silhouettes / Classic Enc / Disabled | Water presentation mode (default = current swimming sprites) |
