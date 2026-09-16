@@ -10,6 +10,36 @@
 
 ## Unreleased
 
+### Features
+
+- Added a per-species, per-sprite-style Voxel-only display-size scale
+  (`lib/species_display_scale.lua`, a fully hand-authored 386-entry
+  dex→multiplier table): followers and wild spawns can now render
+  smaller or larger than True Size under Voxel renderers, independently
+  per style (HGSS/PokeMMO, Poke Followers, PMDCollab). Only the quad's
+  world-space size changes — UVs stay on the real frame, so every source
+  pixel is still sampled at native resolution, and flat 2D never reads
+  these fields at all. Extended to the shared Terrarium/Stadium2/
+  Potato/Dramaless billboard factory, including a fix for species with
+  real anchor padding (Onix) and for exact mirror-symmetry under
+  quantization. Pokedex is removed from the Sprite Style menu/options
+  (kept as an internal fallback style only).
+- Added Battle Art Gen2 (`BATTLE_ART_VOXEL_GEN2`) as its own recognized
+  provider with a dedicated adapter (`lib/compat/battle_art_gen2_geometry.lua`),
+  rather than sharing Gen1's Battle Art fork file — Gen2's own
+  `SpriteBillboards.halfWidth` mirror-pivot behavior genuinely differs
+  from Gen1's. Fixes both wrong left/right sprite placement and, for
+  species whose art width coincidentally matches a genuine "big doll"
+  sprite's half-width (e.g. Charizard), placement drifting toward the
+  mirrored side.
+- Wilds now detects Pokedex-expansion mods (e.g. Kanto Reforged) at
+  load time instead of hardcoding a Gen 3-sized species cap for every
+  install: `Gen1.MAX_SPECIES`/`Gen2.MAX_SPECIES` are the true vanilla
+  151/251 baselines, raised only when a live scan of
+  `game.data.pokemon` (cached after the mod-load pass that Gen1Recomp
+  itself guarantees completes before gameplay starts) finds species
+  beyond that baseline.
+
 ### Bug fixes
 
 - Fixed noisy `World billboard failed ...; spatial overlay emergency
@@ -25,6 +55,31 @@
   now only logs when the entity's body is actually supposed to be visible
   already (`SpawnFx.bodyVisible`), so a genuinely missing sprite still
   surfaces while the expected spawn-reveal window stays silent.
+- Fixed Voxel walk-cycle "snapping" on asymmetric HGSS/PokeMMO sprites:
+  Gen1Recomp mirrors the whole up/down walk frame on `stepFlip` to fake a
+  second gait pose for symmetric human sprites, which visibly snapped
+  Wilds' left/right-asymmetric True Size art sideways, amplified by
+  Voxel display scaling. Opts the PokeMMO provider into
+  `disableVerticalStepFlip` (down/up facing only — left/right already
+  rely on a legitimate facing-based mirror that must stay untouched),
+  routed directly into followers'/wild spawns' own `pose()` since
+  Voxel/Battle Art billboards read `pose()`'s flip value directly and
+  never call `sprite:draw()`.
+- Followers are now frozen (`frozen=true`, `wanders=false`) so
+  third-party town-life mods (e.g. Terrarium's AGENDA system) stop
+  reading them as ordinary idle townspeople and pulling them toward a
+  scheduled post the moment the player stops walking — Wilds already
+  drives every trailer's position itself.
+- perf: Cached sprite-provider filesystem probes that were re-run on
+  every frame/spawn attempt (`_builtinPokeFollowersReady()`'s repeated
+  `mod:read` of a probe PNG, and `finalize()`'s per-`trySpawn` Gold
+  pack discovery), fixing measurable spawn and per-frame lag. Cherry-
+  picked from upstream YoDrehDenSwagAuf/overworld-spawn-mod#104
+  (credit: Max Coplan), closes upstream #95.
+- Finished the `overworld_wild_spawns` → `wilds_of_kanto_gen3` rename in
+  a handful of internal log/error strings and UI option-row namespace
+  prefixes that still referenced the pre-fork id after the 2.4.0
+  manifest identity change.
 
 ## 2.4.2 (fork)
 
