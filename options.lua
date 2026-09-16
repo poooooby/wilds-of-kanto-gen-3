@@ -29,9 +29,8 @@
 -- Pokemon size is not a separate option: it is tied to Sprite Style.
 --   GSC sprites (followers)   -> Classic (one-tile 16x16 presentation)
 --   HGSS sprites (pokemmo)    -> True Size (larger relative species sizes)
---   PMDCollab sprites         -> Native imported geometry (variable size)
 -- Pokedex is no longer a selectable style, but the Pokedex art provider
--- stays registered internally as the last-resort fallback the other three
+-- stays registered internally as the last-resort fallback the other two
 -- styles fall through to when their own art is missing for a species.
 
 return {
@@ -51,9 +50,8 @@ return {
     choices = {
       { "Poke Followers / GSC", "followers" },
       { "HGSS / PokeMMO", "pokemmo" },
-      { "PMDCollab", "pmdcollab" },
     },
-    description = "Overworld sprite style for wild Pokemon and followers. Poke Followers / GSC is the built-in default. Sprite size follows the style: GSC Classic (16x16), HGSS True Size, PMDCollab native imported geometry with directional walk and occasional idle animations. PMDCollab dialogue portraits are separate and appear for Wilds Pokemon talk regardless of Sprite Style. Water Pokemon still use Swimming or Levitates sprites when available.",
+    description = "Overworld sprite style for wild Pokemon and followers. Poke Followers / GSC is the built-in default. Sprite size follows the style: GSC Classic (16x16), HGSS True Size. PMDCollab dialogue portraits are separate and appear for Wilds Pokemon talk regardless of Sprite Style. Water Pokemon still use Swimming or Levitates sprites when available.",
   },
   {
     key = "sprite_fade",

@@ -2,12 +2,6 @@
   "commit": "a3acb77f05fb6649df2790031a1285066ffa32f2",
   "dexMax": 386,
   "dexMin": 1,
-  "directionRows": {
-    "down": 0,
-    "left": 6,
-    "right": 2,
-    "up": 4
-  },
   "genericEmotionPool": [
     "happy",
     "joyous",
@@ -15,16 +9,8 @@
     "determined",
     "normal"
   ],
-  "importerVersion": "3",
-  "missingIdle": [
-    15,
-    148,
-    266,
-    268,
-    345
-  ],
+  "importerVersion": "4",
   "missingPortraitNormal": [],
-  "missingWalk": [],
   "portraitsImported": 386,
   "repository": "https://github.com/PMDCollab/SpriteCollab",
   "safePortraitEmotions": [
@@ -33,16 +19,5 @@
     "joyous",
     "inspired",
     "determined"
-  ],
-  "speciesImported": 386,
-  "walkerLayout": {
-    "0": "stand_down",
-    "1": "stand_up",
-    "2": "stand_left",
-    "3": "walk_down",
-    "4": "walk_up",
-    "5": "walk_left",
-    "6+": "idle blocks: down, up, left, right"
-  },
-  "waterPolicy": "use_existing_wilds_water_system"
+  ]
 }

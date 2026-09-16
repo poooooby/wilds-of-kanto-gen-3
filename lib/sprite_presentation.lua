@@ -7,8 +7,8 @@
 --    dedicated right frames are selected via frameOverride.
 --
 -- 2) forceRawTrueColor — Gen1 PaletteFX.honorsTrueColor() is only true in
---    ADVANCED (redpp). PMDCollab PNGs are already authored RGBA; feeding them
---    through dmgObj / SGB shade remap destroys their colors.
+--    ADVANCED (redpp). Some art is already authored RGBA; feeding it through
+--    dmgObj / SGB shade remap destroys its colors.
 --    Flat: draw raw image + markTrueColor (and clear active palette shader).
 --    Voxel/DS: wrap resolveImage so billboards never getObpImage the sheet.
 local V = ...
@@ -119,7 +119,7 @@ local function wrapResolveImage(sprite)
   function sprite:resolveImage(...)
     if wantsRawTrueColor(self) and self.image then
       -- Voxel / Dramatic Shape textures come from resolveImage. Never bake
-      -- authored RGBA through getObpImage / dmgObj for PMDCollab.
+      -- authored RGBA through getObpImage / dmgObj.
       return self.image
     end
     return orig(self, ...)

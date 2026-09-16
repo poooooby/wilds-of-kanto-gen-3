@@ -420,63 +420,14 @@ function AmbientPokemon:_bindSprite(npc, species, game)
     npc.sprite = sprite
     npc._ambientSpriteKey = tostring(species) .. "|" .. tostring(Config.spriteStyle(self.mod))
       .. "|" .. (def.trueColor ~= false and "1" or "0")
-    if def.providerId == "pmdcollab" then
-      npc.spriteProviderId = "pmdcollab"
-      npc._pmdIdleMeta = {
-        idleFrameCount = def.idleFrameCount,
-        idleDurations = def.idleDurations,
-      }
-      npc._pmdWalkMeta = {
-        walkFrameCount = def.walkFrameCount,
-        walkDurations = def.walkDurations,
-        walkCycleBase = def.walkCycleBase,
-      }
-      local okP, SpritePresentation = pcall(function() return V.require("sprite_presentation") end)
-      if okP and SpritePresentation and SpritePresentation.attach then
-        pcall(SpritePresentation.attach, sprite, npc)
-      end
-      local okIdle, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-      if okIdle and PmdIdle then
-        PmdIdle.attachDrawWrap(sprite, npc)
-        PmdIdle.schedule(npc)
-      end
-    else
-      npc.spriteProviderId = def.providerId
-      local okClear, PmdIdleClear = pcall(function() return V.require("pmd_idle") end)
-      if okClear and PmdIdleClear and PmdIdleClear.clearEntityState then
-        PmdIdleClear.clearEntityState(npc)
-      else
-        npc._pmdIdleMeta = nil
-        npc._pmdIdle = nil
-        npc._pmdWalkMeta = nil
-        npc._pmdWalk = nil
-      end
-      local okP, SpritePresentation = pcall(function() return V.require("sprite_presentation") end)
-      if okP and SpritePresentation and SpritePresentation.attach then
-        pcall(SpritePresentation.attach, sprite, npc)
-      end
+    npc.spriteProviderId = def.providerId
+    local okP, SpritePresentation = pcall(function() return V.require("sprite_presentation") end)
+    if okP and SpritePresentation and SpritePresentation.attach then
+      pcall(SpritePresentation.attach, sprite, npc)
     end
     return true
   end
   return false
-end
-
---- Presentation-only PMDCollab idle/walk tick for town Pokémon.
-function AmbientPokemon:tickPresentation(dt)
-  dt = tonumber(dt) or (1 / 60)
-  local okWalk, PmdWalk = pcall(function() return V.require("pmd_walk") end)
-  local ok, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-  if not ((okWalk and PmdWalk) or (ok and PmdIdle)) then return end
-  for npc in pairs(self.active) do
-    if npc and npc.spriteProviderId == "pmdcollab" then
-      if okWalk and PmdWalk and PmdWalk.update and npc._pmdWalkMeta then
-        pcall(PmdWalk.update, npc, dt)
-      end
-      if ok and PmdIdle and PmdIdle.update and npc._pmdIdleMeta then
-        pcall(PmdIdle.update, npc, dt)
-      end
-    end
-  end
 end
 
 function AmbientPokemon:_makeGoldGuest(game, ow, species, x, y, behavior)

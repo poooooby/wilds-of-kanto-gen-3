@@ -484,11 +484,10 @@ function SettingsMenus:_openWildsRoot(game)
       choices = {
         { label = "GSC",  value = "followers" },
         { label = "HGSS", value = "pokemmo" },
-        { label = "PMD",  value = "pmdcollab" },
       },
       current = Config.spriteStyle(mod),
       right = ({
-        followers = "GSC", pokemmo = "HGSS", pokedex = "DEX", pmdcollab = "PMD",
+        followers = "GSC", pokemmo = "HGSS", pokedex = "DEX",
       })[tostring(Config.spriteStyle(mod))] or "GSC",
       apply = function(v)
         Config.setSpriteStyle(mod, v, "options_menu", {
@@ -1075,7 +1074,6 @@ function SettingsMenus:register()
       return menus:_openChoice(game, "SPRITE STYLE", {
         { label = "FOLLOWERS/GSC", value = "followers" },
         { label = "HGSS / POKEMMO", value = "pokemmo" },
-        { label = "PMDCOLLAB", value = "pmdcollab" },
       }, Config.spriteStyle(mod), function(v)
         Config.setSpriteStyle(mod, v, "options_menu", {
           game = game,

@@ -29,14 +29,13 @@ SpriteStyleMenu.LABEL_GRASS = SpriteStyleMenu.LABEL_RANDOM
 
 -- Pokedex is not a selectable choice here, but stays a valid normalized
 -- style (Config.normalizeSpriteStyle) and an active provider: it is the
--- last-resort fallback the other three styles fall through to when their
+-- last-resort fallback the other two styles fall through to when their
 -- own art is missing for a species, and legacy saves/off-toggles can still
 -- normalize to it. STYLE_CONFIRM / providerAvailable / activeFallbackLabel
 -- below intentionally still know about "pokedex" for that reason.
 SpriteStyleMenu.STYLE_CHOICES = {
   { label = "FOLLOWERS/GSC", value = "followers" },
   { label = "HGSS / POKEMMO", value = "pokemmo" },
-  { label = "PMDCOLLAB", value = "pmdcollab" },
 }
 SpriteStyleMenu.CHOICES = SpriteStyleMenu.STYLE_CHOICES
 
@@ -64,7 +63,6 @@ local STYLE_CONFIRM = {
   followers = "POKE FOLLOWERS / GSC",
   pokemmo = "HGSS / POKEMMO",
   pokedex = "POKEDEX",
-  pmdcollab = "PMDCOLLAB",
 }
 
 local function providerAvailable(menu, style, game)
@@ -72,7 +70,7 @@ local function providerAvailable(menu, style, game)
   local providers = render and render.spriteProviders
   if not providers then return false, "no providers" end
   style = Config.normalizeSpriteStyle(style)
-  if style == "pokemmo" or style == "pokedex" or style == "pmdcollab" then
+  if style == "pokemmo" or style == "pokedex" then
     return true, "built-in"
   end
   if style == "followers" then
@@ -88,7 +86,6 @@ local function activeFallbackLabel(menu, style, game)
   local id = select(1, providers:activeProviderForStyle(style, game))
   if id == "followers_ex" then return "POKE FOLLOWERS / GSC"
   elseif id == "pokedex" then return "POKEDEX"
-  elseif id == "pmdcollab" then return "PMDCOLLAB"
   elseif id == "black" then return "FALLBACK"
   end
   return "HGSS / POKEMMO"

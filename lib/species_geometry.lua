@@ -55,18 +55,16 @@ local _cachedDynamicMaxSpecies = nil
 -- this flag would even be consulted -- "followers" here would be a currently-
 -- inert flag, not a real inclusion, and inert-until-something-upstream-
 -- changes is exactly the kind of thing that turns into a silent bug later.
--- PMDCollab is excluded for the same base reason (its own independent art
--- asset, confirmed elsewhere to carry no SpeciesGeometry/True Size entry).
 local TRUE_SIZE_STYLES = {
   pokemmo = true,
 }
 
 --- Shared per-species Voxel display scale (dex → scale, 1 = no change).
--- Drives followers (lib/follower/control_engine.lua), wild spawns
--- (lib/variable_size.lua), and PMDCollab (lib/sprite_providers.lua). See
--- lib/species_display_scale.lua for the full base table.
+-- Drives followers (lib/follower/control_engine.lua) and wild spawns
+-- (lib/variable_size.lua). See lib/species_display_scale.lua for the full
+-- base table.
 --
--- style (optional: "pokemmo" | "followers" | "pmdcollab" | ...) looks up
+-- style (optional: "pokemmo" | "followers" | ...) looks up
 -- lib/species_display_scale_style_overrides.lua first — a species can list
 -- a scale just for one style there. If nothing is listed: only "pokemmo"
 -- (see TRUE_SIZE_STYLES above) falls back to the shared base table; every
@@ -107,7 +105,7 @@ end
 -- callers can uniformly clear their def's display fields in that case.
 -- Centralizing this avoids the display fields being computed slightly
 -- differently (or forgotten) at any one of the several call sites that
--- build a SpriteDef (follower rebuild paths, wild spawns, PMD provider).
+-- build a SpriteDef (follower rebuild paths, wild spawns).
 function SpeciesGeometry.resolveDisplayGeometry(speciesId, style, frameWidth, frameHeight, anchorX, anchorY)
   frameWidth = tonumber(frameWidth)
   frameHeight = tonumber(frameHeight)

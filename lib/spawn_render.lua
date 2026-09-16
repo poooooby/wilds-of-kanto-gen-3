@@ -2297,27 +2297,6 @@ function SpawnRender:applyProviderSprite(entity, game, options)
       if okP and SpritePresentation and SpritePresentation.attach then
         pcall(SpritePresentation.attach, entity.sprite, entity)
       end
-      if result.providerId == "pmdcollab" then
-        entity.spriteProviderId = "pmdcollab"
-        entity._pmdWalkMeta = {
-          walkFrameCount = result.def.walkFrameCount or (result.meta and result.meta.walkFrameCount),
-          walkDurations = result.def.walkDurations or (result.meta and result.meta.walkDurations),
-          walkCycleBase = result.def.walkCycleBase or (result.meta and result.meta.walkCycleBase),
-        }
-        entity._pmdIdleMeta = {
-          idleFrameCount = result.def.idleFrameCount or (result.meta and result.meta.idleFrameCount),
-          idleDurations = result.def.idleDurations or (result.meta and result.meta.idleDurations),
-        }
-        local okIdle, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-        if okIdle and PmdIdle then
-          PmdIdle.attachDrawWrap(entity.sprite, entity)
-        end
-      else
-        local okIdle, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-        if okIdle and PmdIdle and PmdIdle.clearEntityState then
-          PmdIdle.clearEntityState(entity)
-        end
-      end
     end
     return true
   end
@@ -2369,20 +2348,6 @@ function SpawnRender:applyProviderSprite(entity, game, options)
   end
 
   -- Re-evaluate True Size at bind time (Voxel may have toggled since resolve).
-  -- PMDCollab keeps native imported geometry — never strip / swap HGSS packs.
-  if result.providerId == "pmdcollab"
-     or (result.meta and result.meta.keepNativeGeometry) then
-    local fw = tonumber(def.frameWidth)
-    local fh = tonumber(def.frameHeight)
-    entity.variableSizeApplied = fw ~= nil and fw > 0 and fh ~= nil and fh > 0
-    entity.variableSizeReason = "pmdcollab_native"
-    entity._wildsEffectiveSize = "true_size"
-    if result.meta then
-      result.meta.variableSize = entity.variableSizeApplied
-      result.meta.frameWidth = def.frameWidth
-      result.meta.frameHeight = def.frameHeight
-    end
-  else
   do
     local VariableSize = V.require("variable_size")
     local kind = result.spriteKind or entity.spriteKind
@@ -2422,7 +2387,6 @@ function SpawnRender:applyProviderSprite(entity, game, options)
         result.meta.loadPath = geoInfo.loadPath or result.meta.loadPath
       end
     end
-  end
   end
 
   logWildSpriteColor(self.mod, entity.species or dexId, def, {
@@ -2478,32 +2442,6 @@ function SpawnRender:applyProviderSprite(entity, game, options)
       pcall(SpritePresentation.attach, sprite, entity)
     end
   end
-  if result.providerId == "pmdcollab" then
-    entity._pmdIdleMeta = {
-      idleFrameCount = def.idleFrameCount or (result.meta and result.meta.idleFrameCount),
-      idleDurations = def.idleDurations or (result.meta and result.meta.idleDurations),
-    }
-    entity._pmdWalkMeta = {
-      walkFrameCount = def.walkFrameCount or (result.meta and result.meta.walkFrameCount),
-      walkDurations = def.walkDurations or (result.meta and result.meta.walkDurations),
-      walkCycleBase = def.walkCycleBase or (result.meta and result.meta.walkCycleBase),
-    }
-    local okIdle, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-    if okIdle and PmdIdle then
-      PmdIdle.attachDrawWrap(sprite, entity)
-      PmdIdle.schedule(entity)
-    end
-  else
-    local okIdle, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-    if okIdle and PmdIdle and PmdIdle.clearEntityState then
-      PmdIdle.clearEntityState(entity)
-    else
-      entity._pmdIdleMeta = nil
-      entity._pmdIdle = nil
-      entity._pmdWalkMeta = nil
-      entity._pmdWalk = nil
-    end
-  end
   -- Native walker sheets are driven solely by SpriteRenderer + Movement.walkPhase.
   -- Never mark them as the deprecated enhanced-atlas body path.
   entity.usingEnhancedSprite = false
@@ -2534,8 +2472,6 @@ function SpawnRender:applyProviderSprite(entity, game, options)
         or ("WATER_" .. string.upper(result.spriteKind))
     elseif result.providerId == "followers_ex" then
       entity.spriteSource = "FOLLOWERS_EX"
-    elseif result.providerId == "pmdcollab" then
-      entity.spriteSource = "PMDCOLLAB"
     else
       entity.spriteSource = "FOLLOW_SPRITES"
     end
@@ -2795,22 +2731,6 @@ function SpawnRender:syncEntityAnimation(entity, dt)
     if prevDir ~= entity.animation.direction then
       entity.animation.directionChanged = true
       entity.renderDirty.direction = true
-    end
-  end
-
-  -- PMDCollab Idle + Walk cycles (presentation only).
-  if entity.spriteProviderId == "pmdcollab" then
-    if entity._pmdWalkMeta then
-      local okWalk, PmdWalk = pcall(function() return V.require("pmd_walk") end)
-      if okWalk and PmdWalk and PmdWalk.update then
-        pcall(PmdWalk.update, entity, dt or 0)
-      end
-    end
-    if entity._pmdIdleMeta then
-      local okIdle, PmdIdle = pcall(function() return V.require("pmd_idle") end)
-      if okIdle and PmdIdle and PmdIdle.update then
-        pcall(PmdIdle.update, entity, dt or 0)
-      end
     end
   end
 

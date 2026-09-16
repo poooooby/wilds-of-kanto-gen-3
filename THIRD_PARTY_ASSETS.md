@@ -5,7 +5,7 @@
 - Repository: [PMDCollab/SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
 - Browse: http://sprites.pmdcollab.org/
 - Imported revision: `a3acb77f05fb6649df2790031a1285066ffa32f2`
-- Importer: `scripts/import_pmdcollab.py` (version 3)
+- Importer: `scripts/import_pmdcollab.py` (version 4)
 
 ## License
 
@@ -23,14 +23,14 @@ Official Chunsoft-origin graphics that appear in SpriteCollab are credited as
 
 ## What Wilds redistributes
 
-Under `assets/pmdcollab/` Wilds ships **derived** Gen1–Gen2 runtime assets only:
+Under `assets/pmdcollab/` Wilds ships **derived** dialogue-portrait assets
+only:
 
-- Overworld Walk (+ Idle when available) converted to Gen1Recomp walker sheets
 - Selected portrait emotions for Pokémon dialogue (Normal + safe generic pool)
-- Generated metadata tables and contributor credits
+- Generated metadata table and contributor credits
 
-Wilds does **not** ship the full SpriteCollab repository, XML sources, or
-dungeon-only animations.
+Wilds does **not** ship the full SpriteCollab repository, XML sources,
+overworld walker sprites, or dungeon-only animations.
 
 ## Attribution
 

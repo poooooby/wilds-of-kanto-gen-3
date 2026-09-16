@@ -133,9 +133,9 @@ Wilds runtime. Wilds probes public exports (`embeddedWilds` / `wilds` table)
 and logs the situation; it does not disable Stadium2 handlers or rewrite
 Stadium2 files. Dual-runtime coexistence is an external Stadium2 change.
 
-## KNOWN BUG: floating True Size / PMDCollab sprites under Battle Art Voxel
+## KNOWN BUG: floating True Size sprites under Battle Art Voxel
 
-Variable-geometry wild Pokemon (True Size and PMDCollab, i.e. any species
+Variable-geometry wild Pokemon (True Size, i.e. any species
 whose `anchorY` differs from `frameHeight`) render floating well above the
 ground specifically when **Battle Art Voxel Fork** is the active Voxel
 renderer with Voxel mode on. Worse for species whose anchor sits further

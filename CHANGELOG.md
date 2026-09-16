@@ -10,6 +10,31 @@
 
 ## Unreleased
 
+### Removed
+
+- Removed PMDCollab as a selectable overworld Sprite Style (wild spawns,
+  followers, and ambient/town Pokemon). It was redundant with the existing
+  HGSS/PokeMMO and Poke Followers styles, and its ~11MB of walker sprite
+  sheets shipped as unused bloat. Gen2 dialogue portraits — a separate
+  feature that also derives from PMDCollab/SpriteCollab but is independent
+  of Sprite Style — are unaffected and remain fully supported.
+  - Deleted `lib/pmd_walk.lua` / `lib/pmd_idle.lua` (overworld walk/idle
+    animation, portrait-unrelated) and the PMDCollab sprite provider in
+    `lib/sprite_providers.lua`.
+  - Deleted `assets/pmdcollab/sprites/` and `sprite_table.lua`; kept
+    `assets/pmdcollab/portraits/` and `portrait_table.lua`.
+  - Trimmed `scripts/import_pmdcollab.py` to portraits-only and deleted
+    `scripts/audit_pmdcollab_walk.py` (audited only the now-removed walk
+    sheets).
+  - `lib/pmdcollab_assets.lua`'s portrait loading no longer depends on
+    `sprite_table.lua` existing — previously, deleting it would have also
+    broken portraits, since both were gated behind one shared readiness
+    flag.
+  - The Sprite Style option now offers 2 public choices (HGSS/PokeMMO,
+    Poke Followers) instead of 3; an existing save with PMDCollab selected
+    migrates silently to Poke Followers, the same fallback already used
+    for other retired style values.
+
 ## 2.5.0 (fork)
 
 ### Features
@@ -118,7 +143,7 @@
 
 ### Known issues
 
-- Variable-geometry wild Pokemon (True Size / PMDCollab) render floating well
+- Variable-geometry wild Pokemon (True Size) render floating well
   above ground specifically under **Battle Art Voxel Fork** with Voxel mode
   on (correct with Voxel off, and correct under Terrarium's Voxel mode).
   Root cause not yet isolated — see the "KNOWN BUG" section in

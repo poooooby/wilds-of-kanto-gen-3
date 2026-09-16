@@ -37,10 +37,10 @@ Huge shoutout to that project and its contributors — see below.
 - Water Pokémon (swimming sprites, silhouettes, or classic encounters)
 - Cave spawn filtering
 - Town / ambient Pokémon
-- Sprite styles: Poké Followers / GSC, HGSS / PokeMMO, Pokédex, PMDCollab
+- Sprite styles: Poké Followers / GSC, HGSS / PokeMMO
 - Sprite size follows Sprite Style — GSC uses Classic (one-tile 16×16);
   HGSS uses True Size (larger relative species sizes) when the active renderer
-  can consume variable SpriteDef geometry; PMDCollab keeps native imported sizes
+  can consume variable SpriteDef geometry
 - PMDCollab dialogue portraits for Wilds Pokémon talk (followers, town Pokémon,
   generic cries) — independent of the selected overworld Sprite Style
 - Red / Blue / Yellow, plus experimental Pokémon Gold (beta)
@@ -62,9 +62,8 @@ Gen 2 compatibility layer.
 > Please report anything that behaves differently from Gen1.
 
 Currently working: overworld wilds from Gold encounter data, roam / chase,
-random-encounter suppression, Wilds settings, HGSS, Poké Followers / GSC, and
-PMDCollab sprites (including True Size where supported), swimming / water
-presentation,
+random-encounter suppression, Wilds settings, HGSS, Poké Followers / GSC
+(including True Size where supported), swimming / water presentation,
 town Pokémon on curated Johto towns, party followers, and overworld catching
 (same throw UX as Gen1). Safari and special engine catch sessions stay off.
 
@@ -72,23 +71,18 @@ If reporting a Gen2 issue, include Pokémon Gold, map / location, sprite style,
 follower count / control mode if relevant, Voxel mod if enabled, and
 reproduction steps.
 
-## PMDCollab Sprites
+## PMDCollab Portraits
 
-Wilds now ships a new optional **Sprite Style: PMDCollab** plus independent
-dialogue portraits. The art is derived from
+Wilds ships dialogue portraits derived from
 [PMDCollab/SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
 (CC BY-NC 4.0).
 
 Shoutout to the [SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
 project and everyone listed in `assets/pmdcollab/CREDITS.txt` — Wilds would
-not have these Mystery Dungeon–style walkers and talk portraits without that
-repo.
+not have these Mystery Dungeon–style talk portraits without that repo.
 
-- Enable the overworld look via **Sprite Style → PMDCollab**
 - Portraits appear for Wilds Pokémon talk (followers, town Pokémon, generic
-  cries) under every Sprite Style, not only PMDCollab
-- Water Pokémon still use Wilds swimming / levitate / silhouette presentation
-  (SpriteCollab has no generic Swim set for Gen 1–2)
+  cries) under every Sprite Style — independent of the selected style
 
 Full license and attribution:
 [THIRD_PARTY_ASSETS.md](THIRD_PARTY_ASSETS.md) and
@@ -122,7 +116,7 @@ There is no second settings store. Defaults match `options.lua`.
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
 | Show Wild Mons | On / Off | On | Spawn visible wild Pokémon in eligible areas. |
-| Sprite Style | Poke Followers / GSC · HGSS / PokeMMO · Pokédex · PMDCollab | Poke Followers / GSC | Overworld sprite style for wilds and followers. GSC uses Classic (16×16); HGSS uses True Size; PMDCollab uses native imported geometry with directional walk and occasional idle animations. Dialogue portraits are separate (always PMDCollab for supported Wilds Pokémon talk). |
+| Sprite Style | Poke Followers / GSC · HGSS / PokeMMO | Poke Followers / GSC | Overworld sprite style for wilds and followers. GSC uses Classic (16×16); HGSS uses True Size. Dialogue portraits are separate (always PMDCollab for supported Wilds Pokémon talk). |
 | Sprite Fade | Solid / Faded | Solid | Opacity of normal wild sprites (Solid = fully opaque). Does not affect followers, Town Pokémon, silhouettes, or UI. |
 | Spawn Amount | Low / Normal / High / Very High | Normal | How many visible overworld Pokémon can appear (including water). |
 | Random Enc | On / Off | On | Classic step-based random encounters. Visible overworld Pokémon stay active. |
@@ -220,8 +214,8 @@ everything through v2.2.0:
 - **ShockSlayer / Crystal Clear team** — for the GSC-style Pokémon sprite work that the Poké Followers / GSC presentation is based on
 - [gamecorner-033](https://github.com/gamecorner-033) — Original PokéPC / Overworld Catching inspiration / overworld follower concepts and related work
 - [PMDCollab / SpriteCollab](https://github.com/PMDCollab/SpriteCollab) —
-  Mystery Dungeon–style overworld sprites and dialogue portraits (optional
-  Sprite Style + talk portraits). Shoutout to that repo and its contributors.
+  Mystery Dungeon–style dialogue portraits (talk portraits). Shoutout to
+  that repo and its contributors.
 - [1Jamie](https://github.com/1Jamie) —
   [**Kanto Reforged**](https://github.com/1Jamie/Kanto-Reforged) (GPLv3),
   the companion mod that extends the base Gen1Recomp/Gen2 game's own species

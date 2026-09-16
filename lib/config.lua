@@ -365,14 +365,12 @@ local VALID_SPRITE_STYLES = {
   pokemmo = true,
   followers = true,
   pokedex = true,
-  pmdcollab = true,
 }
 
 local SPRITE_STYLE_CONFIRM = {
   followers = "POKE FOLLOWERS / GSC",
   pokemmo = "HGSS / POKEMMO",
   pokedex = "POKEDEX",
-  pmdcollab = "PMDCOLLAB",
 }
 
 local VALID_POKEMON_SIZES = {
@@ -454,13 +452,11 @@ function Config.normalizePokemonSize(value)
 end
 
 -- Pokémon size is tied to Sprite Style (the separate Pokémon Size option was
--- removed): GSC sprites → Classic, HGSS sprites → True Size, Pokédex → Classic,
--- PMDCollab → True Size mode so native imported geometry is not stripped
--- (geometry comes from the PMDCollab provider, not HGSS True Size packs).
+-- removed): GSC sprites → Classic, HGSS sprites → True Size, Pokédex → Classic.
 -- Saved pokemon_size values are ignored (migration / legacy only).
 function Config.pokemonSizeMode(mod)
   local style = Config.spriteStyle(mod)
-  if style == "pokemmo" or style == "pmdcollab" then
+  if style == "pokemmo" then
     return "true_size"
   end
   return "classic"

@@ -5,18 +5,14 @@
 -- table has no entry for it.
 --
 -- style is whatever lib/config.lua's sprite_style option holds, e.g.
--- "pokemmo" (HGSS), "followers" (Poke Followers/GSC), or "pmdcollab" (PMD).
+-- "pokemmo" (HGSS) or "followers" (Poke Followers/GSC).
 --
 -- Use this when one style's art for a species is proportioned differently
--- enough from the others that the shared base scale looks wrong for it --
--- most notably PMDCollab, whose sprites carry their own native geometry
--- (see lib/sprite_providers.lua's _makePmdCollabProvider) rather than the
--- HGSS/Poke Followers True Size geometry the base table was tuned against.
+-- enough from the others that the shared base scale looks wrong for it.
 -- Most species/styles need no entry at all here.
 --
 -- Example:
---   [6] = { pmdcollab = 0.6 }, -- Charizard: PMD art reads bigger than HGSS
+--   [6] = { pokemmo = 0.9 }, -- Charizard: tune just the HGSS/PokeMMO style
 return {
---  [6] = { pmdcollab = 0.6}, 
 --  [6] = { pokemmo = 0.9 }
 }
