@@ -10,6 +10,16 @@
 
 ## Unreleased
 
+## 2.5.2 (fork)
+
+### Features
+
+- Expanded `lib/species_display_scale.lua`'s Voxel display-size scale table
+  from 386 to 1025 entries (full Gen 1-9 National Dex), re-derived with an
+  asymmetrical S-curve against a 1.5m child-height reference. Only takes
+  effect for species a Pokedex-expansion mod actually registers past the
+  active baseline; extra entries are otherwise inert.
+
 ## 2.5.1 (fork)
 
 ### Features
