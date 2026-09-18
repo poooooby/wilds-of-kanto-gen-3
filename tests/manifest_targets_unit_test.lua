@@ -88,9 +88,15 @@ else
   eq(ModTargets.label(both), "Gen 1+2",
      'games: ["gen1", "gen2"] → Gen 1+2')
 
+  -- "all" reflects whatever the live bootstrapped engine actually supports,
+  -- not a fixed Wilds-of-Kanto ceiling -- it grows as upstream Gen1Recomp
+  -- adds generations (Gen 3 landed upstream after this assertion was
+  -- written). Our manifest.json itself still only declares gen1/gen2 (see
+  -- the "production games label" case below), so this doesn't change what
+  -- Wilds of Kanto claims to support.
   local all = { games = ModTargets.normalize({ "all" }) }
-  eq(ModTargets.label(all), "Gen 1+2",
-     'games: ["all"] → Gen 1+2')
+  eq(ModTargets.label(all), "Gen 1+2+3",
+     'games: ["all"] → Gen 1+2+3')
 
   local gen2 = { games = ModTargets.normalize({ "gen2" }) }
   eq(ModTargets.label(gen2), "Gen 2",
