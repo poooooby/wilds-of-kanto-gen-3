@@ -6,19 +6,29 @@
 # Unit tests - require the engine test harness, not the shipped archive.
 tests/ambient_pokemon_unit_test.lua
 tests/animated_sprites_unit_test.lua
+tests/battle_art_gen2_geometry_unit_test.lua
 tests/battle_art_variable_geometry_unit_test.lua
 tests/battle_return_reconcile_unit_test.lua
 tests/behavior_live_options_unit_test.lua
 tests/behavior_tick_perf_unit_test.lua
+tests/catch_hud_render_ownership_unit_test.lua
+tests/cave_ledge_tile_pair_unit_test.lua
+tests/cave_map_npc_blocking_unit_test.lua
 tests/cave_reachability_mixed_unit_test.lua
 tests/cell_occupancy_unit_test.lua
 tests/enhanced_world_sprite_unit_test.lua
+tests/follower_catchup_divisor_unit_test.lua
 tests/follower_connection_handoff_unit_test.lua
 tests/follower_control_update_unit_test.lua
 tests/follower_core_unit_test.lua
+tests/follower_large_trailer_offset_unit_test.lua
 tests/follower_menu_options_path_unit_test.lua
+tests/follower_pokecenter_heal_unit_test.lua
+tests/follower_presentation_fx_unit_test.lua
 tests/follower_standalone_boot_test.lua
 tests/follower_surface_sprite_unit_test.lua
+tests/follower_sync_trailers_noop_unit_test.lua
+tests/follower_talk_pokeball_unit_test.lua
 tests/followers_water_compat_unit_test.lua
 tests/follower_trail_spacing_unit_test.lua
 tests/follower_water_movement_unit_test.lua
@@ -40,6 +50,7 @@ tests/gen2_sprite_color_unit_test.lua
 tests/gen2_town_talk_unit_test.lua
 tests/gen2_wilds_unit_test.lua
 tests/gold_boot_unit_test.lua
+tests/gold_pokedex_sprite_unit_test.lua
 tests/grass_occlusion_unit_test.lua
 tests/hgss_runtime_quality_unit_test.lua
 tests/hgss_water_presentation_perf_unit_test.lua
@@ -70,8 +81,10 @@ tests/settings_cave_water_overlay_unit_test.lua
 tests/settings_menus_follower_options_unit_test.lua
 tests/settings_menus_listmenu_path_unit_test.lua
 tests/settings_menus_unit_test.lua
+tests/special_spawn_safety_unit_test.lua
 tests/species_assets_unit_test.lua
 tests/sprite_fade_color_unit_test.lua
+tests/sprite_presentation_unit_test.lua
 tests/sprite_providers_unit_test.lua
 tests/pmdcollab_unit_test.lua
 tests/sprite_swap_anim_unit_test.lua
@@ -83,6 +96,7 @@ tests/true_size_water_height_unit_test.lua
 tests/variable_size_unit_test.lua
 tests/voxel_adapter_perf_unit_test.lua
 tests/voxel_aggressive_compat_test.lua
+tests/voxel_fallback_reveal_window_unit_test.lua
 tests/voxel_overlay_unit_test.lua
 tests/voxel_provider_variable_geometry_unit_test.lua
 tests/water_display_modes_unit_test.lua
@@ -90,6 +104,7 @@ tests/water_shadow_unit_test.lua
 tests/water_spawn_unit_test.lua
 tests/water_sprites_unit_test.lua
 tests/wild_rebind_geometry_unit_test.lua
+tests/wild_silhouette_mode_unit_test.lua
 
 # Repo / authoring tooling (not runtime).
 scripts/bootstrap.sh
@@ -98,6 +113,7 @@ scripts/build-mod.ps1
 scripts/validate-manager-ascii.py
 # Root pointer only; full overview ships as docs/ARCHITECTURE.md.
 ARCHITECTURE.md
+CLAUDE.md
 .gitignore
 .modkitignore
 .github/workflows/release.yml

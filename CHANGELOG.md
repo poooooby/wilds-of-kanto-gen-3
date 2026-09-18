@@ -10,6 +10,8 @@
 
 ## Unreleased (fork)
 
+## 2.5.3 (fork)
+
 ### Features
 
 - Overworld and follow sprites for PokeMMO/HGSS have been updated to include every
