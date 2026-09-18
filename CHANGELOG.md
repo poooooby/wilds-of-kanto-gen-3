@@ -16,6 +16,16 @@
   Pokemon through Gen 9 (1025 total species) and their shiny counterparts.
 - Pokemon dialogue portraits have been updated for all species, and now display as
   true color instead of being tinted by the active Gen 1 color palette.
+- Swimming and Levitate follow sprites now cover every Pokemon through Gen 9 that
+  has source art available (previously limited to Gen 1-3).
+
+### Bug fixes
+
+- Following Pokemon that fall far behind (e.g. after the player dashes several
+  tiles quickly) now catch up faster the further behind they are, instead of a
+  fixed speed regardless of how big the gap is.
+- Fixed some following Pokemon whose walking sprite is wider than one tile
+  visually overlapping the player.
 
 ## 2.5.2 (fork)
 

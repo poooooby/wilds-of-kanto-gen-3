@@ -1224,6 +1224,47 @@ function ControlEngine:_followGapForSource(source)
   return SpeciesGeometry.followGap(self:_speciesIdForTrailSource(source), self.mod)
 end
 
+--- Cosmetic-only draw nudge (pixels) for a trailer whose True Size art is
+-- wider than one tile. Does NOT touch cellX/cellY, walk goals, or
+-- reservations -- see largeTrailerVisualOffset's header (near behindOffset)
+-- for how this gets applied. Deliberately NOT gated on
+-- _visualTrailSpacingActive: it's pure rendering, unlike _followGapForSource
+-- which affects (dead, currently unused) logical trail lag.
+--
+-- Data-driven, not a per-class guess: a species whose baked pokemmo
+-- frameWidth exceeds one tile is (roughly) centered on its own tile, so it
+-- overhangs by half the excess on EACH side -- (frameWidth - CELL) / 2.
+--
+-- Deliberately a PER-TRAILER, independent amount -- never summed with a
+-- neighbor's overhang (own-overhang-only, no cumulative/pairwise chain).
+-- Two chain-aware designs were tried and reverted: a full running-sum
+-- cumulative offset correctly spaced every adjacent pair, but interpolating
+-- a large accumulated offset across a turn (see advanceTrailerStep) traced
+-- a visually wrong diagonal "floating" sweep; a pairwise (own + immediate
+-- predecessor) compromise turned out to be mathematically wrong for
+-- anything beyond slot 1 -- the offset is an ABSOLUTE value added to a
+-- trailer's own px/py, so the actual visual gap between two adjacent
+-- trailers is the DIFFERENCE of their offsets, not either one alone;
+-- getting that difference right for every pair requires the same unbounded
+-- running sum, which pairwise doesn't provide. Own-overhang-only guarantees
+-- a fully correct gap for the player->slot-1 case (the player has no
+-- overhang, so slot 1's own amount alone determines that gap correctly) and
+-- gives every other trailer *some* benefit against whatever's directly
+-- ahead of it, never zero and never negative, but doesn't guarantee a fully
+-- cleared gap when two wide species are adjacent deeper in the convoy.
+function ControlEngine:_largeTrailerPushbackPx(source)
+  local ok, SpeciesGeometry = pcall(function() return V.require("species_geometry") end)
+  if not ok or not SpeciesGeometry or not SpeciesGeometry.packGeometry then return 0 end
+  local dex = self:_speciesIdForTrailSource(source)
+  if type(dex) ~= "number" then return 0 end
+  local okTile, Tile = pcall(function() return V.require("tile") end)
+  local cell = (okTile and Tile and Tile.CELL) or 16
+  local pack = select(1, SpeciesGeometry.packGeometry(dex, "pokemmo"))
+  local fw = pack and tonumber(pack.frameWidth)
+  if not fw or fw <= cell then return 0 end
+  return (fw - cell) / 2
+end
+
 --- Record a trail-head position into the per-overworld history ring buffer.
 function ControlEngine:_pushTrailHistory(ow, x, y)
   if not ow then return end
@@ -1788,6 +1829,11 @@ function ControlEngine:makeTrailer(game, ow, x, y, facing, kind, mon, slot, opts
   -- presentation for trailers (movement/collision use cellX/cellY), so
   -- the bias is invisible and only makes the engine's sort deterministic.
   npc._wildsDrawBias = -slot * 0.001
+  -- Cosmetic-only: large species get a draw-position push-back along their
+  -- facing direction (see _largeTrailerPushbackPx) so their
+  -- wider-than-one-tile True Size art doesn't visually overlap the entity
+  -- ahead of them. Resolved once here, not per-frame.
+  npc._wildsLargePushbackPx = self:_largeTrailerPushbackPx(npc)
   -- NPC.new parked this trailer at (x, y) without the offset — carry the
   -- bias onto the spawn pose so a fresh stack sorts consistently with its
   -- biased siblings on the first draw.
@@ -1924,6 +1970,20 @@ local function behindOffset(facing, steps)
   local dx = facing == "left" and 1 or facing == "right" and -1 or 0
   local dy = facing == "up" and 1 or facing == "down" and -1 or 0
   return dx * steps, dy * steps
+end
+
+--- Cosmetic-only draw-position offset (pixels) pushing a large trailer back
+-- along its own facing direction (reuses behindOffset's dx/dy convention,
+-- just in pixels instead of cells). Reads the trailer's OWN amount only
+-- (cached once at creation by _largeTrailerPushbackPx -- see its header for
+-- why this is deliberately not summed with any neighbor). Never applied to
+-- cellX/cellY/goals, so it cannot affect movement, collision, or the trail
+-- lag system. A trailer with no cached amount (frameWidth <= one tile)
+-- returns 0, 0 -- a no-op.
+local function largeTrailerVisualOffset(npc)
+  local px = npc and npc._wildsLargePushbackPx
+  if not px or px == 0 then return 0, 0 end
+  return behindOffset(npc.facing, px)
 end
 
 function ControlEngine:_playerSurfing(ow, game)
@@ -2286,7 +2346,12 @@ end
 local function placeTrailerAt(npc, x, y, facing)
   npc.cellX, npc.cellY = x, y
   if facing then npc.facing = facing end
-  npc.px, npc.py = x * 16, y * 16 + (npc._wildsDrawBias or 0)
+  local ox, oy = largeTrailerVisualOffset(npc)
+  -- Direct placement, not animated -- seed the "last fully applied" offset
+  -- too, so the NEXT step (advanceTrailerStep) eases from this correct
+  -- baseline instead of popping in from (0, 0).
+  npc._wildsAppliedOffsetX, npc._wildsAppliedOffsetY = ox, oy
+  npc.px, npc.py = x * 16 + ox, y * 16 + oy + (npc._wildsDrawBias or 0)
   npc.targetX, npc.targetY = nil, nil
   npc.moving = false
   npc.progress = 0
@@ -2427,14 +2492,26 @@ function ControlEngine.advanceTrailerStep(npc, _map, _entities, diag)
   local fromY = tonumber(npc.cellY) or 0
   local t = npc.progress / frames
   if t > 1 then t = 1 end
-  npc.px = (fromX + (toX - fromX) * t) * 16
+  -- Ease the cosmetic offset in across the step, just like position, so a
+  -- turn (which changes facing -- and therefore the offset direction --
+  -- the instant the new step starts) doesn't visibly snap: the trailer
+  -- would otherwise interpolate its POSITION smoothly while its OFFSET
+  -- jumped to the new vector on frame one. fromOx/fromOy is whatever was
+  -- fully applied when the trailer last stood still.
+  local targetOx, targetOy = largeTrailerVisualOffset(npc)
+  local fromOx = npc._wildsAppliedOffsetX or 0
+  local fromOy = npc._wildsAppliedOffsetY or 0
+  local ox = fromOx + (targetOx - fromOx) * t
+  local oy = fromOy + (targetOy - fromOy) * t
+  npc.px = (fromX + (toX - fromX) * t) * 16 + ox
   -- Draw-order tiebreak rides on py every frame — mid-step fold swaps
   -- cross at equal pixel y, and without the bias that transient tie
   -- flickers exactly like a standing stack.
-  npc.py = (fromY + (toY - fromY) * t) * 16 + (npc._wildsDrawBias or 0)
+  npc.py = (fromY + (toY - fromY) * t) * 16 + oy + (npc._wildsDrawBias or 0)
   if npc.progress >= frames then
     npc.cellX, npc.cellY = toX, toY
-    npc.px, npc.py = toX * 16, toY * 16 + (npc._wildsDrawBias or 0)
+    npc._wildsAppliedOffsetX, npc._wildsAppliedOffsetY = targetOx, targetOy
+    npc.px, npc.py = toX * 16 + targetOx, toY * 16 + targetOy + (npc._wildsDrawBias or 0)
     npc.targetX, npc.targetY = nil, nil
     npc.moving = false
     npc.progress = 0

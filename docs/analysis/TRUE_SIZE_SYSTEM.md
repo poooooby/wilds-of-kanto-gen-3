@@ -42,11 +42,18 @@ uses. **Voxel never writes `pokemon_size`.**
 | HGSS | `true_size/hgss` | 302 | original `followsprites` |
 | Followers | `true_size/followers` | 302 | `poke_followers` strips |
 | Pokédex | `true_size/pokedex` | 302 | HGSS idle-down 1-frame stand-in |
-| Swimming | `true_size/swimming` | 256 | original `water_sprites/swimming` |
-| Levitate | `true_size/levitate` | 42 | original `water_sprites/levitates` |
+| Swimming | `true_size/swimming` | 824 species | original `water_sprites/swimming` |
+| Levitate | `true_size/levitate` | 184 species | original `water_sprites/levitates` |
 
 Classic assets under `followsprites_runtime` / `water_runtime` / `poke_followers`
 are never overwritten.
+
+Swimming/Levitate generation used to cap at dex 386 regardless of available source art
+(`tools/generate_true_size_runtime.py`'s `water_sources(kind, max_dex=386)` default, now raised
+to 1025) even though HGSS land sprites cover the full National Dex. Source art itself currently
+tops out around dex 1010 (swimming) / 1005 (levitate), so a handful of the newest species still
+lack dedicated art pending additional sourcing — species without source art keep whatever
+existing fallback rendering applies.
 
 ## Consumers
 
@@ -85,20 +92,35 @@ gap faster than one that's only barely lagging — capped at 4x so this only eve
 walking, never approaches teleport speed (the separate jam-recovery system still handles the
 genuinely-stuck case).
 
-A render-only per-trailer pixel push-back for species wider than one tile (pushing the trailer
-back along its facing direction so its True Size art doesn't visually overlap the entity ahead
-of it) was attempted and ultimately **reverted entirely**. The offset is an absolute value added
-to a trailer's own `px`/`py`, but the actual visual gap between adjacent trailers N-1 and N is
-the *difference* of their two offsets, not either one alone — so getting every adjacent pair
-correctly spaced requires a full running-total cumulative sum down the whole convoy
-(`offset_N = offset_{N-1} + own_{N-1} + own_N`). That sum grows unboundedly with convoy length
-and how many large species are in it, and interpolating a large accumulated offset across a
-single ~16px turn step (needed to avoid a "snap" when facing changes) traces a big, visually
-wrong diagonal "floating" sweep. Smaller-magnitude approximations (per-trailer own-overhang
-only, or pairwise own + immediate-predecessor) avoided floating but didn't produce correct
-relative spacing beyond the player→slot-1 gap, since they don't satisfy the difference equation
-above. No further attempt is planned; species whose True Size art is wider than one tile may
-still visually overlap adjacent trailers.
+A render-only per-trailer pixel push-back for species wider than one tile
+(`ControlEngine:_largeTrailerPushbackPx`, data-driven from `(frameWidth - Tile.CELL) / 2`)
+pushes the trailer back along its facing direction so its True Size art doesn't visually overlap
+the entity ahead of it. Each trailer's amount is its OWN overhang only, cached once at creation
+by `makeTrailer` and applied independently by `placeTrailerAt`/`ControlEngine.advanceTrailerStep`
+— deliberately never summed with a neighbor's amount. Two chain-aware designs were tried and
+reverted first: the offset is an absolute value added to a trailer's own `px`/`py`, but the
+actual visual gap between adjacent trailers N-1 and N is the *difference* of their two offsets,
+not either one alone — so getting every adjacent pair correctly spaced requires a full
+running-total cumulative sum down the whole convoy (`offset_N = offset_{N-1} + own_{N-1} +
+own_N`). That sum grows unboundedly with convoy length and how many large species are in it, and
+interpolating a large accumulated offset across a single ~16px turn step (needed to avoid a
+"snap" when facing changes — see below) traces a big, visually wrong diagonal "floating" sweep.
+A pairwise compromise (own + immediate predecessor's own, no further chain) avoided floating but
+turned out mathematically wrong for anything past slot 1, since it doesn't satisfy the
+difference equation above either. Own-overhang-only was kept instead: it fully and correctly
+spaces the player→slot-1 gap (the player has no overhang of its own, so slot 1's own amount
+alone is the correct gap — the one case that never needed cross-trailer math at all) and never
+makes any other adjacent pair worse than doing nothing, but doesn't guarantee a fully cleared
+gap when two wide species are adjacent deeper in the convoy.
+
+`ControlEngine.advanceTrailerStep` smooths the offset itself across a turn: it tracks
+`npc._wildsAppliedOffsetX/Y` (the offset baked in as of the trailer's last completed step) and
+linearly blends from that toward the new target offset using the step's own `t`, rather than
+snapping to the new facing's offset the instant `npc.facing` changes at step start. This fixed
+an earlier "snapping" regression where the offset jumped instantly on a turn while position
+eased in normally. Since own-overhang-only never accumulates across the convoy, the magnitude
+being interpolated stays bounded to a single species' own overhang, which is small enough not to
+reintroduce the "floating" sweep described above.
 
 ## Wild vs Follower geometry (root cause of Wild clipping)
 
