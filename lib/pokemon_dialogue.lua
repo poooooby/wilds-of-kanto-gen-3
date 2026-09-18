@@ -85,9 +85,14 @@ local function attachPortraitDraw(textbox, portrait)
     if not (love and love.graphics and love.graphics.draw) then return end
     local boxTy = tonumber(self.boxTy) or 12
     local size = 40
+    local height = size
     if image.getWidth then
       local ok, w = pcall(function() return image:getWidth() end)
       if ok and type(w) == "number" and w > 0 then size = w end
+    end
+    if image.getHeight then
+      local ok, h = pcall(function() return image:getHeight() end)
+      if ok and type(h) == "number" and h > 0 then height = h end
     end
     -- Sit just above the dialogue box, left side; slight overlap into the
     -- frame is intentional so Gen1 keeps full text width.
@@ -95,12 +100,27 @@ local function attachPortraitDraw(textbox, portrait)
     local y = boxTy * 8 - size + 4
     if y < 0 then y = 0 end
     love.graphics.setColor(1, 1, 1, 1)
+
+    -- PMDCollab portraits are full-color art, never a luminance-ramp sheet,
+    -- so every Gen1 COLORS mode (not just ADVANCED) must skip the palette
+    -- shade pass — same trueColor contract as sprite_presentation.lua /
+    -- follower/sprite_service.lua's unconditional Colored-art paths.
+    local prevShader = love.graphics.getShader and love.graphics.getShader()
+    if love.graphics.setShader then love.graphics.setShader() end
     love.graphics.draw(image, x, y, 0, 1, 1)
+    if love.graphics.setShader and prevShader then
+      love.graphics.setShader(prevShader)
+    end
+
+    local PaletteFX = tryRequire("src.render.PaletteFX")
+    if PaletteFX and type(PaletteFX.markTrueColor) == "function" then
+      pcall(PaletteFX.markTrueColor, x, y, size, height)
+    end
   end
   return true
 end
 
-local function resolvePortrait(mod, opts)
+local function resolvePortrait(mod, opts, game)
   opts = opts or {}
   if opts.portrait then
     return opts.portrait
@@ -117,6 +137,7 @@ local function resolvePortrait(mod, opts)
   end
   return PortraitRegistry.resolve(species, {
     mod = mod,
+    game = game,
     shiny = opts.shiny,
     mood = opts.mood,
     randomGeneric = randomGeneric == true,
@@ -135,7 +156,7 @@ end
 function PokemonDialogue.presentText(mod, game, ow, text, onDone, opts)
   opts = opts or {}
   local GameCompat = V.require("game_compat")
-  local portrait = resolvePortrait(mod, opts)
+  local portrait = resolvePortrait(mod, opts, game)
   -- Stable for this dialog (multi-page): portrait table is fixed here.
   local result = GameCompat.presentText(mod, game, ow, text, onDone)
   afterPresent(mod, game, portrait)
@@ -145,7 +166,7 @@ end
 function PokemonDialogue.presentTextChoice(mod, game, ow, text, onChoose, opts)
   opts = opts or {}
   local GameCompat = V.require("game_compat")
-  local portrait = resolvePortrait(mod, opts)
+  local portrait = resolvePortrait(mod, opts, game)
   local choiceOpts = {
     labels = opts.labels,
     box = opts.box,

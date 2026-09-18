@@ -340,7 +340,9 @@ function AmbientPokemon:_resolveSprite(species, game)
   if not def and self.render and self.render.runtimeSheets then
     local sheets = self.render.runtimeSheets
     local SpeciesAssets = V.require("species_assets")
-    local assetId = SpeciesAssets.idFor(species)
+    local GameCompat = V.require("game_compat")
+    local assetId = SpeciesAssets.idForRuntime(
+      species, GameCompat.speciesId(species, game, self.mod))
     if assetId then
       local sd = sheets:spriteDef(assetId, "normal", "SPRITE_WILDS_AMBIENT")
       if sd and sd.image then

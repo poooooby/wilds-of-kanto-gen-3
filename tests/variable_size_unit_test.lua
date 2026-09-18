@@ -76,11 +76,17 @@ local Config = V.require("config")
 local SpeciesGeometry = V.require("species_geometry")
 local VariableSize = V.require("variable_size")
 
--- Geometry table covers all of Gen1-3
+-- Geometry table covers at least all of Gen1-3 (may cover more as later
+-- generations add their own entries to the shared table).
 local summary = SpeciesGeometry.summary(mod)
-eq(summary.species, 386, "386 species geometry")
+check(summary.species >= 386, "at least 386 species geometry (got " .. tostring(summary.species) .. ")")
 check((summary.classes.XL or 0) > 0, "has XL class")
-check((summary.manualOverrides or 0) >= 15, "manual overrides present")
+-- tools/generate_true_size_runtime.py's MANUAL_OVERRIDES dict currently has
+-- exactly one active entry (Onix, dex 95) -- others are deliberately
+-- commented out ("reserved for later tuning"). A full --force regen makes
+-- species_table.lua match that dict exactly, so this checks >=1, not a
+-- larger historical count that would just go stale again.
+check((summary.manualOverrides or 0) >= 1, "manual overrides present")
 
 local charPack = SpeciesGeometry.packGeometry(6, "pokemmo", mod)
 check(charPack ~= nil, "Charizard pokemmo pack")

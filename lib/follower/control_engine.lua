@@ -189,7 +189,9 @@ local function spriteDefWithGeometry(resolved, extras, species)
     local okDs, SpeciesGeometry = pcall(function() return V.require("species_geometry") end)
     if okDs and SpeciesGeometry and SpeciesGeometry.resolveDisplayGeometry then
       local okSa, SpeciesAssets = pcall(function() return V.require("species_assets") end)
-      local dex = (okSa and SpeciesAssets and SpeciesAssets.idFor(species)) or species
+      local okGc, GameCompat = pcall(function() return V.require("game_compat") end)
+      local runtimeDex = okGc and GameCompat and GameCompat.speciesId(species, nil, V.mod)
+      local dex = (okSa and SpeciesAssets and SpeciesAssets.idForRuntime(species, runtimeDex)) or species
       local okCfg, Config = pcall(function() return V.require("config") end)
       local style = okCfg and Config and Config.spriteStyle and Config.spriteStyle(V.mod) or nil
       def.displayWidth, def.displayHeight, def.displayAnchorX, def.displayAnchorY =
@@ -1034,12 +1036,13 @@ function ControlEngine:resolveFollowerSprite(opts)
   if sheets then
     if not sheets.ready and sheets.load then pcall(function() sheets:load() end) end
     local SpeciesAssets = V.require("species_assets")
-    local assetId = SpeciesAssets.idFor(species)
+    local GameCompat = V.require("game_compat")
+    local assetId = SpeciesAssets.idForRuntime(
+      species, GameCompat.speciesId(species, opts.game, self.mod))
     if not assetId then
       -- Unknown / Fakemon: do not guess via runtime dex or Charmander default.
       return nil
     end
-    local GameCompat = V.require("game_compat")
     local id = (role == "player_controlled")
       and (GameCompat.isGen2(self.mod, opts.game) and "SPRITE_WILDS_PLAYER_MON"
         or "SPRITE_PLAYER_POKEMON")
@@ -1197,7 +1200,9 @@ function ControlEngine:_speciesIdForTrailSource(source)
       or source.species
     local SpeciesAssets = V.require("species_assets")
     if type(species) == "string" then
-      local assetId = SpeciesAssets.idFor(species)
+      local GameCompat = V.require("game_compat")
+      local assetId = SpeciesAssets.idForRuntime(
+        species, GameCompat.speciesId(species, nil, self.mod))
       if type(assetId) == "number" then return assetId end
       return species
     end
@@ -3817,7 +3822,9 @@ function ControlEngine:_refreshTrailerWaterSprites(game, ow, surface)
         -- — waterline mask + foam/blue water line, cached in the save dir, no
         -- separate _submerged.png files.  Pick the sheet by COLORS mode.
         local SpeciesAssets = V.require("species_assets")
-        local dex = SpeciesAssets.idFor(species)
+        local GameCompat = V.require("game_compat")
+        local dex = SpeciesAssets.idForRuntime(
+          species, GameCompat.speciesId(species, nil, self.mod))
         if dex then
           local Config = nil
           pcall(function() Config = V.require("config") end)

@@ -572,3 +572,272 @@ Contributors referenced by imported assets:
   contact: https://estelstarlight.tumblr.com/post/186838449949
   assets: portrait/0035 normal
 
+
+------------------------------------------------------------------------
+Additional contributors (dex 387+ portraits, manually imported batch)
+------------------------------------------------------------------------
+
+Author display names/contacts are not resolved here (no local SpriteCollab
+credit_names.txt was available for this pass) -- raw contributor ids only.
+
+- <@!1038291154032136192>
+  assets: portrait/1019 (dex 1019)
+
+- <@!1042498956082544640>
+  assets: portrait/0928 (dex 928)
+
+- <@!1058057407592407081>
+  assets: portrait/0930 (dex 930), portrait/0973 (dex 973)
+
+- <@!108260609241423872>
+  assets: portrait/0578 (dex 578)
+
+- <@!1113856747564695633>
+  assets: portrait/0684 (dex 684), portrait/0685 (dex 685), portrait/0868 (dex 868)
+
+- <@!1133042779782647808>
+  assets: portrait/0990 (dex 990)
+
+- <@!128989288665710592>
+  assets: portrait/0435 (dex 435)
+
+- <@!1346022682667388968>
+  assets: portrait/0422 (dex 422)
+
+- <@!1377429093997477928>
+  assets: portrait/0466 (dex 466), portrait/0532 (dex 532), portrait/0535 (dex 535), portrait/0536 (dex 536), portrait/0537 (dex 537), portrait/0635 (dex 635), portrait/0651 (dex 651), portrait/0657 (dex 657), portrait/0723 (dex 723), portrait/0810 (dex 810), portrait/0811 (dex 811), portrait/0891 (dex 891), ... +4 more
+
+- <@!150809243816165377>
+  assets: portrait/0498 (dex 498), portrait/0551 (dex 551), portrait/0624 (dex 624), portrait/0712 (dex 712), portrait/0713 (dex 713), portrait/0714 (dex 714), portrait/0715 (dex 715), portrait/0793 (dex 793), portrait/0953 (dex 953)
+
+- <@!157796074457661440>
+  assets: portrait/0406 (dex 406), portrait/0496 (dex 496), portrait/0571 (dex 571), portrait/0611 (dex 611), portrait/0621 (dex 621), portrait/0637 (dex 637), portrait/0638 (dex 638), portrait/0737 (dex 737), portrait/0792 (dex 792), portrait/0885 (dex 885), portrait/0969 (dex 969)
+
+- <@!177489961275097088>
+  assets: portrait/0908 (dex 908), portrait/1005 (dex 1005)
+
+- <@!178935491867967490>
+  assets: portrait/0662 (dex 662)
+
+- <@!179733726421450752>
+  assets: portrait/1015 (dex 1015)
+
+- <@!183561486893842432>
+  assets: portrait/0433 (dex 433), portrait/0436 (dex 436), portrait/0517 (dex 517), portrait/0649 (dex 649), portrait/0746 (dex 746)
+
+- <@!188463527089012737>
+  assets: portrait/0412 (dex 412)
+
+- <@!192118698859954178>
+  assets: portrait/0789 (dex 789), portrait/0803 (dex 803)
+
+- <@!193530896211509248>
+  assets: portrait/0506 (dex 506), portrait/0749 (dex 749), portrait/0750 (dex 750)
+
+- <@!196351316681818112>
+  assets: portrait/0660 (dex 660), portrait/0676 (dex 676), portrait/0686 (dex 686), portrait/0731 (dex 731), portrait/0747 (dex 747), portrait/0753 (dex 753), portrait/0940 (dex 940)
+
+- <@!215638650434617345>
+  assets: portrait/0578 (dex 578), portrait/0676 (dex 676), portrait/0707 (dex 707), portrait/0716 (dex 716), portrait/0723 (dex 723), portrait/0728 (dex 728), portrait/0730 (dex 730), portrait/0898 (dex 898), portrait/0910 (dex 910), portrait/0911 (dex 911), portrait/0913 (dex 913), portrait/0922 (dex 922), ... +5 more
+
+- <@!216640380408430592>
+  assets: portrait/0519 (dex 519), portrait/0672 (dex 672), portrait/0715 (dex 715), portrait/0776 (dex 776), portrait/0818 (dex 818), portrait/0968 (dex 968), portrait/0984 (dex 984), portrait/0990 (dex 990)
+
+- <@!217899432652308480>
+  assets: portrait/0409 (dex 409), portrait/0453 (dex 453), portrait/0564 (dex 564), portrait/0568 (dex 568), portrait/0580 (dex 580), portrait/0605 (dex 605), portrait/0606 (dex 606), portrait/0628 (dex 628), portrait/0639 (dex 639), portrait/0646 (dex 646), portrait/0650 (dex 650), portrait/0694 (dex 694), ... +1 more
+
+- <@!218959749276893184>
+  assets: portrait/0708 (dex 708)
+
+- <@!220580080194289664>
+  assets: portrait/0460 (dex 460)
+
+- <@!224476380790915072>
+  assets: portrait/0720 (dex 720)
+
+- <@!225139021079117824>
+  assets: portrait/0730 (dex 730)
+
+- <@!225813236589527041>
+  assets: portrait/0474 (dex 474), portrait/0728 (dex 728)
+
+- <@!227594271794921472>
+  assets: portrait/0704 (dex 704)
+
+- <@!228121607158235136>
+  assets: portrait/0714 (dex 714)
+
+- <@!228595807132057600>
+  assets: portrait/0414 (dex 414)
+
+- <@!229131140903075840>
+  assets: portrait/0405 (dex 405), portrait/0543 (dex 543), portrait/0559 (dex 559), portrait/0593 (dex 593), portrait/0594 (dex 594), portrait/0605 (dex 605), portrait/0612 (dex 612), portrait/0622 (dex 622), portrait/0652 (dex 652), portrait/0662 (dex 662), portrait/0689 (dex 689), portrait/0697 (dex 697), ... +26 more
+
+- <@!229363481852379136>
+  assets: portrait/0904 (dex 904)
+
+- <@!237286997645983744>
+  assets: portrait/0388 (dex 388), portrait/0453 (dex 453), portrait/0457 (dex 457), portrait/0466 (dex 466), portrait/0583 (dex 583), portrait/0789 (dex 789), portrait/0790 (dex 790), portrait/0791 (dex 791), portrait/0793 (dex 793), portrait/0796 (dex 796), portrait/0798 (dex 798), portrait/0799 (dex 799), ... +5 more
+
+- <@!237814999634935808>
+  assets: portrait/0406 (dex 406)
+
+- <@!238146046146904069>
+  assets: portrait/0948 (dex 948)
+
+- <@!255219192901402624>
+  assets: portrait/0690 (dex 690)
+
+- <@!273341077874802689>
+  assets: portrait/0451 (dex 451)
+
+- <@!273958644788363265>
+  assets: portrait/0425 (dex 425), portrait/0648 (dex 648), portrait/0768 (dex 768)
+
+- <@!276369635304275968>
+  assets: portrait/0445 (dex 445), portrait/0469 (dex 469), portrait/0508 (dex 508), portrait/0511 (dex 511), portrait/0563 (dex 563), portrait/0567 (dex 567), portrait/0589 (dex 589), portrait/0591 (dex 591), portrait/0595 (dex 595), portrait/0617 (dex 617), portrait/0702 (dex 702), portrait/0717 (dex 717), ... +14 more
+
+- <@!291732421332697098>
+  assets: portrait/0648 (dex 648)
+
+- <@!304391035209908244>
+  assets: portrait/0479 (dex 479)
+
+- <@!314519507869761556>
+  assets: portrait/0440 (dex 440), portrait/0492 (dex 492)
+
+- <@!315528859921678336>
+  assets: portrait/0513 (dex 513)
+
+- <@!319728945920475137>
+  assets: portrait/0837 (dex 837)
+
+- <@!319945906600411179>
+  assets: portrait/0560 (dex 560), portrait/0696 (dex 696), portrait/0697 (dex 697), portrait/0813 (dex 813), portrait/0814 (dex 814)
+
+- <@!322382592202637322>
+  assets: portrait/0404 (dex 404), portrait/0418 (dex 418), portrait/0434 (dex 434)
+
+- <@!324999377946935297>
+  assets: portrait/0494 (dex 494)
+
+- <@!327927398941196289>
+  assets: portrait/0395 (dex 395), portrait/0571 (dex 571), portrait/0791 (dex 791), portrait/0800 (dex 800)
+
+- <@!330751862590406656>
+  assets: portrait/0419 (dex 419), portrait/0507 (dex 507), portrait/0633 (dex 633), portrait/0846 (dex 846), portrait/0912 (dex 912)
+
+- <@!331183966508023808>
+  assets: portrait/0676 (dex 676), portrait/0843 (dex 843)
+
+- <@!350050109741858829>
+  assets: portrait/0398 (dex 398), portrait/0407 (dex 407), portrait/0435 (dex 435), portrait/0439 (dex 439), portrait/0445 (dex 445), portrait/0474 (dex 474), portrait/0477 (dex 477), portrait/0483 (dex 483), portrait/0487 (dex 487), portrait/0500 (dex 500), portrait/0512 (dex 512), portrait/0526 (dex 526), ... +106 more
+
+- <@!356187016054046723>
+  assets: portrait/0451 (dex 451), portrait/0821 (dex 821), portrait/1024 (dex 1024)
+
+- <@!356635814668664832>
+  assets: portrait/0391 (dex 391), portrait/0392 (dex 392), portrait/0394 (dex 394), portrait/0423 (dex 423), portrait/0432 (dex 432), portrait/0448 (dex 448), portrait/0449 (dex 449), portrait/0463 (dex 463), portrait/0472 (dex 472), portrait/0488 (dex 488), portrait/0489 (dex 489), portrait/0490 (dex 490), ... +203 more
+
+- <@!388808249165479939>
+  assets: portrait/0856 (dex 856)
+
+- <@!402702516866908160>
+  assets: portrait/0843 (dex 843), portrait/0872 (dex 872)
+
+- <@!417445868694667264>
+  assets: portrait/0648 (dex 648)
+
+- <@!421379254077620225>
+  assets: portrait/0765 (dex 765), portrait/0793 (dex 793)
+
+- <@!436940337865293834>
+  assets: portrait/0468 (dex 468)
+
+- <@!474262233442942995>
+  assets: portrait/0444 (dex 444)
+
+- <@!488809643838144543>
+  assets: portrait/0619 (dex 619)
+
+- <@!533406104256905257>
+  assets: portrait/0396 (dex 396), portrait/0397 (dex 397), portrait/0398 (dex 398), portrait/0430 (dex 430), portrait/0894 (dex 894), portrait/0895 (dex 895)
+
+- <@!544245909639397378>
+  assets: portrait/0391 (dex 391), portrait/0407 (dex 407), portrait/0411 (dex 411), portrait/0416 (dex 416), portrait/0417 (dex 417), portrait/0420 (dex 420), portrait/0421 (dex 421), portrait/0429 (dex 429), portrait/0430 (dex 430), portrait/0442 (dex 442), portrait/0450 (dex 450), portrait/0454 (dex 454), ... +143 more
+
+- <@!555360707617488904>
+  assets: portrait/0676 (dex 676)
+
+- <@!557599571170033664>
+  assets: portrait/0647 (dex 647)
+
+- <@!560604377203736617>
+  assets: portrait/0435 (dex 435)
+
+- <@!576876006636519434>
+  assets: portrait/0398 (dex 398), portrait/0431 (dex 431), portrait/0517 (dex 517), portrait/0854 (dex 854), portrait/0991 (dex 991)
+
+- <@!593113130213572610>
+  assets: portrait/0415 (dex 415), portrait/0456 (dex 456), portrait/0660 (dex 660), portrait/0731 (dex 731), portrait/0762 (dex 762)
+
+- <@!655868413251551235>
+  assets: portrait/0410 (dex 410)
+
+- <@!662304890143375391>
+  assets: portrait/0919 (dex 919)
+
+- <@!702275233125630042>
+  assets: portrait/0389 (dex 389), portrait/0402 (dex 402), portrait/0408 (dex 408), portrait/0413 (dex 413), portrait/0424 (dex 424), portrait/0425 (dex 425), portrait/0428 (dex 428), portrait/0431 (dex 431), portrait/0443 (dex 443), portrait/0455 (dex 455), portrait/0456 (dex 456), portrait/0736 (dex 736), ... +4 more
+
+- <@!704349360929898516>
+  assets: portrait/0409 (dex 409), portrait/0843 (dex 843), portrait/0915 (dex 915)
+
+- <@!739304144552198285>
+  assets: portrait/0796 (dex 796), portrait/0835 (dex 835)
+
+- <@!770438729575563284>
+  assets: portrait/0712 (dex 712), portrait/0979 (dex 979)
+
+- <@!772726854188400641>
+  assets: portrait/0461 (dex 461), portrait/0471 (dex 471)
+
+- <@!776403448220483615>
+  assets: portrait/0456 (dex 456)
+
+- <@!779213287576436746>
+  assets: portrait/0627 (dex 627), portrait/0647 (dex 647)
+
+- <@!801938240562397194>
+  assets: portrait/0425 (dex 425), portrait/0447 (dex 447)
+
+- <@!810524028871114762>
+  assets: portrait/0568 (dex 568)
+
+- <@!833717817445974046>
+  assets: portrait/0426 (dex 426), portrait/0577 (dex 577), portrait/0582 (dex 582), portrait/0657 (dex 657), portrait/0686 (dex 686), portrait/0731 (dex 731), portrait/0742 (dex 742), portrait/0761 (dex 761), portrait/0885 (dex 885)
+
+- <@!861005464682889266>
+  assets: portrait/0399 (dex 399), portrait/0427 (dex 427), portrait/0441 (dex 441), portrait/0453 (dex 453), portrait/0458 (dex 458), portrait/0499 (dex 499), portrait/0516 (dex 516), portrait/0520 (dex 520), portrait/0521 (dex 521), portrait/0523 (dex 523), portrait/0524 (dex 524), portrait/0529 (dex 529), ... +10 more
+
+- <@!862684221848027156>
+  assets: portrait/0647 (dex 647)
+
+- <@!966056976217935872>
+  assets: portrait/0604 (dex 604)
+
+- CHUNSOFT
+  assets: portrait/0387 (dex 387), portrait/0388 (dex 388), portrait/0389 (dex 389), portrait/0390 (dex 390), portrait/0391 (dex 391), portrait/0392 (dex 392), portrait/0393 (dex 393), portrait/0394 (dex 394), portrait/0395 (dex 395), portrait/0396 (dex 396), portrait/0397 (dex 397), portrait/0398 (dex 398), ... +94 more
+
+- EZERART
+  assets: portrait/0823 (dex 823), portrait/0830 (dex 830), portrait/0833 (dex 833), portrait/0834 (dex 834), portrait/0841 (dex 841), portrait/0848 (dex 848), portrait/0854 (dex 854), portrait/0879 (dex 879), portrait/0884 (dex 884), portrait/0894 (dex 894), portrait/0895 (dex 895), portrait/0898 (dex 898)
+
+- JARLEYPENO
+  assets: portrait/0434 (dex 434), portrait/0459 (dex 459)
+
+- MUCRUSH
+  assets: portrait/0517 (dex 517), portrait/0522 (dex 522), portrait/0528 (dex 528), portrait/0534 (dex 534), portrait/0536 (dex 536), portrait/0538 (dex 538), portrait/0539 (dex 539), portrait/0572 (dex 572), portrait/0583 (dex 583), portrait/0588 (dex 588), portrait/0592 (dex 592), portrait/0626 (dex 626), ... +1 more
+
+- POWERCRISTAL
+  assets: portrait/0568 (dex 568)
+

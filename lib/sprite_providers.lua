@@ -174,13 +174,20 @@ local function speciesKeyFromId(speciesId, game, mod)
   return nil
 end
 
--- Wilds asset identity only. Never uses runtime Pokédex / GameCompat.speciesId.
-local function resolveDexId(speciesId, _game, _mod)
+-- Wilds asset identity. 1..386 is always the hardcoded, reorder-safe table
+-- (never runtime Pokédex). Above that ceiling, only gen1recomp-national-dex
+-- (Kanto Reforged tops out at 386) can produce a value, so its own
+-- GameCompat.speciesId is trusted directly — see SpeciesAssets.idForRuntime.
+local function resolveDexId(speciesId, game, mod)
   local okSA, SpeciesAssets = pcall(function() return V.require("species_assets") end)
-  if okSA and SpeciesAssets and SpeciesAssets.idFor then
-    return SpeciesAssets.idFor(speciesId)
+  if not (okSA and SpeciesAssets and SpeciesAssets.idFor) then return nil end
+  local runtimeDex = nil
+  local okGC, GameCompat = pcall(function() return V.require("game_compat") end)
+  if okGC and GameCompat and GameCompat.speciesId then
+    local ok, dex = pcall(GameCompat.speciesId, speciesId, game, mod)
+    if ok then runtimeDex = dex end
   end
-  return nil
+  return SpeciesAssets.idForRuntime(speciesId, runtimeDex)
 end
 
 ------------------------------------------------------------------------
@@ -1290,8 +1297,8 @@ function SpriteProviders:normalizeStyle(style)
   if style == "auto" or style == "gold" or style == "crystal" then
     return "pokemmo"
   end
-  if VALID_STYLES[style] and (style == "pokemmo" or style == "followers"
-      or style == "pokedex") then
+  if VALID_STYLES[style] and (style == "pokemmo"
+      or style == "followers" or style == "pokedex") then
     return style
   end
   return "followers"

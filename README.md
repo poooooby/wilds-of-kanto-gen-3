@@ -39,8 +39,8 @@ Huge shoutout to that project and its contributors — see below.
 - Town / ambient Pokémon
 - Sprite styles: Poké Followers / GSC, HGSS / PokeMMO
 - Sprite size follows Sprite Style — GSC uses Classic (one-tile 16×16);
-  HGSS uses True Size (larger relative species sizes) when the active renderer
-  can consume variable SpriteDef geometry
+  HGSS uses True Size (larger relative species sizes) when the active
+  renderer can consume variable SpriteDef geometry.
 - PMDCollab dialogue portraits for Wilds Pokémon talk (followers, town Pokémon,
   generic cries) — independent of the selected overworld Sprite Style
 - Red / Blue / Yellow, plus experimental Pokémon Gold (beta)

@@ -391,7 +391,9 @@ function SpawnRender:assetCandidates(speciesId, game, mon)
   end
 
   local SpeciesAssets = V.require("species_assets")
-  local padded = dexPadded(SpeciesAssets.idFor(speciesId))
+  local GameCompat = V.require("game_compat")
+  local padded = dexPadded(SpeciesAssets.idForRuntime(
+    speciesId, GameCompat.speciesId(speciesId, game, self.mod)))
   if padded then
     push(self:_modAssetPath("assets/pokemon/" .. padded .. ".png"), "dex_padded")
     push(self:_modAssetPath("assets/pokemon/species_" .. padded .. ".png"), "species_dex")
@@ -636,8 +638,11 @@ function SpawnRender:registerContent()
       local fallbackReason = nil
 
       local SpeciesAssets = V.require("species_assets")
-      local assetId = SpeciesAssets.idFor(speciesId)
-      -- Registration uses canonical Wilds asset IDs, never runtime mon.dex.
+      -- Registration uses canonical Wilds asset IDs. 1..386 is always the
+      -- hardcoded, reorder-safe table; above that ceiling only
+      -- gen1recomp-national-dex (Kanto Reforged tops out at 386) can have
+      -- produced this def, so its own def.dex is trusted directly.
+      local assetId = SpeciesAssets.idForRuntime(speciesId, def and def.dex)
       local dexId = assetId
 
       local runtimeLoadPath, usedVariant, runtimeRel, runtimeEntry = nil, nil, nil, nil
@@ -1199,8 +1204,13 @@ function Entity.new(game, mod, render, record)
   -- Prefer sprite providers (Followers EX / PokeMMO / Pokedex). Same native
   -- SpriteRenderer contract for every style — only the image source changes.
   local SpeciesAssets = V.require("species_assets")
-  local assetId = SpeciesAssets.idFor(record.species)
-  -- enhancedDexId stores the canonical Wilds asset id (not runtime Pokédex).
+  local GameCompat = V.require("game_compat")
+  -- enhancedDexId stores the canonical Wilds asset id. 1..386 is always the
+  -- hardcoded, reorder-safe table; above that ceiling only
+  -- gen1recomp-national-dex (Kanto Reforged tops out at 386) can be active,
+  -- so its own runtime dex is trusted directly — see SpeciesAssets.idForRuntime.
+  local assetId = SpeciesAssets.idForRuntime(
+    record.species, GameCompat.speciesId(record.species, game, mod))
   local dexId = assetId
   local variant = AnimatedSprites.resolveRuntimeVariant(self)
   self.enhancedDexId = dexId
@@ -2043,10 +2053,15 @@ function SpawnRender:previewImagePath(species, game)
   return self:_placeholderPath(), "placeholder"
 end
 
--- Canonical Wilds asset id for sprite sheets (identity). Display names never used.
-function SpawnRender:resolveDexId(speciesKey, _game)
+-- Canonical Wilds asset id for sprite sheets (identity). Display names never
+-- used. 1..386 is always the hardcoded, reorder-safe table; above that
+-- ceiling only gen1recomp-national-dex (Kanto Reforged tops out at 386) can
+-- be active, so its own runtime dex is trusted directly.
+function SpawnRender:resolveDexId(speciesKey, game)
   local SpeciesAssets = V.require("species_assets")
-  return SpeciesAssets.idFor(speciesKey)
+  local GameCompat = V.require("game_compat")
+  return SpeciesAssets.idForRuntime(
+    speciesKey, GameCompat.speciesId(speciesKey, game, self.mod))
 end
 
 function SpawnRender:animatedEnabled()
@@ -2132,9 +2147,14 @@ function SpawnRender:applyProviderSprite(entity, game, options)
     redpp = Config.paletteFxRedpp() == true
   end
   local variant = AnimatedSprites.resolveRuntimeVariant(entity)
-  -- Prefer species → canonical Wilds asset id. Never use runtime mon.dex.
+  -- Prefer species → canonical Wilds asset id. 1..386 is always the
+  -- hardcoded, reorder-safe table; above that ceiling only
+  -- gen1recomp-national-dex (Kanto Reforged tops out at 386) can be active,
+  -- so its own runtime dex is trusted directly (see SpeciesAssets.idForRuntime).
   local SpeciesAssets = V.require("species_assets")
-  local assetId = SpeciesAssets.idFor(entity.species)
+  local GameCompat = V.require("game_compat")
+  local assetId = SpeciesAssets.idForRuntime(
+    entity.species, GameCompat.speciesId(entity.species, game, self.mod))
     or SpeciesAssets.idFor(entity.enhancedDexId)
   local dexId = assetId
   local species = entity.species or dexId or entity.enhancedDexId

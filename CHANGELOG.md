@@ -8,7 +8,14 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
-## Unreleased
+## Unreleased (fork)
+
+### Features
+
+- Overworld and follow sprites for PokeMMO/HGSS have been updated to include every
+  Pokemon through Gen 9 (1025 total species) and their shiny counterparts.
+- Pokemon dialogue portraits have been updated for all species, and now display as
+  true color instead of being tinted by the active Gen 1 color palette.
 
 ## 2.5.2 (fork)
 

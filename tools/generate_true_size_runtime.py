@@ -620,14 +620,15 @@ def stack_sheet(cards: list[Image.Image], frame_w: int, frame_h: int) -> Image.I
     return sheet
 
 
-def hgss_source(dex: int) -> dict[str, Path]:
+def hgss_source(dex: int, src_root: Path | None = None) -> dict[str, Path]:
+    root = src_root if src_root is not None else HGSS_SRC
     out = {}
     for variant, suffixes in (
         ("normal", ["-b-n.png", "-f-n.png", "-m-n.png", "-n.png"]),
         ("shiny", ["-b-s.png", "-f-s.png", "-m-s.png", "-s.png"]),
     ):
         for suf in suffixes:
-            p = HGSS_SRC / f"{dex:03d}{suf}"
+            p = root / f"{dex:03d}{suf}"
             if p.exists():
                 out[variant] = p
                 break
@@ -690,12 +691,13 @@ def union_bounds(bounds_list: list[dict | None]) -> dict | None:
     }
 
 
-def hgss_variant_tiles(dex: int, layout: dict) -> dict[str, tuple[Path, list[Image.Image], int, int]]:
+def hgss_variant_tiles(dex: int, layout: dict, src_root: Path | None = None
+                        ) -> dict[str, tuple[Path, list[Image.Image], int, int]]:
     """Load walker tiles per variant. Returns variant → (path, tiles, tw, th)."""
     out = {}
     cols = int(layout.get("columns", 4))
     rows = int(layout.get("rows", 4))
-    for variant, src in hgss_source(dex).items():
+    for variant, src in hgss_source(dex, src_root).items():
         im = Image.open(src).convert("RGBA")
         tw, th = im.width // cols, im.height // rows
         out[variant] = (src, extract_grid_tiles(im, layout, tw, th), tw, th)
@@ -979,6 +981,8 @@ def generate_hgss_for_dex(dex: int, layout: dict, entry: dict, force: bool, stat
             stats["hgss_warnings"] += 1
         last_meta = meta
     return last_meta
+
+
 
 
 def generate_matched_pack_for_dex(
@@ -1574,7 +1578,28 @@ def main(argv=None) -> int:
                     help="Write dev contact sheet for selected species")
     ap.add_argument("--analyze-only", action="store_true",
                     help="Print source analysis and exit without writing sheets")
+    ap.add_argument("--hgss-src", type=str, default=None,
+                    help="Override HGSS source dir (default: assets/enhanced_overworld/followsprites). "
+                         "For staging a separate species/art set without touching production.")
+    ap.add_argument("--out-root", type=str, default=None,
+                    help="Override output root (default: assets/wilds_generated/true_size). "
+                         "For staging a separate species/art set without touching production.")
     args = ap.parse_args(argv)
+
+    global HGSS_SRC, OUT_ROOT, DEV_OUT, REPORT_PATH
+    if args.hgss_src:
+        HGSS_SRC = Path(args.hgss_src)
+        if not HGSS_SRC.is_absolute():
+            HGSS_SRC = ROOT / HGSS_SRC
+    if args.out_root:
+        OUT_ROOT = Path(args.out_root)
+        if not OUT_ROOT.is_absolute():
+            OUT_ROOT = ROOT / OUT_ROOT
+        DEV_OUT = OUT_ROOT / "dev"
+        # write_phase_report() always writes REPORT_PATH (not just
+        # --analyze-only) -- redirect it into the staging tree too so a
+        # staged run never touches the production docs/ report.
+        REPORT_PATH = OUT_ROOT / "TRUE_SIZE_NATIVE_HGSS.md"
 
     heights_raw = json.loads(HEIGHTS_PATH.read_text()) if HEIGHTS_PATH.exists() else {}
     heights = {int(k): float(v) for k, v in heights_raw.items()}

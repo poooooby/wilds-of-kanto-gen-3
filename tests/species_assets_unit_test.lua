@@ -472,6 +472,81 @@ eq(SpeciesGeometry.normalizeDex(401, expandedGame), nil,
 eq(SpeciesGeometry.normalizeDex(400), 400,
   "detected max-species is cached and applies even without passing game again")
 
+------------------------------------------------------------------------
+-- idForRuntime: Kanto Reforged (<=386, no forms) vs gen1recomp-national-dex
+-- (full National Dex + alternate forms via a synthetic dex >= 30000).
+-- The two mods are mutually exclusive; Kanto Reforged can never emit a dex
+-- above 386, so trusting a runtime dex above that ceiling is safe by
+-- construction (only the national-dex mod could have produced it).
+------------------------------------------------------------------------
+
+-- 1..386 identity is untouched: the hardcoded table always wins, even if a
+-- bogus/mismatched runtime dex is supplied alongside it.
+eq(SpeciesAssets.idForRuntime("MEWTWO", 999999), 150,
+  "idForRuntime: hardcoded 1..386 wins over any runtime dex")
+eq(SpeciesAssets.idForRuntime("BETA_MON_X", nil), nil,
+  "idForRuntime: unmapped Fakemon with no runtime dex stays nil")
+
+-- A runtime dex at or below MAX_ID must never be trusted for an unmapped
+-- name — that range is where Kanto Reforged's own species already live,
+-- and a value there is never trustworthy in this codepath (a fresh
+-- name-to-386 collision is exactly what idFor's hardcoded table exists to
+-- prevent, so a raw sub-387 dex from any other source stays untrusted).
+eq(SpeciesAssets.idForRuntime("UNKNOWN_LOW_DEX", 300), nil,
+  "idForRuntime: runtime dex <= MAX_ID is never trusted for an unmapped name")
+
+-- Ordinary Gen 4+ base species (gen1recomp-national-dex only — Kanto
+-- Reforged has nothing above 386): trusted directly once above MAX_ID.
+eq(SpeciesAssets.idForRuntime("SYLVEON", 700), 700,
+  "idForRuntime: Gen 4+ base species trusts runtime dex above 386")
+
+-- Alternate form (gen1recomp-national-dex synthetic dex >= 30000; Kanto
+-- Reforged has no form concept at all, so this can never collide with it).
+eq(SpeciesAssets.idForRuntime("CHARIZARD_MEGA_X", 30034), 30034,
+  "idForRuntime: alternate form trusts its synthetic dex directly")
+
+-- End-to-end via GameCompat.speciesId, simulating each mod's own data shape.
+local kantoReforgedGame = {
+  data = { pokemon = reorderedPokemon }, -- <=386 only, no form entries
+  save = { options = { modOptions = {} } },
+}
+local nationalDexPokemon = {}
+for k, v in pairs(reorderedPokemon) do nationalDexPokemon[k] = v end
+nationalDexPokemon.SYLVEON = { name = "Sylveon", dex = 700, index = 700 }
+nationalDexPokemon.CHARIZARD_MEGA_X = {
+  name = "Charizard", dex = 30034, index = 30034,
+  form = "MEGA_X", baseSpecies = "CHARIZARD",
+}
+local nationalDexGame = {
+  data = { pokemon = nationalDexPokemon },
+  save = { options = { modOptions = {} } },
+}
+
+eq(SpeciesAssets.idForRuntime("SYLVEON",
+    GameCompat.speciesId("SYLVEON", nationalDexGame, V.mod)), 700,
+  "end-to-end: SYLVEON resolves via national-dex mod's runtime dex")
+eq(SpeciesAssets.idForRuntime("CHARIZARD_MEGA_X",
+    GameCompat.speciesId("CHARIZARD_MEGA_X", nationalDexGame, V.mod)), 30034,
+  "end-to-end: alternate form resolves via national-dex mod's synthetic dex")
+
+-- Under Kanto Reforged, neither name exists at all — GameCompat.speciesId
+-- returns nil (not found), so idForRuntime correctly falls back to nil
+-- (missing-sprite fallback), never a wrong-species collision.
+eq(GameCompat.speciesId("SYLVEON", kantoReforgedGame, V.mod), nil,
+  "Kanto Reforged has no SYLVEON entry at all")
+eq(SpeciesAssets.idForRuntime("SYLVEON",
+    GameCompat.speciesId("SYLVEON", kantoReforgedGame, V.mod)), nil,
+  "end-to-end: SYLVEON has no asset under Kanto Reforged (correct, not a crash)")
+
+-- Base species 1..386 resolve identically regardless of which mod's data
+-- shape is present (the whole point: switching mods must not break them).
+eq(SpeciesAssets.idForRuntime("MEWTWO",
+    GameCompat.speciesId("MEWTWO", kantoReforgedGame, V.mod)), 150,
+  "MEWTWO identical under Kanto Reforged shape")
+eq(SpeciesAssets.idForRuntime("MEWTWO",
+    GameCompat.speciesId("MEWTWO", nationalDexGame, V.mod)), 150,
+  "MEWTWO identical under national-dex shape")
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

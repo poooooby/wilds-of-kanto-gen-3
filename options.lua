@@ -30,7 +30,7 @@
 --   GSC sprites (followers)   -> Classic (one-tile 16x16 presentation)
 --   HGSS sprites (pokemmo)    -> True Size (larger relative species sizes)
 -- Pokedex is no longer a selectable style, but the Pokedex art provider
--- stays registered internally as the last-resort fallback the other two
+-- stays registered internally as the last-resort fallback the other
 -- styles fall through to when their own art is missing for a species.
 
 return {

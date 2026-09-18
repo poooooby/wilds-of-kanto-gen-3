@@ -68,12 +68,18 @@ function SpriteResolver.new(mod, spriteProviders, waterRegistry)
   return self
 end
 
--- Canonical Wilds asset id from species identity. Never uses runtime mon.dex.
+-- Canonical Wilds asset id from species identity. 1..386 is always the
+-- hardcoded, reorder-safe table (never runtime mon.dex there). Above that
+-- ceiling only gen1recomp-national-dex (Kanto Reforged tops out at 386) can
+-- be active, so its own runtime dex is trusted directly — see
+-- SpeciesAssets.idForRuntime.
 local function resolveDex(entity, game, mod)
   if not entity then return nil end
   local SpeciesAssets = V.require("species_assets")
+  local GameCompat = V.require("game_compat")
   if entity.species then
-    local assetId = SpeciesAssets.idFor(entity.species)
+    local runtimeDex = GameCompat.speciesId(entity.species, game, mod)
+    local assetId = SpeciesAssets.idForRuntime(entity.species, runtimeDex)
     if assetId then return assetId end
     -- Known species string with no Wilds asset (Fakemon) → missing fallback.
     if type(entity.species) == "string" and not tonumber(entity.species) then

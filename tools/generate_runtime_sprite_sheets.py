@@ -252,6 +252,8 @@ def main() -> int:
                         help="If >0, only generate speciesId <= this (0 = all)")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
+    if not args.out.is_absolute():
+        args.out = ROOT / args.out
 
     if not args.mapping.is_file():
         print(f"error: mapping missing: {args.mapping}", file=sys.stderr)
@@ -311,7 +313,14 @@ def main() -> int:
             src_path = ROOT / meta["path"]
             out_name = f"{sid:03d}-{variant}.png"
             out_path = args.out / out_name
-            rel_out = f"assets/wilds_generated/followsprites_runtime/{out_name}"
+            # Relative to ROOT, not hardcoded to the default --out — a
+            # caller pointing --out at an independent tree must get a
+            # manifest whose recorded paths actually resolve inside THAT
+            # tree, not the HGSS default.
+            try:
+                rel_out = (args.out / out_name).relative_to(ROOT).as_posix()
+            except ValueError:
+                rel_out = (args.out / out_name).as_posix()
             if out_path.is_file() and not args.force:
                 skipped += 1
                 manifest["sheets"][f"{sid}:{variant}"] = {

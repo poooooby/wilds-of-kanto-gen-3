@@ -141,6 +141,31 @@ function SpeciesAssets.has(species)
   return SpeciesAssets.idFor(species) ~= nil
 end
 
+--- Like idFor, but for species outside the hardcoded 1..386 table, also
+-- accepts a caller-supplied runtimeDex (e.g. GameCompat.speciesId(species,
+-- game, mod), or an already-known def.dex) IF it is greater than MAX_ID.
+--
+-- Wilds supports two mutually-exclusive species-data providers: Kanto
+-- Reforged (species 1..386 only, no alternate-form concept at all) and
+-- gen1recomp-national-dex (full National Dex 1..1025, plus alternate forms
+-- registered as separate name-keyed entries with a synthetic dex >= 30000).
+-- Kanto Reforged can never emit a dex above 386 -- so any runtimeDex above
+-- that ceiling can only have come from gen1recomp-national-dex, for either
+-- an ordinary Gen 4+ species or one of its alternate forms. Trusting it
+-- there does not reintroduce the reorder-unsafety idFor's hardcoded table
+-- protects 1..386 against (a single mod cannot disagree with itself), so
+-- this is safe by construction rather than a generic "trust any mod's dex"
+-- rule. 1..386 identity is untouched: idFor is tried first and always wins.
+function SpeciesAssets.idForRuntime(species, runtimeDex)
+  local assetId = SpeciesAssets.idFor(species)
+  if assetId then return assetId end
+  local n = tonumber(runtimeDex)
+  if n and n > SpeciesAssets.MAX_ID and math.floor(n) == n then
+    return math.floor(n)
+  end
+  return nil
+end
+
 --- Reverse lookup: canonical asset id → internal species key (or nil).
 function SpeciesAssets.speciesFor(assetId)
   local n = tonumber(assetId)

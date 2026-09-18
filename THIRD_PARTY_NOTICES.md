@@ -37,6 +37,10 @@ See the asset-specific documentation and credits for details.
   / [PokePC Followers](https://github.com/gamecorner-033/PokePCFollowers)
   remain owned by those projects. Wilds ships a built-in GSC walker pack and
   only optionally probes those mods for migration / advanced resolution.
+- Additional overworld follow-sprites merged into the HGSS / PokeMMO set (originally
+  sourced/attributed as "Gen9" overworld sprites, later merged for gap-filling species
+  the original HGSS art didn't cover):
+  MissingLukey, help-14, Kymoyonian, cSc-A7X, 2and2makes5, Pokegirl4ever, Fernandojl, Silver-Skies, TyranitarDark, Getsuei-H, Kid1513, Milomilotic11, Kyt666, kdiamo11, Chocosrawlooid, Syledude, Gallanty, Gizamimi-Pichu, 2and2makes5, Zyon17,LarryTurbo, spritesstealer, LarryTurbo, princess-pheonix, LunarDusk, Wolfang62, TintjeMadelintje101, piphybuilder88, Larry Turbo, princess-pheonix, SageDeoxys, Wolfang62, LarryTurbo, tammyclaydon, Boonzeet, DarkusShadow, princess-phoenix, Ezeart, WolfPP, Azria, DarkusShadow, EduarPokeN, Carmanekko, StarWolff, Caruban, DarkusShadow
 - Selection, fingerprint, talk, control modes, pack trailers, and lifecycle
   **concepts** adapted from PokéPC Followers (gamecorner-033) and Followers EX
   (masterwebx) live under `lib/follower/`. Upstream assets are not required at

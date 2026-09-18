@@ -3,6 +3,8 @@
 /gen1recomp/
 /DramaticShapeVoxelMod/
 /ReferenceGen1-3/
+/assets/gen_9/
+/assets/gen_9_staging/
 
 # Build output
 /dist/
@@ -21,6 +23,7 @@ __pycache__/
 .DS_Store
 .modkit/
 .claude/
+CLAUDE.md
 
 # Love save / bake cache
 overworld-spawns-cache/

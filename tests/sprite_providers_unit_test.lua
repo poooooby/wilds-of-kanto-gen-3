@@ -417,6 +417,39 @@ eq(SpeciesGeometry.displayScale(6), 1, "style-less lookup also honors dyn_scale 
 savedOpts.dyn_scale = true
 eq(SpeciesGeometry.displayScale(6, "pokemmo"), scaleOn,
   "re-enabling dyn_scale restores the base-table scale")
+
+-- Gen2 (dex > 151): SpeciesGeometry.displayScale never receives a `game`
+-- object, so it can only place a species in the Gen2 range when GameCompat
+-- detects generation from the ENGINE'S OWN global GameVersion module (set
+-- once at boot, read without needing `game` -- see lib/game_compat.lua).
+-- Mock that module the way a real Gold boot leaves it, rather than assuming
+-- Gen1 (the fallback for a headless/no-engine environment, which every
+-- other check above this block silently runs under).
+package.preload["src.core.GameVersion"] = function()
+  return {
+    get = function() return "gold" end,
+    isYellow = function() return false end,
+    generation = function(ver) return (ver == "gold") and 2 or 1 end,
+  }
+end
+local GameCompat = V.require("game_compat")
+eq(GameCompat.generation(nil, nil), 2, "mocked engine reports Gen2 with no game object")
+
+savedOpts.dyn_scale = true
+local cyndaquil = SpeciesGeometry.displayScale(155, "pokemmo")
+check(cyndaquil ~= 1, "Gen2 dex (Cyndaquil) has a real base-table scale when dyn_scale is on")
+savedOpts.dyn_scale = false
+eq(SpeciesGeometry.displayScale(155, "pokemmo"), 1,
+  "Gen2 dex falls back to native True Size (scale 1) when dyn_scale is off")
+savedOpts.dyn_scale = true
+eq(SpeciesGeometry.displayScale(155, "pokemmo"), cyndaquil,
+  "re-enabling dyn_scale restores the Gen2 base-table scale")
+
+-- Clean up the engine mock so later checks in this file keep running under
+-- the default headless/no-engine (Gen1 fallback) assumption.
+package.preload["src.core.GameVersion"] = nil
+package.loaded["src.core.GameVersion"] = nil
+
 savedOpts = { use_animated_overworld_sprites = false }
 V.mod.world = {
   game = {
@@ -535,7 +568,7 @@ eq(wraps, 0, "start menu hook not registered by sprite style menu")
 check(screens >= 4, "style/spawn/random/water screens registered")
 eq(menu._registered, true, "menu marked registered")
 
--- options.lua exposes the two public styles (Pokedex and PMDCollab are no
+-- options.lua exposes the three public styles (Pokedex and PMDCollab are no
 -- longer selectable; Pokedex stays valid via Config.normalizeSpriteStyle /
 -- registered as the internal fallback provider the other styles use).
 local schema = assert(loadfile("options.lua"))()

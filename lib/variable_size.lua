@@ -425,14 +425,19 @@ local function looksLikeTrueSizePath(path)
 end
 
 --- Resolve speciesId to a canonical Wilds asset id for geometry packs.
---- Never uses runtime Pokédex / mon.dex.
+--- 1..386 is always the hardcoded, reorder-safe table (never runtime
+--- Pokédex there). Above that ceiling only gen1recomp-national-dex (Kanto
+--- Reforged tops out at 386) can be active, so its own runtime dex is
+--- trusted directly — see SpeciesAssets.idForRuntime.
 local function resolveDex(mod, speciesId, opts)
   opts = opts or {}
   if speciesId == nil then return nil end
   local okSA, SpeciesAssets = pcall(V.require, "species_assets")
   local assetId = nil
-  if okSA and SpeciesAssets and SpeciesAssets.idFor then
-    assetId = SpeciesAssets.idFor(speciesId)
+  if okSA and SpeciesAssets and SpeciesAssets.idForRuntime then
+    local okGC, GameCompat = pcall(V.require, "game_compat")
+    local runtimeDex = okGC and GameCompat and GameCompat.speciesId(speciesId, opts.game, mod)
+    assetId = SpeciesAssets.idForRuntime(speciesId, runtimeDex)
   end
   if not assetId then
     assetId = SpeciesGeometry.normalizeDex(speciesId, opts.game)

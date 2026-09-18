@@ -276,7 +276,9 @@ function SpawnLogic:resolveWaterSprite(speciesId, isShiny, form, opts)
   end
   local trySubmerged = style == "followers" and function()
     local SpeciesAssets = V.require("species_assets")
-    local assetId = SpeciesAssets.idFor(speciesId)
+    local GameCompat = V.require("game_compat")
+    local assetId = SpeciesAssets.idForRuntime(
+      speciesId, GameCompat.speciesId(speciesId, game, self.mod))
     local dexId = assetId
     if not dexId then return nil end
     -- Derive the submerged look from the normal coloured poke_followers
@@ -370,7 +372,9 @@ function SpawnLogic:resolveWaterSprite(speciesId, isShiny, form, opts)
   -- Prefer registry path for a stable, style-independent water result.
   if reg and reg.isReady and reg:isReady() then
     local SpeciesAssets = V.require("species_assets")
-    local dexId = SpeciesAssets.idFor(speciesId)
+    local GameCompat = V.require("game_compat")
+    local dexId = SpeciesAssets.idForRuntime(
+      speciesId, GameCompat.speciesId(speciesId, game, self.mod))
     if dexId then
       local preferred = reg:preferredKindFor(dexId)
       local waterDef, waterErr = reg:resolve(dexId, variant, preferred, form)
@@ -414,7 +418,9 @@ function SpawnLogic:resolveWaterSprite(speciesId, isShiny, form, opts)
 
   -- Optional land-style fallback for Wilds water entities only.
   local SpeciesAssets = V.require("species_assets")
-  local assetId = SpeciesAssets.idFor(speciesId)
+  local GameCompat = V.require("game_compat")
+  local assetId = SpeciesAssets.idForRuntime(
+    speciesId, GameCompat.speciesId(speciesId, game, self.mod))
   local resolver = render and render.spriteResolver
   if resolver and resolver.resolveWaterSprite then
     local entity = opts.entity or {
@@ -957,7 +963,9 @@ function SpawnLogic:_entityHasCompatibleWaterSprite(entity)
   local dexId = entity.enhancedDexId
   if not dexId and entity.species then
     local SpeciesAssets = V.require("species_assets")
-    dexId = SpeciesAssets.idFor(entity.species)
+    local GameCompat = V.require("game_compat")
+    dexId = SpeciesAssets.idForRuntime(
+      entity.species, GameCompat.speciesId(entity.species, nil, self.mod))
   end
   if not dexId then
     entity.hasWaterSprite = false

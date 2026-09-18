@@ -53,10 +53,14 @@ function SpriteService:dexOf(species, game)
   return GameCompat.speciesId(species, game, self.mod)
 end
 
---- Canonical Wilds asset id for sprite sheets. Never uses runtime Pokédex.
+--- Canonical Wilds asset id for sprite sheets. 1..386 is always the
+-- hardcoded, reorder-safe table (never runtime Pokédex there). Above that
+-- ceiling only gen1recomp-national-dex (Kanto Reforged tops out at 386) can
+-- be active, so its own runtime dex (dexOf) is trusted directly — see
+-- SpeciesAssets.idForRuntime.
 function SpriteService:assetIdOf(species)
   local SpeciesAssets = V.require("species_assets")
-  return SpeciesAssets.idFor(species)
+  return SpeciesAssets.idForRuntime(species, self:dexOf(species))
 end
 
 function SpriteService:_modAssetPath(rel)

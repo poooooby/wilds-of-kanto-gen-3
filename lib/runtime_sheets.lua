@@ -36,10 +36,10 @@ function RuntimeSheets.sheetFileName(speciesId, variant)
   return string.format("%03d-%s.png", math.floor(n), v)
 end
 
-function RuntimeSheets.sheetRelPath(speciesId, variant)
+function RuntimeSheets.sheetRelPath(speciesId, variant, dirRel)
   local name = RuntimeSheets.sheetFileName(speciesId, variant)
   if not name then return nil end
-  return RuntimeSheets.DIR_REL .. "/" .. name
+  return (dirRel or RuntimeSheets.DIR_REL) .. "/" .. name
 end
 
 function RuntimeSheets.manifestKey(speciesId, variant)
@@ -49,9 +49,14 @@ function RuntimeSheets.manifestKey(speciesId, variant)
   return tostring(math.floor(n)) .. ":" .. v
 end
 
-function RuntimeSheets.new(mod)
+-- dirRel: optional override so a second, independent sprite source can build
+-- its own RuntimeSheets instance pointed at its own classic-sheet directory
+-- instead of the default followsprites_runtime/.
+function RuntimeSheets.new(mod, dirRel)
   local self = setmetatable({}, RuntimeSheets)
   self.mod = mod
+  self.dirRel = dirRel or RuntimeSheets.DIR_REL
+  self.manifestRel = self.dirRel .. "/manifest.json"
   self.manifest = nil
   self.ready = false
   self.sheetCount = 0
@@ -88,7 +93,7 @@ function RuntimeSheets:load()
   self.sheetCount = 0
   self.loadError = nil
 
-  local raw = self:_readBytes(RuntimeSheets.MANIFEST_REL)
+  local raw = self:_readBytes(self.manifestRel)
   if type(raw) ~= "string" or raw == "" then
     self.loadError = "runtime sheet manifest missing (mod.read / assets path)"
     return false, self.loadError
@@ -146,7 +151,7 @@ function RuntimeSheets:resolveRelativePath(speciesId, variant)
         end
       end
     end
-    local constructed = RuntimeSheets.sheetRelPath(n, v)
+    local constructed = RuntimeSheets.sheetRelPath(n, v, self.dirRel)
     if constructed and self:_assetPresent(constructed) then
       return constructed, v, entry
     end
@@ -249,12 +254,12 @@ function RuntimeSheets:summary()
   return {
     ready = self.ready,
     sheetCount = self.sheetCount,
-    dir = RuntimeSheets.DIR_REL,
+    dir = self.dirRel,
     frames = RuntimeSheets.FRAMES,
     walker = RuntimeSheets.WALKER,
     loadError = self.loadError,
     rightFacing = self.manifest and self.manifest.rightFacing or "mirror_left",
-    manifestRel = RuntimeSheets.MANIFEST_REL,
+    manifestRel = self.manifestRel,
   }
 end
 
