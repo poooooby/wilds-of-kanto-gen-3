@@ -57,12 +57,48 @@ All call `VariableSize.applyToDef` / preserve geometry fields.
 
 ## Follower visual trail spacing
 
-Logical footprint stays **one cell**. When `effectiveMode == true_size`,
-`ControlEngine` consumes older points from `pokepcTrailHistory` using
+Logical footprint is **one cell for every species, always** — `ControlEngine:_goalsFromTrailHistory`
+lags each trailer by its own plain sequential convoy slot (1st, 2nd, 3rd...) into
+`pokepcTrailHistory`, order-preserving by construction ("the Classic snake that never breaks").
 
-`gap = max(gap(previous), gap(current))` from `SpeciesGeometry.followGap`.
+A per-species cumulative-gap version of this (`gap = max(gap(previous), gap(current))` from
+`SpeciesGeometry.followGap`) was tried and reverted in the same week it was introduced
+(`6ce85ccc` → `1e46102c`, see CHANGELOG's "2.0.1 — Follower convoy fixes"): whole-cell lag
+jumps let a follower's goal land past an intermediate follower's goal on a doubled-back path,
+and strict cell reservations then deadlocked the pack ("chain break"), resolved only by a
+jam-recovery teleport (the "slingshot" pop). `SpeciesGeometry.followGap` /
+`VariableSize.visualFollowGap` / `ControlEngine:_followGapForSource` still exist but are dead
+code — nothing in the movement path calls them.
 
-Classic / Voxel-effective-Classic keep the historic 1-cell snake.
+Because plain one-cell lag means a trailer that falls meaningfully behind (e.g. after the
+player dashes several tiles quickly) doesn't automatically close the gap, both `_assignTrailerStep`
+and `_chainCatchUpSteps` halve a lagging trailer's `stepFrames` via a shared
+`ControlEngine:_trailerCatchUpDivisor(headDist, slot)`. The formula only engages once a
+trailer's head-distance exceeds its slot's steady-state distance by more than one cell of
+slack (`excess = headDist - (slot + 1)`) — preserving the original anti-slingshot trigger point
+exactly, so a normal fold in the player's path (which can bump `headDist` by a cell or two for
+every slot at once) does not make the whole convoy dash simultaneously. Past that slack, the
+divisor scales proportionally with how far behind the trailer actually is
+(`min(4, 1 + ceil(excess / 2))`) rather than a flat 2x regardless of gap size, so a trailer
+that's fallen far behind (e.g. tail-end of a long convoy after a fast player dash) closes the
+gap faster than one that's only barely lagging — capped at 4x so this only ever speeds up
+walking, never approaches teleport speed (the separate jam-recovery system still handles the
+genuinely-stuck case).
+
+A render-only per-trailer pixel push-back for species wider than one tile (pushing the trailer
+back along its facing direction so its True Size art doesn't visually overlap the entity ahead
+of it) was attempted and ultimately **reverted entirely**. The offset is an absolute value added
+to a trailer's own `px`/`py`, but the actual visual gap between adjacent trailers N-1 and N is
+the *difference* of their two offsets, not either one alone — so getting every adjacent pair
+correctly spaced requires a full running-total cumulative sum down the whole convoy
+(`offset_N = offset_{N-1} + own_{N-1} + own_N`). That sum grows unboundedly with convoy length
+and how many large species are in it, and interpolating a large accumulated offset across a
+single ~16px turn step (needed to avoid a "snap" when facing changes) traces a big, visually
+wrong diagonal "floating" sweep. Smaller-magnitude approximations (per-trailer own-overhang
+only, or pairwise own + immediate-predecessor) avoided floating but didn't produce correct
+relative spacing beyond the player→slot-1 gap, since they don't satisfy the difference equation
+above. No further attempt is planned; species whose True Size art is wider than one tile may
+still visually overlap adjacent trailers.
 
 ## Wild vs Follower geometry (root cause of Wild clipping)
 

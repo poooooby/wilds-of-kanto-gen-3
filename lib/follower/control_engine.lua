@@ -2285,12 +2285,12 @@ end
 
 local function placeTrailerAt(npc, x, y, facing)
   npc.cellX, npc.cellY = x, y
+  if facing then npc.facing = facing end
   npc.px, npc.py = x * 16, y * 16 + (npc._wildsDrawBias or 0)
   npc.targetX, npc.targetY = nil, nil
   npc.moving = false
   npc.progress = 0
   npc.hopStep = nil
-  if facing then npc.facing = facing end
 end
 
 --- Pick the next adjacent cell for a trailer moving toward (gx, gy).
@@ -3336,6 +3336,29 @@ function ControlEngine:syncTrailers(game, ow, opts)
   return true
 end
 
+--- Catch-up speed divisor for a trailer at `headDist` cells from the head,
+-- in convoy position `slot`. 1 = normal cadence, 2+ = that many times
+-- faster. Shared by _assignTrailerStep and _chainCatchUpSteps (previously
+-- two independent copies of the same boolean check) so both use identical
+-- logic and both benefit from the same tuning.
+--
+-- Reserved for GENUINE stragglers — a trailer more than one cell behind its
+-- convoy slot (head-distance > slot + 1, the same "+1 slack" the original
+-- fix used). On a reversal the tightly packed train's trail-history goals
+-- can jump 2+ cells (doubled-back lag indexing) while every member is still
+-- right behind the head; treating that small, expected bump as "falling
+-- behind" makes the whole pack DASH through the fold at double speed — the
+-- visible True Size "slingshot". Excess beyond that slack scales the
+-- divisor (capped at 4x) instead of a flat 2x for any amount of lag, so a
+-- deeply-behind trailer (e.g. after a long dash) closes its gap in
+-- comparable real time to a barely-behind one, not just eventually at the
+-- same speed as a barely-behind one.
+function ControlEngine:_trailerCatchUpDivisor(headDist, slot)
+  local excess = (headDist or 0) - ((slot or 1) + 1)
+  if excess <= 0 then return 1 end
+  return math.min(4, 1 + math.ceil(excess / 2))
+end
+
 --- Assign one step for a trailer toward (gx, gy). Corner-navigates, handles
 -- ledges, and picks the cadence: normal at 1-cell spacing, double-speed for
 -- catch-up. Stores the goal on the trailer so the catch-up pass can chain
@@ -3405,25 +3428,18 @@ function ControlEngine:_assignTrailerStep(game, ow, npc, gx, gy, surface, role,
     end
   end
   -- Normal cadence at 1-cell spacing. Trailers that fell behind (blocked
-  -- corner, spawn, surface change) walk at double cadence until they close
+  -- corner, spawn, surface change) walk at catch-up cadence until they close
   -- the gap; the catch-up pass chains the next step the moment one lands so
   -- the straggler moves continuously instead of bursting 8 frames then
   -- freezing 8 frames waiting for the next goal shift (the tick-tock drag).
   -- Ledge hops always use full-length frames for the arc animation.
-  --
-  -- Double cadence is reserved for GENUINE stragglers — a trailer more than
-  -- one cell behind its convoy slot (head-distance > slot + 1).  On a
-  -- reversal the tightly packed train's trail-history goals can jump 2+ cells
-  -- (doubled-back lag indexing) while every member is still right behind the
-  -- head; treating that as "falling behind" makes the whole pack DASH through
-  -- the fold at double speed — the visible True Size "slingshot".  Folds
-  -- resolve by walking at normal cadence (the swap allowance lets the
-  -- crossing members shuffle past), which reads as a smooth turnaround.
+  -- See _trailerCatchUpDivisor's header for the GENUINE-stragglers-only
+  -- (anti-slingshot) reasoning and the proportional-speed rationale.
   local headDist = (hx ~= nil and hy ~= nil)
     and (math.abs((npc.cellX or 0) - hx) + math.abs((npc.cellY or 0) - hy)) or 0
-  local lagging = headDist > (slot or 1) + 1
-  if not npc.hopStep and far > 1 and lagging then
-    npc.stepFrames = math.max(1, math.floor(stepClock / 2))
+  local divisor = self:_trailerCatchUpDivisor(headDist, slot)
+  if not npc.hopStep and far > 1 and divisor > 1 then
+    npc.stepFrames = math.max(1, math.floor(stepClock / divisor))
   else
     npc.stepFrames = stepClock
   end
@@ -3522,8 +3538,9 @@ function ControlEngine:_chainCatchUpSteps(game, ow, stepClock)
               local headDist = (chx ~= nil and chy ~= nil)
                 and (math.abs((npc.cellX or 0) - chx)
                      + math.abs((npc.cellY or 0) - chy)) or 0
-              if headDist > i + 1 then
-                npc.stepFrames = math.max(1, math.floor(stepClock / 2))
+              local divisor = self:_trailerCatchUpDivisor(headDist, i)
+              if divisor > 1 then
+                npc.stepFrames = math.max(1, math.floor(stepClock / divisor))
               else
                 npc.stepFrames = stepClock
               end
