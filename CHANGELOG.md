@@ -8,6 +8,16 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.5.4 (fork)
+
+### Features
+
+- Added a **PIKA FOLLOWER** option (Start Menu -> Wilds of Kanto, or the Mod
+  Manager) that gives Pokemon Yellow's starter Pikachu companion one of 12
+  costume looks: Alola, Belle, Hoenn, Kalos, Libre, OG Cap, Partner, PhD,
+  Pop Star, Rock Star, Sinnoh, and Unova. Only affects that one starter
+  Pikachu, not any other Pikachu used as a regular follower.
+
 ## 2.5.3 (fork)
 
 ### Features

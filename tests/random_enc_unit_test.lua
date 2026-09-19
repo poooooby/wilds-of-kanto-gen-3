@@ -252,7 +252,7 @@ check(tHigh > tLow, "high density > low density")
 local mf = io.open("manifest.json", "r")
 local mft = mf:read("*a")
 mf:close()
-check(mft:find('"version"%s*:%s*"2%.5%.3"') ~= nil, "manifest version 2.5.3")
+check(mft:find('"version"%s*:%s*"2%.5%.4"') ~= nil, "manifest version 2.5.4")
 
 -- Start menu no longer injects Wilds gameplay settings.
 do
