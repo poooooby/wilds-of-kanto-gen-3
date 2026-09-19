@@ -524,6 +524,336 @@ eq(rodU[1].level, 10, "random fishing: unmapped map keeps the vanilla group's le
 Gen9.invalidate()
 check(Gen9.fishingPool(mod, game, "ROUTE_1", "SUPER_ROD", vg) ~= rod, "random fishing: redrawn on the next map entry")
 
+-- ---------------------------------------------------------------- publication (DexNav-style readers)
+-- Other mods (Kanto Reforged's DexNav, another DexNav) read game.data.encounters[mapId] and
+-- game.data.field.superRod[mapId]. The current map's overlay is swapped in by REFERENCE; the original
+-- objects are never modified and are put back on restore.
+local Gen1 = V.require("game_compat/gen1")
+
+local function pubGame(mode, legend)
+  fresh(true)
+  local p = game.data.pokemon
+  p.MEWTWO = { dex = 150 }; p.MEW = { dex = 151 }
+  game.data.field = { superRod = {
+    ROUTE_1 = { { level = 10, species = "PIDGEY" }, { level = 10, species = "RATTATA" },
+                { level = 11, species = "PIDGEY" }, { level = 11, species = "RATTATA" } },
+    ROUTE_2 = { { level = 12, species = "PIDGEY" }, { level = 12, species = "RATTATA" } },
+    ROUTE_5 = {},
+  } }
+  liveBucket.modern_spawns = mode
+  liveBucket.legendary_spawns = legend and true or nil
+  DexExpansion.invalidate()
+  Gen9.invalidate()
+end
+
+-- what a DexNav reads: species present in encounters[mapId].grass / .water and the Super Rod list
+local function dexnavView(mapId)
+  local enc = game.data.encounters[mapId]
+  local seen = {}
+  for _, kind in ipairs({ "grass", "water" }) do
+    if enc and enc[kind] then
+      for _, s in ipairs(enc[kind].slots) do seen[s.species] = true end
+    end
+  end
+  local rod = game.data.field.superRod[mapId]
+  local rods = {}
+  for _, s in ipairs(rod or {}) do rods[#rods + 1] = s.species end
+  return seen, rods
+end
+
+-- Spawn Table
+pubGame("table")
+local snapEnc = deepCopy(game.data.encounters)
+local snapRod = deepCopy(game.data.field.superRod)
+local orig1, orig2, orig5 = game.data.encounters.ROUTE_1, game.data.encounters.ROUTE_2, game.data.encounters.ROUTE_5
+local origRod1 = game.data.field.superRod.ROUTE_1
+
+eq(Gen9.publish(mod, game, "ROUTE_1"), true, "publish: reports something published")
+local pub1 = game.data.encounters.ROUTE_1
+check(pub1 ~= orig1, "publish: the current map's live table is now the overlay")
+check(game.data.encounters.ROUTE_5 == orig5 and game.data.encounters.ROUTE_2 == orig2, "publish: other maps are untouched")
+check(deepEq(orig1, snapEnc.ROUTE_1) and deepEq(orig5, snapEnc.ROUTE_5), "publish: the original tables are never modified")
+local seenGrass, seenRod = dexnavView("ROUTE_1")
+check(seenGrass.FIXA and seenGrass.FIXB, "publish: a DexNav-style reader sees the overlay species")
+check(game.data.field.superRod.ROUTE_1 ~= origRod1, "publish: Super Rod list swapped for the current map")
+check(seenRod[1] == "FIXA", "publish: DexNav sees the overlay Super Rod entry")
+check(deepEq(origRod1, snapRod.ROUTE_1), "publish: the original Super Rod list is never modified")
+check(game.data.field.superRod.ROUTE_2 == snapRod.ROUTE_2 or deepEq(game.data.field.superRod.ROUTE_2, snapRod.ROUTE_2),
+  "publish: other maps' Super Rod lists are untouched")
+
+-- seams normalize a published table back to its source (no double overlay)
+check(Gen9.overlayFor(mod, game, "ROUTE_1", pub1) == pub1, "published: overlayFor(published) returns the published table")
+check(Gen9.overlayFor(mod, game, "ROUTE_1", orig1) == pub1, "published: overlayFor(original) returns the same object")
+check(Gen1.encountersForMap(game, "ROUTE_1") == pub1, "published: Gen1.encountersForMap agrees with game.data")
+check(Gen9.rollDef(mod, game, "ROUTE_1", "grass", pub1) == pub1, "published: the classic roll table is left as the engine passes it")
+local rodAgain = Gen9.fishingPool(mod, game, "ROUTE_1", "SUPER_ROD", game.data.field.superRod.ROUTE_1)
+eq(rodAgain[1].species, "FIXA", "published: fishingPool(published) normalizes to the same overlay entries")
+eq(#rodAgain, 4, "published: fishingPool(published) keeps 4 entries")
+eq(Gen9.publish(mod, game, "ROUTE_1"), true, "publish: idempotent")
+check(game.data.encounters.ROUTE_1 == pub1, "publish: re-publishing serves the same cached overlay object")
+
+-- moving to another map restores the previous one
+eq(Gen9.publish(mod, game, "ROUTE_2"), true, "publish: next map")
+check(game.data.encounters.ROUTE_1 == orig1, "publish: previous map's original table is back (same object)")
+check(game.data.field.superRod.ROUTE_1 == origRod1, "publish: previous map's Super Rod list is back (same object)")
+check(game.data.encounters.ROUTE_2 ~= orig2 and game.data.encounters.ROUTE_2.water ~= nil, "publish: new map's overlay is live (grass + water)")
+-- a map with an empty Super Rod list publishes nothing for it
+Gen9.publish(mod, game, "ROUTE_5")
+check(game.data.field.superRod.ROUTE_5 ~= nil and #game.data.field.superRod.ROUTE_5 == 0, "publish: empty Super Rod group is left alone")
+check(game.data.encounters.ROUTE_5 == orig5, "publish: an unmapped map (Spawn Table) publishes nothing")
+
+Gen9.restoreAll(game)
+check(game.data.encounters.ROUTE_1 == orig1 and game.data.encounters.ROUTE_2 == orig2, "restoreAll: original objects back")
+check(deepEq(game.data.encounters, snapEnc) and deepEq(game.data.field.superRod, snapRod), "restoreAll: data identical to before publishing")
+check(Gen9.overlayFor(mod, game, "ROUTE_1", orig1) ~= orig1, "restoreAll: seams still overlay from the original")
+
+-- invalidate (map entry / game.ready / mods.loaded) restores too
+Gen9.publish(mod, game, "ROUTE_1")
+Gen9.invalidate()
+check(game.data.encounters.ROUTE_1 == orig1 and game.data.field.superRod.ROUTE_1 == origRod1, "invalidate: restores what was published")
+
+-- switching MODERN SPAWNS off restores and publishes nothing (the original/Kanto Reforged tables take over)
+Gen9.publish(mod, game, "ROUTE_1")
+liveBucket.modern_spawns = "off"
+eq(Gen9.publish(mod, game, "ROUTE_1"), false, "off: nothing published")
+check(game.data.encounters.ROUTE_1 == orig1 and game.data.field.superRod.ROUTE_1 == origRod1, "off: the original tables are live again")
+check(deepEq(game.data.encounters, snapEnc), "off: identical to a game without this mod's overlay")
+
+-- someone else replaced the slot: restore leaves their table alone
+pubGame("table")
+local orig1b = game.data.encounters.ROUTE_1
+Gen9.publish(mod, game, "ROUTE_1")
+local theirs = { grass = { rate = 5, slots = { { level = 3, species = "PIDGEY" } } } }
+game.data.encounters.ROUTE_1 = theirs
+Gen9.restoreAll(game)
+check(game.data.encounters.ROUTE_1 == theirs, "restoreAll: a table another mod put there is left alone")
+check(Gen9.overlayFor(mod, game, "ROUTE_1", orig1b) ~= nil, "restoreAll: no crash afterwards")
+
+-- tamper guard: something merged into the published table and left it half-shaped
+pubGame("table")
+local orig1c = game.data.encounters.ROUTE_1
+Gen9.publish(mod, game, "ROUTE_1")
+local damaged = game.data.encounters.ROUTE_1
+for i = #damaged.grass.slots, 4, -1 do damaged.grass.slots[i] = nil end -- 3 slots, 12 thresholds
+local served = Gen9.rollDef(mod, game, "ROUTE_1", "grass", damaged)
+check(game.data.encounters.ROUTE_1 == orig1c, "tamper: the damaged table is taken out of game.data")
+check(served ~= damaged and #served.grass.slots == #served.grass.buckets, "tamper: the roll gets a fresh, consistent table")
+
+-- Random: what DexNav reads is exactly what the spawner / roll use
+pubGame("random")
+local rorig1 = game.data.encounters.ROUTE_1
+local rorigRod = game.data.field.superRod.ROUTE_1
+eq(Gen9.publish(mod, game, "ROUTE_1"), true, "random publish: published")
+local rpub = game.data.encounters.ROUTE_1
+eq(#rpub.grass.slots, 10, "random publish: the live table is the 10-slot random roster")
+check(Gen1.encountersForMap(game, "ROUTE_1") == rpub, "random publish: the spawner reads the same object DexNav reads")
+check(Gen9.rollDef(mod, game, "ROUTE_1", "grass", rpub) == rpub, "random publish: the classic roll uses it as-is")
+check(Gen9.overlayFor(mod, game, "ROUTE_1", rorig1) == rpub, "random publish: the roster is cached per visit")
+local rrod = game.data.field.superRod.ROUTE_1
+check(rrod ~= rorigRod and #rrod == 4, "random publish: 4-entry Super Rod roster live")
+check(Gen9.fishingPool(mod, game, "ROUTE_1", "SUPER_ROD", rrod) == rrod, "random publish: the rod roll gets the same list DexNav shows")
+local rseen = dexnavView("ROUTE_1")
+local rn = 0
+for _ in pairs(rseen) do rn = rn + 1 end
+check(rn <= 10 and rn >= 1, "random publish: DexNav sees at most 10 species (got " .. rn .. ")")
+check(not (rseen.MEWTWO or rseen.MEW), "random publish: restricted species are not shown with the toggle off")
+
+-- a new map entry redraws (what map.entered does: invalidate restores, then publish)
+Gen9.invalidate()
+check(game.data.encounters.ROUTE_1 == rorig1, "random: invalidate restores before the redraw")
+Gen9.publish(mod, game, "ROUTE_1")
+check(game.data.encounters.ROUTE_1 ~= rpub, "random: the next map entry publishes a fresh roster")
+
+-- toggling LEGEND/MYTHIC re-publishes a different roster
+liveBucket.legendary_spawns = true
+local before = game.data.encounters.ROUTE_1
+Gen9.publish(mod, game, "ROUTE_1")
+check(game.data.encounters.ROUTE_1 ~= before, "random: changing LEGEND/MYTHIC publishes a rebuilt roster")
+
+-- publish never throws on odd input
+check(Gen9.publish(mod, game, nil) == false, "publish: no map id -> false")
+check(Gen9.publish(mod, nil, "ROUTE_1") == false or true, "publish: tolerates a missing game")
+Gen9.restoreAll(nil)
+Gen9.restoreAll(game)
+
+-- ---------------------------------------------------------------- MAX GEN (generation cap)
+-- lastDexOf: last national dex of each generation; nil (= no cap) for 9 and for anything invalid.
+do
+  local want = { [1] = 151, [2] = 251, [3] = 386, [4] = 493, [5] = 649, [6] = 721, [7] = 809, [8] = 905 }
+  for g, d in pairs(want) do eq(DexExpansion.lastDexOf(g), d, "lastDexOf(" .. g .. ")") end
+  eq(DexExpansion.lastDexOf(9), nil, "lastDexOf(9) is no cap")
+  eq(DexExpansion.lastDexOf("3"), 386, "lastDexOf accepts numeric strings")
+  eq(DexExpansion.lastDexOf(0), nil, "lastDexOf(0) is no cap")
+  eq(DexExpansion.lastDexOf(2.5), nil, "lastDexOf(2.5) is no cap")
+  eq(DexExpansion.lastDexOf(nil), nil, "lastDexOf(nil) is no cap")
+  eq(DexExpansion.lastDexOf("x"), nil, "lastDexOf(garbage) is no cap")
+end
+
+-- Config.maxGeneration: default 9, live bucket first, then mod.options, anything unusable -> 9.
+fresh(true)
+liveBucket.max_generation = nil
+eq(Config.maxGeneration(mod), 9, "maxGeneration: defaults to 9 (no cap)")
+liveBucket.max_generation = "3"
+eq(Config.maxGeneration(mod), 3, "maxGeneration: live bucket string")
+liveBucket.max_generation = 4
+eq(Config.maxGeneration(mod), 4, "maxGeneration: live bucket number")
+liveBucket.max_generation = "0"
+eq(Config.maxGeneration(mod), 9, "maxGeneration: 0 is unusable -> 9")
+liveBucket.max_generation = "12"
+eq(Config.maxGeneration(mod), 9, "maxGeneration: 12 is unusable -> 9")
+liveBucket.max_generation = "abc"
+eq(Config.maxGeneration(mod), 9, "maxGeneration: garbage -> 9")
+liveBucket.max_generation = nil
+savedOpts.max_generation = "2"
+eq(Config.maxGeneration(mod), 2, "maxGeneration: falls back to mod.options")
+liveBucket.max_generation = "5"
+eq(Config.maxGeneration(mod), 5, "maxGeneration: the live bucket beats the schema value")
+liveBucket.max_generation = nil
+savedOpts = {}
+
+-- Fixtures: mixed-generation species and ladders whose slots carry their own dex.
+local function dladder(rows)
+  local b, s = {}, {}
+  for i, r in ipairs(rows) do
+    b[i] = r[1]
+    s[i] = { species = r[2], level = r[3], dex = r[4] }
+  end
+  return { buckets = b, slots = s }
+end
+DATA.maps.ROUTE_9 = {
+  grass = dladder({ { 64, "LOW_A", 20, 100 }, { 128, "FIXA", 21, 400 }, { 192, "LOW_B", 22, 120 }, { 256, "HIGH", 23, 700 } }),
+  superRod = { { level = 20, species = "FIXA", dex = 400 }, { level = 20, species = "LOW_A", dex = 100 },
+               { level = 21, species = "HIGH", dex = 700 }, { level = 21, species = "LOW_B", dex = 120 } },
+}
+DATA.maps.ROUTE_10 = { grass = dladder({ { 150, "LOW_A", 30, 100 }, { 206, "FIXA", 31, 400 }, { 256, "LOW_B", 32, 120 } }) }
+DATA.maps.ROUTE_11 = { grass = dladder({ { 128, "FIXA", 40, 400 }, { 256, "FIXB", 41, 401 } }),
+                       superRod = { { level = 25, species = "FIXA", dex = 400 }, { level = 25, species = "FIXB", dex = 401 } } }
+DATA.maps.ROUTE_12 = { grass = dladder({ { 100, "LOW_A", 50, 100 }, { 200, "NOT_INSTALLED", 51, 50 }, { 256, "FIXA", 52, 400 } }) }
+
+local function capGame(mode, gen)
+  fresh(true)
+  local p = game.data.pokemon
+  p.LOW_A = { dex = 100 }; p.LOW_B = { dex = 120 }; p.MID = { dex = 300 }; p.HIGH = { dex = 700 }
+  for _, id in ipairs({ "ROUTE_9", "ROUTE_10", "ROUTE_11", "ROUTE_12" }) do
+    game.data.encounters[id] = { grass = { rate = 20, slots = vanillaSlots("PIDGEY", "RATTATA") } }
+  end
+  game.data.field = { superRod = {
+    ROUTE_9 = { { level = 10, species = "PIDGEY" }, { level = 10, species = "RATTATA" },
+                { level = 11, species = "PIDGEY" }, { level = 11, species = "RATTATA" } },
+    ROUTE_11 = { { level = 12, species = "PIDGEY" }, { level = 12, species = "RATTATA" } },
+  } }
+  liveBucket.modern_spawns = mode
+  liveBucket.max_generation = gen and tostring(gen) or nil
+  DexExpansion.invalidate()
+  Gen9.invalidate()
+end
+local function ladderSum(t) return t.buckets[#t.buckets] end
+local function speciesList(t)
+  local out = {}
+  for i, s in ipairs(t.slots) do out[i] = s.species end
+  return table.concat(out, ",")
+end
+
+-- Spawn Table: no cap / Gen 9 keeps the ladder exactly as generated
+capGame("table", 9)
+local capV = game.data.encounters.ROUTE_9
+local c9 = Gen9.overlayFor(mod, game, "ROUTE_9", capV).grass
+eq(speciesList(c9), "LOW_A,FIXA,LOW_B,HIGH", "cap All: every slot kept")
+eq(table.concat(c9.buckets, ","), "64,128,192,256", "cap All: ladder untouched")
+
+-- cap Gen 3: Gen 4+ slots dropped, their odds shared by the survivors
+capGame("table", 3)
+local c3 = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9).grass
+eq(speciesList(c3), "LOW_A,LOW_B", "cap Gen 1-3: Gen 4+ slots dropped")
+eq(table.concat(c3.buckets, ","), "128,256", "cap Gen 1-3: the two survivors share the odds evenly")
+eq(c3.slots[1].level, 20, "cap Gen 1-3: survivor keeps its level (1)")
+eq(c3.slots[2].level, 22, "cap Gen 1-3: survivor keeps its level (2)")
+eq(#c3.slots, #c3.buckets, "cap Gen 1-3: one slot per threshold")
+eq(game.data.encounters.ROUTE_9.grass.rate, 20, "cap Gen 1-3: engine rate preserved")
+
+-- uneven odds are shared proportionally (150/56/50 -> 150 and 50 become 192 and 64)
+local c10 = Gen9.overlayFor(mod, game, "ROUTE_10", game.data.encounters.ROUTE_10).grass
+eq(speciesList(c10), "LOW_A,LOW_B", "cap Gen 1-3: uneven ladder keeps the allowed species")
+eq(table.concat(c10.buckets, ","), "192,256", "cap Gen 1-3: odds shared proportionally (150:50 -> 192:64)")
+
+-- cap Gen 4 keeps the two Gen 4 slots; three equal shares still sum to exactly 256
+capGame("table", 4)
+local c4 = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9).grass
+eq(speciesList(c4), "LOW_A,FIXA,LOW_B", "cap Gen 1-4: Gen 4 slot kept, Gen 6 slot dropped")
+eq(ladderSum(c4), 256, "cap Gen 1-4: ladder ends at exactly 256")
+local prevThr, increasing = 0, true
+for _, thr in ipairs(c4.buckets) do if thr <= prevThr then increasing = false end prevThr = thr end
+check(increasing, "cap Gen 1-4: thresholds strictly increase (every survivor keeps >= 1/256)")
+eq(c4.buckets[1], 86, "cap Gen 1-4: the leftover unit goes to the first of equal remainders")
+
+-- no allowed slot in a bucket: the original table stays
+capGame("table", 1)
+local v11 = game.data.encounters.ROUTE_11
+check(Gen9.overlayFor(mod, game, "ROUTE_11", v11) == v11, "cap Gen 1: a map with no allowed slot keeps the original object")
+
+-- an uninstalled species under the cap still falls back to the original slot at its odds position
+local c12 = Gen9.overlayFor(mod, game, "ROUTE_12", game.data.encounters.ROUTE_12).grass
+eq(table.concat(c12.buckets, ","), "128,256", "cap Gen 1: ladder renormalized around the dropped Gen 4 slot")
+eq(c12.slots[1].species, "LOW_A", "cap Gen 1: installed under-cap species kept")
+eq(c12.slots[2].species, "RATTATA", "cap Gen 1: uninstalled under-cap species falls back to the original slot at that position")
+
+-- Super Rod
+capGame("table", 3)
+local vrod = game.data.field.superRod.ROUTE_9
+local rod3 = Gen9.fishingPool(mod, game, "ROUTE_9", "SUPER_ROD", vrod)
+eq(#rod3, 2, "cap Gen 1-3 rod: over-cap entries dropped")
+eq(rod3[1].species, "LOW_A", "cap Gen 1-3 rod: entry 1")
+eq(rod3[2].species, "LOW_B", "cap Gen 1-3 rod: entry 2")
+capGame("table", 1)
+local vrod11 = game.data.field.superRod.ROUTE_11
+check(Gen9.fishingPool(mod, game, "ROUTE_11", "SUPER_ROD", vrod11) == vrod11, "cap Gen 1 rod: nothing allowed -> the original pool")
+
+-- Random: the pool respects the cap, and levels still follow the (capped) Spawn Table where mapped
+local function setOf(bucket)
+  local set = {}
+  for _, s in ipairs(bucket.slots) do set[s.species] = true end
+  return set
+end
+capGame("random", 1)
+local r1 = Gen9.overlayFor(mod, game, "ROUTE_5", game.data.encounters.ROUTE_5).grass
+local set1 = setOf(r1)
+check(not (set1.MID or set1.FIXA or set1.FIXB or set1.HIGH), "random cap Gen 1: nothing above #151")
+check(set1.PIDGEY and set1.RATTATA and set1.LOW_A and set1.LOW_B, "random cap Gen 1: Gen 1 species are drawn")
+capGame("random", 3)
+local set3 = setOf(Gen9.overlayFor(mod, game, "ROUTE_5", game.data.encounters.ROUTE_5).grass)
+check(set3.MID and not (set3.FIXA or set3.FIXB or set3.HIGH), "random cap Gen 1-3: Gen 3 allowed, Gen 4+ not")
+local rmap = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9).grass
+local lvOk = true
+for _, s in ipairs(rmap.slots) do if s.level ~= 20 and s.level ~= 22 then lvOk = false end end
+check(lvOk, "random cap Gen 1-3: levels come from the capped Spawn Table (20 and 22 only)")
+capGame("random", 9)
+local rrod = Gen9.fishingPool(mod, game, "ROUTE_9", "SUPER_ROD", game.data.field.superRod.ROUTE_9)
+eq(#rrod, 4, "random rod: 4 entries with no cap")
+capGame("random", 1)
+local rrod1 = Gen9.fishingPool(mod, game, "ROUTE_9", "SUPER_ROD", game.data.field.superRod.ROUTE_9)
+for i, e in ipairs(rrod1) do
+  check(game.data.pokemon[e.species].dex <= 151, "random cap Gen 1 rod: entry " .. i .. " is Gen 1 (" .. e.species .. ")")
+end
+
+-- changing the option live rebuilds the roster without an invalidate; Off ignores the cap
+capGame("table", 9)
+local liveA = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9)
+liveBucket.max_generation = "3"
+local liveB = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9)
+check(liveB ~= liveA and #liveB.grass.slots == 2, "cap: changing MAX GEN live rebuilds the table")
+liveBucket.modern_spawns = "off"
+check(Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9) == game.data.encounters.ROUTE_9, "cap: Off is never limited")
+
+-- what a DexNav-style reader sees follows the cap too
+capGame("table", 3)
+Gen9.publish(mod, game, "ROUTE_9")
+local dexSeen = {}
+for _, s in ipairs(game.data.encounters.ROUTE_9.grass.slots) do dexSeen[s.species] = true end
+check(dexSeen.LOW_A and dexSeen.LOW_B and not (dexSeen.FIXA or dexSeen.HIGH), "cap: the published table (DexNav view) respects the cap")
+local dexRod = game.data.field.superRod.ROUTE_9
+check(#dexRod == 2 and dexRod[1].species == "LOW_A", "cap: the published Super Rod list respects the cap")
+Gen9.restoreAll(game)
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

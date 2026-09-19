@@ -94,6 +94,22 @@ check(n3.CONTENTMON == 1, "pool: content-registered species included")
 eq(n3.PIKACHU, 1, "pool: no duplicate when in both registries")
 eq(#RandomSpawns.pool(mod, nil, false, 1), 0, "pool: no game -> empty")
 
+-- generation cap (maxDex): species above that national dex are dropped, cached per cap
+local capGame = { data = { pokemon = {
+  PIKACHU = { dex = 25 }, MEWTWO = { dex = 150 }, PICHU = { dex = 172 }, TORCHIC = { dex = 255 },
+  TURTWIG = { dex = 387 }, ROGGENROLA = { dex = 524 }, NIHILEGO = { dex = 793 },
+} } }
+local function keys(list) return table.concat(list, ",") end
+eq(keys(RandomSpawns.pool(mod, capGame, false, 1, 151)), "PIKACHU", "pool cap Gen 1: only #151 and below (restricted Mewtwo out)")
+eq(keys(RandomSpawns.pool(mod, capGame, false, 1, 251)), "PIKACHU,PICHU", "pool cap Gen 1-2")
+eq(keys(RandomSpawns.pool(mod, capGame, false, 1, 386)), "PIKACHU,PICHU,TORCHIC", "pool cap Gen 1-3")
+eq(keys(RandomSpawns.pool(mod, capGame, false, 1, nil)), "PIKACHU,PICHU,TORCHIC,TURTWIG,ROGGENROLA", "pool no cap: everything unrestricted")
+eq(keys(RandomSpawns.pool(mod, capGame, true, 1, 251)), "PIKACHU,MEWTWO,PICHU", "pool cap Gen 1-2 + restricted allowed: Mewtwo in, Nihilego (#793) still capped out")
+eq(keys(RandomSpawns.pool(mod, capGame, true, 1, nil)), "PIKACHU,MEWTWO,PICHU,TORCHIC,TURTWIG,ROGGENROLA,NIHILEGO", "pool no cap + restricted allowed: all")
+check(RandomSpawns.pool(mod, capGame, false, 1, 151) == RandomSpawns.pool(mod, capGame, false, 1, 151), "pool cap: cached per cap")
+check(RandomSpawns.pool(mod, capGame, false, 1, 151) ~= RandomSpawns.pool(mod, capGame, false, 1, 251), "pool cap: different caps are different cache entries")
+eq(#RandomSpawns.pool(mod, capGame, false, 1, "251"), 2, "pool cap: a numeric string cap works")
+
 -- ---------------------------------------------------------------- bucket
 -- base ladder {128,192,256}: units 0-127 are L10, 128-191 are L12, 192-255 are L14.
 local base = { rate = 20, buckets = { 128, 192, 256 }, slots = {

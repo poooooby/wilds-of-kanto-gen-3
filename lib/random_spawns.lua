@@ -77,7 +77,7 @@ function RandomSpawns.restrictedKind(dex)
 end
 
 -- ------------------------------------------------------------------ species pool
-local poolCache = setmetatable({}, { __mode = "k" }) -- game -> { epoch, [includeRestricted] = list }
+local poolCache = setmetatable({}, { __mode = "k" }) -- game -> { epoch, ["<restricted>:<maxDex>"] = list }
 
 local function realDex(def)
   local d = type(def) == "table" and tonumber(def.dex) or nil
@@ -86,12 +86,15 @@ local function realDex(def)
 end
 
 --- Sorted (by dex, then key) list of eligible species keys. Cached per game until `epoch` changes
--- (pass DexExpansion.epoch(), bumped on every load boundary / map entry). Do not mutate the result.
-function RandomSpawns.pool(mod, game, includeRestricted, epoch)
+-- (pass DexExpansion.epoch(), bumped on every load boundary / map entry). `maxDex` (optional) drops
+-- species above that national dex number -- the generation cap. Do not mutate the result.
+function RandomSpawns.pool(mod, game, includeRestricted, epoch, maxDex)
   if not game then return {} end
   includeRestricted = includeRestricted == true
+  maxDex = tonumber(maxDex)
+  local cacheKey = (includeRestricted and "1" or "0") .. ":" .. (maxDex and tostring(maxDex) or "all")
   local c = poolCache[game]
-  if c and c.epoch == epoch and c[includeRestricted] then return c[includeRestricted] end
+  if c and c.epoch == epoch and c[cacheKey] then return c[cacheKey] end
   if not c or c.epoch ~= epoch then
     c = { epoch = epoch }
     poolCache[game] = c
@@ -102,7 +105,7 @@ function RandomSpawns.pool(mod, game, includeRestricted, epoch)
   local function consider(key, def)
     if type(key) ~= "string" or seen[key] then return end
     local dex = realDex(def)
-    if not dex or skip[dex] then return end
+    if not dex or skip[dex] or (maxDex and dex > maxDex) then return end
     seen[key] = true
     entries[#entries + 1] = { key = key, dex = dex }
   end
@@ -124,7 +127,7 @@ function RandomSpawns.pool(mod, game, includeRestricted, epoch)
   end)
   local list = {}
   for i, e in ipairs(entries) do list[i] = e.key end
-  c[includeRestricted] = list
+  c[cacheKey] = list
   return list
 end
 

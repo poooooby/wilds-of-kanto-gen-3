@@ -505,6 +505,25 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
+      label = "MAX GEN",
+      stepper = true,
+      wrap = true,
+      -- Highest generation Spawn Table / Random may use; see lib/gen9_encounters.lua.
+      choices = {
+        { label = "GEN 1", value = "1" }, { label = "GEN 1-2", value = "2" },
+        { label = "GEN 1-3", value = "3" }, { label = "GEN 1-4", value = "4" },
+        { label = "GEN 1-5", value = "5" }, { label = "GEN 1-6", value = "6" },
+        { label = "GEN 1-7", value = "7" }, { label = "GEN 1-8", value = "8" },
+        { label = "ALL", value = "9" },
+      },
+      current = tostring(Config.maxGeneration(mod)),
+      right = Config.maxGeneration(mod) >= 9 and "ALL" or ("GEN 1-" .. Config.maxGeneration(mod)),
+      apply = function(v)
+        optSet(mod, "max_generation", tostring(v))
+        menus:_notifyLogic("max_generation", tostring(v))
+      end,
+    },
+    {
       label = "GFX STYLE",
       stepper = true,
       wrap = true,
@@ -1262,7 +1281,7 @@ SettingsMenus.FOLLOWERS_OPTION_KEYS = {
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
   "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "modern_spawns", "legendary_spawns", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
+  "cave_spawns", "modern_spawns", "legendary_spawns", "max_generation", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
   "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
   "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
   "catch_hud_size",

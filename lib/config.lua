@@ -41,6 +41,8 @@ Config.DEFAULTS = {
   modern_spawns = "table",
   -- Random mode only: allow legendary/mythical/Ultra Beast/Paradox species (lib/species_flags_data.lua).
   legendary_spawns = false,
+  -- Highest generation Spawn Table and Random may use (1..9; "9" = no cap). Off is never capped.
+  max_generation = "9",
   -- Voxel-only per-species display-size scale (lib/species_display_scale.lua).
   -- ON = custom-tuned sizing per species; OFF = native True Size for every
   -- HGSS/PokeMMO species (SpeciesGeometry.displayScale always returns 1).
@@ -519,6 +521,27 @@ end
 --- Anything other than "off" (kept for callers that only need the old on/off meaning).
 function Config.modernSpawnsEnabled(mod)
   return Config.modernSpawnsMode(mod) ~= "off"
+end
+
+local function coerceMaxGeneration(value)
+  local n = tonumber(value)
+  if n and n % 1 == 0 and n >= 1 and n <= 9 then return math.floor(n) end
+  return nil
+end
+
+--- MAX GEN: highest generation (1..9) Spawn Table and Random may spawn. Live save bucket first (same as
+-- the other spawn options), then the schema value; anything unusable means 9 (no cap).
+function Config.maxGeneration(mod)
+  local raw, present = Config.peekSavedOption(mod, "max_generation")
+  if present then
+    local g = coerceMaxGeneration(raw)
+    if g then return g end
+  end
+  if mod and mod.options and type(mod.options.get) == "function" then
+    local g = coerceMaxGeneration(mod.options:get("max_generation"))
+    if g then return g end
+  end
+  return coerceMaxGeneration(Config.DEFAULTS.max_generation) or 9
 end
 
 --- "Include Legendary/Mythical": Random mode only. Same live-bucket-first read as above.

@@ -17,6 +17,18 @@ local DexExpansion = {}
 DexExpansion.MODERN_MIN = 387
 DexExpansion.FORM_MIN = 30000
 
+-- Last national dex number of each generation (contiguous: G1 1-151, G2 152-251, G3 252-386,
+-- G4 387-493, G5 494-649, G6 650-721, G7 722-809, G8 810-905, G9 906-1025).
+DexExpansion.GENERATION_LAST_DEX = { 151, 251, 386, 493, 649, 721, 809, 905, 1025 }
+
+--- Highest dex a "max generation" cap allows, or nil for no cap (generation 9, or anything that is not
+-- a whole number 1..9), so a stray species above #1025 is never cut by a cap that means "all".
+function DexExpansion.lastDexOf(generation)
+  local g = tonumber(generation)
+  if not g or g % 1 ~= 0 or g < 1 or g >= #DexExpansion.GENERATION_LAST_DEX then return nil end
+  return DexExpansion.GENERATION_LAST_DEX[math.floor(g)]
+end
+
 local epoch = 0
 local cache = setmetatable({}, { __mode = "k" }) -- game -> { epoch, value }
 

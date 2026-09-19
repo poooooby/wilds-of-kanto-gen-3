@@ -208,8 +208,29 @@ return function(mod)
     if okG9 and Gen9 and Gen9.invalidate then pcall(Gen9.invalidate) end
   end
 
+  -- Publish the current map's overlay into game.data (Gen 1 only) so other readers -- a DexNav mod,
+  -- the engine's own roll -- see what actually spawns; restore the original tables on map exit / when
+  -- the option goes Off. Never throws into the engine: a failure restores and stays vanilla.
+  local function publishModernEncounters(mapId)
+    local game = liveGame()
+    if not game or GameCompat.isGen2(mod, game) then return end
+    local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
+    if not (okG9 and Gen9 and Gen9.publish) then return end
+    local ok, err = pcall(Gen9.publish, mod, game, mapId)
+    if not ok then
+      pcall(Gen9.restoreAll, game)
+      DebugLog.warn(mod, "modern encounter publish failed: %s", tostring(err))
+    end
+  end
+
+  local function restoreModernEncounters()
+    local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
+    if okG9 and Gen9 and Gen9.restoreAll then pcall(Gen9.restoreAll, liveGame()) end
+  end
+
   mod.events:on("map.entered", function(ev)
-    invalidateModernEncounters()
+    invalidateModernEncounters() -- also restores anything still published
+    publishModernEncounters(ev and ev.mapId)
     if not supports("encounters") then
       noteGameplaySkipped()
       return
@@ -237,6 +258,7 @@ return function(mod)
   end)
 
   mod.events:on("map.exited", function(ev)
+    restoreModernEncounters()
     if not supports("encounters") then return end
     local ok, err = pcall(logic.onMapExited, logic, ev)
     if not ok then
@@ -568,7 +590,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.6.0"
+  mod.exports.version = "2.6.2"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

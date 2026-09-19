@@ -148,8 +148,8 @@ Visible water spawns use `lib/water_spawn.lua` (cell → shore zone → pool →
 - **`random`** (see 8.2) draws any registered species for every map with a vanilla table; no dex gate.
 - **`off`** returns the vanilla object untouched.
 
-- **Seam:** `Gen1.encountersForMap` returns the overlay (a cached **copy**; the engine's
-  `game.data.encounters[mapId]` is never mutated). The classic roll is covered by the
+- **Seam:** `Gen1.encountersForMap` returns the overlay (a cached **copy**; the original table objects are
+  never modified). The classic roll is covered by the
   `encounter.roll` wrapper via `Gen9Encounters.rollDef` (the engine passes a synthetic
   `{ grass = map.water }` for water rolls, so it is terrain-aware) and Super Rod by an
   `encounter.fishing` wrapper via `Gen9Encounters.fishingPool`. `encounter_index`, `ambient_pokemon`
@@ -173,6 +173,49 @@ Visible water spawns use `lib/water_spawn.lua` (cell → shore zone → pool →
   The sources live outside the repo; only the generated Lua is committed. Re-run the generator and
   review its printed report (per-table slot counts and max error, unused sections, form-token table)
   before committing.
+
+### 8.1.0 Generation cap (MAX GEN)
+
+`max_generation` (`"1"`..`"9"`, default `"9"` = no cap; `Config.maxGeneration`, peekSavedOption-first) caps
+the species **Spawn Table and Random** may use by national dex number (`DexExpansion.GENERATION_LAST_DEX`:
+151 / 251 / 386 / 493 / 649 / 721 / 809 / 905 / 1025; `DexExpansion.lastDexOf` returns nil for 9 = no cap).
+Off is never capped, and species other mods put into the original tables are not touched.
+
+- **Spawn Table (`tableOverlay` / `capLadder`):** slots whose `dex` is above the cap are dropped and their odds
+  are shared among the surviving slots (largest-remainder rounding back to exactly 256, every survivor >= 1
+  unit). The existing "uninstalled species -> original slot at the same odds position" fallback then runs on
+  the renormalized ladder. A bucket with no allowed slot stays as the original. Super Rod entries above the cap
+  are dropped (the roll is uniform, so the rest share it), or the original pool is kept if none survive.
+- **Random:** `RandomSpawns.pool(..., maxDex)` filters the pool (cached per cap); levels come from the capped
+  Spawn Table where the map is mapped.
+- Alternate forms have dex >= 30000, so any cap below All excludes them.
+- The cap is part of the `overlayCache` / `rodCache` keys, so changing it rebuilds without `invalidate()`;
+  `SpawnLogic:onOptionsChanged` re-publishes and rebuilds the current map for `max_generation`.
+
+### 8.1.1 Publishing the current map (DexNav compatibility)
+
+Other mods read `game.data.encounters[mapId]` and `game.data.field.superRod[mapId]` directly -- Kanto
+Reforged's DexNav (`ui/dexnav.lua`, `DexNav.sourcesForMap`) builds its list from them at open time -- so a
+copy that only our seams hand out is invisible to them. `Gen9Encounters.publish(mod, game, mapId)` therefore
+swaps the overlay into those two slots **by reference for the current map only**; nothing else changes.
+
+- **Originals are never modified.** `restoreAll` puts the same objects back, but only into a slot that still
+  holds our overlay (a table another mod put there since is left alone). That is why turning MODERN SPAWNS Off
+  (or leaving the map) hands Kanto Reforged's own tables back exactly as they were.
+- **Seams normalize.** `overlayFor`, `rollDef` and `fishingPool` map a published overlay back to its source
+  (`byOverlay`) first, so a published table is not overlaid again, Random never builds on its own previous
+  roster, and the engine's classic roll (which now reads the overlay) sees `overlay == real` and is left alone.
+- **Lifecycle** (`main.lua`): `map.entered` -> `invalidate()` (restores, redraws Random) -> `publish`;
+  `map.exited` -> `restoreAll`; `game.ready` / `mods.loaded` -> `invalidate()`;
+  `SpawnLogic:onOptionsChanged` (`modern_spawns` / `legendary_spawns`) -> `publish` before rebuilding the map.
+  Gen 1 only; every call is pcall-guarded and a failure restores and stays vanilla.
+- **Tamper guard:** if something merges into the published object and leaves it half-shaped (Kanto Reforged
+  re-applying its mix mid-visit; `#slots ~= #buckets` makes `Encounter.roll` skip slots or hand `newWild` a
+  bad one), the next seam call restores
+  the original, drops the caches and rebuilds. The one thing not covered: that re-apply's new mix for the
+  current map is lost on our next restore until it re-applies or the game restarts.
+- Limits: only the current map is published (the Pokedex Town Map, which iterates `game.data.encounters`, sees
+  the overlay for that map only), and readers that cache tables at load are not covered.
 
 ### 8.2 Random spawn mode
 

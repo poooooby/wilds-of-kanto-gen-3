@@ -201,7 +201,9 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
   Pokemon spawn at the area's own levels (a new roster each time you enter an
   area; it works on the plain Gen 1 dex too), and **Off** keeps the original
   tables. In Random, legendary, mythical, Ultra Beast and Paradox Pokemon are
-  left out unless the **LEGEND/MYTHIC** option is on.
+  left out unless the **LEGEND/MYTHIC** option is on. The **MAX GEN** option
+  (Gen 1 up to All) caps the generations Spawn Table and Random may use, by
+  national Pokedex number; Off is never limited.
 - Dramatic Shape Voxel Mod (True Size stays on when the **active** Voxel
   renderer can consume variable SpriteDef geometry: Battle Art Voxel, Potato
   Voxel, Dramaless Shape, Stadium2, and Terrarium via public

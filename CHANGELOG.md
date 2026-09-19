@@ -8,6 +8,23 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.6.2 (fork)
+
+### Features
+
+- Added a **MAX GEN** option (Start Menu -> Wilds of Kanto, or the Mod
+  Manager; Gen 1, Gen 1-2, ... up to All, default All). It caps the
+  generations that Spawn Table and Random spawns may use, including Super
+  Rod. In Spawn Table, species above the cap are dropped and their share
+  goes to the other species in that area; in Random they are never drawn.
+  Off (the original game) is never limited, and alternate forms count as
+  above any cap below All.
+- DexNav-style mods, including Kanto Reforged's DEXNAV, now list the Pokemon
+  that actually spawn in the area you are standing in (Spawn Table or
+  Random, including Super Rod), with Kanto Reforged's usual seen/owned
+  reveal. Turning MODERN SPAWNS off, or leaving the area, hands the original
+  tables back untouched.
+
 ## 2.6.0 (fork)
 
 ### Features

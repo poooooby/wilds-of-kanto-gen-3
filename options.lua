@@ -17,7 +17,7 @@
 --   Poke Followers EX -> follow_control, trainer_trail, follower_count
 --                       (+ Leader via party menu hint)
 --   Wilds of Kanto    -> enabled, spawn_density, random_encounters,
---                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, sprite_style, dyn_scale,
+--                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, max_generation, sprite_style, dyn_scale,
 --                       sprite_fade, town_pokemon, pokemon_grass_render_mode,
 --                       wild_silhouettes,
 --                       overworld_catching, catch_throw_key, catch_cycle_key,
@@ -190,6 +190,24 @@ return {
     type = "toggle",
     default = false,
     description = "Random mode only. Include legendary, mythical, Ultra Beast and Paradox Pokemon in random spawns. Off keeps them out. Spawn Table mode is unaffected.",
+  },
+  {
+    key = "max_generation",
+    label = "MAX GEN",
+    type = "choice",
+    default = "9",
+    choices = {
+      { "Gen 1", "1" },
+      { "Gen 1-2", "2" },
+      { "Gen 1-3", "3" },
+      { "Gen 1-4", "4" },
+      { "Gen 1-5", "5" },
+      { "Gen 1-6", "6" },
+      { "Gen 1-7", "7" },
+      { "Gen 1-8", "8" },
+      { "All (Gen 1-9)", "9" },
+    },
+    description = "Highest generation of Pokemon that Spawn Table and Random spawns may use (by national Pokedex number). All means no limit. Off keeps the original game tables and is never limited.",
   },
   {
     key = "town_pokemon",

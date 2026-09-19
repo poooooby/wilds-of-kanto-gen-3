@@ -3042,12 +3042,22 @@ function SpawnLogic:onOptionsChanged(payload)
     end
   elseif key == "cave_spawns" or key == "enable_cave_spawns" then
     self:applyCaveSpawnMode(Config.caveSpawnMode(self.mod), "options_changed")
-  elseif key == "modern_spawns" or key == "legendary_spawns" then
+  elseif key == "modern_spawns" or key == "legendary_spawns" or key == "max_generation" then
     -- The wild table source changed (Spawn Table / Random / Off, or the Random legendary filter):
     -- rebuild the current map from the new tables. The overlay cache is keyed by mode and filter,
     -- so the next lookup already serves the new roster.
     self:_log("%s -> %s; rebuilding current map", tostring(key), tostring(payload.value))
     local ow = self:_ow()
+    -- Re-publish first (or restore, when the mode went Off) so other readers of game.data -- a DexNav
+    -- mod -- follow the option even if the spawner itself isn't initialized on this map.
+    local game = gameOf(self.mod)
+    if game and ow and ow.map and not GameCompat.isGen2(self.mod, game) then
+      local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
+      if okG9 and Gen9 then
+        local ok = pcall(Gen9.publish, self.mod, game, ow.map.id)
+        if not ok then pcall(Gen9.restoreAll, game) end
+      end
+    end
     if ow and ow.map and self.state and self.state.initialized then
       self:onMapEntered({ mapId = ow.map.id, map = ow.map })
     end
