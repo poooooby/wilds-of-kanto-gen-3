@@ -17,7 +17,7 @@
 --   Poke Followers EX -> follow_control, trainer_trail, follower_count
 --                       (+ Leader via party menu hint)
 --   Wilds of Kanto    -> enabled, spawn_density, random_encounters,
---                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, max_generation, shiny_rate, sprite_style, dyn_scale,
+--                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, max_generation, shiny_rate, shiny_sparkle, sprite_style, dyn_scale,
 --                       sprite_fade, town_pokemon, pokemon_grass_render_mode,
 --                       wild_silhouettes,
 --                       overworld_catching, catch_throw_key, catch_cycle_key,
@@ -190,6 +190,13 @@ return {
     type = "toggle",
     default = false,
     description = "Random mode only. Include legendary, mythical, Ultra Beast and Paradox Pokemon in random spawns. Off keeps them out. Spawn Table mode is unaffected.",
+  },
+  {
+    key = "shiny_sparkle",
+    label = "SHINY SPARKLE",
+    type = "toggle",
+    default = true,
+    description = "Red/Blue/Yellow only. When a shiny Pokemon appears in battle (a wild one, or your own when it is sent out), play a one-time sparkle and chime. Off means neither.",
   },
   {
     key = "max_generation",

@@ -210,8 +210,9 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
   frame sizes and anchors, so followers end up offset. SHINY RATE rolls
   real shiny DVs on wild Pokemon (visible spawns and classic encounters),
   shows our shiny overworld sprite, keeps the shiny when caught, and the
-  follower switches to its shiny sprite. It does not add battle recolor or
-  sparkles.
+  follower switches to its shiny sprite. The **SHINY SPARKLE** option plays a
+  one-time sparkle and chime when a shiny appears in battle; there is no
+  shiny battle recolor.
 - Dramatic Shape Voxel Mod (True Size stays on when the **active** Voxel
   renderer can consume variable SpriteDef geometry: Battle Art Voxel, Potato
   Voxel, Dramaless Shape, Stadium2, and Terrarium via public
@@ -232,6 +233,14 @@ everything through v2.2.0:
   overworld systems / integration
 - [masterwebx](https://github.com/masterwebx) (WEX) — Followers EX / follower
   systems
+- [masterwebx](https://github.com/masterwebx) (WEX) — also the author of the
+  [**Shiny Pokemon**](https://github.com/masterwebx/gen1recomp-shiny-pokemon)
+  mod (MIT). This fork's **SHINY RATE** and **SHINY SPARKLE** options
+  incorporate that mod's ideas: rolling real shiny DVs on wild Pokémon at a
+  configurable rate (the same rate steps) and the one-time battle sparkle and
+  chime that waits for the intro to finish. They were reimplemented here
+  (`lib/shiny.lua`, `lib/shiny_sparkle.lua`) rather than copied; thank you,
+  masterwebx, for the design and the original mod.
 - [TheRhysWyrill](https://github.com/TheRhysWyrill) (TRW) — PokéPC / follower
   selection / integration / Poke Followers / GSC - Sprites
 - **ShockSlayer / Crystal Clear team** — for the GSC-style Pokémon sprite work that the Poké Followers / GSC presentation is based on

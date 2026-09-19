@@ -15,7 +15,7 @@ T.check(modMeta ~= nil, "loader discovered mod by manifest id")
 T.eq(modMeta.state, "loaded", "mod reached loaded state")
 T.eq(modMeta.manifest.id, "wilds_of_kanto_gen3", "manifest id")
 T.eq(modMeta.manifest.name, "Wilds of Kanto Revival", "manifest name")
-T.eq(modMeta.manifest.version, "2.6.3", "manifest version")
+T.eq(modMeta.manifest.version, "2.6.4", "manifest version")
 T.eq(modMeta.manifest.entry, "main.lua", "entry path")
 T.eq(modMeta.manifest.category, "MECHANIC", "category")
 T.eq(modMeta.manifest.api, 2, "mod api version")
@@ -23,7 +23,7 @@ T.eq(modMeta.manifest.github, "poooooby/wilds-of-kanto-gen-3", "github field")
 
 local exports = run.loader.exports["wilds_of_kanto_gen3"]
 T.check(exports ~= nil, "exports table published")
-T.eq(exports.version, "2.6.3", "version export")
+T.eq(exports.version, "2.6.4", "version export")
 T.check(exports.logic ~= nil, "logic export")
 T.check(exports.render ~= nil, "render export")
 T.check(exports.hud ~= nil, "hud export")
@@ -1669,6 +1669,12 @@ do
   })
   T.eq(shinyEntity.shiny, true, "record.shiny reaches the entity")
   T.eq(AnimatedSprites.resolveRuntimeVariant(shinyEntity), "shiny", "a shiny entity resolves the shiny variant")
+  -- SHINY SPARKLE registers on the engine's real battle.overlay hook and survives a real Runtime.call.
+  T.check(Runtime.wantsHook("battle.overlay"), "battle.overlay hook registered by the shiny sparkle")
+  local okOverlay = pcall(Runtime.call, "battle.overlay", function() end, {
+    introSlide = 0, enemy = { mon = { species = "FIXMON_A", level = 4, shiny = true } }, player = {},
+  })
+  T.check(okOverlay, "battle.overlay chain runs without error for a shiny battle")
   T.eq(plainEntity.shiny, false, "a record without shiny is not shiny")
   T.eq(AnimatedSprites.resolveRuntimeVariant(plainEntity), "normal", "a normal entity stays normal")
 end

@@ -257,9 +257,9 @@ eq(fw.status.lastAction, "style_invalidated", "invalidateStyle works")
 
 -- Manifest / export version
 local mf = io.open("manifest.json", "r"):read("*a")
-check(mf:find('"2.6.3"', 1, true) ~= nil, "manifest 2.6.3")
+check(mf:find('"2.6.4"', 1, true) ~= nil, "manifest 2.6.4")
 local main = io.open("main.lua", "r"):read("*a")
-check(main:find('version = "2.6.3"', 1, true) ~= nil, "export version 2.6.3")
+check(main:find('version = "2.6.4"', 1, true) ~= nil, "export version 2.6.4")
 
 print("")
 if failures > 0 then

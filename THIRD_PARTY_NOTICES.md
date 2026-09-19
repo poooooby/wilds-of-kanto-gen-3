@@ -45,6 +45,17 @@ See the asset-specific documentation and credits for details.
   **concepts** adapted from PokéPC Followers (gamecorner-033) and Followers EX
   (masterwebx) live under `lib/follower/`. Upstream assets are not required at
   runtime; Wilds uses built-in Poke Followers / GSC or HGSS/PokeMMO sheets.
+- **Shiny Pokemon** by [masterwebx](https://github.com/masterwebx/gen1recomp-shiny-pokemon)
+  (MIT License, Copyright (c) 2026 masterwebx). The SHINY RATE and SHINY SPARKLE
+  features (`lib/shiny.lua`, `lib/shiny_sparkle.lua`) are based on that mod's design:
+  rolling real shiny DVs on wild Pokemon at a configurable rate (same rate steps and
+  denominators, Gen 2 shiny DV rule), handing a visible spawn's roll to its battle, and a
+  one-time battle sparkle with the "Dex Page Added" chime that waits for the intro to finish.
+  The code was written for Wilds, not copied file-for-file, but the approach and constants
+  follow the original. Shiny Pokemon is a declared manifest conflict and is not bundled or
+  required. Its MIT permission notice: permission is granted, free of charge, to use, copy,
+  modify, merge, publish, distribute, sublicense and/or sell copies of the software, subject
+  to including the copyright and permission notice in copies or substantial portions.
 - Optional overworld catching **concepts** (Ball selection, 1–6 tile throws,
   projectile arc, wobble, native catch attempt, Party/Box deposit) were
   reimplemented for Wilds under `lib/catching/`, inspired by

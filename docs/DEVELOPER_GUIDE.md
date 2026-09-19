@@ -194,8 +194,17 @@ quad at `(px - camX, py - camY - 4)`, ignoring `frameWidth` / `frameHeight` / `a
   shiny spread), cleared after every `newWild` (also on error), on `map.entered` and on `battle.ended`.
 - **Off means none:** wilds and overworld catches (`Gen1.createCaughtPokemon` -> `Shiny.finalize`) nudge a natural
   shiny spread (about 1 in 8192) to Special DV 9.
-- **Not included:** battle recolor and sparkles (Shiny Pokemon did those), Safari Zone encounters (separate battle
-  path), Gold (native shiny, `shiny.roll` hook).
+- **Battle sparkle (`lib/shiny_sparkle.lua`, SHINY SPARKLE option, default ON, Gen 1 only):** a wrapper on the
+  engine's draw-only `battle.overlay` hook (called at the end of `BattleState` / `WideBattle` draw, 160x144
+  coordinates) paints one 1.35 s burst of sparks over a shiny enemy and over the player's shiny lead, with the
+  engine SFX `Dex_Page_Added`. It waits for the intro to finish (`introSlide`, `showEnemyTrainer`, `enemySendingOut`,
+  `showPlayerBack`, `sendingOut`, `growInScale`), fires once per Pokemon per battle (state is weak-keyed by battle and
+  mon, so a swapped-in shiny gets its own), and skips a fainted enemy and the player side in Safari / demo battles.
+  Anchors: classic (120,32) enemy / (40,88) player; wide layout (200,40) / (60,100). The colors are opaque because
+  alpha vanishes under some of the engine's palette passes. Visual placement has not been verified in every layout
+  (Voxel / Dramatic Shape battle HUDs).
+- **Not included:** shiny recolor in battle (Shiny Pokemon did that), Safari Zone encounters (separate battle path),
+  Gold (native shiny, `shiny.roll` hook).
 
 ### 8.1.0 Generation cap (MAX GEN)
 

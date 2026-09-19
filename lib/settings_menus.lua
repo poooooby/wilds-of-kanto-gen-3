@@ -524,6 +524,19 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
+      label = "SHINY SPARKLE",
+      stepper = true,
+      wrap = true,
+      -- One-time battle sparkle + chime for shiny Pokemon; see lib/shiny_sparkle.lua.
+      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
+      current = Config.shinySparkleEnabled(mod),
+      right = Config.shinySparkleEnabled(mod) and "ON" or "OFF",
+      apply = function(v)
+        optSet(mod, "shiny_sparkle", v == true)
+        menus:_notifyLogic("shiny_sparkle", v == true)
+      end,
+    },
+    {
       label = "SHINY RATE",
       stepper = true,
       wrap = true,
@@ -1300,7 +1313,7 @@ SettingsMenus.FOLLOWERS_OPTION_KEYS = {
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
   "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "modern_spawns", "legendary_spawns", "max_generation", "shiny_rate", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
+  "cave_spawns", "modern_spawns", "legendary_spawns", "max_generation", "shiny_rate", "shiny_sparkle", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
   "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
   "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
   "catch_hud_size",

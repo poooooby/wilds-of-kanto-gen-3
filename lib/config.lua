@@ -46,6 +46,8 @@ Config.DEFAULTS = {
   -- Chance a Gen 1 wild Pokemon is shiny (lib/shiny.lua): off | gen2 (1/8192) | modern (1/4096) |
   -- common (1/1024) | frequent (1/512) | often (1/100) | high (1/10) | always.
   shiny_rate = "modern",
+  -- One-time sparkle + chime when a shiny appears in battle (lib/shiny_sparkle.lua, Gen 1 only).
+  shiny_sparkle = true,
   -- Voxel-only per-species display-size scale (lib/species_display_scale.lua).
   -- ON = custom-tuned sizing per species; OFF = native True Size for every
   -- HGSS/PokeMMO species (SpeciesGeometry.displayScale always returns 1).
@@ -559,6 +561,13 @@ function Config.shinyRate(mod)
     if key then return key end
   end
   return coerce(Config.DEFAULTS.shiny_rate) or "modern"
+end
+
+--- SHINY SPARKLE: the one-time battle sparkle and chime. Live save bucket first, then the schema value.
+function Config.shinySparkleEnabled(mod)
+  local raw, present = Config.peekSavedOption(mod, "shiny_sparkle")
+  if present and type(raw) == "boolean" then return raw end
+  return Config.get(mod, "shiny_sparkle") ~= false
 end
 
 --- MAX GEN: highest generation (1..9) Spawn Table and Random may spawn. Live save bucket first (same as

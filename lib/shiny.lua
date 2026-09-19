@@ -1,4 +1,7 @@
 -- SHINY RATE (Red/Blue/Yellow): our own shiny system, replacing the Shiny Pokemon mod.
+-- Based on the design of masterwebx's Shiny Pokemon mod (MIT, https://github.com/masterwebx/gen1recomp-shiny-pokemon):
+-- the rate steps, rolling real shiny DVs on wilds and the newWild / Pokemon.new hand-off come from that mod.
+-- See THIRD_PARTY_NOTICES.md.
 --
 -- A shiny is the engine's RBY "virtual shiny" (Stats.isShiny): Defense/Speed/Special DV 10 and an
 -- Attack DV of 2, 3, 6, 7, 10, 11, 14 or 15. Wild Pokemon roll at the SHINY RATE option's chance:

@@ -139,6 +139,12 @@ return function(mod)
     end
   end
 
+  -- One-time battle sparkle + chime for shiny Pokemon (engine's battle.overlay hook; Gen 1 only).
+  if not GameCompat.isGen2(mod, liveGame()) then
+    local okSparkle, sparkleErr = pcall(function() return V.require("shiny_sparkle").install(mod) end)
+    if not okSparkle then DebugLog.warn(mod, "shiny sparkle install failed: %s", tostring(sparkleErr)) end
+  end
+
   local logic = SpawnLogic.new(mod, render)
   local hud = DebugHud.new(mod, logic)
   local overlay = DebugOverlay.new(mod, logic)
@@ -604,7 +610,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.6.3"
+  mod.exports.version = "2.6.4"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

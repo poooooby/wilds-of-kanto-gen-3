@@ -8,6 +8,18 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.6.4 (fork)
+
+### Features
+
+- Added a **SHINY SPARKLE** option (Start Menu -> Wilds of Kanto, or the Mod
+  Manager; Red/Blue/Yellow only, default ON). When a shiny Pokemon appears in
+  battle, a one-time sparkle burst and the game's own chime play over it. It
+  fires for a shiny wild Pokemon and for your own shiny lead when it is sent
+  out, once per Pokemon per battle, after the intro slide and send-out finish.
+  Turning the option off removes both the sparkle and the chime. There is
+  still no shiny recolor in battle.
+
 ## 2.6.3 (fork)
 
 ### Features
@@ -19,6 +31,7 @@
   in the battle it starts, stays shiny when caught, and its follower uses the
   shiny sprite. Classic encounters (steps, Surf, rods) roll too. Off means no
   shinies at all. There is no shiny recolor or sparkle in battle yet.
+  Based on the **Shiny Pokemon** mod by masterwebx (see README credits).
 
 ### Compatibility
 
