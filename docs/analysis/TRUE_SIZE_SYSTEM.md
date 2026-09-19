@@ -55,6 +55,37 @@ tops out around dex 1010 (swimming) / 1005 (levitate), so a handful of the newes
 lack dedicated art pending additional sourcing — species without source art keep whatever
 existing fallback rendering applies.
 
+### Pitfall: `legacy_target_height` species have no `nativeVisualHeight`
+
+Many species (including Pikachu, dex 25) are still on the older `legacy_target_height` sizing
+method rather than `native` — for these, `species_geometry.json`'s top-level
+`nativeVisualHeight`/`scaledVisualHeight` fields are `None`, even though their `packs.pokemmo`
+entry has a perfectly real `frameHeight`/`anchorY`. Only the per-pack fields are populated; the
+top-level "what height should other packs match" fields simply were never computed for these
+species.
+
+This matters for any NEW code that bakes art for such a species and wants to fit it to that
+species' existing size — e.g. `generate_matched_pack_for_dex`'s `reference_visible_height`
+path, or a bespoke script reading `entry.get("nativeVisualHeight")`. A fallback chain like
+`entry.get("scaledVisualHeight") or entry.get("nativeVisualHeight") or 16` silently lands on the
+hardcoded `16` default for these species (since both real fields are `None`), not their actual
+frame size — producing a needlessly downscaled, blurry result with no error or warning anywhere.
+This is exactly what happened baking `tools/generate_pika_follower_true_size.py`'s Pikachu
+costume art the first time: every costume was forced to fit a 16px target when Pikachu's real
+`pokemmo` frame is 18px, and diagnosing it required a live in-game screenshot comparison, not
+anything the build script itself surfaced.
+
+Two ways to avoid this:
+- If the new art shares the exact same source scale/grid as the species' own real art (as the
+  Pikachu costumes do — same 128×128, 4×4-grid `followsprites` convention), skip height-matching
+  entirely and bake it the same way `generate_hgss_for_dex` treats the authority pack itself:
+  `compose_native_sheet(tiles, visual_scale=1.0, allow_resample=False)`, no reference height
+  needed.
+- If height-matching against another pack genuinely is needed, read the height from that pack's
+  own already-baked `packs.<packId>.frameHeight` (e.g. `packs.pokemmo.frameHeight`), not the
+  top-level `nativeVisualHeight`/`scaledVisualHeight` fields, since only the per-pack fields are
+  guaranteed populated regardless of sizing method.
+
 ## Consumers
 
 Wild spawn_render · sprite_providers · water_sprite_registry ·

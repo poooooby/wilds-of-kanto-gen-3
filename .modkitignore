@@ -70,6 +70,7 @@ tests/overworld_catch_target_unit_test.lua
 tests/overworld_wild_spawns_test.lua
 tests/perf_bench_harness.lua
 tests/perf_stats_unit_test.lua
+tests/pika_follower_unit_test.lua
 tests/poke_followers_assets_unit_test.lua
 tests/public_settings_audit_unit_test.lua
 tests/random_enc_unit_test.lua
@@ -129,6 +130,7 @@ assets/enhanced_overworld/Pokemon_Sprites/POKEMON 1.png
 tools/gen1_heights.json
 tools/generate_followsprites_mapping.ps1
 tools/generate_hidden_water_shadow.py
+tools/generate_pika_follower_true_size.py
 tools/generate_runtime_sprite_sheets.ps1
 tools/generate_runtime_sprite_sheets.py
 tools/generate_true_size_runtime.py

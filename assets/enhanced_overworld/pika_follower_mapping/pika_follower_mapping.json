@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "format": "individual-follow-sprites",
+  "notes": [
+    "Cosmetic costume art for the Yellow starter Pikachu companion (PIKA FOLLOWER option).",
+    "Keyed 1-12, not by dex -- these are not registered species, just a swap of the",
+    "image field on the already-resolved Pikachu sprite def. No shiny variant is baked;",
+    "the costume always shows regardless of the Pokemon's shiny status.",
+    "Same 4x4 grid layout as followsprites_mapping.json (rows=directions, cols=frames)."
+  ],
+  "layout": {
+    "columns": 4,
+    "rows": 4,
+    "coordinateBase": 0,
+    "interpretation": "rows-are-directions-columns-are-frames",
+    "directions": { "down": 0, "left": 1, "right": 2, "up": 3 },
+    "idleColumn": 0,
+    "walkColumns": [0, 1, 2, 3]
+  },
+  "spriteDir": "assets/enhanced_overworld/followsprites",
+  "species": {
+    "1": {
+      "name": "alola",
+      "normal": {"file":"PIKACHU_ALOLA.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_ALOLA.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "2": {
+      "name": "belle",
+      "normal": {"file":"PIKACHU_BELLE.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_BELLE.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "3": {
+      "name": "hoenn",
+      "normal": {"file":"PIKACHU_HOENN.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_HOENN.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "4": {
+      "name": "kalos",
+      "normal": {"file":"PIKACHU_KALOS.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_KALOS.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "5": {
+      "name": "libre",
+      "normal": {"file":"PIKACHU_LIBRE.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_LIBRE.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "6": {
+      "name": "og-cap",
+      "normal": {"file":"PIKACHU_OG-CAP.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_OG-CAP.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "7": {
+      "name": "partner",
+      "normal": {"file":"PIKACHU_PARTNER.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_PARTNER.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "8": {
+      "name": "phd",
+      "normal": {"file":"PIKACHU_PHD.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_PHD.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "9": {
+      "name": "popstar",
+      "normal": {"file":"PIKACHU_POPSTAR.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_POPSTAR.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "10": {
+      "name": "rockstar",
+      "normal": {"file":"PIKACHU_ROCKSTAR.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_ROCKSTAR.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "11": {
+      "name": "sinnoh",
+      "normal": {"file":"PIKACHU_SINNOH.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_SINNOH.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    },
+    "12": {
+      "name": "unova",
+      "normal": {"file":"PIKACHU_UNOVA.png","path":"assets/enhanced_overworld/followsprites/PIKACHU_UNOVA.png","imageWidth":128,"imageHeight":128,"tileWidth":32,"tileHeight":32}
+    }
+  }
+}

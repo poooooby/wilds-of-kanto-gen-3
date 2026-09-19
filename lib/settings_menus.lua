@@ -530,6 +530,39 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
+      label = "PIKA FOLLOWER",
+      stepper = true,
+      wrap = true,
+      -- Cosmetic costume for the Yellow starter Pikachu companion only --
+      -- see ControlEngine:_pikaFollowerCostumeOverride.
+      choices = {
+        { label = "DEFAULT",  value = "default" },
+        { label = "ALOLA",    value = "alola" },
+        { label = "BELLE",    value = "belle" },
+        { label = "HOENN",    value = "hoenn" },
+        { label = "KALOS",    value = "kalos" },
+        { label = "LIBRE",    value = "libre" },
+        { label = "OG CAP",   value = "og-cap" },
+        { label = "PARTNER",  value = "partner" },
+        { label = "PHD",      value = "phd" },
+        { label = "POP STAR", value = "popstar" },
+        { label = "ROCKSTAR", value = "rockstar" },
+        { label = "SINNOH",   value = "sinnoh" },
+        { label = "UNOVA",    value = "unova" },
+      },
+      current = Config.pikaFollower(mod),
+      right = ({
+        default = "DEFAULT", alola = "ALOLA", belle = "BELLE", hoenn = "HOENN",
+        kalos = "KALOS", libre = "LIBRE", ["og-cap"] = "OG CAP", partner = "PARTNER",
+        phd = "PHD", popstar = "POP STAR", rockstar = "ROCKSTAR", sinnoh = "SINNOH",
+        unova = "UNOVA",
+      })[tostring(Config.pikaFollower(mod))] or "DEFAULT",
+      apply = function(v)
+        optSet(mod, "pika_follower", v)
+        menus:_notifyLogic("pika_follower", v)
+      end,
+    },
+    {
       label = "TOWN POKEMON",
       stepper = true,
       wrap = true,
@@ -1198,7 +1231,7 @@ SettingsMenus.FOLLOWERS_OPTION_KEYS = {
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
   "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "sprite_style", "dyn_scale", "sprite_fade", "town_pokemon",
+  "cave_spawns", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
   "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
   "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
   "catch_hud_size",

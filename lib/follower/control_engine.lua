@@ -1086,6 +1086,71 @@ function ControlEngine:resolveFollowerSprite(opts)
   }
 end
 
+--- Apply the "PIKA FOLLOWER" cosmetic costume choice to an already-resolved
+-- Pikachu sprite def. Cosmetic-only, and scoped by construction to callers
+-- that already know they're rendering the Yellow starter companion (only
+-- forceYellowStockPikachuArt calls this) -- never any other Pikachu used as
+-- a regular follower, since ordinary trailer resolution never routes
+-- through here. Ignores shiny -- no separate shiny costume art was
+-- authored, matching how these are cosmetic event skins with no distinct
+-- shiny recolor in the mainline games. Returns `resolved` unchanged for any
+-- non-Pikachu species, the "default" choice, or a missing/unbaked costume.
+--
+-- Overrides just the image (Classic Flat: fixed 16x16 card, same
+-- frames/walker/trueColor as normal Pikachu) or image + full geometry (True
+-- Size: each costume is baked as its own independently-sized sheet matched
+-- to Pikachu's visible height, NOT a copy of dex 25's own pokemmo geometry
+-- -- see tools/generate_pika_follower_true_size.py's header for why a
+-- shared canvas size can't be assumed). Detects which mode `resolved` is in
+-- by whether it carries explicit frameWidth (True Size) or not (Classic).
+-- Mirrors the mod.assets:path(rel)-preferred / mod.path-fallback convention
+-- already used at several other raw-relative-path call sites in this file
+-- (e.g. the poke_followers loader and the fallback image path) -- a bare
+-- "assets/..." string is NOT directly loadable; the engine needs it rooted
+-- under the mod's own install path ("mods/<folder>/assets/...").
+local function modAssetPath(mod, rel)
+  if mod and mod.assets and type(mod.assets.path) == "function" then
+    local ok, p = pcall(function() return mod.assets:path(rel) end)
+    if ok and type(p) == "string" then return p end
+  end
+  if mod and mod.path then return mod.path .. "/" .. rel end
+  return rel
+end
+
+function ControlEngine:_pikaFollowerCostumeOverride(species, resolved)
+  if species ~= "PIKACHU" then return resolved end
+  local okCfg, Config = pcall(function() return V.require("config") end)
+  local costume = okCfg and Config and Config.pikaFollower(self.mod)
+  if not costume or costume == "default" then return resolved end
+  local okGeom, geomTable = pcall(function() return V.require("pika_follower_geometry") end)
+  local g = okGeom and geomTable and geomTable[costume]
+  if not g then return resolved end
+  local out
+  if resolved.frameWidth then
+    out = {
+      id = resolved.id,
+      image = modAssetPath(self.mod, g.relativeDir .. "/025-normal.png"),
+      frames = resolved.frames,
+      walker = resolved.walker,
+      trueColor = resolved.trueColor,
+      frameWidth = g.frameWidth,
+      frameHeight = g.frameHeight,
+      anchorX = g.anchorX,
+      anchorY = g.anchorY,
+    }
+  else
+    out = {
+      id = resolved.id,
+      image = modAssetPath(self.mod, string.format(
+        "assets/wilds_generated/pika_follower_runtime/%03d-normal.png", g.classicId)),
+      frames = resolved.frames,
+      walker = resolved.walker,
+      trueColor = resolved.trueColor,
+    }
+  end
+  return out
+end
+
 function ControlEngine:forceYellowStockPikachuArt(ow, game)
   if not self:_isYellow() then return end
   local npc = self:_findStockPikachu(ow)
@@ -1105,6 +1170,7 @@ function ControlEngine:forceYellowStockPikachuArt(ow, game)
     game = game,
   })
   if not (resolved and resolved.image) then return end
+  resolved = self:_pikaFollowerCostumeOverride(species, resolved)
   local def = npc.sprite and npc.sprite.def
   local resolvedFrames = resolved.frames or 6
   local resolvedWalker = resolved.walker ~= false

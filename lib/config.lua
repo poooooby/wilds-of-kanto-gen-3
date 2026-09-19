@@ -31,6 +31,9 @@ Config.DEFAULTS = {
   -- sprite_color removed: sheets always render true-color (24-bit PNG packs
   -- must never be force-baked to the 4-shade DMG ramp).
   sprite_style = "followers",
+  -- Cosmetic costume for the Yellow starter Pikachu companion only (see
+  -- ControlEngine:forceYellowStockPikachuArt). "default" = normal art.
+  pika_follower = "default",
   -- Voxel-only per-species display-size scale (lib/species_display_scale.lua).
   -- ON = custom-tuned sizing per species; OFF = native True Size for every
   -- HGSS/PokeMMO species (SpeciesGeometry.displayScale always returns 1).
@@ -474,6 +477,29 @@ Config.VALID_POKEMON_SIZES = VALID_POKEMON_SIZES
 -- at native True Size (scale 1) instead.
 function Config.dynScaleEnabled(mod)
   return Config.get(mod, "dyn_scale") ~= false
+end
+
+local VALID_PIKA_FOLLOWER = {
+  ["default"] = true, alola = true, belle = true, hoenn = true, kalos = true,
+  libre = true, ["og-cap"] = true, partner = true, phd = true, popstar = true,
+  rockstar = true, sinnoh = true, unova = true,
+}
+
+--- Cosmetic costume choice for the Yellow starter Pikachu companion (see
+-- ControlEngine:forceYellowStockPikachuArt). Prefers the live save-data
+-- bucket the in-game Settings menu writes to (Config.setOption /
+-- writeOptionBucket) over the Mod Manager schema value, same pattern as
+-- Config.spriteFade/Config.catchHudSize -- otherwise a selection made via
+-- the in-game PIKA FOLLOWER row would never be seen here. Returns "default"
+-- for any unrecognized/stale saved value rather than erroring.
+function Config.pikaFollower(mod)
+  local raw, present = Config.peekSavedOption(mod, "pika_follower")
+  if present and type(raw) == "string" and VALID_PIKA_FOLLOWER[raw] then
+    return raw
+  end
+  local v = Config.get(mod, "pika_follower")
+  if type(v) == "string" and VALID_PIKA_FOLLOWER[v] then return v end
+  return "default"
 end
 
 function Config.spriteStyle(mod)
