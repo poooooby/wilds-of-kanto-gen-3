@@ -127,6 +127,18 @@ return function(mod)
           .. tostring(regErr), 0)
   end
 
+  -- SHINY RATE (Red/Blue/Yellow): wrap Pokemon.new / BattleState.newWild so wild Pokemon roll shiny.
+  -- Gen 2 (Gold) has native shiny and is left alone. Failure only means "no shinies", never an error.
+  local Shiny = V.require("shiny")
+  if not GameCompat.isGen2(mod, liveGame()) then
+    local okShiny, installed, shinyErr = pcall(Shiny.install, mod)
+    if not okShiny then
+      DebugLog.warn(mod, "shiny install failed: %s", tostring(installed))
+    elseif installed == false then
+      DebugLog.warn(mod, "shiny not installed: %s", tostring(shinyErr))
+    end
+  end
+
   local logic = SpawnLogic.new(mod, render)
   local hud = DebugHud.new(mod, logic)
   local overlay = DebugOverlay.new(mod, logic)
@@ -229,6 +241,7 @@ return function(mod)
   end
 
   mod.events:on("map.entered", function(ev)
+    pcall(Shiny.clearPending) -- a battle that never started must not leak its shiny roll
     invalidateModernEncounters() -- also restores anything still published
     publishModernEncounters(ev and ev.mapId)
     if not supports("encounters") then
@@ -333,6 +346,7 @@ return function(mod)
   end)
 
   mod.events:on("battle.ended", function()
+    pcall(Shiny.clearPending)
     if supports("encounters") then
       logic:onBattleEnded()
     end
@@ -590,7 +604,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.6.2"
+  mod.exports.version = "2.6.3"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

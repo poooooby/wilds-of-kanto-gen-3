@@ -15,7 +15,7 @@ T.check(modMeta ~= nil, "loader discovered mod by manifest id")
 T.eq(modMeta.state, "loaded", "mod reached loaded state")
 T.eq(modMeta.manifest.id, "wilds_of_kanto_gen3", "manifest id")
 T.eq(modMeta.manifest.name, "Wilds of Kanto Revival", "manifest name")
-T.eq(modMeta.manifest.version, "2.6.2", "manifest version")
+T.eq(modMeta.manifest.version, "2.6.3", "manifest version")
 T.eq(modMeta.manifest.entry, "main.lua", "entry path")
 T.eq(modMeta.manifest.category, "MECHANIC", "category")
 T.eq(modMeta.manifest.api, 2, "mod api version")
@@ -23,7 +23,7 @@ T.eq(modMeta.manifest.github, "poooooby/wilds-of-kanto-gen-3", "github field")
 
 local exports = run.loader.exports["wilds_of_kanto_gen3"]
 T.check(exports ~= nil, "exports table published")
-T.eq(exports.version, "2.6.2", "version export")
+T.eq(exports.version, "2.6.3", "version export")
 T.check(exports.logic ~= nil, "logic export")
 T.check(exports.render ~= nil, "render export")
 T.check(exports.hud ~= nil, "hud export")
@@ -1656,6 +1656,22 @@ T.check(#styleOpt.label <= 14, "sprite_style label <= 14 chars")
 T.eq(Config.DEFAULTS.sprite_style, "followers", "DEFAULTS sprite_style followers")
 T.eq(Config.spriteStyle(modApi), "followers", "spriteStyle helper followers")
 T.eq(Config.useAnimatedOverworldSprites(modApi), true, "animated helper true for followers")
+
+-- Shiny wilds: the roll on the record reaches the entity and selects the shiny variant.
+do
+  local shinyEntity = exports.render:makeEntity(mockGame, {
+    id = "owwild_shiny_test", mapId = "ROUTE_TEST", x = 5, y = 5, species = "FIXMON_A", level = 4,
+    state = Config.STATE.AVAILABLE, shiny = true,
+  })
+  local plainEntity = exports.render:makeEntity(mockGame, {
+    id = "owwild_plain_test", mapId = "ROUTE_TEST", x = 6, y = 5, species = "FIXMON_A", level = 4,
+    state = Config.STATE.AVAILABLE,
+  })
+  T.eq(shinyEntity.shiny, true, "record.shiny reaches the entity")
+  T.eq(AnimatedSprites.resolveRuntimeVariant(shinyEntity), "shiny", "a shiny entity resolves the shiny variant")
+  T.eq(plainEntity.shiny, false, "a record without shiny is not shiny")
+  T.eq(AnimatedSprites.resolveRuntimeVariant(plainEntity), "normal", "a normal entity stays normal")
+end
 
 local animSys = exports.animated
 T.check(animSys.loaded == true, "animated system loaded at mod init")

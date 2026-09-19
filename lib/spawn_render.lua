@@ -1098,6 +1098,8 @@ function Entity.new(game, mod, render, record)
   self.spawnId = record.id
   self.species = record.species
   self.level = record.level
+  -- Rolled by lib/shiny.lua at spawn; AnimatedSprites.resolveRuntimeVariant turns it into the shiny sheet.
+  self.shiny = record.shiny == true
   self.mapId = record.mapId
   self.state = record.state or Config.STATE.AVAILABLE
   self.cellX = record.x

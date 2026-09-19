@@ -28,6 +28,7 @@ local FollowersWaterCompat = V.require("followers_water_compat")
 local CaveReachability = V.require("cave_reachability")
 local SafariCompat = V.require("safari_compat")
 local GameCompat = V.require("game_compat")
+local Shiny = V.require("shiny")
 local SpecialSpawnSafety = V.require("special_spawn_safety")
 
 local SpawnLogic = {}
@@ -590,6 +591,17 @@ function SpawnLogic:_encDef(mapId, game)
     world = (game and game.world) or ow,
     mod = self.mod,
   })
+end
+
+--- Shiny roll for a new battle-capable visible spawn (Red/Blue/Yellow only). Forced/test spawns are
+-- never random shinies unless the caller asks (`opts.shiny`). The result rides on the record so the
+-- entity shows the shiny sprite and the battle it starts fights the same shiny (lib/shiny.lua).
+function SpawnLogic:_rollShiny(game, opts)
+  if opts and opts.shiny ~= nil then return opts.shiny == true end
+  if opts and (opts.species or opts.testSpawn or opts.readinessProbe) then return false end
+  if GameCompat.isGen2(self.mod, game) then return false end
+  local ok, shiny = pcall(Shiny.roll, self.mod)
+  return ok and shiny == true
 end
 
 function SpawnLogic:_clearMap(mapId)
@@ -2040,7 +2052,11 @@ function SpawnLogic:trySpawn(game, opts)
     homeRegionId = region and region.id or nil,
     visibleSprite = not hidden,
     hiddenEncounter = hidden,
+    shiny = self:_rollShiny(game, opts),
   }
+  if record.shiny then
+    self:_log("shiny wild spawned: %s Lv%s id=%s", tostring(species), tostring(level), tostring(id))
+  end
 
   local ok, entityOrErr = pcall(self.render.makeEntity, self.render, game, record)
   if not ok then
@@ -3287,8 +3303,11 @@ function SpawnLogic:_startBattle(record)
     return true
   end
 
+  -- The battle mon must be the one the player saw: hand the spawn's shiny roll to BattleState.newWild.
+  if not GameCompat.isGen2(self.mod, game) then pcall(Shiny.armForBattle, record) end
   ok, err = GameCompat.startWildBattle(world, record.species, record.level, game)
   if not ok then
+    pcall(Shiny.clearPending)
     self:_warn("could not queue wild battle: %s", tostring(err))
     self.pendingBattle = nil
     self.state:markError(err)

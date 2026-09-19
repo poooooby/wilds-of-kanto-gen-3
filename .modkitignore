@@ -85,6 +85,7 @@ tests/settings_cave_water_overlay_unit_test.lua
 tests/settings_menus_follower_options_unit_test.lua
 tests/settings_menus_listmenu_path_unit_test.lua
 tests/settings_menus_unit_test.lua
+tests/shiny_unit_test.lua
 tests/special_spawn_safety_unit_test.lua
 tests/species_assets_unit_test.lua
 tests/species_flags_data_unit_test.lua

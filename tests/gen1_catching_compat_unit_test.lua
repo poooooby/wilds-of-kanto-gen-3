@@ -51,6 +51,7 @@ package.preload["src.pokemon.Pokemon"] = function()
       pokemonNewCalls[#pokemonNewCalls + 1] = { species = species, level = level }
       return {
         species = species, level = level, hp = 20, stats = { hp = 20 },
+        dvs = { attack = 1, defense = 1, speed = 1, special = 1, hp = 15 },
         _fromPokemonNew = true,
       }
     end,
@@ -177,6 +178,10 @@ local mon = GameCompat.createCaughtPokemon(game, "MEWTWO", 70, { shiny = true })
 eq(mon.species, "MEWTWO", "Gen1 create uses entity species MEWTWO")
 eq(mon.level, 70, "Gen1 create uses entity level")
 eq(mon.shiny, true, "Gen1 create preserves shiny")
+check(mon.dvs.defense == 10 and mon.dvs.speed == 10 and mon.dvs.special == 10,
+  "Gen1 create makes a shiny wild a real shiny (shiny DVs), not just a flag")
+check(({ [2] = 1, [3] = 1, [6] = 1, [7] = 1, [10] = 1, [11] = 1, [14] = 1, [15] = 1 })[mon.dvs.attack],
+  "Gen1 create: shiny Attack DV is one of the eight shiny values")
 eq(mon._fromPokemonNew, true, "Gen1 create uses Pokemon.new")
 eq(pokemonNewCalls[1].species, "MEWTWO", "Pokemon.new species is MEWTWO not asset 150")
 check(mon.species ~= 150 and mon.species ~= "150", "canonical asset id did not leak")
@@ -199,6 +204,8 @@ eq(#game.save.party, 6, "party filled to 6")
 eq(GameCompat.playerHasPartySpace(game), false, "full party has no space")
 
 local boxed = GameCompat.createCaughtPokemon(game, "PIDGEY", 4)
+check(boxed.shiny == false and not (boxed.dvs.defense == 10 and boxed.dvs.speed == 10 and boxed.dvs.special == 10),
+  "Gen1 create: a non-shiny catch is not shiny")
 local boxResult = GameCompat.giveCaughtPokemon(game, boxed)
 eq(boxResult.destination, "box", "Gen1 party-full goes to Boxes.deposit")
 eq(boxResult.boxNum, 1, "Gen1 deposit box number")

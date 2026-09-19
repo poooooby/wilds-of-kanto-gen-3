@@ -89,9 +89,14 @@ eq(AnimatedSprites.mappingRelPath(25),
 eq(AnimatedSprites.normalizeVariant("shiny"), "shiny", "shiny variant")
 eq(AnimatedSprites.normalizeVariant(true), "shiny", "true -> shiny")
 eq(AnimatedSprites.normalizeVariant(nil), "normal", "nil -> normal")
-eq(AnimatedSprites.RUNTIME_SHINY_SUPPORT, "NOT_AVAILABLE", "no invented runtime shiny")
-eq(AnimatedSprites.resolveRuntimeVariant({ isShiny = true }), "normal",
-   "isShiny ignored without runtime support")
+eq(AnimatedSprites.RUNTIME_SHINY_SUPPORT, "AVAILABLE", "runtime shiny is available (lib/shiny.lua rolls it)")
+eq(AnimatedSprites.resolveRuntimeVariant({ isShiny = true }), "shiny",
+   "isShiny entity uses the shiny variant")
+eq(AnimatedSprites.resolveRuntimeVariant({ shiny = true }), "shiny",
+   "shiny entity uses the shiny variant")
+eq(AnimatedSprites.resolveRuntimeVariant({ shiny = false }), "normal",
+   "a non-shiny entity stays normal")
+eq(AnimatedSprites.resolveRuntimeVariant({}), "normal", "no flag -> normal (nothing invents a shiny)")
 eq(AnimatedSprites.resolveRuntimeVariant({}, { forceVariant = "shiny" }), "shiny",
    "preview may force shiny")
 

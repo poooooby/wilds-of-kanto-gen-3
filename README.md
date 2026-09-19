@@ -204,6 +204,14 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
   left out unless the **LEGEND/MYTHIC** option is on. The **MAX GEN** option
   (Gen 1 up to All) caps the generations Spawn Table and Random may use, by
   national Pokedex number; Off is never limited.
+- **Shiny Pokemon** (`SHINY_POKEMON`) — declared a **conflict**, use the built-in
+  **SHINY RATE** option instead (Red/Blue/Yellow). With Voxel off, Shiny
+  Pokemon redraws the follower with a fixed 16x16 box and ignores True Size
+  frame sizes and anchors, so followers end up offset. SHINY RATE rolls
+  real shiny DVs on wild Pokemon (visible spawns and classic encounters),
+  shows our shiny overworld sprite, keeps the shiny when caught, and the
+  follower switches to its shiny sprite. It does not add battle recolor or
+  sparkles.
 - Dramatic Shape Voxel Mod (True Size stays on when the **active** Voxel
   renderer can consume variable SpriteDef geometry: Battle Art Voxel, Potato
   Voxel, Dramaless Shape, Stadium2, and Terrarium via public

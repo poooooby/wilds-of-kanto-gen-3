@@ -1,7 +1,7 @@
 {
   "id": "wilds_of_kanto_gen3",
   "name": "Wilds of Kanto Revival",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "api": 2,
   "entry": "main.lua",
   "profile": "content",
@@ -11,7 +11,7 @@
   "priority": 80,
   "dependencies": [],
   "optional_dependencies": [],
-  "conflicts": ["overworld_wild_spawns"],
+  "conflicts": ["overworld_wild_spawns", "SHINY_POKEMON"],
   "permissions": ["engine_internals"],
   "affects_link": false,
   "options_schema": "options.lua",

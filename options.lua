@@ -17,7 +17,7 @@
 --   Poke Followers EX -> follow_control, trainer_trail, follower_count
 --                       (+ Leader via party menu hint)
 --   Wilds of Kanto    -> enabled, spawn_density, random_encounters,
---                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, max_generation, sprite_style, dyn_scale,
+--                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, max_generation, shiny_rate, sprite_style, dyn_scale,
 --                       sprite_fade, town_pokemon, pokemon_grass_render_mode,
 --                       wild_silhouettes,
 --                       overworld_catching, catch_throw_key, catch_cycle_key,
@@ -208,6 +208,23 @@ return {
       { "All (Gen 1-9)", "9" },
     },
     description = "Highest generation of Pokemon that Spawn Table and Random spawns may use (by national Pokedex number). All means no limit. Off keeps the original game tables and is never limited.",
+  },
+  {
+    key = "shiny_rate",
+    label = "SHINY RATE",
+    type = "choice",
+    default = "modern",
+    choices = {
+      { "Off", "off" },
+      { "1/8192 (Gen 2)", "gen2" },
+      { "1/4096 Modern", "modern" },
+      { "1/1024", "common" },
+      { "1/512", "frequent" },
+      { "1/100", "often" },
+      { "1/10", "high" },
+      { "Always", "always" },
+    },
+    description = "Red/Blue/Yellow only. Chance that a wild Pokemon is shiny. A shiny shows its shiny overworld sprite, is a real shiny (shiny DVs) in battle, and stays shiny when caught; its follower uses the shiny sprite. Off means none. Replaces the Shiny Pokemon mod, which cannot run alongside this one.",
   },
   {
     key = "town_pokemon",

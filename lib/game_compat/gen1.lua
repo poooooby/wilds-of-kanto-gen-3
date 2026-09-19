@@ -365,7 +365,14 @@ function Gen1.createCaughtPokemon(game, species, level, context)
   if not newMon then
     newMon = { species = species, level = level, hp = 1, stats = { hp = 1 } }
   end
-  if context.shiny then newMon.shiny = true end
+  -- A shiny wild stays a real shiny (shiny DVs) once caught, so the party/follower pick the shiny
+  -- sprite; anything else is guaranteed not to be a stray natural shiny (SHINY RATE Off means none).
+  local okShiny, Shiny = pcall(function() return V.require("shiny") end)
+  if okShiny and Shiny and type(newMon.dvs) == "table" then
+    pcall(Shiny.finalize, game and game.data, newMon, context.shiny == true)
+  elseif context.shiny then
+    newMon.shiny = true
+  end
   if context.variant then newMon.variant = context.variant end
   return newMon
 end

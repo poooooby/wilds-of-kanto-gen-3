@@ -43,6 +43,9 @@ Config.DEFAULTS = {
   legendary_spawns = false,
   -- Highest generation Spawn Table and Random may use (1..9; "9" = no cap). Off is never capped.
   max_generation = "9",
+  -- Chance a Gen 1 wild Pokemon is shiny (lib/shiny.lua): off | gen2 (1/8192) | modern (1/4096) |
+  -- common (1/1024) | frequent (1/512) | often (1/100) | high (1/10) | always.
+  shiny_rate = "modern",
   -- Voxel-only per-species display-size scale (lib/species_display_scale.lua).
   -- ON = custom-tuned sizing per species; OFF = native True Size for every
   -- HGSS/PokeMMO species (SpeciesGeometry.displayScale always returns 1).
@@ -527,6 +530,35 @@ local function coerceMaxGeneration(value)
   local n = tonumber(value)
   if n and n % 1 == 0 and n >= 1 and n <= 9 then return math.floor(n) end
   return nil
+end
+
+local VALID_SHINY_RATES = {
+  off = true, gen2 = true, modern = true, common = true, frequent = true, often = true, high = true,
+  always = true,
+}
+
+--- SHINY RATE key: "off" | "gen2" | "modern" | "common" | "frequent" | "often" | "high" | "always".
+-- Live save bucket first (what the in-game menu writes), then the schema value; anything unusable
+-- means the default ("modern", 1/4096). A legacy boolean true means "always".
+function Config.shinyRate(mod)
+  local function coerce(value)
+    if value == true then return "always" end
+    if type(value) == "string" then
+      local v = value:lower()
+      if VALID_SHINY_RATES[v] then return v end
+    end
+    return nil
+  end
+  local raw, present = Config.peekSavedOption(mod, "shiny_rate")
+  if present then
+    local key = coerce(raw)
+    if key then return key end
+  end
+  if mod and mod.options and type(mod.options.get) == "function" then
+    local key = coerce(mod.options:get("shiny_rate"))
+    if key then return key end
+  end
+  return coerce(Config.DEFAULTS.shiny_rate) or "modern"
 end
 
 --- MAX GEN: highest generation (1..9) Spawn Table and Random may spawn. Live save bucket first (same as

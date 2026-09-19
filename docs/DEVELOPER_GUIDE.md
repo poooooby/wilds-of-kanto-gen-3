@@ -174,6 +174,29 @@ Visible water spawns use `lib/water_spawn.lua` (cell → shore zone → pool →
   review its printed report (per-table slot counts and max error, unused sections, form-token table)
   before committing.
 
+### 8.0 Shiny system (SHINY RATE)
+
+`lib/shiny.lua` replaces the Shiny Pokemon mod for Red/Blue/Yellow (that mod is a manifest conflict: with Voxel off
+its `SpriteRenderer.draw` wrap redraws `SPRITE_PIKACHU` / `SPRITE_PLAYER_POKEMON` followers with a hardcoded 16x16
+quad at `(px - camX, py - camY - 4)`, ignoring `frameWidth` / `frameHeight` / `anchorX` / `anchorY`).
+
+- **Definition:** the engine's RBY virtual shiny (`Stats.isShiny`): Defense/Speed/Special DV 10 and Attack DV in
+  {2,3,6,7,10,11,14,15}. `Shiny.makeDVs` builds them, `Shiny.applyToMon` sets `dvs`/`shiny` and recomputes stats.
+- **Rate:** `Config.shinyRate` (`off`, `gen2` 1/8192, `modern` 1/4096 default, `common` 1/1024, `frequent` 1/512,
+  `often` 1/100, `high` 1/10, `always`), `Shiny.roll` draws `rng(1, denom) == 1`.
+- **Where it rolls:** visible land spawns roll at creation (`SpawnLogic:_rollShiny` -> `record.shiny` ->
+  `Entity.shiny` -> `AnimatedSprites.resolveRuntimeVariant` = the shiny sheet; water scenery does not roll because
+  it cannot start a battle). Before the contact battle starts, `Shiny.armForBattle(record)` hands the result to the
+  engine, so the fought mon is the seen one. Classic encounters roll inside `BattleState.newWild`.
+- **How:** `Shiny.install` (main.lua, Gen 1 only, `engine_internals`) wraps `BattleState.newWild` and `Pokemon.new`.
+  `Pokemon.new` is only altered while `newWild` runs (trainers, gifts, eggs and starters are untouched). The pending
+  hand-off is `{ dvs }` or an explicit `{ none = true }` (a visible non-shiny stays non-shiny even against a natural
+  shiny spread), cleared after every `newWild` (also on error), on `map.entered` and on `battle.ended`.
+- **Off means none:** wilds and overworld catches (`Gen1.createCaughtPokemon` -> `Shiny.finalize`) nudge a natural
+  shiny spread (about 1 in 8192) to Special DV 9.
+- **Not included:** battle recolor and sparkles (Shiny Pokemon did those), Safari Zone encounters (separate battle
+  path), Gold (native shiny, `shiny.roll` hook).
+
 ### 8.1.0 Generation cap (MAX GEN)
 
 `max_generation` (`"1"`..`"9"`, default `"9"` = no cap; `Config.maxGeneration`, peekSavedOption-first) caps

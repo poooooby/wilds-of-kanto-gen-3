@@ -524,6 +524,25 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
+      label = "SHINY RATE",
+      stepper = true,
+      wrap = true,
+      -- Gen 1 wild shiny chance; see lib/shiny.lua.
+      choices = {
+        { label = "OFF", value = "off" }, { label = "1/8192", value = "gen2" },
+        { label = "1/4096", value = "modern" }, { label = "1/1024", value = "common" },
+        { label = "1/512", value = "frequent" }, { label = "1/100", value = "often" },
+        { label = "1/10", value = "high" }, { label = "ALWAYS", value = "always" },
+      },
+      current = Config.shinyRate(mod),
+      right = ({ off = "OFF", gen2 = "1/8192", modern = "1/4096", common = "1/1024",
+                 frequent = "1/512", often = "1/100", high = "1/10", always = "ALWAYS" })[Config.shinyRate(mod)] or "1/4096",
+      apply = function(v)
+        optSet(mod, "shiny_rate", v)
+        menus:_notifyLogic("shiny_rate", v)
+      end,
+    },
+    {
       label = "GFX STYLE",
       stepper = true,
       wrap = true,
@@ -1281,7 +1300,7 @@ SettingsMenus.FOLLOWERS_OPTION_KEYS = {
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
   "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "modern_spawns", "legendary_spawns", "max_generation", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
+  "cave_spawns", "modern_spawns", "legendary_spawns", "max_generation", "shiny_rate", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
   "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
   "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
   "catch_hud_size",

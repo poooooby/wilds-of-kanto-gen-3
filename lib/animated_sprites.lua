@@ -43,7 +43,9 @@ AnimatedSprites.STATUS = {
   DISABLED = "DISABLED",
 }
 
-AnimatedSprites.RUNTIME_SHINY_SUPPORT = "NOT_AVAILABLE"
+-- Shiny wild entities (rolled by lib/shiny.lua, entity.shiny) render the shiny sheet; providers fall
+-- back to the normal sheet when a species has no shiny art.
+AnimatedSprites.RUNTIME_SHINY_SUPPORT = "AVAILABLE"
 AnimatedSprites.SOURCE_FOLLOW = "FOLLOW_SPRITES"
 
 local FACING_MAP = {
@@ -115,7 +117,8 @@ function AnimatedSprites.resolveSpeciesId(speciesKey, game, mod)
 end
 
 -- Gen1 / Gen1Recomp wild spawns currently have no reliable pre-battle shiny flag.
--- Do not invent random shinies for the overworld. Preview may force shiny.
+-- Only entities marked shiny (lib/shiny.lua's roll, or the preview) get the shiny variant; nothing
+-- here invents a shiny.
 function AnimatedSprites.resolveRuntimeVariant(entity, opts)
   opts = opts or {}
   if opts.forceVariant then

@@ -8,6 +8,31 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.6.3 (fork)
+
+### Features
+
+- Added a **SHINY RATE** option (Start Menu -> Wilds of Kanto, or the Mod
+  Manager; Red/Blue/Yellow only): Off, 1/8192 (Gen 2), 1/4096 Modern
+  (default), 1/1024, 1/512, 1/100, 1/10 or Always. A wild Pokemon that rolls
+  shiny appears with its shiny overworld sprite, is a real shiny (shiny DVs)
+  in the battle it starts, stays shiny when caught, and its follower uses the
+  shiny sprite. Classic encounters (steps, Surf, rods) roll too. Off means no
+  shinies at all. There is no shiny recolor or sparkle in battle yet.
+
+### Compatibility
+
+- **Shiny Pokemon (`SHINY_POKEMON`) is now a declared conflict** and cannot be
+  enabled together with this mod; SHINY RATE replaces it. With Voxel off it
+  drew the follower with a fixed 16x16 box that ignores True Size frame size
+  and anchor, which put followers out of position. Voxel on, or the mod
+  disabled, was unaffected.
+
+### Upgrade notes
+
+- SHINY RATE defaults to 1/4096, so rare shinies now appear after updating.
+  Set it to Off to keep the old behavior.
+
 ## 2.6.2 (fork)
 
 ### Features
