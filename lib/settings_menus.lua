@@ -474,6 +474,37 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
+      label = "MODERN SPAWNS",
+      stepper = true,
+      wrap = true,
+      -- Gen 1 wild table source: modern overlay / random species / original.
+      -- See lib/gen9_encounters.lua and lib/random_spawns.lua.
+      choices = {
+        { label = "TABLE", value = "table" },
+        { label = "RANDOM", value = "random" },
+        { label = "OFF", value = "off" },
+      },
+      current = Config.modernSpawnsMode(mod),
+      right = ({ table = "TABLE", random = "RANDOM", off = "OFF" })[Config.modernSpawnsMode(mod)] or "TABLE",
+      apply = function(v)
+        optSet(mod, "modern_spawns", v)
+        menus:_notifyLogic("modern_spawns", v)
+      end,
+    },
+    {
+      label = "LEGEND/MYTHIC",
+      stepper = true,
+      wrap = true,
+      -- Random mode only: allow legendary/mythical/Ultra Beast/Paradox species.
+      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
+      current = Config.legendarySpawnsEnabled(mod),
+      right = Config.legendarySpawnsEnabled(mod) and "ON" or "OFF",
+      apply = function(v)
+        optSet(mod, "legendary_spawns", v == true)
+        menus:_notifyLogic("legendary_spawns", v == true)
+      end,
+    },
+    {
       label = "GFX STYLE",
       stepper = true,
       wrap = true,
@@ -1231,7 +1262,7 @@ SettingsMenus.FOLLOWERS_OPTION_KEYS = {
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
   "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
+  "cave_spawns", "modern_spawns", "legendary_spawns", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
   "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
   "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
   "catch_hud_size",

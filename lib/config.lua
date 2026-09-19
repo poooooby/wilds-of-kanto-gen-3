@@ -34,6 +34,13 @@ Config.DEFAULTS = {
   -- Cosmetic costume for the Yellow starter Pikachu companion only (see
   -- ControlEngine:forceYellowStockPikachuArt). "default" = normal art.
   pika_follower = "default",
+  -- Wild table source for Gen 1 maps (lib/gen9_encounters.lua): "table" = modern Kanto overlay
+  -- (only when the runtime dex is expanded past Gen 3, lib/dex_expansion.lua), "random" = any
+  -- registered species at the area's level, "off" = original tables. Pre-choice saves stored a
+  -- boolean (true = "table", false = "off"); Config.modernSpawnsMode migrates it.
+  modern_spawns = "table",
+  -- Random mode only: allow legendary/mythical/Ultra Beast/Paradox species (lib/species_flags_data.lua).
+  legendary_spawns = false,
   -- Voxel-only per-species display-size scale (lib/species_display_scale.lua).
   -- ON = custom-tuned sizing per species; OFF = native True Size for every
   -- HGSS/PokeMMO species (SpeciesGeometry.displayScale always returns 1).
@@ -477,6 +484,48 @@ Config.VALID_POKEMON_SIZES = VALID_POKEMON_SIZES
 -- at native True Size (scale 1) instead.
 function Config.dynScaleEnabled(mod)
   return Config.get(mod, "dyn_scale") ~= false
+end
+
+local VALID_MODERN_SPAWNS = { table = true, random = true, off = true }
+
+-- Accepts the choice strings plus the pre-choice boolean (true -> "table", false -> "off").
+local function coerceModernSpawnsMode(value)
+  if value == true then return "table" end
+  if value == false then return "off" end
+  if type(value) == "string" then
+    local v = value:lower()
+    if VALID_MODERN_SPAWNS[v] then return v end
+  end
+  return nil
+end
+
+--- MODERN SPAWNS mode: "table" | "random" | "off". Prefers the live save-data bucket the in-game
+-- Settings menu writes to (Config.setOption / writeOptionBucket) over the Mod Manager schema value,
+-- same as Config.pikaFollower/Config.spriteFade -- checking only mod.options:get would make an
+-- in-game change invisible here. Unknown values fall back to the default ("table").
+function Config.modernSpawnsMode(mod)
+  local raw, present = Config.peekSavedOption(mod, "modern_spawns")
+  if present then
+    local mode = coerceModernSpawnsMode(raw)
+    if mode then return mode end
+  end
+  if mod and mod.options and type(mod.options.get) == "function" then
+    local mode = coerceModernSpawnsMode(mod.options:get("modern_spawns"))
+    if mode then return mode end
+  end
+  return coerceModernSpawnsMode(Config.DEFAULTS.modern_spawns) or "table"
+end
+
+--- Anything other than "off" (kept for callers that only need the old on/off meaning).
+function Config.modernSpawnsEnabled(mod)
+  return Config.modernSpawnsMode(mod) ~= "off"
+end
+
+--- "Include Legendary/Mythical": Random mode only. Same live-bucket-first read as above.
+function Config.legendarySpawnsEnabled(mod)
+  local raw, present = Config.peekSavedOption(mod, "legendary_spawns")
+  if present and type(raw) == "boolean" then return raw end
+  return Config.get(mod, "legendary_spawns") == true
 end
 
 local VALID_PIKA_FOLLOWER = {

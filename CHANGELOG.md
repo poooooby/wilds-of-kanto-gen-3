@@ -8,6 +8,47 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.6.0 (fork)
+
+### Features
+
+- Added a **MODERN SPAWNS** option (Start Menu -> Wilds of Kanto, or the Mod
+  Manager; Red/Blue/Yellow only) with three settings:
+  - **Spawn Table** (the default): when a Pokedex-expansion mod such as
+    National Dex has registered species past Gen 3, mapped Kanto areas
+    (routes, caves, the Safari Zone, Mt. Moon, Seafoam, and more) use a
+    modern species pool for visible spawns, step encounters, Surf, and Super
+    Rod fishing. Each area now has many more species and a spread of levels
+    per species (for example a species listed at levels 15-17 appears at 15,
+    16 and 17), instead of the original 10-slot tables. Without such a mod
+    the original tables are used, and any species that isn't installed falls
+    back to a matching original slot.
+  - **Random**: any installed Pokemon can spawn in every Kanto area that has
+    wild Pokemon, at that area's own levels, for visible spawns, step
+    encounters, Surf and Super Rod fishing. Each area shows 10 random species
+    (the same shape as the original tables and Kanto Reforged's random mode)
+    and gets a fresh 10 every time you enter it. It works without a
+    Pokedex-expansion mod too (Gen 1 species only). Alternate forms such as
+    Megas and regional variants are never picked.
+  - **Off**: the original game tables.
+- Added a **LEGEND/MYTHIC** option (default off). Random spawns leave out
+  legendary, mythical, Ultra Beast and Paradox Pokemon unless it is on. It
+  has no effect on Spawn Table or Off.
+- Changing MODERN SPAWNS or LEGEND/MYTHIC in the menu rebuilds the current
+  area right away.
+
+### Upgrade notes
+
+- MODERN SPAWNS used to be an on/off toggle. Saves that had it on carry over
+  as Spawn Table, and saves that had it off carry over as Off.
+
+### Performance
+
+- Entering an area no longer loads every species' sprite up front just to fill
+  in the diagnostics counters; that now only happens with debug or dev mode
+  on. Sprites still load when a Pokemon actually spawns. This mostly helps
+  areas with many possible species.
+
 ## 2.5.4 (fork)
 
 ### Features

@@ -8,6 +8,7 @@ local V = ...
 local Config = V.require("config")
 local AmbientCries = V.require("ambient_cries")
 local EncounterIndex = V.require("encounter_index")
+local Gen9Encounters = V.require("gen9_encounters")
 local DebugLog = V.require("debug_log")
 
 local AmbientPokemon = {}
@@ -193,7 +194,16 @@ function AmbientPokemon.speciesPool(game, mapId, map)
   end
 
   local encounters = game and game.data and game.data.encounters
-  local enc = encounters and encounters[mapId]
+  -- Route through the modern encounter overlay (a no-op unless the dex is expanded) so town
+  -- Pokemon borrowed from routes match what spawns there.
+  local function tableFor(id)
+    local raw = encounters and encounters[id]
+    if type(raw) ~= "table" then return raw end
+    local ok, overlaid = pcall(Gen9Encounters.overlayFor, V.mod, game, id, raw)
+    if ok and type(overlaid) == "table" then return overlaid end
+    return raw
+  end
+  local enc = tableFor(mapId)
   if type(enc) == "table" and type(enc.grass) == "table" and type(enc.grass.slots) == "table" then
     for _, slot in ipairs(enc.grass.slots) do
       if type(slot) == "table" and slot.species then add(slot.species) end
@@ -205,7 +215,7 @@ function AmbientPokemon.speciesPool(game, mapId, map)
     for _, dir in ipairs({ "north", "south", "east", "west" }) do
       local conn = map.def.connections[dir]
       local dest = conn and (conn.map or conn.mapId or conn.dest)
-      local neighbor = dest and encounters and encounters[dest]
+      local neighbor = dest and encounters and tableFor(dest)
       if neighbor and neighbor.grass and neighbor.grass.slots then
         for _, slot in ipairs(neighbor.grass.slots) do
           if type(slot) == "table" and slot.species then add(slot.species) end

@@ -135,12 +135,21 @@ function Gen1.currentMapId(game, ow)
   return nil
 end
 
---- Per-map encounter table. Same object as game.data.encounters[mapId].
+--- Per-map encounter table. Same object as game.data.encounters[mapId], unless the modern
+-- encounter overlay (lib/gen9_encounters.lua) is active for this map, in which case it is a
+-- cached COPY with the overlay slots -- the engine's own table is never mutated.
 function Gen1.encountersForMap(game, mapId)
   if not game or not game.data or type(game.data.encounters) ~= "table" then
     return nil
   end
-  return game.data.encounters[mapId]
+  local vanilla = game.data.encounters[mapId]
+  if vanilla == nil then return nil end
+  local ok, Gen9 = pcall(function() return V.require("gen9_encounters") end)
+  if ok and Gen9 then
+    local okOverlay, result = pcall(Gen9.overlayFor, V.mod, game, mapId, vanilla)
+    if okOverlay and result ~= nil then return result end
+  end
+  return vanilla
 end
 
 --- Exact current Gen1 wild battle entry: queue start_battle wild species level.

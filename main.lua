@@ -201,7 +201,15 @@ return function(mod)
   -- ------- events (always registered; logic no-ops when feature is off
   -- or when the running game generation is unsupported)
 
+  -- Re-evaluate the modern-encounter overlay's dex gate on every load boundary
+  -- (a cached "expansion not present" must not outlive the event that changes it).
+  local function invalidateModernEncounters()
+    local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
+    if okG9 and Gen9 and Gen9.invalidate then pcall(Gen9.invalidate) end
+  end
+
   mod.events:on("map.entered", function(ev)
+    invalidateModernEncounters()
     if not supports("encounters") then
       noteGameplaySkipped()
       return
@@ -342,6 +350,7 @@ return function(mod)
   end)
 
   mod.events:on("game.ready", function()
+    invalidateModernEncounters()
     logGen2Event("game.ready")
     hud:syncPipelineLevel()
     if devOverlay then devOverlay:syncPipelineLevel() end
@@ -401,6 +410,7 @@ return function(mod)
 
   -- After Followers EX (priority 160) may wrap makeEntity / register providers.
   mod.events:on("mods.loaded", function()
+    invalidateModernEncounters()
     Config.migrateSpriteStyleOption(mod)
     local game = mod.world and mod.world.game
     render:finalizeSpriteProviders(game)
@@ -444,12 +454,42 @@ return function(mod)
     end
     if unwraps.encounter or unwraps.collision then return end
 
+    -- Modern encounter overlay (Gen 1 only): substitute the encounter table the classic roll
+    -- sees so step encounters agree with visible spawns. Never throws into the engine.
+    local function modernEncounterOverlay(fnName, ...)
+      local game = liveGame()
+      if GameCompat.isGen2(mod, game) then return nil end
+      local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
+      if not (okG9 and Gen9 and Gen9[fnName]) then return nil end
+      local ok, result = pcall(Gen9[fnName], mod, game, ...)
+      if ok then return result end
+      return nil
+    end
+
     unwraps.encounter = mod.hooks:wrap("encounter.roll", function(next, encDef, ctx)
       if logic:shouldSuppressClassicEncounter(ctx) then
         return nil
       end
+      local mapId = ctx and ctx.mapId
+      local overlaid = mapId and modernEncounterOverlay("rollDef", mapId, ctx.terrain, encDef)
+      if overlaid ~= nil then encDef = overlaid end
       return next(encDef, ctx)
     end)
+
+    -- Super Rod: engine calls Runtime.call("encounter.fishing", roll, rod, mapId, pool);
+    -- the wrapped chain may replace the candidate list before the roll.
+    local okFish, unwrapFish = pcall(function()
+      return mod.hooks:wrap("encounter.fishing", function(next, rod, mapId, pool)
+        local replaced = modernEncounterOverlay("fishingPool", mapId, rod, pool)
+        if replaced ~= nil then pool = replaced end
+        return next(rod, mapId, pool)
+      end)
+    end)
+    if okFish then
+      unwraps.fishing = unwrapFish
+    else
+      DebugLog.warn(mod, "encounter.fishing hook unavailable: %s", tostring(unwrapFish))
+    end
 
     unwraps.collision = mod.hooks:wrap("movement.collision", function(next, allowed, ctx)
       local ok, result = pcall(function()
@@ -528,7 +568,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.5.4"
+  mod.exports.version = "2.6.0"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

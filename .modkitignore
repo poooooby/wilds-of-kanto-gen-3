@@ -33,6 +33,8 @@ tests/followers_water_compat_unit_test.lua
 tests/follower_trail_spacing_unit_test.lua
 tests/follower_water_movement_unit_test.lua
 tests/game_compat_unit_test.lua
+tests/gen9_encounters_data_unit_test.lua
+tests/gen9_encounters_unit_test.lua
 tests/gen1_catching_compat_unit_test.lua
 tests/gen2_aggro_unit_test.lua
 tests/gen2_catch_frame_unit_test.lua
@@ -74,6 +76,7 @@ tests/pika_follower_unit_test.lua
 tests/poke_followers_assets_unit_test.lua
 tests/public_settings_audit_unit_test.lua
 tests/random_enc_unit_test.lua
+tests/random_spawns_unit_test.lua
 tests/render_diagnostics_unit_test.lua
 tests/runtime_sheet_walk_frames_unit_test.lua
 tests/safari_compat_unit_test.lua
@@ -84,6 +87,7 @@ tests/settings_menus_listmenu_path_unit_test.lua
 tests/settings_menus_unit_test.lua
 tests/special_spawn_safety_unit_test.lua
 tests/species_assets_unit_test.lua
+tests/species_flags_data_unit_test.lua
 tests/sprite_fade_color_unit_test.lua
 tests/sprite_presentation_unit_test.lua
 tests/sprite_providers_unit_test.lua
@@ -128,11 +132,14 @@ assets/enhanced_overworld/Pokemon_Sprites/POKEMON 1.png
 
 # Mapping / sheet generators (repo tooling only; generated assets ship).
 tools/gen1_heights.json
+tools/data/gen9_location_map.json
 tools/generate_followsprites_mapping.ps1
+tools/generate_gen9_encounters.py
 tools/generate_hidden_water_shadow.py
 tools/generate_pika_follower_true_size.py
 tools/generate_runtime_sprite_sheets.ps1
 tools/generate_runtime_sprite_sheets.py
+tools/generate_species_flags.py
 tools/generate_true_size_runtime.py
 tools/generate_variable_size_prototype.py
 tools/generate_water_runtime_sheets.ps1

@@ -3,6 +3,7 @@
 -- Pokédex, never from the currently visited map alone.
 local V = ...
 local EncounterPick = V.require("encounter_pick")
+local Gen9Encounters = V.require("gen9_encounters")
 
 local EncounterIndex = {}
 
@@ -44,6 +45,9 @@ function EncounterIndex.build(game)
 
   for mapId, encDef in pairs(encounters) do
     if type(mapId) == "string" and type(encDef) == "table" then
+      -- Modern encounter overlay (inactive unless the dex is expanded); index what spawns.
+      local okOverlay, overlaid = pcall(Gen9Encounters.overlayFor, V.mod, game, mapId, encDef)
+      if okOverlay and type(overlaid) == "table" then encDef = overlaid end
       local mapName = mapLabel(game, mapId)
       local mapType = mapTypeOf(game, mapId)
       for _, kind in ipairs(EncounterPick.KINDS) do

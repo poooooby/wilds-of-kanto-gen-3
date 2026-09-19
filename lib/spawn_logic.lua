@@ -1669,14 +1669,22 @@ function SpawnLogic:initializeForMap(mapId, game)
     self.render.debugMarkers = true
     self.render:auditAssets(game)
   end
-  local required, loaded = self.render:countAssets(speciesNames, game)
-  st.requiredAssets = required
-  st.loadedAssets = loaded
-  st.assetsLoading = false
-  if required > 0 and loaded == 0 then
-    st.assetError = nil
-    self:_log("no real overworld assets loaded; fallback path active")
+  -- countAssets only feeds diagnostics, but it resolves every roster species (one PNG decode
+  -- each on first sight), which is a big single-frame cost on wide rosters. Probe only when
+  -- debugging; entities resolve their own sprite lazily in makeEntity either way.
+  if Config.debug(self.mod) == true or Config.devMode(self.mod) then
+    local required, loaded = self.render:countAssets(speciesNames, game)
+    st.requiredAssets = required
+    st.loadedAssets = loaded
+    if required > 0 and loaded == 0 then
+      st.assetError = nil
+      self:_log("no real overworld assets loaded; fallback path active")
+    end
+  else
+    st.requiredAssets = #speciesNames
+    st.loadedAssets = 0
   end
+  st.assetsLoading = false
 
   -- 8) Renderer capability
   local renderOk, renderInfo = self.render:checkAvailable(game)
@@ -3034,6 +3042,15 @@ function SpawnLogic:onOptionsChanged(payload)
     end
   elseif key == "cave_spawns" or key == "enable_cave_spawns" then
     self:applyCaveSpawnMode(Config.caveSpawnMode(self.mod), "options_changed")
+  elseif key == "modern_spawns" or key == "legendary_spawns" then
+    -- The wild table source changed (Spawn Table / Random / Off, or the Random legendary filter):
+    -- rebuild the current map from the new tables. The overlay cache is keyed by mode and filter,
+    -- so the next lookup already serves the new roster.
+    self:_log("%s -> %s; rebuilding current map", tostring(key), tostring(payload.value))
+    local ow = self:_ow()
+    if ow and ow.map and self.state and self.state.initialized then
+      self:onMapEntered({ mapId = ow.map.id, map = ow.map })
+    end
   elseif key == "wild_silhouettes" then
     -- Presentation switch: rebind entity sprites to/from the silhouette
     -- sheets without respawning.  Invalidate caches so old coloured /

@@ -190,6 +190,18 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
   [1Jamie](https://github.com/1Jamie)'s
   [Kanto Reforged](https://github.com/1Jamie/Kanto-Reforged) extended
   Pokédex, read at runtime via `game.data.pokemon`.
+- **National Dex** (Pokédex expansion through Gen 9) — when a Pokédex-expansion
+  mod has registered species past #386, the **MODERN SPAWNS** option (Gen 1
+  only) has three settings. **Spawn Table** (default) swaps the wild tables of
+  mapped Kanto areas (routes, caves, Safari Zone, Super Rod fishing) for a
+  modern species pool. With no such mod — or with Kanto Reforged alone —
+  vanilla tables are untouched, and any slot whose species isn't registered
+  falls back to its original slot. Mapped areas override Kanto Reforged's
+  mixed slots; unmapped areas keep them. **Random** makes any registered
+  Pokemon spawn at the area's own levels (a new roster each time you enter an
+  area; it works on the plain Gen 1 dex too), and **Off** keeps the original
+  tables. In Random, legendary, mythical, Ultra Beast and Paradox Pokemon are
+  left out unless the **LEGEND/MYTHIC** option is on.
 - Dramatic Shape Voxel Mod (True Size stays on when the **active** Voxel
   renderer can consume variable SpriteDef geometry: Battle Art Voxel, Potato
   Voxel, Dramaless Shape, Stadium2, and Terrarium via public

@@ -17,7 +17,7 @@
 --   Poke Followers EX -> follow_control, trainer_trail, follower_count
 --                       (+ Leader via party menu hint)
 --   Wilds of Kanto    -> enabled, spawn_density, random_encounters,
---                       water_spawns, cave_spawns, sprite_style, dyn_scale,
+--                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, sprite_style, dyn_scale,
 --                       sprite_fade, town_pokemon, pokemon_grass_render_mode,
 --                       wild_silhouettes,
 --                       overworld_catching, catch_throw_key, catch_cycle_key,
@@ -171,6 +171,25 @@ return {
       { "Mixed", "mixed" },
     },
     description = "Cave Pokemon spawn only on tiles the player can reach, or Mixed (~20% atmospheric scenery in inaccessible cave pockets).",
+  },
+  {
+    key = "modern_spawns",
+    label = "MODERN SPAWNS",
+    type = "choice",
+    default = "table",
+    choices = {
+      { "Spawn Table", "table" },
+      { "Random", "random" },
+      { "Off", "off" },
+    },
+    description = "Gen 1 only. Spawn Table: replaces the wild tables of mapped Kanto areas (routes, caves, Safari Zone, Super Rod fishing) with a modern species pool; needs a Pokedex-expansion mod (e.g. National Dex), otherwise vanilla tables stay. Random: any registered Pokemon at the area's level. Off: original game tables.",
+  },
+  {
+    key = "legendary_spawns",
+    label = "LEGEND/MYTHIC",
+    type = "toggle",
+    default = false,
+    description = "Random mode only. Include legendary, mythical, Ultra Beast and Paradox Pokemon in random spawns. Off keeps them out. Spawn Table mode is unaffected.",
   },
   {
     key = "town_pokemon",
