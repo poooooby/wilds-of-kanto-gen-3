@@ -1,9 +1,9 @@
-# Wilds of Kanto — Developer Guide (1.0.2)
+# Wilds of Kanto Revival — Developer Guide (1.0.2)
 
 > Follow-sprites → native 16×96 SpriteRenderer sheets, NPC pose contract,
 > and Dramatic Shape billboards match the 1.0.2 implementation.
 
-Public name: **Wilds of Kanto**. Technical id: `overworld_wild_spawns`.
+Public name: **Wilds of Kanto Revival**. Technical id: `wilds_of_kanto_gen3` (the upstream project's is `overworld_wild_spawns`).
 
 This document describes the **implemented** architecture. It does not invent Gen1Recomp APIs.
 

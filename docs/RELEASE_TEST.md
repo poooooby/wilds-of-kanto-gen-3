@@ -1,4 +1,4 @@
-# Release test checklist — Wilds of Kanto 1.0.2
+# Release test checklist — Wilds of Kanto Revival 1.0.2
 
 Use this checklist before publishing a GitHub release and when verifying Mod
 Manager update detection.
@@ -43,7 +43,7 @@ wilds-of-kanto-v1.0.2.zip
 
 ## C. Option label smoke test
 
-1. Open Mod Manager options for Wilds of Kanto.
+1. Open Mod Manager options for Wilds of Kanto Revival.
 2. Confirm every visible option label and choice name is fully readable
    (no truncation at 14 characters).
 3. Confirm only the simplified 1.0 public options are shown.

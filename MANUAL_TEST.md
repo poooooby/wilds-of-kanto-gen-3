@@ -1,14 +1,14 @@
-# Manual test guide — Wilds of Kanto 1.8.0
+# Manual test guide — Wilds of Kanto Revival 1.8.0
 
 ## After installing 1.8.0
 
-1. Remove any previous Wilds of Kanto install from the Mod Manager.
+1. Remove any previous Wilds of Kanto Revival install from the Mod Manager.
 2. Install only `wilds-of-kanto-v1.8.0.zip`.
 3. Confirm the Mod Manager shows version **1.8.0**.
 
 ## Settings
 
-1. Open Mod Settings → Wilds of Kanto.
+1. Open Mod Settings → Wilds of Kanto Revival.
 2. Confirm core options:
    Sprite Style / Pokémon Size / Spawn Amount / Random Enc / Water Mons / OW Catch / Dev Overlay
    (plus Show Wild Mons, Grass View, Idle/Roam/Chase/Hidden Mons).

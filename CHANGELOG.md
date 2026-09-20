@@ -1,6 +1,6 @@
 # Changelog
 
-> **This is a fork.** This repository (`poooooby/wilds-of-kanto-gen-3`, mod id
+> **This is a fork, published as Wilds of Kanto Revival.** This repository (`poooooby/wilds-of-kanto-gen-3`, mod id
 > `wilds_of_kanto_gen3`) forks
 > [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)
 > ("Wilds of Kanto", mod id `overworld_wild_spawns`) after v2.2.0. Everything

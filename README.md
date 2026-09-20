@@ -1,4 +1,4 @@
-# Wilds of Kanto: Gen 3 Fork
+# Wilds of Kanto Revival
 
 > **Fork notice:** this is [poooooby](https://github.com/poooooby)'s fork of
 > [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)
@@ -10,7 +10,7 @@
 > `wilds_of_kanto_gen3`; it declares a manifest conflict with the original
 > `overworld_wild_spawns` so the two are not run side by side.
 
-Wilds of Kanto makes Kanto feel alive in
+Wilds of Kanto Revival makes Kanto feel alive in
 [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp).
 
 Wild Pokémon appear in the overworld, react to the player, and can be followed
@@ -173,7 +173,7 @@ battle flow. Safari sessions disable overworld throws.
    Use the packed `wilds-of-kanto-v*.zip` (manifest.json at the archive root).
    Do not import the GitHub "Source code" / `overworld-spawn-mod-main` ZIP.
 2. Place the mod in your Gen1Recomp mods directory.
-3. Enable **Wilds of Kanto**.
+3. Enable **Wilds of Kanto Revival**.
 4. No separate Followers EX or PokéPC install is required.
 
 Follower selection, control modes, and overworld sprites are built in.
@@ -252,7 +252,7 @@ everything through v2.2.0:
 - [1Jamie](https://github.com/1Jamie) —
   [**Kanto Reforged**](https://github.com/1Jamie/Kanto-Reforged) (GPLv3),
   the companion mod that extends the base Gen1Recomp/Gen2 game's own species
-  data (stats, types, moves, dex entries) through Gen 3. Wilds of Kanto reads
+  data (stats, types, moves, dex entries) through Gen 3. Wilds of Kanto Revival reads
   that data at runtime (`game.data.pokemon`) to resolve Gen 3 species for
   spawning and sprites; no Kanto Reforged code or data is copied into this
   repository. This fork's Gen 3 species support is tested against her

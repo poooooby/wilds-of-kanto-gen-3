@@ -1,6 +1,6 @@
-# Architecture — Wilds of Kanto 1.0.2
+# Architecture — Wilds of Kanto Revival 1.0.2
 
-Public name: **Wilds of Kanto**. Technical id: `overworld_wild_spawns`.
+Public name: **Wilds of Kanto Revival**. Technical id: `wilds_of_kanto_gen3` (the upstream project's is `overworld_wild_spawns`).
 
 ## Components
 
