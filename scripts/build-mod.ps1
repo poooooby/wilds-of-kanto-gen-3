@@ -2,6 +2,9 @@
 # Build dist/wilds-of-kanto-v<version>.zip for Gen1Recomp import.
 # Repo root IS the mod (DramaticShapeVoxelMod layout). Prefers modkit pack.
 # Also writes technical-id aliases: wilds_of_kanto_gen3-<version>.zip / .zip
+# The manual pack leaves out the source art the build uses to generate assets/wilds_generated/ (the game
+# draws from the generated sheets); pass -WithSourceArt for a full archive. See scripts/build-mod.py.
+param([switch]$WithSourceArt)
 $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $PSScriptRoot
@@ -71,6 +74,17 @@ if (Test-Path $Modkit) {
       Copy-Item -Recurse $src (Join-Path $stage $dir)
     }
   }
+  if (-not $WithSourceArt) {
+    $eo = Join-Path $stage "assets/enhanced_overworld"
+    foreach ($d in @("followsprites", "pokedex_mapping", "pika_follower_mapping")) {
+      $p = Join-Path $eo $d
+      if (Test-Path $p) { Remove-Item -Recurse -Force $p }
+    }
+    $water = Join-Path $eo "water_sprites"
+    if (Test-Path $water) {
+      Get-ChildItem -Path $water -Recurse -File -Filter "*.png" | Remove-Item -Force
+    }
+  }
   Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $OutZip -Force
   Remove-Item -Recurse -Force $stage
 }
@@ -128,9 +142,9 @@ $followPng = @($names | Where-Object {
   $_ -like "assets/enhanced_overworld/followsprites/*.PNG"
 })
 if ($followPng.Count -lt 1) {
-  Write-Warning "ZIP contains no follow-sprite PNGs (license/local-import mode?)"
+  Write-Host "  follow-sprite source PNGs: none (runtime sheets only)"
 } else {
-  Write-Host ("  follow-sprite PNGs: {0}" -f $followPng.Count)
+  Write-Host ("  follow-sprite source PNGs: {0}" -f $followPng.Count)
 }
 
 $IdVersioned = Join-Path $Dist ("{0}-{1}.zip" -f $manifest.id, $manifest.version)

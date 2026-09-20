@@ -50,7 +50,15 @@ local function loadPortraitImage(path)
   if not (love and love.graphics and love.graphics.newImage) then
     return nil
   end
-  local ok, img = pcall(love.graphics.newImage, path)
+  -- Portraits ship packed in sprite atlas shards (lib/sprite_atlas.lua): no file of their own, so ask the atlas first.
+  local okAtlas, Atlas = pcall(function() return V.require("sprite_atlas") end)
+  local sliced = okAtlas and Atlas and Atlas.image(path) or nil
+  local ok, img
+  if sliced then
+    ok, img = true, sliced
+  else
+    ok, img = pcall(love.graphics.newImage, path)
+  end
   if not ok or not img then return nil end
   if img.setFilter then
     pcall(function() img:setFilter("nearest", "nearest") end)
@@ -177,5 +185,7 @@ function PokemonDialogue.presentTextChoice(mod, game, ow, text, onChoose, opts)
   afterPresent(mod, game, portrait)
   return result, portrait
 end
+
+PokemonDialogue._loadPortraitImage = loadPortraitImage -- test hook
 
 return PokemonDialogue

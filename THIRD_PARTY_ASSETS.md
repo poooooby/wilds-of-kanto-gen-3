@@ -23,6 +23,10 @@ Official Chunsoft-origin graphics that appear in SpriteCollab are credited as
 
 ## What Wilds redistributes
 
+In atlas builds (`scripts/build-mod.py --atlas`) the derived portrait PNGs are packed, pixel for pixel, into a few shard PNGs with a
+JSON index instead of shipping as individual files. The art, license and credits are unchanged: `assets/pmdcollab/LICENSE.txt`,
+`CREDITS.txt` and `SOURCE.json` still ship as ordinary files.
+
 Under `assets/pmdcollab/` Wilds ships **derived** dialogue-portrait assets
 only:
 

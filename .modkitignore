@@ -91,10 +91,12 @@ tests/shiny_unit_test.lua
 tests/special_spawn_safety_unit_test.lua
 tests/species_assets_unit_test.lua
 tests/species_flags_data_unit_test.lua
+tests/sprite_atlas_unit_test.lua
 tests/sprite_fade_color_unit_test.lua
 tests/sprite_presentation_unit_test.lua
 tests/sprite_providers_unit_test.lua
 tests/pmdcollab_unit_test.lua
+tests/pokemon_dialogue_unit_test.lua
 tests/sprite_swap_anim_unit_test.lua
 tests/stadium2_variable_geometry_unit_test.lua
 tests/true_size_def_geometry_unit_test.lua
@@ -142,6 +144,8 @@ tools/generate_hidden_water_shadow.py
 tools/generate_pika_follower_true_size.py
 tools/generate_runtime_sprite_sheets.ps1
 tools/generate_runtime_sprite_sheets.py
+tools/generate_sprite_atlases.py
+tools/validate_sprite_atlases.py
 tools/generate_species_flags.py
 tools/generate_true_size_runtime.py
 tools/generate_variable_size_prototype.py

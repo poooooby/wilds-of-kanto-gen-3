@@ -8,6 +8,8 @@
 
 # Build output
 /dist/
+# Sprite atlases are baked by scripts/build-mod.py --atlas (tools/generate_sprite_atlases.py)
+/assets/atlas/
 
 # ROMs and generated caches — never commit
 *.gb

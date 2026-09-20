@@ -8,6 +8,28 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.7.0 (fork)
+
+### Packaging
+
+- The release ZIP now ships its ~15,400 small sprite sheets and 8,088 dialogue
+  portraits packed into a few atlas PNGs with JSON indexes, instead of one file
+  each. The ZIP goes from 23,698 to 277 files and from 33.9 MB to 20.1 MB, which
+  makes installing, extracting and scanning the mod much faster. The game asks for
+  sprites by the same paths as before and a new sprite atlas loader hands each one
+  back from the packed image, pixel for pixel identical to the old files (checked
+  at build time). A repo checkout keeps using the individual files. Build the old
+  layout with `scripts/build-mod.py --no-atlas`, or pick families with
+  `--atlas=classic,hgss,...`. The credit and license files stay as ordinary files.
+
+- The release ZIP is about 11 MB smaller (roughly 45 MB down to 34 MB, and
+  5,353 fewer files). It no longer ships the follow-sprite and water source
+  PNGs, the legacy Pokedex mapping files or a build-tool input folder. The
+  game only ever draws from the generated sprite sheets, which still ship, so
+  nothing changes in play; only the developer-mode Pokemon preview loses its
+  animated preview images. Pass `--with-source-art` to `scripts/build-mod.py`
+  for a full archive.
+
 ## 2.6.5 (fork)
 
 ### Bug fixes

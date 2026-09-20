@@ -1,7 +1,7 @@
 {
   "id": "wilds_of_kanto_gen3",
   "name": "Wilds of Kanto Revival",
-  "version": "2.6.5",
+  "version": "2.7.0",
   "api": 2,
   "entry": "main.lua",
   "profile": "content",

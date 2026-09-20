@@ -225,7 +225,15 @@ local function probeImageLoad(path)
     return false, path .. ": Does not exist.", nil, nil
   end
 
-  local ok, imageOrErr = pcall(love.graphics.newImage, path)
+  -- Sprites shipped in a sprite atlas (lib/sprite_atlas.lua) have no file of their own: serve them from it.
+  local ok, imageOrErr
+  local okAtlas, Atlas = pcall(function() return V.require("sprite_atlas") end)
+  local sliced = okAtlas and Atlas and Atlas.image(path) or nil
+  if sliced then
+    ok, imageOrErr = true, sliced
+  else
+    ok, imageOrErr = pcall(love.graphics.newImage, path)
+  end
   if not ok or not imageOrErr then
     return false, tostring(imageOrErr), nil, nil
   end

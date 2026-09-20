@@ -7,6 +7,17 @@ the archive root - never a wrapping folder, never the repo/workspace tree.
 
 Public release name: wilds-of-kanto-v<version>.zip
 Technical id aliases: wilds_of_kanto_gen3-<version>.zip / wilds_of_kanto_gen3.zip
+
+The manual pack (the one CI ends up using, because the real modkit's strict validate refuses on
+"dump check skipped" warnings) leaves the source art out of the ZIP: the game draws from the generated
+sheets under assets/wilds_generated/, so the follow-sprite / water source PNGs and the legacy mapping
+folders only bloat the download. Pass --with-source-art for a full archive.
+
+By default the build bakes the per-species runtime sheets and the PMD dialogue portraits into a few shard PNGs
+plus JSON indexes (tools/generate_sprite_atlases.py), validates them pixel for pixel, ships assets/atlas/ instead
+of the per-file sheets it covers, and packs manually (the modkit cannot apply that exclusion). lib/sprite_atlas.lua
+serves the original paths from the shards at runtime. `--atlas=classic,hgss,...` bakes only some families;
+`--no-atlas` builds the old per-file ZIP (23k+ files) instead.
 """
 from __future__ import annotations
 
@@ -52,6 +63,32 @@ INCLUDE_PREFIXES = (
     "data/",
     "docs/",
 )
+
+# Source art the BUILD reads to generate the runtime sheets (assets/wilds_generated/...). The game itself
+# draws from those generated sheets, so these stay in the repo but out of the release ZIP. Only the
+# developer-mode Pokemon preview browser ever looks at the follow-sprite atlases, and the water registry
+# stores but never opens the water source paths. pokedex_mapping is legacy (unused at runtime) and
+# pika_follower_mapping is read only by tools/generate_pika_follower_true_size.py.
+# The mapping JSONs that ARE read at runtime (followsprites_mapping, water swimming/levitates) still ship.
+SOURCE_ART_PREFIXES = (
+    "assets/enhanced_overworld/followsprites/",
+    "assets/enhanced_overworld/pokedex_mapping/",
+    "assets/enhanced_overworld/pika_follower_mapping/",
+)
+# Only the PNGs are dropped from these (their mapping JSON stays).
+SOURCE_ART_PNG_PREFIXES = (
+    "assets/enhanced_overworld/water_sprites/",
+)
+WITH_SOURCE_ART = "--with-source-art" in sys.argv
+
+# Sprite atlases (--atlas). ATLASED_RELS is filled by build_atlases(): the per-file sheets now served from a shard,
+# which the manual pack leaves out. assets/atlas/ itself only ships when an atlas was built.
+ATLAS_ARG = next((a for a in sys.argv if a == "--atlas" or a.startswith("--atlas=")), None)
+ATLAS_FAMILIES = None
+if "--no-atlas" not in sys.argv:
+    ATLAS_FAMILIES = ATLAS_ARG.split("=", 1)[1] if ATLAS_ARG and "=" in ATLAS_ARG else "all"
+ATLASED_RELS: set[str] = set()
+ATLAS_DIR_PREFIX = "assets/atlas/"
 
 # Paths that must never appear in a release ZIP (repo / GitHub / tooling).
 FORBIDDEN_PREFIXES = (
@@ -195,6 +232,18 @@ def should_include(rel: str) -> bool:
     for prefix in FORBIDDEN_PREFIXES:
         if rel == prefix.rstrip("/") or rel.startswith(prefix):
             return False
+    if rel.startswith(ATLAS_DIR_PREFIX):
+        return bool(ATLASED_RELS)  # only when this build baked an atlas
+    if rel in ATLASED_RELS:
+        return False
+    if not WITH_SOURCE_ART:
+        for prefix in SOURCE_ART_PREFIXES:
+            if rel.startswith(prefix):
+                return False
+        if suffix == ".png":
+            for prefix in SOURCE_ART_PNG_PREFIXES:
+                if rel.startswith(prefix):
+                    return False
     for prefix in INCLUDE_PREFIXES:
         if rel == prefix or rel.startswith(prefix):
             return True
@@ -266,11 +315,57 @@ def verify_manager_ascii_in_zip(zf: zipfile.ZipFile) -> None:
         print(f"  {name}: UTF-8 no BOM, ASCII-only")
 
 
+def read_zip_atlas(zf: zipfile.ZipFile, names: list[str]) -> set[str]:
+    """Every sprite path the ZIP's atlas indexes cover (empty when the ZIP has no atlas). Also checks that the indexes
+    are readable, every shard file they name is in the ZIP, and no covered sprite is ALSO shipped as its own file."""
+    root_name = ATLAS_DIR_PREFIX + "index.json"
+    if root_name not in names:
+        return set()
+    try:
+        root = json.loads(zf.read(root_name).decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as err:
+        fail(f"ZIP atlas index is not valid JSON: {err}")
+    if root.get("version") != 1:
+        fail(f"ZIP atlas index has unsupported version {root.get('version')!r}")
+    covered: set[str] = set()
+    shard_count = 0
+    for fam, meta in sorted(root.get("families", {}).items()):
+        idx_name = meta.get("index", "")
+        if idx_name not in names:
+            fail(f"ZIP atlas family {fam}: missing index {idx_name}")
+        try:
+            idx = json.loads(zf.read(idx_name).decode("utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError) as err:
+            fail(f"ZIP atlas family {fam}: index is not valid JSON: {err}")
+        for shard in idx.get("shards", []):
+            shard_count += 1
+            if shard.get("file") not in names:
+                fail(f"ZIP atlas family {fam}: missing shard {shard.get('file')}")
+        for d, entries in idx.get("dirs", {}).items():
+            for fname in entries:
+                covered.add(f"{d}/{fname}")
+    both = sorted(r for r in covered if r in names)
+    if both:
+        fail(f"ZIP ships {len(both)} sprites both in the atlas and as files (first: {both[0]})")
+    print(f"  sprite atlas: {len(covered)} sprites in {shard_count} shards "
+          f"({len(root.get('families', {}))} families)")
+    return covered
+
+
 def verify_zip(out_zip: Path, manifest: dict) -> None:
     with zipfile.ZipFile(out_zip, "r") as zf:
         names = list(zf.namelist())
         raw_manifest = zf.read("manifest.json") if "manifest.json" in names else None
         verify_manager_ascii_in_zip(zf)
+        atlas_rels = read_zip_atlas(zf, names)
+
+    def sprite_paths(prefix: str) -> list[str]:
+        """PNG sprites under `prefix`, whether shipped as files or served from the atlas."""
+        files = [n for n in names if n.startswith(prefix) and n.lower().endswith(".png")]
+        return files + [r for r in atlas_rels if r.startswith(prefix)]
+
+    def have_sprite(rel: str) -> bool:
+        return rel in names or rel in atlas_rels
 
     if "manifest.json" not in names:
         fail("ZIP missing manifest.json at archive root")
@@ -332,19 +427,16 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
         if n.startswith("assets/enhanced_overworld/followsprites/")
         and n.lower().endswith(".png")
     ]
-    if not follow_pngs:
-        print("WARNING: ZIP contains no follow-sprite PNGs (license/local-import mode?)")
+    if follow_pngs:
+        print(f"  follow-sprite source PNGs: {len(follow_pngs)}")
     else:
-        print(f"  follow-sprite PNGs: {len(follow_pngs)}")
+        # Expected for the slim release ZIP: the runtime sheets below are what the game draws.
+        print("  follow-sprite source PNGs: none (runtime sheets only)")
 
     runtime_manifest = "assets/wilds_generated/followsprites_runtime/manifest.json"
     if runtime_manifest not in names:
         fail(f"ZIP missing required runtime sheet manifest: {runtime_manifest}")
-    runtime_pngs = [
-        n for n in names
-        if n.startswith("assets/wilds_generated/followsprites_runtime/")
-        and n.lower().endswith(".png")
-    ]
+    runtime_pngs = sprite_paths("assets/wilds_generated/followsprites_runtime/")
     if len(runtime_pngs) < 151:
         fail(
             f"ZIP runtime sheets too few ({len(runtime_pngs)}); "
@@ -352,7 +444,7 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
         )
     print(f"  native runtime sheets: {len(runtime_pngs)}")
     sample = "assets/wilds_generated/followsprites_runtime/001-normal.png"
-    if sample not in names:
+    if not have_sprite(sample):
         fail(f"ZIP missing sample runtime sheet: {sample}")
 
     for throw_png in (
@@ -392,25 +484,29 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
         if n.startswith("assets/enhanced_overworld/water_sprites/")
         and n.lower().endswith(".png")
     ]
-    if len(water_src) < 100:
-        fail(f"ZIP water source PNGs too few ({len(water_src)})")
-    print(f"  water source PNGs: {len(water_src)}")
+    # The water registry reads the two mapping JSONs above and loads the generated water_runtime sheets
+    # below; the source PNGs are not opened at runtime, so a slim ZIP legitimately has none.
+    print(f"  water source PNGs: {len(water_src)}" + ("" if water_src else " (runtime sheets only)"))
     water_runtime_manifest = "assets/wilds_generated/water_runtime/manifest.json"
     if water_runtime_manifest not in names:
         fail(f"ZIP missing water runtime manifest: {water_runtime_manifest}")
-    water_runtime = [
-        n for n in names
-        if n.startswith("assets/wilds_generated/water_runtime/")
-        and n.lower().endswith(".png")
-    ]
+    water_runtime = sprite_paths("assets/wilds_generated/water_runtime/")
     if len(water_runtime) < 100:
         fail(f"ZIP water runtime sheets too few ({len(water_runtime)})")
     print(f"  water runtime sheets: {len(water_runtime)}")
+    # PMD dialogue portraits: as files, or (with --atlas) inside the atlas. The credit / license files always ship.
+    portrait_sample = "assets/pmdcollab/portraits/001/normal/normal.png"
+    if not have_sprite(portrait_sample):
+        fail(f"ZIP missing sample dialogue portrait: {portrait_sample}")
+    for keep in ("assets/pmdcollab/CREDITS.txt", "assets/pmdcollab/LICENSE.txt",
+                 "assets/pmdcollab/portrait_table.lua"):
+        if keep not in names:
+            fail(f"ZIP missing PMDCollab file: {keep}")
     for sample_water in (
         "assets/wilds_generated/water_runtime/swimming/001-normal.png",
         "assets/wilds_generated/water_runtime/levitates/063-normal.png",
     ):
-        if sample_water not in names:
+        if not have_sprite(sample_water):
             fail(f"ZIP missing sample water runtime sheet: {sample_water}")
 
     try:
@@ -551,6 +647,25 @@ def ensure_water_runtime_sheets() -> None:
         subprocess.check_call([sys.executable, str(validate)], cwd=str(ROOT))
 
 
+def build_atlases() -> None:
+    """Bake the requested sprite families into assets/atlas/, prove them pixel-exact, and record which per-file
+    sheets they replace so the manual pack can leave those out."""
+    gen = ROOT / "tools" / "generate_sprite_atlases.py"
+    val = ROOT / "tools" / "validate_sprite_atlases.py"
+    if not gen.is_file() or not val.is_file():
+        fail("sprite atlas tools are missing (tools/generate_sprite_atlases.py, tools/validate_sprite_atlases.py)")
+    print(f"==> sprite atlases: families={ATLAS_FAMILIES}")
+    subprocess.check_call([sys.executable, str(gen), "--families", ATLAS_FAMILIES], cwd=str(ROOT))
+    subprocess.check_call([sys.executable, str(val)], cwd=str(ROOT))
+    root = json.loads((ROOT / "assets" / "atlas" / "index.json").read_text(encoding="utf-8"))
+    for fam, meta in root.get("families", {}).items():
+        idx = json.loads((ROOT / meta["index"]).read_text(encoding="utf-8"))
+        for d, entries in idx.get("dirs", {}).items():
+            for fname in entries:
+                ATLASED_RELS.add(f"{d}/{fname}")
+    print(f"  atlas replaces {len(ATLASED_RELS)} per-file sheets")
+
+
 def main() -> int:
     skip_modkit = "--skip-modkit" in sys.argv
     out_dir_name = "dist"
@@ -568,6 +683,9 @@ def main() -> int:
     verify_follow_sprite_assets()
     ensure_runtime_sheets()
     ensure_water_runtime_sheets()
+    if ATLAS_FAMILIES:
+        build_atlases()
+        skip_modkit = True  # the modkit's pack cannot apply the atlas exclusion
 
     if dist.exists():
         shutil.rmtree(dist)

@@ -508,6 +508,16 @@ Produces `dist/wilds-of-kanto-v1.0.2.zip` (plus local technical-id aliases) with
 `manifest.json` at ZIP root.
 Includes `docs/` and `LICENSE`. Excludes `tests/`, `scripts/`, `.deps/`, root `ARCHITECTURE.md`.
 
+**Slim ZIP.** The manual pack (which is what CI produces: the real modkit's `pack` runs `validate --strict` and
+refuses on its "dump check skipped" warnings, so `.modkitignore` never shapes the release) leaves out the
+**source art** the build uses to generate `assets/wilds_generated/`: `assets/enhanced_overworld/followsprites/`
+(atlas PNGs), `pokedex_mapping/` (legacy, unused), `pika_follower_mapping/` (tool input) and the water source PNGs
+under `water_sprites/`. The game draws from the generated sheets; only the developer-mode Pokemon preview reads the
+follow-sprite atlases, and `WaterSpriteRegistry` stores the source path but loads `water_runtime` sheets. The mapping
+JSONs read at runtime (`followsprites_mapping.json`, the water swimming/levitates mappings) still ship. The build's ZIP
+check requires those JSONs and the generated sheets, not the source PNGs. Pass `--with-source-art` to
+`scripts/build-mod.py` for a full archive.
+
 Tag-triggered GitHub Release (`.github/workflows/release.yml`):
 
 ```text
@@ -516,6 +526,47 @@ git tag v1.0.2 && git push origin v1.0.2
 
 Manifest field `github` = `YoDrehDenSwagAuf/overworld-spawn-mod` enables Mod Manager
 update detection. Upload only the public `wilds-of-kanto-v*.zip` asset.
+
+### 25.1 Sprite atlases (default in `build-mod.py`)
+
+The runtime sheets are ~15,400 small PNGs (classic 16x96, True Size, water, silhouettes, poke_followers, pika) plus the 8,088
+PMD dialogue portraits (40x40). That is nearly all of the file count of a release ZIP. Since 2.7.0 `python3 scripts/build-mod.py`
+(and so the release CI) bakes them into shard PNGs plus JSON indexes and ships those instead. `--atlas=classic,hgss,...` bakes only
+some families and `--no-atlas` builds the old per-file ZIP (the fallback if a sprite ever misbehaves only on the atlas build).
+`scripts/build-mod.ps1` does not bake atlases; it still produces the per-file layout.
+
+- **Generator** `tools/generate_sprite_atlases.py`: one *family* per sprite directory group (`classic`, `hgss`, `true_followers`,
+  `true_pokedex`, `true_swimming`, `true_levitate`, `water_swimming`, `water_levitates`, `silhouette_swimming`,
+  `silhouette_levitates`, `poke_followers`, `pika`, `portraits`); bare `--atlas` and `--atlas=all` = every family,
+  `--atlas=classic,hgss` picks some. `FAMILY_OPTIONS` overrides shard sizing per family (portraits use ~400 kpx / 10,000 px-tall
+  shards so the first dialogue decodes a few MB, not tens) and can declare `prefixes`.
+  Output `assets/atlas/` (gitignored build output): `index.json`, `<family>.json` (`dirs -> { file name -> [shard,x,y,w,h] }`,
+  shard numbers 0-based) and `<family>_<n>.png`. The root index lists each family's `dirs`; a **prefix family** (`portraits`) lists
+  `prefixes` instead (`assets/pmdcollab/portraits/`), so the root index parsed at every launch stays tiny while its 2,050
+  directories live in the lazily read family index (343 KB, ~21 ms to decode in LuaJIT, once, at the first dialogue).
+- **Layout is one column per shard** (sprites stacked, width = the widest sprite, under 32,768 px tall). PNG compresses row by row
+  with a 32 KB deflate window, so mixing sprites in a row made a shelf-packed atlas 33-67% LARGER than the per-file sheets; a
+  column is 4-16% smaller (measured). Every sprite is copied pixel for pixel; `tools/validate_sprite_atlases.py` re-slices all of
+  them against the source PNGs, checks bounds, overlaps and coverage, and `build-mod.py` runs it every time.
+- **Runtime** `lib/sprite_atlas.lua` (installed first in `main.lua`): wraps the engine's central `src.render.Assets`
+  (`image`, `imageData`, `exists`), maps `mods/<folder>/assets/...` (or bare / `./` / backslash forms) to the index key, decodes a
+  shard on demand into a byte-capped LRU (96 MB), cuts the sprite out into an ordinary small Image (a fresh ImageData copy for
+  `imageData`, which the recolor bake mutates) and caches it. Anything not indexed falls through to the original function. It is
+  registered with `Assets.register` (invalidate + session-end release). `spawn_render.probeImageLoad`,
+  `luminance_sheet.deriveAndPersist` and `pokemon_dialogue`'s portrait loader, which load by path themselves, ask the atlas first.
+  The credit / license files under `assets/pmdcollab/` (`CREDITS.txt`, `LICENSE.txt`, `SOURCE.json`, `portrait_table.lua`) stay
+  ordinary files and the ZIP check requires them.
+- **Source mode:** a family whose real files exist on disk (a repo checkout) is never served from the atlas, so a stale atlas can not
+  shadow freshly generated sheets. With no `assets/atlas/index.json` the module does nothing.
+- **Not a shared GPU atlas:** the engine's `SpriteRenderer` assumes each sheet starts at x=0 (topHalf / oamRow quads,
+  `getFrameGeometry`, recolor baking), so drawing from an atlas offset would mean patching engine internals other mods use. Each
+  sprite is still its own small image at draw time, so this reduces file count and per-file IO, not draw cost.
+- **Packaging:** the manual pack leaves out the per-file sheets the indexes cover and ships `assets/atlas/`; the ZIP check reads the
+  indexes inside the ZIP, requires every shard, and fails if a sprite ships both ways. an atlas build forces the manual pack (the modkit
+  cannot apply the exclusion). Measured with every family baked: **23,698 -> 277 files, 33.9 -> 20.1 MB** (the portraits alone go
+  from 13.4 MB in 8,088 files to 7.0 MB in 33 shards).
+- Not verified in the game: only the wiring (unit test against fakes, the engine's real `Assets` / `SpriteRenderer`, and the whole
+  suite on a tree with the per-file sheets removed). Check first-spawn hitches and Voxel / recolor modes on a real ZIP.
 
 ## 26. Known technical constraints / Voxel compatibility
 

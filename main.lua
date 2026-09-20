@@ -118,6 +118,22 @@ return function(mod)
   Config.migrateSpriteFadeOption(mod)
   Config.migrateSpriteColorOption(mod)
 
+  -- Sprite atlases (release ZIP build output): serve sheets that have no file of their own from shard PNGs under
+  -- their original paths. A no-op without assets/atlas/, i.e. in a repo checkout or a --no-atlas build.
+  do
+    local okAtlas, atlasErr = pcall(function()
+      local Atlas = V.require("sprite_atlas")
+      local installed, why = Atlas.install(mod, {
+        log = function(msg)
+          if Config.debug(mod) == true then DebugLog.info(mod, "%s", msg) end
+        end,
+      })
+      if installed then DebugLog.info(mod, "sprite atlas installed") end
+      return installed, why
+    end)
+    if not okAtlas then DebugLog.warn(mod, "sprite atlas install failed: %s", tostring(atlasErr)) end
+  end
+
   local render = SpawnRender.new(mod)
   -- LOAD PHASE: all sprite content registration must finish here, before
   -- Gen1Recomp freezes content registries after mod load.
@@ -610,7 +626,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.6.5"
+  mod.exports.version = "2.7.0"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

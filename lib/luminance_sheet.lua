@@ -86,7 +86,10 @@ function LuminanceSheet.available()
 end
 
 local function deriveAndPersist(sourcePath, fileName, mapFn)
-  local id = love.image.newImageData(sourcePath)
+  -- A source sheet that ships in a sprite atlas has no file of its own (lib/sprite_atlas.lua).
+  local okAtlas, Atlas = pcall(function() return V.require("sprite_atlas") end)
+  local id = okAtlas and Atlas and Atlas.imageData(sourcePath) or nil
+  id = id or love.image.newImageData(sourcePath)
   mapFn(id)
   local out = CACHE_PREFIX .. fileName
   return WildsFs.persistImageData(id, out)
