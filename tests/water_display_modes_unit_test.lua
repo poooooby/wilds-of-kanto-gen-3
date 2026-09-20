@@ -241,9 +241,8 @@ for _, c in ipairs(SpriteStyleMenu.WATER_CHOICES) do
 end
 
 -- ------- Label validator -------
-local okPy = os.execute("python3 tools/validate_option_labels.py >/dev/null 2>&1")
--- os.execute returns true/0 depending on Lua version
-check(okPy == true or okPy == 0, "validate_option_labels passes")
+local okPy = dofile("tests/_shell.lua").pythonFile("tools/validate_option_labels.py")
+check(okPy, "validate_option_labels passes")
 
 print("")
 if failures > 0 then

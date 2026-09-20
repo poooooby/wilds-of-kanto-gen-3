@@ -96,6 +96,7 @@ tests/sprite_atlas_unit_test.lua
 tests/sprite_fade_color_unit_test.lua
 tests/sprite_presentation_unit_test.lua
 tests/sprite_providers_unit_test.lua
+tests/_shell.lua
 tests/pmdcollab_unit_test.lua
 tests/pokemon_dialogue_unit_test.lua
 tests/sprite_swap_anim_unit_test.lua

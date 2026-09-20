@@ -59,7 +59,8 @@ eq(RuntimeSheets.STAND.right, 2, "right mirrors left stand")
 eq(RuntimeSheets.WALK.right, 5, "right mirrors left walk")
 
 -- Pixel compare via python (Pillow available in CI/agent).
-local py = io.popen([[python3 - <<'PY'
+local Shell = dofile("tests/_shell.lua")
+local _, out = Shell.python([[
 from PIL import Image
 import hashlib, os
 rt='assets/wilds_generated/followsprites_runtime'
@@ -75,24 +76,22 @@ for dex in [1,25,151]:
     else:
         print(f'DISTINCT {dex}')
 print('PASS' if ok else 'FAIL')
-PY]])
-local out = py:read("*a") or ""
-py:close()
+]])
+out = out or ""
 check(out:find("DISTINCT 1", 1, true) ~= nil, "Bulbasaur idle!=walk")
 check(out:find("DISTINCT 25", 1, true) ~= nil, "Pikachu idle!=walk")
 check(out:find("DISTINCT 151", 1, true) ~= nil, "Mew idle!=walk")
 check(out:find("PASS", 1, true) ~= nil, "all sample sheets distinct")
 
 -- Generator walk_col default prefers column 2.
-local gpy = io.popen([[python3 - <<'PY'
+local _, gout = Shell.python([[
 import importlib.util
 spec=importlib.util.spec_from_file_location('gen','tools/generate_runtime_sprite_sheets.py')
 gen=importlib.util.module_from_spec(spec); spec.loader.exec_module(gen)
 layout={'walkColumns':[0,1,2,3],'idleColumn':0}
 print(gen.walk_col(layout))
-PY]])
-local goul = (gpy:read("*a") or ""):gsub("%s+", "")
-gpy:close()
+]])
+local goul = (gout or ""):gsub("%s+", "")
 eq(goul, "2", "walk_col default is column 2")
 
 -- Battle-sprite isolation: applyProviderSprite must not write pokemon fronts.

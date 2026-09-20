@@ -95,8 +95,16 @@ else
   -- the "production games label" case below), so this doesn't change what
   -- Wilds of Kanto claims to support.
   local all = { games = ModTargets.normalize({ "all" }) }
-  eq(ModTargets.label(all), "Gen 1+2+3",
-     'games: ["all"] → Gen 1+2+3')
+  -- Expected label derived from the engine itself (highest generation in GameVersion.ORDER), so the assertion holds on an
+  -- older bootstrapped engine (Gen 1+2) and on a newer one that added Gen 3 alike.
+  local GameVersion = require("src.core.GameVersion")
+  local topGen = 1
+  for _, id in ipairs(GameVersion.ORDER) do topGen = math.max(topGen, GameVersion.generation(id)) end
+  local gens = {}
+  for g = 1, topGen do gens[#gens + 1] = tostring(g) end
+  local expectedAll = "Gen " .. table.concat(gens, "+")
+  eq(ModTargets.label(all), expectedAll,
+     'games: ["all"] → every generation the engine knows (' .. expectedAll .. ')')
 
   local gen2 = { games = ModTargets.normalize({ "gen2" }) }
   eq(ModTargets.label(gen2), "Gen 2",

@@ -356,97 +356,20 @@ local function pngSize(path)
   return w, h
 end
 
-local ffi = require("ffi")
-ffi.cdef[[
-  int uncompress(unsigned char *dest, unsigned long *destLen,
-                 const unsigned char *source, unsigned long sourceLen);
-]]
-local zlib = ffi.load("z")
-
+-- Opaque-pixel bounding box of a PNG, via Pillow (already a build dependency), so this runs on any Lua and OS
+-- (it used to decode the PNG with LuaJIT ffi + libz, which does not exist on Windows).
+local Shell = dofile("tests/_shell.lua")
 local function pngOpaqueBBox(path)
-  local f = assert(io.open(path, "rb"))
-  local data = f:read("*a")
-  f:close()
-  local function u32(i)
-    return data:byte(i) * 16777216 + data:byte(i + 1) * 65536
-      + data:byte(i + 2) * 256 + data:byte(i + 3)
-  end
-  local w, h = u32(17), u32(21)
-  local i = 9
-  local idat = {}
-  while i + 8 <= #data do
-    local ln = u32(i)
-    local typ = data:sub(i + 4, i + 7)
-    local payload = data:sub(i + 8, i + 7 + ln)
-    if typ == "IDAT" then
-      idat[#idat + 1] = payload
-    elseif typ == "IEND" then
-      break
-    end
-    i = i + 12 + ln
-  end
-  local src = table.concat(idat)
-  local bound = (w * 4 + 1) * h + 64
-  local dest = ffi.new("unsigned char[?]", bound)
-  local destLen = ffi.new("unsigned long[1]", bound)
-  local srcBuf = ffi.new("unsigned char[?]", #src)
-  ffi.copy(srcBuf, src, #src)
-  local rc = zlib.uncompress(dest, destLen, srcBuf, #src)
-  assert(rc == 0, "zlib uncompress " .. path .. " rc=" .. tostring(rc))
-  local raw = ffi.string(dest, tonumber(destLen[0]))
-  local stride = w * 4
-  local function paeth(a, b, c)
-    local p = a + b - c
-    local pa, pb, pc = math.abs(p - a), math.abs(p - b), math.abs(p - c)
-    if pa <= pb and pa <= pc then return a end
-    if pb <= pc then return b end
-    return c
-  end
-  local prev = {}
-  for x = 1, stride do prev[x] = 0 end
-  local minX, minY, maxX, maxY
-  local off = 1
-  for y = 0, h - 1 do
-    local ft = raw:byte(off); off = off + 1
-    local row = {}
-    for x = 1, stride do
-      row[x] = raw:byte(off); off = off + 1
-    end
-    if ft == 1 then
-      for x = 1, stride do
-        local left = x > 4 and row[x - 4] or 0
-        row[x] = (row[x] + left) % 256
-      end
-    elseif ft == 2 then
-      for x = 1, stride do
-        row[x] = (row[x] + prev[x]) % 256
-      end
-    elseif ft == 3 then
-      for x = 1, stride do
-        local left = x > 4 and row[x - 4] or 0
-        row[x] = (row[x] + math.floor((left + prev[x]) / 2)) % 256
-      end
-    elseif ft == 4 then
-      for x = 1, stride do
-        local left = x > 4 and row[x - 4] or 0
-        local ul = x > 4 and prev[x - 4] or 0
-        row[x] = (row[x] + paeth(left, prev[x], ul)) % 256
-      end
-    elseif ft ~= 0 then
-      error("unsupported PNG filter " .. tostring(ft) .. " in " .. path)
-    end
-    prev = row
-    for x = 0, w - 1 do
-      local a = row[x * 4 + 4]
-      if a > 0 then
-        if not minX or x < minX then minX = x end
-        if not maxX or x > maxX then maxX = x end
-        if not minY or y < minY then minY = y end
-        if not maxY or y > maxY then maxY = y end
-      end
-    end
-  end
-  return minX, minY, maxX, maxY, maxX - minX + 1, maxY - minY + 1
+  local ok, out = Shell.python(string.format([[
+from PIL import Image
+im = Image.open(%q).convert("RGBA")
+bb = im.getchannel("A").point(lambda v: 255 if v > 0 else 0).getbbox()
+print(bb[0], bb[1], bb[2] - 1, bb[3] - 1)
+]], path))
+  assert(ok, "pillow bbox failed for " .. path .. ": " .. tostring(out))
+  local x0, y0, x1, y1 = out:match("(%-?%d+)%s+(%-?%d+)%s+(%-?%d+)%s+(%-?%d+)")
+  x0, y0, x1, y1 = tonumber(x0), tonumber(y0), tonumber(x1), tonumber(y1)
+  return x0, y0, x1, y1, x1 - x0 + 1, y1 - y0 + 1
 end
 
 local sharedBBox

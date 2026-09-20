@@ -300,9 +300,15 @@ end
 ----------------------------------------------------------------
 -- Optional: load the real Gen2 PartyMenu class and call submenuItems
 ----------------------------------------------------------------
-if root then
+-- The real engine's Sound.lua needs LuaJIT's `bit` module, so this part only runs under luajit.
+local hasBit = pcall(require, "bit")
+if root and not hasBit then
+  print("skip: real Gen2 PartyMenu needs LuaJIT's bit module (run with luajit)")
+end
+if root and hasBit then
   package.path = root .. "/?.lua;" .. root .. "/?/init.lua;" .. package.path
-  package.loaded["src.render.Assets"] = package.loaded["src.render.Assets"] or {}
+  -- Sound.lua registers its cache flush with Assets at load (Assets.register), so the stub must have it.
+  package.loaded["src.render.Assets"] = package.loaded["src.render.Assets"] or { register = function() end }
   package.loaded["src.ui.gen2.Chrome"] = package.loaded["src.ui.gen2.Chrome"] or {}
   package.loaded["src.render.Font"] = package.loaded["src.render.Font"] or {}
   package.loaded["src.render.GbcPalette"] = package.loaded["src.render.GbcPalette"] or {}

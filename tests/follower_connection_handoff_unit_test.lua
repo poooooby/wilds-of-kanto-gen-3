@@ -1,6 +1,7 @@
 -- Seamless outdoor connection handoff for multi-Pokémon follower trains.
--- Run: lua tests/follower_connection_handoff_unit_test.lua
+-- Run: lua tests/follower_connection_handoff_unit_test.lua (or luajit)
 package.path = "./?.lua;./?/init.lua;" .. package.path
+local unpack = table.unpack or unpack -- LuaJIT / Lua 5.1 global, table.unpack from 5.2
 
 local failures = 0
 local function check(cond, msg)

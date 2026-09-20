@@ -23,30 +23,32 @@ end
 -- Importer fixture: portrait output from checked-in mini fixture
 ------------------------------------------------------------------------
 print("== importer fixture ==")
-local rc = os.execute([[python3 - <<'PY'
+local Shell = dofile("tests/_shell.lua")
+local importRoot = Shell.tmpDir() .. "/wilds_pmd_import_test"
+local rc, importOut = Shell.python(string.format([[
 import sys
 from pathlib import Path
 import importlib.util
 spec = importlib.util.spec_from_file_location("import_pmdcollab", "scripts/import_pmdcollab.py")
 imp = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(imp)
-imp.ROOT = Path("/tmp/wilds_pmd_import_test")
+imp.ROOT = Path(%q)
 imp.OUT = imp.ROOT / "assets" / "pmdcollab"
 sys.argv = ["import_pmdcollab.py", "tests/fixtures/spritecollab_mini", "--dex-max", "2", "--clean"]
 raise SystemExit(imp.main())
-PY]])
-check(rc == true or rc == 0, "importer exits 0 on fixture")
+]], importRoot))
+check(rc, "importer exits 0 on fixture" .. (rc and "" or (": " .. tostring(importOut))))
 
 local function exists(p)
   local f = io.open(p, "rb")
   if f then f:close() return true end
   return false
 end
-check(exists("/tmp/wilds_pmd_import_test/assets/pmdcollab/portraits/001/normal/normal.png"),
+check(exists(importRoot .. "/assets/pmdcollab/portraits/001/normal/normal.png"),
   "fixture produced bulbasaur normal portrait")
-check(exists("/tmp/wilds_pmd_import_test/assets/pmdcollab/SOURCE.json"), "SOURCE.json written")
-check(exists("/tmp/wilds_pmd_import_test/assets/pmdcollab/CREDITS.txt"), "CREDITS.txt written")
-check(exists("/tmp/wilds_pmd_import_test/assets/pmdcollab/LICENSE.txt"), "LICENSE.txt written")
+check(exists(importRoot .. "/assets/pmdcollab/SOURCE.json"), "SOURCE.json written")
+check(exists(importRoot .. "/assets/pmdcollab/CREDITS.txt"), "CREDITS.txt written")
+check(exists(importRoot .. "/assets/pmdcollab/LICENSE.txt"), "LICENSE.txt written")
 
 ------------------------------------------------------------------------
 -- Portraits independent of sprite style
@@ -134,10 +136,10 @@ eq(r, "textBox", "presentText delegates")
 -- Option label validation
 ------------------------------------------------------------------------
 print("== option labels ==")
-local labelRc = os.execute("python3 tools/validate_option_labels.py >/tmp/opt_labels.txt 2>&1")
-check(labelRc == true or labelRc == 0, "validate_option_labels ok")
-local asciiRc = os.execute("python3 scripts/validate-manager-ascii.py >/tmp/ascii.txt 2>&1")
-check(asciiRc == true or asciiRc == 0, "validate-manager-ascii ok")
+local labelOk, labelOut = Shell.pythonFile("tools/validate_option_labels.py")
+check(labelOk, "validate_option_labels ok" .. (labelOk and "" or (": " .. tostring(labelOut))))
+local asciiOk, asciiOut = Shell.pythonFile("scripts/validate-manager-ascii.py")
+check(asciiOk, "validate-manager-ascii ok" .. (asciiOk and "" or (": " .. tostring(asciiOut))))
 
 print("")
 if failures > 0 then

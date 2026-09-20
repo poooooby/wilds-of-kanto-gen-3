@@ -15,23 +15,25 @@ local function eq(a, b, msg)
   check(a == b, string.format("%s (got %s expected %s)", msg, tostring(a), tostring(b)))
 end
 
--- Asset inventory
+-- Asset inventory: the built-in GSC pack ships one normal and one shiny sheet per species, National Dex 1..251
+-- (submerged art is derived at load, not shipped).
 do
-  local missing = {}
-  local seen = {}
-  for i = 1, 151 do
-    local path = string.format("assets/enhanced_overworld/poke_followers/follower_%03d.png", i)
-    local f = io.open(path, "rb")
-    if not f then
-      missing[#missing + 1] = i
-    else
-      f:close()
-      if seen[i] then check(false, "duplicate id " .. i) end
-      seen[i] = true
+  local COUNT = 251
+  local missing, extra = {}, {}
+  for _, kind in ipairs({ "normal", "shiny" }) do
+    for i = 1, COUNT do
+      local path = string.format("assets/enhanced_overworld/poke_followers/follower_%03d_%s.png", i, kind)
+      local f = io.open(path, "rb")
+      if f then f:close() else missing[#missing + 1] = path end
     end
   end
-  eq(#missing, 0, "no missing poke_followers ids 1..151")
-  eq(#seen, 151, "exactly 151 poke_followers sheets")
+  for _, name in ipairs({ "follower_000_normal.png", string.format("follower_%03d_normal.png", COUNT + 1) }) do
+    local f = io.open("assets/enhanced_overworld/poke_followers/" .. name, "rb")
+    if f then f:close(); extra[#extra + 1] = name end
+  end
+  eq(#missing, 0, "every poke_followers normal + shiny sheet 1.." .. COUNT .. " is present"
+    .. (#missing > 0 and (" (first missing: " .. missing[1] .. ")") or ""))
+  eq(#extra, 0, "no poke_followers sheet outside 1.." .. COUNT)
 end
 
 local optionStore = {}
