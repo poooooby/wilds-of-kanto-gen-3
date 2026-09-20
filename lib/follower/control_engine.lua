@@ -1663,20 +1663,21 @@ function ControlEngine:applyPlayerAsPokemon(game, ow, force)
     logWarn(self.mod, "SpriteRenderer.new unavailable for player pokemon")
     return
   end
-  local ok, sprite = pcall(SpriteRenderer.new, {
-    id = "SPRITE_PLAYER_POKEMON",
-    image = path,
-    frames = (resolved and resolved.frames) or 6,
-    walker = not resolved or resolved.walker ~= false,
-    trueColor = not resolved or resolved.trueColor ~= false,
-    pokepcShiny = shiny and true or false,
-  }, "player")
+  -- Build from the geometry-carrying def (True Size frameWidth/frameHeight/anchor, animation counts and
+  -- durations, disableVerticalStepFlip, forceRawTrueColor), the same one followers use. A bare
+  -- {id, image, frames, ...} def made the engine assume 16x16 frames, so HGSS / PokeMMO sheets were cut into
+  -- pieces and the sprite cycled through half-frames. The id must stay SPRITE_PLAYER_POKEMON: grass, cell
+  -- occupancy and the restore path match on it.
+  def.id = "SPRITE_PLAYER_POKEMON"
+  local ok, sprite = pcall(SpriteRenderer.new, def, "player")
   if not ok then
     logWarn(self.mod, "SpriteRenderer.new failed (player pokemon): %s", tostring(sprite))
     return
   end
   if ok and sprite then
     player.sprite = sprite
+    -- Same presentation wraps followers get (no vertical step flip, raw true-color blit).
+    attachPresentation(player, resolved)
     player._pokepcAsPokemon = true
     player._pokepcControlSpecies = species
     player._pokepcShiny = shiny and true or false

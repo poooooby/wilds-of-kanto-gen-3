@@ -8,6 +8,17 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.6.5 (fork)
+
+### Bug fixes
+
+- Fixed Control Mode = Pokemon on Red/Blue/Yellow drawing half a sprite and
+  cycling through broken frames with the HGSS / PokeMMO sprite style. The
+  controlled Pokemon's sprite was built without its True Size frame size and
+  anchor, animation timing and presentation flags, so the game cut the sheet
+  into 16x16 pieces. It now uses the same sprite definition followers do.
+  The classic Followers style was not affected.
+
 ## 2.6.4 (fork)
 
 ### Features
