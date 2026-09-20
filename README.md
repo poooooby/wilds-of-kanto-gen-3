@@ -205,10 +205,11 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
   (Gen 1 up to All) caps the generations Spawn Table and Random may use, by
   national Pokedex number; Off is never limited.
 - **Shiny Pokemon** (`SHINY_POKEMON`) — declared a **conflict**, use the built-in
-  **SHINY RATE** option instead (Red/Blue/Yellow). With Voxel off, Shiny
+  **SHINY RATE** option instead (Red/Blue/Yellow and Gold). With Voxel off, Shiny
   Pokemon redraws the follower with a fixed 16x16 box and ignores True Size
   frame sizes and anchors, so followers end up offset. SHINY RATE rolls
-  real shiny DVs on wild Pokemon (visible spawns and classic encounters),
+  real shiny DVs on wild Pokemon (visible spawns and classic encounters; in
+  Gold it sets the shiny flag through the engine's shiny.roll hook),
   shows our shiny overworld sprite, keeps the shiny when caught, and the
   follower switches to its shiny sprite. The **SHINY SPARKLE** option plays a
   one-time sparkle and chime when a shiny appears in battle; there is no

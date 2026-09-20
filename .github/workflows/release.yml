@@ -102,7 +102,9 @@ jobs:
             tests/voxel_adapter_perf_unit_test.lua \
             tests/hgss_water_presentation_perf_unit_test.lua \
             tests/sprite_atlas_unit_test.lua \
-            tests/pokemon_dialogue_unit_test.lua
+            tests/pokemon_dialogue_unit_test.lua \
+            tests/shiny_unit_test.lua \
+            tests/shiny_gen2_unit_test.lua
           do
             echo "==> luajit $t"
             luajit "$t"

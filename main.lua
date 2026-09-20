@@ -144,7 +144,8 @@ return function(mod)
   end
 
   -- SHINY RATE (Red/Blue/Yellow): wrap Pokemon.new / BattleState.newWild so wild Pokemon roll shiny.
-  -- Gen 2 (Gold) has native shiny and is left alone. Failure only means "no shinies", never an error.
+  -- Gold gets the same rate through the engine's shiny.roll hook (installed with the other hooks below).
+  -- Failure only means "no shinies", never an error.
   local Shiny = V.require("shiny")
   if not GameCompat.isGen2(mod, liveGame()) then
     local okShiny, installed, shinyErr = pcall(Shiny.install, mod)
@@ -549,6 +550,17 @@ return function(mod)
       DebugLog.warn(mod, "encounter.fishing hook unavailable: %s", tostring(unwrapFish))
     end
 
+    -- SHINY RATE for Gold: arm each wild encounter's roll and let the engine's shiny.roll hook consume it.
+    -- Registered for both games (Gen 1 never calls shiny.roll) but only armed while Gold is running.
+    local okShinyG2, unwrapShinyG2, shinyG2Err = pcall(Shiny.installGen2, mod, {
+      isGen2 = function() return GameCompat.isGen2(mod, liveGame()) end,
+    })
+    if okShinyG2 and type(unwrapShinyG2) == "function" then
+      unwraps.shinyGen2 = unwrapShinyG2
+    else
+      DebugLog.warn(mod, "gen2 shiny hooks unavailable: %s", tostring(okShinyG2 and shinyG2Err or unwrapShinyG2))
+    end
+
     unwraps.collision = mod.hooks:wrap("movement.collision", function(next, allowed, ctx)
       local ok, result = pcall(function()
         local base = next(allowed, ctx)
@@ -626,7 +638,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.7.1"
+  mod.exports.version = "2.7.2"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

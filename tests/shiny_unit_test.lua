@@ -292,6 +292,28 @@ do
   check(conflicts:find('"overworld_wild_spawns"', 1, true) ~= nil, "manifest: the upstream mod stays a conflict")
 end
 
+-- ---------------------------------------------------------------- every visible spawn record rolls shiny
+-- Water spawns once built their record without a `shiny` field: SHINY RATE never applied to them (even on "always") and
+-- Shiny.armForBattle then saw a non-shiny record and forced a non-shiny battle mon. Every record that lib/spawn_logic.lua hands
+-- to render.makeEntity for a real (non-test) spawn must carry the roll, so a new spawn path cannot forget it.
+do
+  local f = assert(io.open("lib/spawn_logic.lua", "rb"))
+  local src = f:read("*a"):gsub("\r\n", "\n"); f:close()
+  local seen, rolled, unrolled = 0, 0, {}
+  for body in src:gmatch("\n  local record = {\n(.-)\n  }\n") do
+    if not body:find("testSpawn = true", 1, true) then
+      seen = seen + 1
+      if body:find("shiny = self:_rollShiny(", 1, true) then
+        rolled = rolled + 1
+      else
+        unrolled[#unrolled + 1] = (body:match("encounterKind = ([^\n]+)") or "?")
+      end
+    end
+  end
+  check(seen >= 2, "spawn records: found the land and the water spawn records (got " .. seen .. ")")
+  eq(rolled, seen, "spawn records: every real spawn record rolls shiny (missing: " .. table.concat(unrolled, "; ") .. ")")
+end
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

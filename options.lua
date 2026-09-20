@@ -231,7 +231,7 @@ return {
       { "1/10", "high" },
       { "Always", "always" },
     },
-    description = "Red/Blue/Yellow only. Chance that a wild Pokemon is shiny. A shiny shows its shiny overworld sprite, is a real shiny (shiny DVs) in battle, and stays shiny when caught; its follower uses the shiny sprite. Off means none. Replaces the Shiny Pokemon mod, which cannot run alongside this one.",
+    description = "Chance that a wild Pokemon is shiny (Red/Blue/Yellow and Gold). A shiny shows its shiny overworld sprite, is a real shiny in battle, and stays shiny when caught; its follower uses the shiny sprite. Off means none. Replaces the Shiny Pokemon mod, which cannot run alongside this one.",
   },
   {
     key = "town_pokemon",

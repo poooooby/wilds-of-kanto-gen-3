@@ -593,13 +593,12 @@ function SpawnLogic:_encDef(mapId, game)
   })
 end
 
---- Shiny roll for a new battle-capable visible spawn (Red/Blue/Yellow only). Forced/test spawns are
+--- Shiny roll for a new battle-capable visible spawn (Gen 1 and Gold). Forced/test spawns are
 -- never random shinies unless the caller asks (`opts.shiny`). The result rides on the record so the
 -- entity shows the shiny sprite and the battle it starts fights the same shiny (lib/shiny.lua).
 function SpawnLogic:_rollShiny(game, opts)
   if opts and opts.shiny ~= nil then return opts.shiny == true end
   if opts and (opts.species or opts.testSpawn or opts.readinessProbe) then return false end
-  if GameCompat.isGen2(self.mod, game) then return false end
   local ok, shiny = pcall(Shiny.roll, self.mod)
   return ok and shiny == true
 end
@@ -2372,7 +2371,13 @@ function SpawnLogic:trySpawnWater(game, opts)
     hiddenEncounter = false,
     canTriggerBattle = false,
     originSurface = Surface.WATER,
+    -- Same roll as land spawns: the entity shows the shiny swimming sprite and the battle fights the same shiny.
+    -- (Without it Shiny.armForBattle saw a non-shiny record and forced a non-shiny battle, whatever SHINY RATE said.)
+    shiny = self:_rollShiny(game, opts),
   }
+  if record.shiny then
+    self:_log("shiny wild spawned: %s Lv%s id=%s", tostring(species), tostring(level), tostring(id))
+  end
 
   local ok, entityOrErr = pcall(self.render.makeEntity, self.render, game, record)
   if not ok or not entityOrErr then
@@ -3304,7 +3309,7 @@ function SpawnLogic:_startBattle(record)
   end
 
   -- The battle mon must be the one the player saw: hand the spawn's shiny roll to BattleState.newWild.
-  if not GameCompat.isGen2(self.mod, game) then pcall(Shiny.armForBattle, record) end
+  pcall(Shiny.armForBattle, record, GameCompat.isGen2(self.mod, game))
   ok, err = GameCompat.startWildBattle(world, record.species, record.level, game)
   if not ok then
     pcall(Shiny.clearPending)

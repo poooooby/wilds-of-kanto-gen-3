@@ -176,12 +176,19 @@ Visible water spawns use `lib/water_spawn.lua` (cell → shore zone → pool →
 
 ### 8.0 Shiny system (SHINY RATE)
 
-`lib/shiny.lua` replaces the Shiny Pokemon mod for Red/Blue/Yellow (that mod is a manifest conflict: with Voxel off
+`lib/shiny.lua` replaces the Shiny Pokemon mod for Red/Blue/Yellow, and applies the same rate in Gold (Gen 2, see the last bullet below; that mod is a manifest conflict: with Voxel off
 its `SpriteRenderer.draw` wrap redraws `SPRITE_PIKACHU` / `SPRITE_PLAYER_POKEMON` followers with a hardcoded 16x16
 quad at `(px - camX, py - camY - 4)`, ignoring `frameWidth` / `frameHeight` / `anchorX` / `anchorY`).
 
 - **Definition:** the engine's RBY virtual shiny (`Stats.isShiny`): Defense/Speed/Special DV 10 and Attack DV in
   {2,3,6,7,10,11,14,15}. `Shiny.makeDVs` builds them, `Shiny.applyToMon` sets `dvs`/`shiny` and recomputes stats.
+- **Gold (Gen 2):** Gold builds every mon through `Mon.new`, which asks the `shiny.roll` hook whether the DVs make it shiny -- for trainers,
+  starters, gifts and eggs too, and again on every summary open. So `Shiny.installGen2` (called from `main.lua` `installHooks`) uses an
+  arm-then-consume token: `encounter.species` / `encounter.fishing` (classic encounters) and `Shiny.armForBattle(record, true)` (visible spawns) arm
+  `{ species, level, shiny }` right before the wild mon is built, and the `shiny.roll` wrapper consumes it once for that species (TTL
+  `Shiny.GEN2_TTL`; also cleared by `Shiny.clearPending`). Everything else is the vanilla DV check. A hook-made shiny keeps ordinary DVs (it will not
+  breed shiny) and a wild that rolled non-shiny but reads shiny by DV can flip shiny on a summary open (~1/8192); static script encounters and roamers
+  are not armed. `SHINY SPARKLE` stays Gen 1 only (Gold has its own shiny flash). Tests: `tests/shiny_gen2_unit_test.lua`.
 - **Rate:** `Config.shinyRate` (`off`, `gen2` 1/8192, `modern` 1/4096 default, `common` 1/1024, `frequent` 1/512,
   `often` 1/100, `high` 1/10, `always`), `Shiny.roll` draws `rng(1, denom) == 1`.
 - **Where it rolls:** visible land spawns roll at creation (`SpawnLogic:_rollShiny` -> `record.shiny` ->

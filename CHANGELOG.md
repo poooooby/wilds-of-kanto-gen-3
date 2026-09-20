@@ -8,6 +8,27 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.7.2 (fork)
+
+### Features
+
+- **SHINY RATE now works in Pokemon Gold** (Gen 2), not just Red/Blue/Yellow. Visible
+  spawns roll at the chosen rate and show the shiny overworld sprite, the battle they
+  start is that same shiny, and classic grass, surf, fishing and other wild encounters
+  follow the setting too; OFF really means none. Trainers' Pokemon, starters, gifts and
+  eggs are untouched. The rate goes through the game's own shiny hook, so a shiny made
+  this way has ordinary stats/DVs (it will not pass shininess to bred offspring), and
+  static encounters such as legendaries keep Gold's normal 1/8192 chance. Gold support
+  is still beta, and this has not been tried in a live Gold game yet.
+
+### Bug fixes
+
+- Fixed SHINY RATE never applying to swimming (water) overworld Pokemon. Water spawns
+  skipped the shiny roll that grass and cave spawns get, so they never showed the shiny
+  sprite, and the battle they started was forced to a non-shiny Pokemon even with the
+  rate set to ALWAYS. They now roll like every other visible spawn: the shiny swimming
+  sprite appears and the battle fights that same shiny.
+
 ## 2.7.1 (fork)
 
 ### Bug fixes

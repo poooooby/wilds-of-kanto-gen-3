@@ -540,7 +540,7 @@ function SettingsMenus:_openWildsRoot(game)
       label = "SHINY RATE",
       stepper = true,
       wrap = true,
-      -- Gen 1 wild shiny chance; see lib/shiny.lua.
+      -- Wild shiny chance (Gen 1 and Gold); see lib/shiny.lua.
       choices = {
         { label = "OFF", value = "off" }, { label = "1/8192", value = "gen2" },
         { label = "1/4096", value = "modern" }, { label = "1/1024", value = "common" },

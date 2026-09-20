@@ -11,7 +11,11 @@
 --   * classic encounters (steps, Surf, rods) roll inside BattleState.newWild.
 -- A caught shiny keeps its shiny DVs (Gen1.createCaughtPokemon), so the follower and party use the
 -- shiny sprite. Trainers, gifts, eggs and starters are never touched: Pokemon.new is only altered while
--- BattleState.newWild is running. Gen 2 (Gold) has its own native shiny and is left alone.
+-- BattleState.newWild is running.
+--
+-- Gen 2 (Gold) already has a native DV shiny (1/8192), so it is not wrapped: Gold builds every mon through
+-- Mon.new, which asks the engine's `shiny.roll` hook whether the DVs make it shiny. See the Gen 2 section at the
+-- bottom: a wild encounter or a visible spawn's battle arms a short-lived token, and the hook consumes it once.
 --
 -- install() wraps Pokemon.new and BattleState.newWild (engine_internals permission, same technique the
 -- Shiny Pokemon mod used). Shininess must be decided when the mon is created: the battler is built from
@@ -132,7 +136,7 @@ end
 -- pending: nil | { dvs = table } | { none = true }. A visible wild that rolled non-shiny must stay
 -- non-shiny in battle, so "none" is an explicit value (never a bare false), consumed by the next
 -- newWild exactly like a shiny hand-off.
-local state = { pending = nil, inNewWild = false, mod = nil, deps = nil, isGen2 = nil }
+local state = { pending = nil, inNewWild = false, mod = nil, deps = nil, isGen2 = nil, gen2Pending = nil }
 Shiny._state = state
 
 function Shiny.setPending(dvsOrNone)
@@ -147,6 +151,7 @@ end
 
 function Shiny.clearPending()
   state.pending = nil
+  state.gen2Pending = nil
 end
 
 function Shiny.pending()
@@ -154,8 +159,13 @@ function Shiny.pending()
 end
 
 --- For a visible spawn that is about to start a wild battle: shiny DVs when its record rolled shiny,
--- "none" otherwise, so the fought mon matches the seen sprite.
-function Shiny.armForBattle(record)
+-- "none" otherwise, so the fought mon matches the seen sprite. Gold (isGen2) has no newWild to hand DVs to,
+-- so it arms the Gen 2 token instead (see Shiny.armWild).
+function Shiny.armForBattle(record, isGen2)
+  if isGen2 then
+    if type(record) == "table" then Shiny.armWild(record.species, record.level, record.shiny == true) end
+    return
+  end
   if type(record) == "table" and record.shiny == true then
     Shiny.setPending(Shiny.makeDVs())
   else
@@ -233,6 +243,106 @@ function Shiny.install(mod, deps)
     BattleState._wildsShinyNewWild = shinyNewWild
   end
   return true
+end
+
+-- ------------------------------------------------------------------ Gen 2 (Gold)
+-- Gold's Mon.new asks the `shiny.roll` hook chain whether a mon's DVs make it shiny -- for trainers, starters, gifts
+-- and eggs too, and again for every non-shiny mon each time its summary opens. A bare random hook would therefore
+-- make trainer mons shiny and re-roll on every summary. So the rate goes through a short-lived token: the code that
+-- is about to build a WILD mon arms { species, level, shiny } (classic encounters through encounter.species /
+-- encounter.fishing, visible spawns through armForBattle), and the `shiny.roll` wrapper consumes it exactly once for
+-- that species. Every other call falls through to the vanilla DV check.
+--   shiny = true  -> a shiny with ordinary DVs (the engine keeps a forced shiny flag for good)
+--   shiny = false -> not shiny even when the DVs happen to read shiny (so "Off" really is off)
+Shiny.GEN2_TTL = 5 -- seconds a token survives if its mon is never built (repel filter, cancelled battle)
+
+local function clock()
+  if love and love.timer and love.timer.getTime then return love.timer.getTime() end
+  return os.clock()
+end
+
+--- Arm the token for the wild `species` (at `level`) that is about to be built. `now` is injectable for tests.
+function Shiny.armWild(species, level, shiny, now)
+  if species == nil then
+    state.gen2Pending = nil
+    return
+  end
+  state.gen2Pending = {
+    species = species, level = tonumber(level), shiny = shiny == true,
+    expires = (now or clock()) + Shiny.GEN2_TTL,
+  }
+end
+
+function Shiny.gen2Pending()
+  return state.gen2Pending
+end
+
+--- The shiny.roll ctx ({ dvs, species, def, level }) against the armed token. Returns handled, shiny.
+-- Consumes the token when it matches; an expired token is dropped; anything else is not ours.
+function Shiny.consumeGen2(ctx, now)
+  local p = state.gen2Pending
+  if not p then return false end
+  if (now or clock()) > p.expires then
+    state.gen2Pending = nil
+    return false
+  end
+  if type(ctx) ~= "table" or ctx.species == nil or ctx.species ~= p.species then return false end
+  if p.level ~= nil and ctx.level ~= nil and tonumber(ctx.level) ~= p.level then return false end
+  state.gen2Pending = nil
+  return true, p.shiny == true
+end
+
+--- Register the Gen 2 hooks through mod.hooks:wrap. `deps.isGen2()` gates the arming (the encounter hooks also
+-- exist in Gen 1, where the token would never be consumed). Returns one function that removes every wrapper,
+-- or nil plus a reason.
+function Shiny.installGen2(mod, deps)
+  deps = deps or {}
+  local hooks = mod and mod.hooks
+  if not (hooks and type(hooks.wrap) == "function") then return nil, "mod.hooks unavailable" end
+  local function gen2()
+    if type(deps.isGen2) ~= "function" then return true end
+    local ok, result = pcall(deps.isGen2)
+    return ok and result == true
+  end
+  local function armFromRoll(roll, rng)
+    if type(roll) ~= "table" or roll.species == nil or not gen2() then return end
+    Shiny.armWild(roll.species, roll.level, Shiny.roll(mod, rng))
+  end
+
+  local unwraps = {}
+  local function add(name, fn)
+    local ok, unwrap = pcall(hooks.wrap, hooks, name, fn)
+    if ok and type(unwrap) == "function" then unwraps[#unwraps + 1] = unwrap end
+    return ok
+  end
+
+  -- The final wild pick (after every mod that transforms it), right before Mon.new builds it.
+  add("encounter.species", function(next, enc, ctx)
+    local out = next(enc, ctx)
+    armFromRoll(out, ctx and ctx.rng)
+    return out
+  end)
+  -- Fishing hands its pick back through this chain (rod, mapId, candidates, ctx).
+  add("encounter.fishing", function(next, ...)
+    local roll = next(...)
+    armFromRoll(roll, nil)
+    return roll
+  end)
+  local hookOk = add("shiny.roll", function(next, ctx)
+    if gen2() then
+      local handled, shiny = Shiny.consumeGen2(ctx)
+      if handled then return shiny end
+    end
+    return next(ctx)
+  end)
+  if not hookOk then
+    for i = #unwraps, 1, -1 do pcall(unwraps[i]) end
+    return nil, "shiny.roll hook unavailable"
+  end
+  return function()
+    for i = #unwraps, 1, -1 do pcall(unwraps[i]) end
+    unwraps = {}
+  end
 end
 
 return Shiny
