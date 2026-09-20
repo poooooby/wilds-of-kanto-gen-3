@@ -606,6 +606,48 @@ check(not manifest:find("PokePCFollowers_VoxelMerge", 1, true),
 check(not manifest:find("Gold_Silver_Sprites", 1, true),
       "manifest has no Gold Sprites hard dependency")
 
+-- Atlas ZIP (release 2.7.0 regression): the poke_followers sheets ship inside sprite atlas shards and have no file of
+-- their own, so mod:read cannot see them. The built-in GSC provider must ask the engine's asset registry (which the
+-- atlas answers) whether a sheet exists, not read raw bytes -- otherwise the default style fails for every species.
+do
+  local POKE_REL = "assets/enhanced_overworld/poke_followers/"
+  local realRead = V.mod.read
+  V.mod.read = function(self, rel)
+    if type(rel) == "string" and rel:find(POKE_REL, 1, true) then return nil end
+    return realRead(self, rel)
+  end
+  local function atlasHas(dex, kind)
+    fsPaths["mods/overworld_wild_spawns/" .. POKE_REL .. string.format("follower_%03d_%s.png", dex, kind)] = true
+  end
+  for _, dex in ipairs({ 25, 26 }) do
+    atlasHas(dex, "normal"); atlasHas(dex, "shiny"); atlasHas(dex, "normal_submerged")
+  end
+  V.require("wilds_fs").resetCaches()
+  local atlasProviders = SpriteProviders.new(V.mod, render)
+  local game = { data = { pokemon = { PIKACHU = { dex = 25 }, RAICHU = { dex = 26 } } } }
+
+  local okReady = select(1, atlasProviders:providerAvailable("followers_ex", nil))
+  check(okReady == true, "atlas ZIP: built-in Poke Followers is available without mod:read files")
+
+  local land = atlasProviders:resolve("followers", 25, "normal", game)
+  eq(land.providerId, "followers_ex", "atlas ZIP: GSC style resolves land art from the atlas (not the HGSS fallback)")
+  check(land.def and tostring(land.def.image):find("follower_025_normal", 1, true),
+    "atlas ZIP: GSC land sheet is the follower_025_normal sheet")
+
+  local shiny = atlasProviders:resolve("followers", 26, "shiny", game)
+  eq(shiny.providerId, "followers_ex", "atlas ZIP: GSC shiny resolves from the atlas")
+  check(shiny.def and tostring(shiny.def.image):find("follower_026_shiny", 1, true),
+    "atlas ZIP: shiny sheet is preferred over the normal one")
+
+  local water = atlasProviders:get("followers_ex")
+  local wdef = water and water:resolveWater(25, "normal", game)
+  check(wdef ~= nil and tostring(wdef.image):find("follower_025_normal_submerged", 1, true),
+    "atlas ZIP: GSC submerged sheet resolves from the atlas")
+
+  V.mod.read = realRead
+  V.require("wilds_fs").resetCaches()
+end
+
 if failures > 0 then
   io.stderr:write(failures .. " failure(s)\n")
   os.exit(1)

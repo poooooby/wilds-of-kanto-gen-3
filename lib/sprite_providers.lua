@@ -88,6 +88,13 @@ local function fsExists(path)
   return WildsFs.pathExists(V.mod, path)
 end
 
+-- Does a packaged sheet exist? Asks the engine's asset registry first (WildsFs.assetExists), which also answers for
+-- sheets that ship inside a sprite atlas (lib/sprite_atlas.lua) and so have no file of their own. Never probe a
+-- sheet with mod:read: it only sees real files, and the packaged release has none for the atlased directories.
+local function sheetPresent(mod, rel)
+  return WildsFs.assetExists(mod, rel) == true
+end
+
 local function normalizeVariant(variant)
   return AnimatedSprites.normalizeVariant(variant)
 end
@@ -836,15 +843,8 @@ function SpriteProviders:_builtinPokeFollowersReady()
   if self._builtinPokeFollowersOk ~= nil then
     return self._builtinPokeFollowersOk
   end
-  local mod = self.mod
-  if mod and mod.read then
-    local ok, data = pcall(function() return mod:read(POKE_FOLLOWERS_PROBE) end)
-    if ok and data then
-      self._builtinPokeFollowersOk = true
-      return true
-    end
-  end
-  self._builtinPokeFollowersOk = fsExists(POKE_FOLLOWERS_PROBE) == true
+  self._builtinPokeFollowersOk = sheetPresent(self.mod, POKE_FOLLOWERS_PROBE)
+    or fsExists(POKE_FOLLOWERS_PROBE) == true
   return self._builtinPokeFollowersOk
 end
 
@@ -929,17 +929,8 @@ function SpriteProviders:_makeFollowersExProvider()
       if not imagePath and wantShiny then
         -- prefer the shiny/ sheet, fall back to normal/.
         local sPath, sRel = owners:_pokeFollowersShinyPath(dex, render)
-        if sPath and sRel then
-          local sExists = true
-          if mod and mod.read then
-            local ok, data = pcall(function() return mod:read(sRel) end)
-            sExists = ok and data ~= nil
-          elseif not fsExists(sRel) then
-            sExists = false
-          end
-          if sExists then
-            imagePath, rel = sPath, sRel
-          end
+        if sPath and sRel and sheetPresent(mod, sRel) then
+          imagePath, rel = sPath, sRel
         end
       end
       if not imagePath then
@@ -948,16 +939,11 @@ function SpriteProviders:_makeFollowersExProvider()
       if not imagePath then
         return nil, nil, "poke_followers path unresolved for dex " .. tostring(dex)
       end
-      -- Existence: prefer mod.read / fs when available.
-      local exists = true
-      if mod and mod.read then
-        local ok, data = pcall(function()
-          return mod:read(rel or string.format("%s/follower_%03d.png",
-            POKE_FOLLOWERS_REL, dex))
-        end)
-        exists = ok and data ~= nil
-      elseif not fsExists(rel or imagePath) and not fsExists(imagePath) then
-        exists = false
+      -- Existence (a real file or an atlas shard; see sheetPresent).
+      local exists = sheetPresent(mod, rel or string.format("%s/follower_%03d.png",
+        POKE_FOLLOWERS_REL, dex))
+      if not exists then
+        exists = fsExists(rel or imagePath) or fsExists(imagePath)
       end
       if not exists then
         return nil, nil, "missing poke_followers sheet for dex " .. tostring(dex)
@@ -1084,12 +1070,7 @@ function SpriteProviders:_makeFollowersExProvider()
       local cPath, cRel = owners:_pokeFollowersSubmergedPath(dex, render, "normal")
       local cExists = false
       if cPath and cRel then
-        if mod and mod.read then
-          local ok, data = pcall(function() return mod:read(cRel) end)
-          cExists = ok and data ~= nil
-        elseif fsExists(cRel) or fsExists(cPath) then
-          cExists = true
-        end
+        cExists = sheetPresent(mod, cRel) or fsExists(cRel) or fsExists(cPath)
       end
       if cExists then
         local luma = LuminanceSheet.pathFor(cPath)
@@ -1104,15 +1085,7 @@ function SpriteProviders:_makeFollowersExProvider()
       for _, v in ipairs(tryVariants) do
         imagePath, rel = owners:_pokeFollowersSubmergedPath(dex, render, v)
         if imagePath and rel then
-          local exists = true
-          if mod and mod.read then
-            local ok, data = pcall(function() return mod:read(rel) end)
-            if not ok or data == nil then
-              exists = fsExists(rel) or fsExists(imagePath)
-            end
-          elseif not fsExists(rel) then
-            exists = false
-          end
+          local exists = sheetPresent(mod, rel) or fsExists(rel) or fsExists(imagePath)
           if exists then usedVariant = v; break end
           imagePath, rel = nil, nil
         end

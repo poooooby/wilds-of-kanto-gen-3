@@ -8,6 +8,19 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.7.1 (fork)
+
+### Bug fixes
+
+- Fixed the FOLLOWERS/GSC sprite style (the default) failing in the packaged 2.7.0
+  download. That release packs its sprite sheets into atlas images, and the Poke
+  Followers art loader checked whether each sheet existed by opening a file that no
+  longer exists, so every species was reported missing and the game fell back to the
+  HGSS / PokeMMO art or the placeholder. It now asks the game's asset system, which
+  knows about the atlas. Shiny and swimming (submerged) Poke Followers sheets were
+  affected the same way and are fixed too. A checkout of the repository, and the
+  HGSS / PokeMMO style, were not affected.
+
 ## 2.7.0 (fork)
 
 ### Packaging
