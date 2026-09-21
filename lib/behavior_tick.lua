@@ -492,9 +492,13 @@ function BehaviorTick:step(ctx)
   if ow.pokepcTrailers then followerN = #ow.pokepcTrailers end
   perf:sampleCounts(logic.entities, followerN)
 
+  local swimGen2 = GameCompat.isGen2(self.mod, world and world.game)
   for id, entity in pairs(logic.entities or {}) do
     local record = logic.spawns[id]
     if record and record.state == Config.STATE.AVAILABLE and entity then
+      -- Terrarium's reef treats `surfing` as "this body is in the water" (see Surface.isSwimmer): it then stirs the
+      -- lilypads and reeds, throws a wake and rides the swell. Inert without Terrarium.
+      entity.surfing = Surface.isSwimmer(entity, swimGen2) or nil
       if entity.wildsCatchLocked
          or entity.wildsCatchPending
          or entity.wildsCatchState == "capturing"

@@ -3698,6 +3698,31 @@ function ControlEngine:_chainCatchUpSteps(game, ow, stepClock)
   return assigned
 end
 
+--- Mark the followers that are standing in water as swimmers. Terrarium's reef (lib/WakeFX.lua) scans ow.entities and counts
+-- anything with `surfing` set: it splashes in, leaves a wake and foam, stirs the lilypads, reeds and kelp, and rides the live
+-- swell (the same flag the player's Surf and Terrarium's own water roamers carry). The test is the follower's own CELL, not
+-- its sprite state, so a follower still wading after the player has landed keeps disturbing the reef until it steps out, and a
+-- pier or bridge cell is not water. Gen 1 only (Gold's engine reads `surfing` as a collision flag); trainer trailers are skipped.
+-- Inert without Terrarium: nothing else reads the flag on a follower.
+function ControlEngine:_syncSwimmerFlags(ow)
+  if not ow then return end
+  local okGen, gen2 = pcall(function()
+    return V.require("game_compat").isGen2(self.mod, self:_game())
+  end)
+  gen2 = okGen and gen2 == true
+  for _, npc in ipairs(ow.pokepcTrailers or {}) do
+    local swimming = false
+    if not gen2 and npc.pokepcTrailerKind ~= "trainer" then
+      swimming = isWaterMapCell(ow.map, npc.cellX, npc.cellY)
+    end
+    if swimming then
+      npc.surfing = true
+    elseif npc.surfing ~= nil then
+      npc.surfing = nil
+    end
+  end
+end
+
 --- Advance every Wilds trailer exactly once (logic-frame semantics).
 function ControlEngine:advanceAllTrailers(ow)
   if not ow then return 0 end
@@ -3710,6 +3735,7 @@ function ControlEngine:advanceAllTrailers(ow)
       n = n + 1
     end
   end
+  self:_syncSwimmerFlags(ow)
   return n
 end
 

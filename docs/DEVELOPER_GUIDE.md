@@ -478,6 +478,13 @@ Contact: `world.stepped` tile match + `movement.collision` bump.
 - Stay on connected water; never chase onto land
 - Land→water chase only with Swimming/Levitates sprite (entity preserved)
 - Slight visual sink (`waterSink = 2`)
+- **Swimmer flag for Terrarium's reef:** Terrarium (`lib/WakeFX.lua`) scans `ow.entities` and treats any entity with `surfing`
+  set as a swimmer (splash in, wake + foam, stirs lilypads / reeds / kelp, rides the live swell); it is the same flag the player's
+  Surf and Terrarium's own water roamers carry, and Terrarium has no other API for it. We set it on (a) followers standing in a
+  water CELL (`ControlEngine:_syncSwimmerFlags`, run every frame from `advanceAllTrailers`; trainer trailers skipped) and (b) visible
+  wild water spawns (`Surface.isSwimmer`, applied per entity by the behavior tick; hidden / submerged-shadow mons excluded). Gen 1
+  only: Gold's engine reads `mover.surfing` as a collision flag. Inert without Terrarium. Tests:
+  `tests/terrarium_swimmer_flag_unit_test.lua`.
 - Classic Surf / fishing `encounter.roll` gated by Random Enc, with Water Mons
   overrides: `classic_encounters` forces water rolls ON; `disabled` forces them OFF
 

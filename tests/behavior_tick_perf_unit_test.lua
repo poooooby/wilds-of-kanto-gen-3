@@ -126,7 +126,7 @@ function V.require(name)
     return modules[name]
   end
   if name == "surface" then
-    modules[name] = { WATER = "water", LAND = "land" }
+    modules[name] = { WATER = "water", LAND = "land", isSwimmer = function() return false end }
     return modules[name]
   end
   if name == "water_spawn" then

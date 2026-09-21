@@ -172,6 +172,16 @@ function Surface.isWaterEntity(entity, map)
   return false
 end
 
+-- Is this wild entity a body moving through water, for other mods to react to? Terrarium's reef (lib/WakeFX.lua) scans
+-- ow.entities and counts anything with `surfing` set as a swimmer: it splashes in, leaves a wake and foam, stirs the lilypads,
+-- reeds and kelp, and rides the live swell. Gen 1 only (Gold's engine reads `surfing` as a collision flag). Hidden and
+-- submerged-shadow spawns are not drawn bodies, so they do not count.
+function Surface.isSwimmer(entity, isGen2)
+  if isGen2 or not entity then return false end
+  if entity.hiddenEncounter == true or entity.visibleSprite == false then return false end
+  return Surface.isWaterEntity(entity)
+end
+
 function Surface.hiddenEffect(surface)
   if surface == Surface.GRASS then return "grass_shake" end
   if surface == Surface.CAVE then return "dust" end

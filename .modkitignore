@@ -42,6 +42,7 @@ tests/overworld_catch_ghost_dodge_unit_test.lua
 tests/cave_reachability_gold_unit_test.lua
 tests/cave_reachability_gold_data_unit_test.lua
 tests/unown_forms_unit_test.lua
+tests/terrarium_swimmer_flag_unit_test.lua
 tests/gen1_catching_compat_unit_test.lua
 tests/gen2_aggro_unit_test.lua
 tests/gen2_catch_frame_unit_test.lua

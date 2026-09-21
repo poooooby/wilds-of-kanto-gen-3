@@ -41,6 +41,15 @@
   in half and left parts of the Ruins of Alph inner chamber, Mt. Mortar and Tin Tower without
   spawns. Red/Blue/Yellow are unchanged.
 
+### Features
+
+- **Terrarium water objects now react to followers and wild water Pokemon.** Terrarium's
+  new water garden (lilypads, reeds, kelp) only moved for the player on Surf and Terrarium's
+  own swimmers. Followers standing in water, and our visible wild water Pokemon, now count
+  as swimmers too: they splash in, leave a wake and foam, shove the lilypads and reeds aside
+  and rise and fall with the swell. Gen 1 only, and it does nothing without Terrarium.
+  Not tried against Terrarium's beta in the game yet.
+
 ## 2.7.4 (fork)
 
 ### Bug fixes
