@@ -8,7 +8,7 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
-## Unreleased (fork)
+## 2.7.3 (fork)
 
 ### Features
 
