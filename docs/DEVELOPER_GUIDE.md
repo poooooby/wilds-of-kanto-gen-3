@@ -517,6 +517,17 @@ See `docs/analysis/STANDALONE_CRASH.md` and
 - No dependence on grass graphics
 - Gold: any map whose header environment is CAVE or DUNGEON counts (`Surface.isIndoorEncounterMap`), the same rule as the engine's
   step encounters; Gen 1 keeps its `field.indoorEncounters` index rule
+- Gold reachability is DIRECTED (`CaveReachability.build` picks it when the map exposes `stepPermitted` / `cellCollision`; Gen 1 keeps
+  the grid fill + `tilePairs`). Gold's one-way rules live in collision bytes, so a plain 4-neighbour fill fabricated most of a cave: the
+  cave tilesets are full of UP_WALL edge cells (you cannot step down onto one or up off one) and ledge hops. The fill follows the engine's
+  own offline model (`tools/goldwalk/mapgraph.lua` in Gen1Recomp): steps must pass `map:stepPermitted`, a refused step off a ledge hops two
+  cells, and a cell is a hole only when it is a warp tile by collision AND has a warp event (a `warp_event` on plain floor is a ladder
+  landing spot that never fires; a warp-collision tile with no event does nothing). Surf is not modelled and ice counts as floor.
+  Spawns still avoid every warp-event cell (`classifyCell` says INVALID) even though the fill walks through plain-floor ones. On the real
+  Gold data the old fill called ~55% of the cells in wild-table caves reachable when they were not (Dark Cave 96%, Union Cave 1F 59%) and missed
+  cells elsewhere (Ruins of Alph inner chamber 144, Tin Tower floors). Tests: `tests/cave_reachability_gold_unit_test.lua` (synthetic
+  layouts, engine rules stubbed) and `tests/cave_reachability_gold_data_unit_test.lua` (every Gold cave map from every warp arrival against the
+  engine model, pinned to the engine tool's own counts; skips without `../gen1recomp/gold` or `GEN1RECOMP_GOLD_ROOT`)
 - Walkable indoor tiles
 - Hidden uses dust/shadow, never grass shake
 

@@ -8,6 +8,22 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## Unreleased (fork)
+
+### Bug fixes
+
+- **Gold: wild Pokemon no longer spawn in parts of a cave the player cannot reach.** The cave
+  reachability check that keeps sprites out of cut-off pockets worked from Red/Blue/Yellow's rules,
+  and Gold caves work differently: their walls have one-way edges (you can step up onto one but
+  never past it, and never step down onto one) and ledges you hop. The old check walked straight
+  across those and counted whole cave sections as reachable. On the real Gold maps that was
+  about 55% of the cells in the caves that have wild Pokemon (Dark Cave's Blackthorn entrance
+  96%, Union Cave 1F 59%, Ice Path 1F 63%). It now follows the game's own movement rules, so
+  spawns stay in areas you can walk to from where you arrive (areas that need Surf are not
+  included). It also stops treating ladder landing spots as walls, which had cut some corridors
+  in half and left parts of the Ruins of Alph inner chamber, Mt. Mortar and Tin Tower without
+  spawns. Red/Blue/Yellow are unchanged.
+
 ## 2.7.4 (fork)
 
 ### Bug fixes

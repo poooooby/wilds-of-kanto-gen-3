@@ -161,6 +161,117 @@ local function bfsFromSeeds(map, seeds, tilePairs)
   return reachable
 end
 
+-- ---------------------------------------------------------------- Gold (directed) reachability
+-- Gold's one-way rules live in its COLLISION bytes, not in an extracted tile-pair table (Gen 1's `tilePairs`), so the
+-- Gen 1 ledge rule above has nothing to read there and a plain 4-neighbour fill fabricates most of a cave: the cave
+-- tilesets are full of one-way UP_WALL edge cells (you cannot step DOWN onto one or UP off one) and ledge hops, and an
+-- undirected fill walks across them into every pocket behind. On real Gold data that made 22 of the 39 wild-table caves
+-- report 10%+ unreachable cells as reachable (Dark Cave 96%, Union Cave 1F 59%, ...).
+--
+-- On a map that exposes the engine's own movement rules (`map:stepPermitted`, `map:cellCollision` -- Gold's Map does, Gen 1's
+-- does not) the fill is directed exactly like the engine's offline model (tools/goldwalk/mapgraph.lua):
+--   * a step must pass `map:stepPermitted` and land on floor;
+--   * a step refused off a ledge tile hops TWO cells in a direction the ledge allows (World:tryLedgeJump);
+--   * a cell is a HOLE only when it is BOTH a warp tile by collision AND has a warp event there: CheckWarpTile reads the
+--     collision, so a `warp_event` on plain floor (a ladder landing spot) never fires, and a warp-collision tile with no
+--     event does nothing. Treating either as a hole cut corridors in half.
+-- Surf is not modelled (water is not floor), matching the Gen 1 fill; ice is plain floor (a real slide can only shrink the set).
+local GOLD_DIRS = { { 0, -1, "up" }, { 0, 1, "down" }, { -1, 0, "left" }, { 1, 0, "right" } }
+
+-- The engine's Permissions module, or nil when this map is not a Gold map / the module is not reachable.
+local function goldModel(map)
+  if type(map) ~= "table" or type(map.stepPermitted) ~= "function" or type(map.cellCollision) ~= "function" then
+    return nil
+  end
+  local ok, P = pcall(require, "src.world.gen2.Permissions")
+  if not (ok and type(P) == "table" and type(P.isWalkable) == "function" and type(P.ledgeFacings) == "function"
+          and type(P.isWarpCollision) == "function" and type(P.carpetDirection) == "function") then
+    return nil
+  end
+  return P
+end
+
+local function goldFloor(map, P, x, y)
+  if map.inBounds and not map:inBounds(x, y) then return false end
+  local coll = map:cellCollision(x, y)
+  if not P.isWalkable(coll) then return false end
+  if P.isWarpCollision(coll) or P.carpetDirection(coll) ~= nil then
+    -- a warp tile is a hole only where a warp event really sits (a map with no event lookup: the tile alone decides)
+    if type(map.warpAtCell) ~= "function" or map:warpAtCell(x, y) then return false end
+  end
+  return true
+end
+
+-- Cells a player standing on (x, y) can step or hop to.
+local function goldSteps(map, P, x, y)
+  local out = {}
+  local hop = P.ledgeFacings(map:cellCollision(x, y))
+  for _, d in ipairs(GOLD_DIRS) do
+    local nx, ny, dir = x + d[1], y + d[2], d[3]
+    if map:stepPermitted(x, y, dir) and goldFloor(map, P, nx, ny) then
+      out[#out + 1] = { nx, ny }
+    elseif hop and hop[dir] then
+      local hx, hy = x + d[1] * 2, y + d[2] * 2
+      if goldFloor(map, P, hx, hy) then out[#out + 1] = { hx, hy } end
+    end
+  end
+  return out
+end
+
+local function goldSeeds(map, P, player, opts)
+  local seeds, seen = {}, {}
+  local function addSeed(x, y, source)
+    x, y = tonumber(x), tonumber(y)
+    if x == nil or y == nil or not goldFloor(map, P, x, y) then return end
+    local k = CaveReachability.cellKey(x, y)
+    if seen[k] then return end
+    seen[k] = true
+    seeds[#seeds + 1] = { x = x, y = y, source = source }
+  end
+  local sx, sy, source = resolveStart(map, player, opts)
+  if sx ~= nil and sy ~= nil then
+    if goldFloor(map, P, sx, sy) then
+      addSeed(sx, sy, source or "player")
+    else
+      -- Standing on a warp tile (a real arrival hole): only the steps the player is actually allowed to take.
+      for _, d in ipairs(GOLD_DIRS) do
+        if map:stepPermitted(sx, sy, d[3]) then addSeed(sx + d[1], sy + d[2], "player_neighbor") end
+      end
+    end
+  end
+  local extras = opts.entrySeeds or map.entryCells or map.playerEntryCells
+  if type(extras) == "table" then
+    for _, s in ipairs(extras) do
+      if type(s) == "table" then addSeed(s.x or s[1], s.y or s[2], "entry") end
+    end
+  end
+  return seeds, sx, sy, source
+end
+
+local function goldBfs(map, P, seeds)
+  local reachable, queue = {}, {}
+  for _, s in ipairs(seeds or {}) do
+    local k = CaveReachability.cellKey(s.x, s.y)
+    if not reachable[k] then
+      reachable[k] = true
+      queue[#queue + 1] = { s.x, s.y }
+    end
+  end
+  local qi = 1
+  while qi <= #queue do
+    local c = queue[qi]
+    qi = qi + 1
+    for _, n in ipairs(goldSteps(map, P, c[1], c[2])) do
+      local k = CaveReachability.cellKey(n[1], n[2])
+      if not reachable[k] then
+        reachable[k] = true
+        queue[#queue + 1] = n
+      end
+    end
+  end
+  return reachable
+end
+
 -- Label connected components among passable cells that are NOT player-reachable.
 -- Used so scenery Pokémon stay inside their pocket.
 function CaveReachability.buildUnreachableComponents(map, reachable)
@@ -231,6 +342,7 @@ function CaveReachability.build(map, player, opts)
     seedCount = 0,
     reason = nil,
     mapId = map and map.id or nil,
+    model = "grid", -- "gold" = directed fill over the engine's movement rules
   }
 
   if not map then
@@ -238,7 +350,14 @@ function CaveReachability.build(map, player, opts)
     return result
   end
 
-  local seeds, sx, sy, source = CaveReachability.collectSeeds(map, player, opts)
+  local P = opts.directed ~= false and goldModel(map) or nil
+  local seeds, sx, sy, source
+  if P then
+    result.model = "gold"
+    seeds, sx, sy, source = goldSeeds(map, P, player, opts)
+  else
+    seeds, sx, sy, source = CaveReachability.collectSeeds(map, player, opts)
+  end
   result.startX, result.startY, result.startSource = sx, sy, source
   result.seedCount = #seeds
 
@@ -252,12 +371,23 @@ function CaveReachability.build(map, player, opts)
   for _, s in ipairs(seeds) do
     if s.source == "player_neighbor" then usedNeighborSeed = true end
   end
-  if usedNeighborSeed and (not sx or not CaveReachability.isPassableCaveCell(map, sx, sy)) then
+  local startStandable
+  if P then
+    startStandable = sx ~= nil and goldFloor(map, P, sx, sy)
+  else
+    startStandable = sx ~= nil and CaveReachability.isPassableCaveCell(map, sx, sy)
+  end
+  if usedNeighborSeed and not startStandable then
     result.status = "FALLBACK"
     result.reason = "seeded from player neighbors"
   end
 
-  local reachable = bfsFromSeeds(map, seeds, opts.tilePairs)
+  local reachable
+  if P then
+    reachable = goldBfs(map, P, seeds)
+  else
+    reachable = bfsFromSeeds(map, seeds, opts.tilePairs)
+  end
   local count = 0
   for _ in pairs(reachable) do count = count + 1 end
   result.reachable = reachable
