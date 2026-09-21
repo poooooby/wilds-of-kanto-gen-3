@@ -12,6 +12,23 @@
 
 ### Bug fixes
 
+- **Gold: the Unown letter sprites (2.7.4) now really show in the HGSS / PokeMMO style.** The
+  letter was drawn correctly at first, but the sprite-size step then looked the art up by
+  species and swapped every Unown back to the plain default one. It now keeps the letter's
+  own sheet.
+
+- **Pokemon Tower ghosts are ghosts again until you have the Silph Scope.** In Red, Blue and
+  Yellow every wild Pokemon in the Pokemon Tower is an unidentifiable GHOST until the Silph Scope
+  is in your bag, but the overworld spawns showed Gastly, Haunter and the rest, and touching one
+  started a normal battle, so you could fight and catch ghost Pokemon before you should. Without
+  the scope, Tower spawns now look like the new ghost sprite (in every sprite style, Voxel too), a
+  battle with one is the real "GHOST appeared!" battle (you are too scared to attack and it cannot
+  be caught), and a Poke Ball thrown at one is dodged ("It dodged the thrown BALL! This POKEMON
+  can't be caught!") and lost, as in the game. With the scope everything is as before. Gold is
+  unaffected. The check follows the game's own Silph Scope rule; if you pick the scope up while
+  standing in the Tower, battles and throws change straight away and spawns that are already out
+  lose the ghost look as new ones appear. The ghost sprite is by Nuclear-Blizzard.
+
 - **Gold: wild Pokemon no longer spawn in parts of a cave the player cannot reach.** The cave
   reachability check that keeps sprites out of cut-off pockets worked from Red/Blue/Yellow's rules,
   and Gold caves work differently: their walls have one-way edges (you can step up onto one but

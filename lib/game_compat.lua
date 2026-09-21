@@ -470,6 +470,25 @@ function GameCompat.wildVariant(game, species, ctx)
   return nil
 end
 
+--- True when wild Pokemon on `mapDef` are unidentifiable right now (Gen 1: the Pokemon Tower without the Silph Scope; see
+-- lib/ghost_disguise.lua). Always false for adapters without the rule (Gold).
+function GameCompat.wildGhostMasked(game, mapDef)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.wildGhostMasked then
+    return adapter.wildGhostMasked(game, mapDef) == true
+  end
+  return false
+end
+
+--- Ghost battle for a visible spawn (see Gen1.startGhostBattle). Never falls back to a normal battle.
+function GameCompat.startGhostBattle(game, ow, species, level, mapId)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.startGhostBattle then
+    return adapter.startGhostBattle(game, ow, species, level, mapId)
+  end
+  return nil, "no ghost battle adapter"
+end
+
 --- Start a wild battle for the visible overworld entity (exact species/level). `opts.dvs` (Gold Unown) makes the
 -- battle mon the one the player saw.
 function GameCompat.startWildBattle(world, species, level, game, opts)

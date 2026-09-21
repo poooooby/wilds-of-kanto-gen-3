@@ -626,8 +626,8 @@ def stack_sheet(cards: list[Image.Image], frame_w: int, frame_h: int) -> Image.I
 def hgss_source(dex: int, src_root: Path | None = None) -> dict[str, Path]:
     root = src_root if src_root is not None else HGSS_SRC
     out = {}
-    if unown_forms.is_form_id(dex):
-        # Unown letter forms live under their species' number with a form suffix (tools/unown_forms.py).
+    if unown_forms.has_source(dex):
+        # Unown letter forms and the Tower ghost live under their own file names (tools/unown_forms.py).
         for variant, fname in unown_forms.source_files(dex).items():
             if (root / fname).exists():
                 out[variant] = root / fname

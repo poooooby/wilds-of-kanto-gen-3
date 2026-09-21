@@ -1112,6 +1112,12 @@ function Entity.new(game, mod, render, record)
   -- selects the per-letter sheet and is fixed for the entity's whole lifetime.
   self.unownLetter = record.unownLetter
   self.spriteForm = record.unownForm
+  -- Pokemon Tower without the Silph Scope (lib/ghost_disguise.lua): drawn as the TOWER_GHOST sprite, whatever the real species.
+  if record.ghostMasked then
+    local okGD, GhostDisguise = pcall(V.require, "ghost_disguise")
+    if okGD and GhostDisguise then self.spriteForm = GhostDisguise.FORM end
+    self.ghostMasked = true
+  end
   self.mapId = record.mapId
   self.state = record.state or Config.STATE.AVAILABLE
   self.cellX = record.x
@@ -1359,7 +1365,8 @@ function Entity.new(game, mod, render, record)
     end
     local geoInfo
     drawDef, geoInfo = VariableSize.applyToDef(mod, drawDef, {
-      speciesId = dexId or record.species,
+      -- an Unown letter / the Tower ghost is its own asset id (meta.formAssetId): the species' pack would swap the art back
+      speciesId = (resolvedProvider and resolvedProvider.meta and resolvedProvider.meta.formAssetId) or dexId or record.species,
       style = style,
       variant = self.spriteVariant or variant,
       voxelActive = voxelActive,
@@ -2262,7 +2269,8 @@ function SpawnRender:applyProviderSprite(entity, game, options)
   -- Hard rule: explicit PokeMMO land must never keep a Followers sheet.
   if style == "pokemmo" and (result.spriteState == "land" or not result.waterOverride)
      and result.providerId == "followers_ex" then
-    result = self.spriteProviders:resolve("pokemmo", species, variant, game, tonumber(form))
+    result = self.spriteProviders:resolve("pokemmo", species, variant, game,
+      (form == "TOWER_GHOST") and form or tonumber(form))
     if not (result and result.def and type(result.def.image) == "string") then
       return false
     end
@@ -2393,8 +2401,9 @@ function SpawnRender:applyProviderSprite(entity, game, options)
     end
     local geoInfo
     def, geoInfo = VariableSize.applyToDef(self.mod, def, {
-      -- Species string or canonical asset id — never runtime mon.dex.
-      speciesId = entity.species or dexId or entity.enhancedDexId,
+      -- Species string or canonical asset id — never runtime mon.dex. An Unown letter / the Tower ghost is its own asset id
+      -- (meta.formAssetId): the species' pack would swap the art back to the base sprite.
+      speciesId = (result.meta and result.meta.formAssetId) or entity.species or dexId or entity.enhancedDexId,
       game = game,
       style = style,
       variant = variant,

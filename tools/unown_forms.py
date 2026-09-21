@@ -1,4 +1,4 @@
-"""Unown letter forms for the sprite build tools.
+"""Extra sprite ids for the sprite build tools: Unown's letter forms and the Pokemon Tower ghost disguise.
 
 Unown is one species (dex 201) with 26 letters. The HGSS/PokeMMO follow-sprite art has one sheet per letter:
     201-b-n.png        letter A      201-b-s.png        (shiny)
@@ -11,6 +11,9 @@ The runtime pipeline is keyed by a numeric species id, so each letter B..Z is ba
 FORM_BASE + n (60001..60025) through the same generators as a species. lib/unown_forms.lua is the runtime side and must
 agree on FORM_BASE / FORM_COUNT. The entries are synthesized here rather than written into the followsprites mapping
 (tools/generate_followsprites_mapping.ps1 owns that file and would drop them on regeneration).
+
+The same mechanism bakes TOWER_GHOST.png (the sprite every wild Pokemon wears in the Pokemon Tower until the player has the
+Silph Scope) as asset id TOWER_GHOST_ID (60100); lib/ghost_disguise.lua is its runtime side. It has a single (normal) variant.
 """
 from __future__ import annotations
 
@@ -20,6 +23,8 @@ from pathlib import Path
 BASE_DEX = 201
 FORM_BASE = 60000
 FORM_COUNT = 25
+TOWER_GHOST_ID = 60100
+TOWER_GHOST_FILE = "TOWER_GHOST.png"
 SRC_REL = "assets/enhanced_overworld/followsprites"
 
 
@@ -27,8 +32,15 @@ def is_form_id(dex: int) -> bool:
     return FORM_BASE < int(dex) <= FORM_BASE + FORM_COUNT
 
 
+def has_source(dex: int) -> bool:
+    """True for every id these tools synthesize a source for (Unown letters and the Tower ghost)."""
+    return is_form_id(dex) or int(dex) == TOWER_GHOST_ID
+
+
 def source_files(dex: int) -> dict[str, str]:
-    """{'normal': '201-b-n-03.png', 'shiny': '201-b-s-03.png'} for a form id, {} otherwise."""
+    """{'normal': '201-b-n-03.png', 'shiny': '201-b-s-03.png'} for a form id ({'normal': 'TOWER_GHOST.png'} for the ghost), {} otherwise."""
+    if int(dex) == TOWER_GHOST_ID:
+        return {"normal": TOWER_GHOST_FILE}
     if not is_form_id(dex):
         return {}
     n = int(dex) - FORM_BASE
@@ -56,4 +68,12 @@ def mapping_entries(species: dict, root: Path) -> dict[str, dict]:
             block["path"] = f"{SRC_REL}/{fname}"
         if ok:
             out[str(sid)] = entry
+    # The Tower ghost: one variant only, laid out like every other follow-sprite sheet.
+    ghost = copy.deepcopy(base)
+    ghost["speciesId"] = TOWER_GHOST_ID
+    ghost.pop("shiny", None)
+    if isinstance(ghost.get("normal"), dict) and (root / SRC_REL / TOWER_GHOST_FILE).is_file():
+        ghost["normal"]["file"] = TOWER_GHOST_FILE
+        ghost["normal"]["path"] = f"{SRC_REL}/{TOWER_GHOST_FILE}"
+        out[str(TOWER_GHOST_ID)] = ghost
     return out

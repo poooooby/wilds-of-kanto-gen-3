@@ -124,6 +124,25 @@ mapping) -- so a fresh bake needs no extra step; run `generate_runtime_sprite_sh
 The battle gets the same letter: `GameCompat.startWildBattle(..., { dvs })` swaps `Mon.randomDVs` for a one-shot around the synchronous
 `start_battle` queue and always restores it. Tests: `tests/unown_forms_unit_test.lua`, `tests/gen2_unown_unit_test.lua`.
 
+### Pokemon Tower ghosts (Gen 1, Silph Scope)
+
+Without the Silph Scope every wild Pokemon in the Tower is an unidentifiable GHOST. The engine owns the rule (`Map.ghostBattles(def)`:
+`{ unlessItem = "SILPH_SCOPE" }` for `POKEMON_TOWER*` maps, applied in `OverworldController`'s step-encounter path); our visible spawns
+started their battles through the scripted `start_battle` (plain `BattleState.newWild`, never `makeGhost`), so they leaked. `lib/ghost_disguise.lua`
+mirrors the rule from the engine (fallback: id prefix + `SILPH_SCOPE`) and `GameCompat.wildGhostMasked(game, mapDef)` exposes it (Gen 1 only; Gold is
+always false). It is evaluated fresh at each use: (1) **sprite** -- at spawn `record.ghostMasked` -> `Entity.new` sets `spriteForm = "TOWER_GHOST"`,
+which `SpriteResolver` passes as a string through `SpriteProviders:resolve(..., form)`; the form puts the HGSS/PokeMMO provider FIRST for every sprite
+style and it swaps in extra asset id 60100, the baked `TOWER_GHOST.png` (flat sheet + True Size pack + geometry, via `tools/unown_forms.py`, same
+mechanism as the Unown letters). (2) **battle** -- `SpawnLogic:_startBattle` calls `GameCompat.startGhostBattle` (`Gen1.startGhostBattle`: `newWild`,
+`wild_encounter` checkpoint, `makeGhost`, `ow:afterBattle` on finish, `ow:pushBattle`, exactly the engine's step-encounter block) and never falls back
+to a normal battle. (3) **throws** -- `OverworldCatching:_releaseThrow` flies the ball to the ghost and shows the vanilla `_ItemUseBallText00`
+("It dodged the thrown BALL!"); the ball is spent, no catch attempt. Picking up the scope changes battles and throws immediately; already-spawned
+sprites keep the disguise until the next spawn. The pokemmo provider reports the extra asset id it served as `meta.formAssetId`, and the two places
+that re-apply True Size after resolving (`Entity.new` and the bind refresh in `spawn_render.lua`) pass THAT to `VariableSize.applyToDef` instead of the
+species: applying the species' pack silently swapped an Unown letter / the ghost back to the base sprite (only the real-engine harness sees it: it
+checks the image the entity actually draws). Tests: `tests/ghost_disguise_unit_test.lua`, `tests/overworld_catch_ghost_dodge_unit_test.lua` and the
+Tower block in the real-engine `tests/overworld_wild_spawns_test.lua`.
+
 ## 6. Runtime image cache
 
 `resolvedAssetBySpeciesId` / `runtimeImageCache` hold paths and bake results.

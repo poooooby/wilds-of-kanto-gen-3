@@ -162,6 +162,55 @@ function Gen1.startWildBattle(world, species, level)
   })
 end
 
+--- True when a wild Pokemon on `mapDef` is an unidentifiable GHOST right now (the Pokemon Tower without the Silph Scope).
+function Gen1.wildGhostMasked(game, mapDef)
+  return V.require("ghost_disguise").masked(game, mapDef) == true
+end
+
+--- Ghost battle for a visible spawn, built the way the engine's own step encounter builds one
+-- (OverworldController: BattleState.newWild, wild_encounter checkpoint, battle:makeGhost, afterBattle on finish) --
+-- the scripted start_battle path never calls makeGhost. Never falls back to a normal battle. Returns true, battle | nil, err.
+function Gen1.startGhostBattle(game, ow, species, level, mapId)
+  local BattleState = tryRequire("src.battle.BattleState")
+  if not (BattleState and type(BattleState.newWild) == "function") then
+    return nil, "BattleState.newWild unavailable"
+  end
+  local okNew, battle = pcall(BattleState.newWild, game, species, tonumber(level) or 5)
+  if not okNew or not battle then
+    return nil, "newWild failed: " .. tostring(battle)
+  end
+  if type(battle.makeGhost) ~= "function" then
+    return nil, "battle:makeGhost unavailable"
+  end
+  local okGhost, ghostErr = pcall(battle.makeGhost, battle)
+  if not okGhost then
+    return nil, "makeGhost failed: " .. tostring(ghostErr)
+  end
+  if not battle.ghost then
+    return nil, "makeGhost did not mark the battle"
+  end
+  battle.checkpointOrigin = {
+    kind = "wild_encounter",
+    map = mapId or (ow and ow.map and ow.map.id),
+  }
+  battle.onFinish = function(result)
+    if ow and type(ow.afterBattle) == "function" then
+      pcall(ow.afterBattle, ow, result, battle)
+    end
+  end
+  if ow and type(ow.pushBattle) == "function" then
+    local okPush, pushErr = pcall(ow.pushBattle, ow, battle)
+    if not okPush then return nil, "pushBattle failed: " .. tostring(pushErr) end
+    return true, battle
+  end
+  if game and game.stack and type(game.stack.push) == "function" then
+    local okPush, pushErr = pcall(game.stack.push, game.stack, battle)
+    if not okPush then return nil, "stack.push failed: " .. tostring(pushErr) end
+    return true, battle
+  end
+  return nil, "no battle push path"
+end
+
 --- Gen1 trailer NPC: exact ControlEngine makeTrailer constructor.
 function Gen1.makeGuestNpc(game, ow, spec)
   spec = spec or {}

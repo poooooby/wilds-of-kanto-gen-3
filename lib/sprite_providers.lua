@@ -338,10 +338,16 @@ function SpriteProviders:_makePokemmoProvider()
       -- exists; without it (an older sheet set) the base art is still a valid Unown.
       local UnownForms = V.require("unown_forms")
       local formId = UnownForms.formAssetId(dex, tonumber(form))
+      local GhostDisguise = V.require("ghost_disguise")
+      if form == GhostDisguise.FORM then formId = GhostDisguise.ASSET_ID end
       local def, usedVariant, loadPath, rel
+      local usedFormId
       if formId then
         def, usedVariant, loadPath, rel = sheets:spriteDef(formId, want)
-        if def then dex = formId end
+        if def then
+          dex = formId
+          usedFormId = formId
+        end
       end
       if not def then
         def, usedVariant, loadPath, rel = sheets:spriteDef(dex, want)
@@ -371,6 +377,9 @@ function SpriteProviders:_makePokemmoProvider()
         frames = def.frames,
         walker = def.walker == true,
         bodyRenderer = "NATIVE_SPRITE_RENDERER",
+        -- The extra asset id this sheet came from (Unown letter / Tower ghost). Whoever re-applies True Size later must use IT,
+        -- not the species: the species' own pack would replace the art with the base sprite.
+        formAssetId = usedFormId,
       }
       def, meta = applyTrueSizeToProvider(mod, def, meta, {
         speciesId = dex,
@@ -1330,6 +1339,15 @@ function SpriteProviders:resolve(style, speciesId, variant, game, form)
   style = self:normalizeStyle(style or Config.spriteStyle(self.mod) or "followers")
 
   local chain = self:chainForStyle(style)
+  -- The Pokemon Tower ghost disguise (lib/ghost_disguise.lua) is one sprite for every style: the HGSS/PokeMMO provider owns its
+  -- sheets, so it goes first whatever style is selected (the style's own chain follows if those sheets are missing).
+  if form == "TOWER_GHOST" then
+    local forced = { SpriteProviders.ID.POKEMMO }
+    for _, providerId in ipairs(chain) do
+      if providerId ~= SpriteProviders.ID.POKEMMO then forced[#forced + 1] = providerId end
+    end
+    chain = forced
+  end
   local steps = {}
   local fallbackStep = 0
 

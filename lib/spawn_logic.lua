@@ -2067,6 +2067,8 @@ function SpawnLogic:trySpawn(game, opts)
     unownLetter = wildVar and wildVar.unownLetter or nil,
     unownForm = wildVar and wildVar.unownForm or nil,
     unownDvs = wildVar and wildVar.dvs or nil,
+    -- Pokemon Tower without the Silph Scope: the overworld sprite is the TOWER_GHOST disguise (lib/ghost_disguise.lua).
+    ghostMasked = GameCompat.wildGhostMasked(game, ow.map and ow.map.def) or nil,
   }
   if record.shiny then
     self:_log("shiny wild spawned: %s Lv%s id=%s", tostring(species), tostring(level), tostring(id))
@@ -3328,6 +3330,27 @@ function SpawnLogic:_startBattle(record)
 
   -- The battle mon must be the one the player saw: hand the spawn's shiny roll to BattleState.newWild.
   pcall(Shiny.armForBattle, record, GameCompat.isGen2(self.mod, game))
+  -- Pokemon Tower without the Silph Scope: the spawn is an unidentifiable GHOST, so the battle is the engine's ghost battle
+  -- (evaluated now, not at spawn, so picking the scope up applies to the very next fight). Never falls back to a normal battle.
+  if GameCompat.wildGhostMasked(game, ow.map and ow.map.def) then
+    ok, err = GameCompat.startGhostBattle(game, ow, record.species, record.level, mapId)
+    if not ok then
+      pcall(Shiny.clearPending)
+      self:_warn("could not start ghost battle: %s", tostring(err))
+      self.pendingBattle = nil
+      self.state:markError(err)
+      self:_restoreVanillaEncounters("ghost battle failed")
+      return false
+    end
+    if self.pendingBattle then
+      self.pendingBattle.state = Config.STATE.IN_BATTLE
+    end
+    self.mod.log:info("triggered ghost battle: %s Lv%d (%s) id=%s",
+                      record.species, record.level, tostring(record.behavior),
+                      tostring(record.id))
+    return true
+  end
+
   ok, err = GameCompat.startWildBattle(world, record.species, record.level, game, { dvs = record.unownDvs })
   if not ok then
     pcall(Shiny.clearPending)

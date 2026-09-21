@@ -37,6 +37,8 @@ tests/gen9_encounters_data_unit_test.lua
 tests/gen9_encounters_unit_test.lua
 tests/gen9_encounters_levels_audit_unit_test.lua
 tests/gen2_unown_unit_test.lua
+tests/ghost_disguise_unit_test.lua
+tests/overworld_catch_ghost_dodge_unit_test.lua
 tests/cave_reachability_gold_unit_test.lua
 tests/cave_reachability_gold_data_unit_test.lua
 tests/unown_forms_unit_test.lua

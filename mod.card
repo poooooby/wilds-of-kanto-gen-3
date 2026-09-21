@@ -63,6 +63,7 @@ return {
     { who = "bryanthaboi/gen1recomp", for_ = "mod API, encounter tables, WorldAPI" },
     { who = "DramaticShape/DramaticShapeVoxelMod",
       for_ = "entity pose()/draw() dual-mode rendering contract" },
+    { who = "Nuclear-Blizzard", for_ = "Pokemon Tower ghost overworld sprite (TOWER_GHOST)" },
   },
   compat = { engine = "0.0.0-dev || >=0.1.0 <2.0.0", modApi = 2 },
 }

@@ -4593,6 +4593,33 @@
       "degradedRuntimeUsedAsSource": false,
       "sizing": "native",
       "unionAcrossVariants": true
+    },
+    "60100:normal": {
+      "speciesId": 60100,
+      "path": "assets/wilds_generated/true_size/hgss/60100-normal.png",
+      "status": "written",
+      "sourceImage": "assets\\enhanced_overworld\\followsprites\\TOWER_GHOST.png",
+      "sourceFrameWidth": 32,
+      "sourceFrameHeight": 32,
+      "visibleMinX": 4,
+      "visibleMaxX": 28,
+      "visibleMinY": 9,
+      "visibleMaxY": 26,
+      "nativeVisualWidth": 24,
+      "nativeVisualHeight": 17,
+      "runtimeFrameWidth": 28,
+      "runtimeFrameHeight": 21,
+      "anchorX": 14.0,
+      "anchorY": 19.0,
+      "padding": 2,
+      "visualScale": 1.0,
+      "wasResized": false,
+      "resizeReason": null,
+      "resampling": "none",
+      "warning": null,
+      "degradedRuntimeUsedAsSource": false,
+      "sizing": "native",
+      "unionAcrossVariants": true
     }
   },
   "notes": [

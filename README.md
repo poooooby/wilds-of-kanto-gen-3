@@ -226,6 +226,9 @@ This fork:
 
 - [poooooby](https://github.com/poooooby) — fork maintainer; Gen 3 species
   support, additional Voxel renderer compatibility (see CHANGELOG.md)
+- **Nuclear-Blizzard** — the Pokémon Tower ghost overworld sprite
+  (`TOWER_GHOST.png`), shown for wild Pokémon in the Pokémon Tower until the
+  player has the Silph Scope. Thank you for the art.
 
 Original project ([YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)) collaborators — full credit for
 everything through v2.2.0:

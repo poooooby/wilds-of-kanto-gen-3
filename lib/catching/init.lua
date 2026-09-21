@@ -658,6 +658,22 @@ function OverworldCatching:_onEasterEggImpact(game, ow, kind, entity)
   pushText(game, self.mod, msg)
 end
 
+-- Pokemon Tower without the Silph Scope (lib/ghost_disguise.lua): the wild is an unidentifiable GHOST, so the ball is dodged --
+-- the vanilla ItemUseBall can't-be-caught path. The ball is already spent (as in the game); the ghost is left alone.
+function OverworldCatching:_onGhostDodgeImpact(game, ow, entity)
+  playCatch(game, "impact")
+  self.projectile:cleanup(ow, self.logic and self.logic.voxel)
+  self.phase = "idle"
+  self.activeCapture = nil
+  local text = game and game.data and game.data.text and game.data.text._ItemUseBallText00
+  if type(text) ~= "string" or text == "" then
+    text = "It dodged the\nthrown BALL!\fThis POKéMON\ncan't be caught!"
+  end
+  text = text:gsub("{PROMPT}", "")
+  self:_catchLog("ghost dodge entity=%s", tostring(entity and (entity.species or entity.id) or "?"))
+  pushText(game, self.mod, text)
+end
+
 function OverworldCatching:_releaseThrow(game, ow)
   self:_goldCatchStage("RELEASE")
   local power = self.meter.power or METER_MIN
@@ -774,6 +790,36 @@ function OverworldCatching:_releaseThrow(game, ow)
       power = string.format("%.2f", power), quality = "miss", angle = nil,
     }
     startMissFlight("MISS!")
+    return
+  end
+
+  -- An unidentifiable Pokemon Tower ghost: the ball flies to it and is dodged (no catch attempt, no feedback, no aggro).
+  if GameCompat.wildGhostMasked(game, ow and ow.map and ow.map.def) then
+    self.phase = "flying"
+    self._lastDebug = {
+      target = "ghost", ball = ballType, dist = hit.distance,
+      power = string.format("%.2f", power), quality = "dodged", angle = nil,
+    }
+    local dodged = hit.entity
+    if not self:_startCatchProjectile(game, ow, ballType, {
+      ballType = ballType,
+      spriteId = "SPRITE_WILDS_BALL_" .. ballType,
+      image = ballImage,
+      startX = px, startY = py,
+      facing = facing,
+      power = hit.distance,
+      destX = hit.x, destY = hit.y,
+      travel = hit.distance,
+      miss = true, -- land-hold then cleanup via onImpact, exactly like the Town / NPC throws
+      hitKind = hit.kind,
+      onImpact = function()
+        self:_onGhostDodgeImpact(game, ow, dodged)
+      end,
+    }) then
+      return
+    end
+    self:_catchLog("projectile")
+    self:_catchLog("projectile started (ghost dodge)")
     return
   end
 

@@ -453,6 +453,136 @@ T.eq(#queued, 1, "bump starts one encounter")
 T.eq(queued[1][1][3], "FIXMON_B", "bump battle species matches")
 T.eq(logic.spawns[forced.id], nil, "bump removes entity")
 
+-- ------- Pokemon Tower: without the Silph Scope a spawn is an unidentifiable GHOST (sprite + battle)
+do
+  local realBattleState = package.loaded["src.battle.BattleState"]
+  local pushed = {}
+  package.loaded["src.battle.BattleState"] = {
+    newWild = function(_, species, level)
+      local b = { species = species, level = level }
+      b.makeGhost = function(self) self.ghost = true end
+      return b
+    end,
+  }
+  mockOw.pushBattle = function(_, b) pushed[#pushed + 1] = b end
+  mockOw.afterBattle = function() end
+  local savedDef = mockOw.map.def
+  local savedInv = mockGame.save.inventory
+
+  local function contact(id, species, level, x, y)
+    local rec = { id = id, mapId = "ROUTE_TEST", x = x, y = y, species = species, level = level, state = Config.STATE.AVAILABLE }
+    local ent = exports.render:makeEntity(mockGame, rec)
+    logic.spawns[rec.id] = rec
+    logic.entities[rec.id] = ent
+    logic.byMap["ROUTE_TEST"] = { rec.id }
+    table.insert(mockOw.entities, ent)
+    ent.registeredInWorld = true
+    logic:onStepped({ mapId = "ROUTE_TEST", x = x, y = y })
+    return rec, ent
+  end
+
+  -- no scope: a ghost battle through the overworld, never a scripted normal battle
+  mockOw.map.def = { id = "POKEMON_TOWER_3F" }
+  mockGame.save.inventory = {}
+  logic.pendingBattle = nil
+  queued = {}
+  contact("owwild_ghost1", "FIXMON_A", 4, 3, 3)
+  T.eq(#queued, 0, "tower, no scope: NO normal wild battle is queued")
+  T.eq(#pushed, 1, "tower, no scope: a battle is pushed on the overworld")
+  T.check(pushed[1] and pushed[1].ghost == true, "tower, no scope: it is the engine's ghost battle")
+  T.eq(pushed[1] and pushed[1].species, "FIXMON_A", "tower, no scope: with the spawn's species")
+  T.eq(pushed[1] and pushed[1].checkpointOrigin and pushed[1].checkpointOrigin.kind, "wild_encounter", "tower, no scope: checkpointed like a step encounter")
+  T.check(logic.pendingBattle ~= nil, "tower, no scope: pendingBattle set")
+  T.eq(logic.spawns["owwild_ghost1"], nil, "tower, no scope: the spawn is consumed")
+
+  -- with the scope: the normal battle
+  mockGame.save.inventory = { SILPH_SCOPE = 1 }
+  logic.pendingBattle = nil
+  queued, pushed = {}, {}
+  contact("owwild_ghost2", "FIXMON_A", 4, 3, 3)
+  T.eq(#queued, 1, "tower, WITH the scope: the normal wild battle is queued")
+  T.eq(#pushed, 0, "tower, with the scope: no ghost battle")
+
+  -- another map: the normal battle even without the scope
+  mockGame.save.inventory = {}
+  mockOw.map.def = { id = "ROUTE_1" }
+  logic.pendingBattle = nil
+  queued, pushed = {}, {}
+  contact("owwild_ghost3", "FIXMON_A", 4, 3, 3)
+  T.eq(#queued, 1, "another map, no scope: the normal wild battle is queued")
+  T.eq(#pushed, 0, "another map: no ghost battle")
+
+  -- a ghost battle that cannot be built never falls back to a normal battle
+  mockOw.map.def = { id = "POKEMON_TOWER_3F" }
+  package.loaded["src.battle.BattleState"] = { newWild = function() error("no battle for you") end }
+  logic.pendingBattle = nil
+  queued, pushed = {}, {}
+  contact("owwild_ghost4", "FIXMON_A", 4, 3, 3)
+  T.eq(#queued, 0, "tower, ghost battle fails: still NO normal battle")
+  T.eq(#pushed, 0, "tower, ghost battle fails: nothing pushed")
+  T.check(logic.pendingBattle == nil, "tower, ghost battle fails: pendingBattle cleared")
+  package.loaded["src.battle.BattleState"] = nil
+
+  -- the sprite: a spawn made in the Tower without the scope wears the ghost disguise, with the scope it does not
+  mockOw.entities = { mockPlayer }
+  mockGame.save.inventory = {}
+  mockOw.map.def = { id = "POKEMON_TOWER_3F" }
+  logic:onMapExited({ mapId = "ROUTE_TEST" })
+  logic:onMapEntered({ mapId = "ROUTE_TEST" })
+  local masked, total = 0, 0
+  for _, rec in pairs(logic.spawns) do
+    total = total + 1
+    if rec.ghostMasked == true then masked = masked + 1 end
+  end
+  T.check(total > 0 and masked == total, "tower, no scope: every spawn is flagged as a masked ghost (" .. masked .. "/" .. total .. ")")
+  local disguised = 0
+  for _, ent in pairs(logic.entities) do
+    if ent.spriteForm == "TOWER_GHOST" and ent.ghostMasked == true then disguised = disguised + 1 end
+  end
+  T.check(disguised == total, "tower, no scope: every spawned entity is drawn as the TOWER_GHOST sprite (" .. disguised .. "/" .. total .. ")")
+
+  mockOw.entities = { mockPlayer }
+  mockGame.save.inventory = { SILPH_SCOPE = 1 }
+  logic:onMapExited({ mapId = "ROUTE_TEST" })
+  logic:onMapEntered({ mapId = "ROUTE_TEST" })
+  local anyMasked = false
+  for _, rec in pairs(logic.spawns) do if rec.ghostMasked then anyMasked = true end end
+  for _, ent in pairs(logic.entities) do if ent.spriteForm == "TOWER_GHOST" then anyMasked = true end end
+  T.check(not anyMasked, "tower, WITH the scope: spawns keep their real sprites")
+
+  -- The image the entity actually draws with (real species: the fixture's fake ones have no dex, so no HGSS sheet). The True Size
+  -- step used to re-apply the SPECIES pack and swap a form's art (ghost / Unown letter) back to the base sprite.
+  local styleOptions = run.loader.modOptions["wilds_of_kanto_gen3"]
+  local origStyleOption = styleOptions.sprite_style
+  local function drawnImage(style, species, extra)
+    styleOptions.sprite_style = style -- the same direct switch the sprite-style tests below use (setSpriteStyle would persist it)
+    local rec = { id = "owwild_img_" .. style .. species, mapId = "ROUTE_TEST", x = 3, y = 3, species = species, level = 20,
+      state = Config.STATE.AVAILABLE }
+    for k, v in pairs(extra or {}) do rec[k] = v end
+    local ent = exports.render:makeEntity(mockGame, rec)
+    return ent and ent.sprite and ent.sprite.def and tostring(ent.sprite.def.image) or ""
+  end
+  for _, style in ipairs({ "pokemmo", "followers" }) do
+    local ghost = drawnImage(style, "GASTLY", { ghostMasked = true })
+    T.check(ghost:find("60100", 1, true) ~= nil, style .. " style: a masked Gastly is drawn with the TOWER_GHOST sheet (" .. ghost .. ")")
+    T.check(ghost:find("092", 1, true) == nil, style .. " style: and not with Gastly's own sheet")
+    local plain = drawnImage(style, "GASTLY", nil)
+    T.check(plain:find("092", 1, true) ~= nil and plain:find("60100", 1, true) == nil, style .. " style: an unmasked Gastly keeps its own sheet")
+  end
+  local letter = drawnImage("pokemmo", "UNOWN", { unownForm = 5, unownLetter = 6 })
+  T.check(letter:find("60005", 1, true) ~= nil, "pokemmo style: Unown letter F is drawn with its own letter sheet (" .. letter .. ")")
+  styleOptions.sprite_style = origStyleOption
+
+  -- restore the fixture for the lifecycle tests below
+  logic:onMapExited({ mapId = "ROUTE_TEST" })
+  mockOw.map.def = savedDef
+  mockGame.save.inventory = savedInv
+  package.loaded["src.battle.BattleState"] = realBattleState
+  mockOw.pushBattle, mockOw.afterBattle = nil, nil
+  logic.pendingBattle = nil
+  queued = {}
+end
+
 -- ------- lifecycle
 
 mockOw.entities = { mockPlayer }

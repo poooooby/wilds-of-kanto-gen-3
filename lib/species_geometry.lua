@@ -8,7 +8,8 @@ local WildsFs = V.require("wilds_fs")
 local SpeciesGeometry = {}
 
 -- Unown letter forms are extra asset ids (60001..60025, see lib/unown_forms.lua) that carry their own baked True Size
--- geometry but share Unown's display scale. Loaded lazily: a missing module just means "no forms".
+-- geometry but share Unown's display scale; the Pokemon Tower ghost disguise is one more (lib/ghost_disguise.lua, 60100).
+-- Loaded lazily: a missing module just means "no forms".
 local unownForms
 local function forms()
   if unownForms == nil then
@@ -16,6 +17,14 @@ local function forms()
     unownForms = ok and type(m) == "table" and m or false
   end
   return unownForms or nil
+end
+local ghostDisguise
+local function ghost()
+  if ghostDisguise == nil then
+    local ok, m = pcall(V.require, "ghost_disguise")
+    ghostDisguise = ok and type(m) == "table" and m or false
+  end
+  return ghostDisguise or nil
 end
 
 SpeciesGeometry.SIZE_CLASSES = {
@@ -251,6 +260,8 @@ function SpeciesGeometry.normalizeDex(speciesId, game)
   if n <= activeMaxSpecies(game) then return math.floor(n) end
   local uf = forms()
   if uf and uf.isFormId(n) then return math.floor(n) end
+  local gd = ghost()
+  if gd and n == gd.ASSET_ID then return math.floor(n) end
   return nil
 end
 

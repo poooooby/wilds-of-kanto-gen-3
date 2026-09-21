@@ -134,6 +134,13 @@ local function resolveForm(entity)
   return nil
 end
 
+-- The form a provider chain understands: Unown's letter form as a number (1..25), the Pokemon Tower ghost disguise as its
+-- string key, anything else (gender words...) as nil.
+local function providerForm(f)
+  if f == "TOWER_GHOST" then return f end
+  return tonumber(f)
+end
+
 local function copyResult(result)
   if not result then return nil end
   return {
@@ -185,7 +192,7 @@ function SpriteResolver:resolveLandSprite(entity, context)
   end
   -- Unown's letter (entity.spriteForm 1..25) picks the per-letter sheet in the HGSS/PokeMMO provider; every other
   -- provider and species ignores it.
-  local form = tonumber(context.form or resolveForm(entity))
+  local form = providerForm(context.form or resolveForm(entity))
   local result = self.spriteProviders:resolve(style, species, variant, game, form)
   if result then
     result.spriteState = "land"
@@ -871,7 +878,7 @@ function SpriteResolver:resolveForEntity(entity, context)
       context.speciesId or (entity and (entity.species or entity.enhancedDexId)),
       context.variant or resolveVariant(entity),
       context.game,
-      tonumber(context.form or resolveForm(entity)))
+      providerForm(context.form or resolveForm(entity)))
     if result then
       result.spriteState = "land"
       result.spriteKind = result.providerId
