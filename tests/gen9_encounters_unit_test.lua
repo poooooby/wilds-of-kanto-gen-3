@@ -89,10 +89,18 @@ local DATA = {
   },
 }
 modules.gen9_encounters_data = DATA
+modules.gen9_encounters_authored = { version = 2, maps = {} } -- the fixtures own the data (a dedicated case below covers the merge)
 
 local function vanillaSlots(a, b)
   local out = {}
   for i = 1, 10 do out[i] = { level = 3, species = (i % 2 == 1) and a or b } end
+  return out
+end
+-- the ROM's areas span several levels: 2,2,3,3,4,4,5,5,6,6 on the default ladder (odds 51,51,39,25,25,25,13,13,11,3)
+local function spreadSlots(a, b)
+  local levels = { 2, 2, 3, 3, 4, 4, 5, 5, 6, 6 }
+  local out = {}
+  for i = 1, 10 do out[i] = { level = levels[i], species = (i % 2 == 1) and a or b } end
   return out
 end
 local DEFAULT_BUCKETS = { 51, 102, 141, 166, 191, 216, 229, 242, 253, 256 }
@@ -102,7 +110,7 @@ local function newGame(withModern)
     pokemon = { PIDGEY = { dex = 16 }, RATTATA = { dex = 19 }, MEOWTH_ALOLA = { dex = 30107 } },
     encounters = {
       ROUTE_1 = { grass = { rate = 25, slots = vanillaSlots("PIDGEY", "RATTATA"), buckets = deepCopy(DEFAULT_BUCKETS) } },
-      ROUTE_2 = { grass = { rate = 25, slots = vanillaSlots("PIDGEY", "RATTATA") }, water = { rate = 5, slots = vanillaSlots("PIDGEY", "RATTATA") } },
+      ROUTE_2 = { grass = { rate = 25, slots = spreadSlots("PIDGEY", "RATTATA") }, water = { rate = 5, slots = vanillaSlots("PIDGEY", "RATTATA") } },
       ROUTE_3 = { grass = { rate = 20, buckets = { 128, 256 }, slots = { { level = 7, species = "PIDGEY" }, { level = 8, species = "RATTATA" } } } },
       ROUTE_4 = { grass = { rate = 20, slots = vanillaSlots("PIDGEY", "RATTATA") } },
       ROUTE_5 = { grass = { rate = 15, slots = vanillaSlots("PIDGEY", "RATTATA") } },
@@ -188,8 +196,8 @@ eq(o1.grass.buckets[12], 256, "active: ladder ends at 256")
 check(o1.grass.buckets ~= R1_GRASS.buckets, "active: ladder is a copy of the data, not the data table")
 check(deepEq(o1.grass.buckets, R1_GRASS.buckets), "active: ladder values match the data")
 eq(o1.grass.slots[1].species, "FIXA", "slot 1: registered species used")
-eq(o1.grass.slots[1].level, 30, "slot 1: overlay level used")
-eq(o1.grass.slots[2].level, 31, "slot 2: each slot keeps its own level (per-level diversity)")
+eq(o1.grass.slots[1].level, 3, "slot 1: level anchored to the vanilla area (ROUTE_1 vanilla is all level 3)")
+eq(o1.grass.slots[2].level, 3, "slot 2: levels come from the vanilla area, not the modern data's 30-41")
 eq(o1.grass.slots[12].species, "FIXB", "slot 12 (beyond the default 10): registered species used")
 check(o1.water == nil, "active: no water bucket is created where vanilla has none")
 check(deepEq(game.data.encounters, snapshot), "engine's live encounter table is never mutated")
@@ -302,8 +310,10 @@ do
     local picked = EncounterPick.pick(enc, function() return draw end, "grass")
     levels[#levels + 1] = picked and picked.level or "nil"
   end
-  eq(table.concat(levels, ","), "40,40,41,41,42,42",
-    "EncounterPick.pick honors the overlay ladder: draws map to the right per-level slots")
+  -- The modern levels (40-42) are anchored onto ROUTE_2's vanilla spread (2..6): the three slots sit at the vanilla
+  -- quantiles 50, 140 and 218 of 256 -> levels 2, 3 and 5.
+  eq(table.concat(levels, ","), "2,2,3,3,5,5",
+    "EncounterPick.pick honors the overlay ladder: draws map to the right slots (levels from the vanilla area)")
   local w = EncounterPick.slotWeights(enc, "grass")
   eq(#w, 3, "slotWeights: one weight per overlay slot")
   eq(w[1].weight + w[2].weight + w[3].weight, 256, "slotWeights: widths sum to 256")
@@ -511,8 +521,8 @@ local vg = { { level = 10, species = "PIDGEY" }, { level = 10, species = "RATTAT
 local rod = Gen9.fishingPool(mod, game, "ROUTE_1", "SUPER_ROD", vg)
 eq(#rod, 4, "random fishing: 4 entries (engine limit)")
 check(rod ~= vg, "random fishing: a new list, vanilla untouched")
-eq(rod[1].level, 20, "random fishing: levels follow the Spawn Table group where mapped (entry 1)")
-eq(rod[3].level, 21, "random fishing: levels follow the Spawn Table group where mapped (entry 3)")
+eq(rod[1].level, 10, "random fishing: levels come from the vanilla group where mapped (entry 1)")
+eq(rod[3].level, 10, "random fishing: levels come from the vanilla group where mapped (entry 3)")
 for i, e in ipairs(rod) do
   check(game.data.pokemon[e.species] ~= nil and not RESTRICTED_KEYS[e.species],
     "random fishing: entry " .. i .. " is a registered, unrestricted species")
@@ -735,7 +745,7 @@ local function capGame(mode, gen)
   local p = game.data.pokemon
   p.LOW_A = { dex = 100 }; p.LOW_B = { dex = 120 }; p.MID = { dex = 300 }; p.HIGH = { dex = 700 }
   for _, id in ipairs({ "ROUTE_9", "ROUTE_10", "ROUTE_11", "ROUTE_12" }) do
-    game.data.encounters[id] = { grass = { rate = 20, slots = vanillaSlots("PIDGEY", "RATTATA") } }
+    game.data.encounters[id] = { grass = { rate = 20, slots = spreadSlots("PIDGEY", "RATTATA") } }
   end
   game.data.field = { superRod = {
     ROUTE_9 = { { level = 10, species = "PIDGEY" }, { level = 10, species = "RATTATA" },
@@ -766,8 +776,9 @@ capGame("table", 3)
 local c3 = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9).grass
 eq(speciesList(c3), "LOW_A,LOW_B", "cap Gen 1-3: Gen 4+ slots dropped")
 eq(table.concat(c3.buckets, ","), "128,256", "cap Gen 1-3: the two survivors share the odds evenly")
-eq(c3.slots[1].level, 20, "cap Gen 1-3: survivor keeps its level (1)")
-eq(c3.slots[2].level, 22, "cap Gen 1-3: survivor keeps its level (2)")
+-- levels come from ROUTE_9's vanilla spread (2..6): the two survivors sit at the quantiles 64 and 192 of 256
+eq(c3.slots[1].level, 2, "cap Gen 1-3: the lower survivor takes the lower vanilla level (1)")
+eq(c3.slots[2].level, 4, "cap Gen 1-3: the higher survivor takes the higher vanilla level (2)")
 eq(#c3.slots, #c3.buckets, "cap Gen 1-3: one slot per threshold")
 eq(game.data.encounters.ROUTE_9.grass.rate, 20, "cap Gen 1-3: engine rate preserved")
 
@@ -824,8 +835,8 @@ local set3 = setOf(Gen9.overlayFor(mod, game, "ROUTE_5", game.data.encounters.RO
 check(set3.MID and not (set3.FIXA or set3.FIXB or set3.HIGH), "random cap Gen 1-3: Gen 3 allowed, Gen 4+ not")
 local rmap = Gen9.overlayFor(mod, game, "ROUTE_9", game.data.encounters.ROUTE_9).grass
 local lvOk = true
-for _, s in ipairs(rmap.slots) do if s.level ~= 20 and s.level ~= 22 then lvOk = false end end
-check(lvOk, "random cap Gen 1-3: levels come from the capped Spawn Table (20 and 22 only)")
+for _, s in ipairs(rmap.slots) do if s.level ~= 2 and s.level ~= 4 then lvOk = false end end
+check(lvOk, "random cap Gen 1-3: levels come from the capped Spawn Table's anchored levels (2 and 4 only)")
 capGame("random", 9)
 local rrod = Gen9.fishingPool(mod, game, "ROUTE_9", "SUPER_ROD", game.data.field.superRod.ROUTE_9)
 eq(#rrod, 4, "random rod: 4 entries with no cap")
@@ -853,6 +864,238 @@ check(dexSeen.LOW_A and dexSeen.LOW_B and not (dexSeen.FIXA or dexSeen.HIGH), "c
 local dexRod = game.data.field.superRod.ROUTE_9
 check(#dexRod == 2 and dexRod[1].species == "LOW_A", "cap: the published Super Rod list respects the cap")
 Gen9.restoreAll(game)
+
+-- ---------------------------------------------------------------- levels follow the base game's area
+-- The modern data's levels (here 60-61) are re-anchored onto the vanilla bucket's own level distribution: same
+-- min/max/mean, species ranking kept (ties: base-stat total), odds and species untouched.
+do
+  fresh(true)
+  liveBucket.max_generation = nil -- earlier sections leave a generation cap in the live bucket
+  liveBucket.legendary_spawns = nil
+  Gen9.invalidate()
+  local vlevels = { 10, 10, 12, 12, 14, 14, 16, 16, 18, 20 } -- vanilla ROUTE_8 on the default ladder: 102/64/50/26/11/3 units
+  local vslots = {}
+  for i = 1, 10 do vslots[i] = { level = vlevels[i], species = (i % 2 == 1) and "PIDGEY" or "RATTATA" } end
+  game.data.encounters.ROUTE_8 = { grass = { rate = 20, slots = vslots }, water = { rate = 5, slots = deepCopy(vslots) } }
+  game.data.pokemon.FIXA.baseStats = { hp = 40, attack = 40, defense = 40, speed = 40, special = 40 }   -- total 200
+  game.data.pokemon.FIXB.baseStats = { hp = 90, attack = 90, defense = 90, speed = 90, special = 90 }   -- total 450
+  DATA.maps.ROUTE_8 = {
+    -- two species with the SAME modern level window: the base-stat total decides who gets the higher vanilla levels
+    grass = ladder({ { 64, "FIXA", 60 }, { 128, "FIXA", 61 }, { 192, "FIXB", 60 }, { 256, "FIXB", 61 } }),
+    water = ladder({ { 128, "FIXB", 70 }, { 256, "FIXA", 30 } }),
+    superRod = { { level = 60, species = "FIXA", dex = 400 }, { level = 60, species = "FIXB", dex = 401 },
+                 { level = 61, species = "FIXB", dex = 401 }, { level = 61, species = "FIXB", dex = 401 } },
+  }
+  Gen9.invalidate()
+  local o8 = Gen9.overlayFor(mod, game, "ROUTE_8", game.data.encounters.ROUTE_8)
+  local function stats(bucket)
+    local lo, hi, sum, prev = 999, 0, 0, 0
+    for i, thr in ipairs(bucket.buckets) do
+      local lv = bucket.slots[i].level
+      lo, hi = math.min(lo, lv), math.max(hi, lv)
+      sum = sum + lv * (thr - prev)
+      prev = thr
+    end
+    return lo, hi, sum / 256
+  end
+  local lo, hi, mean = stats(o8.grass)
+  check(lo >= 10 and hi <= 20, "anchored: every level lies inside the vanilla area's 10-20 (got " .. lo .. "-" .. hi .. ")")
+  check(math.abs(mean - 12.35) <= 1, "anchored: the weighted mean is the vanilla area's (~12.35), got " .. mean)
+  check(deepEq(o8.grass.buckets, DATA.maps.ROUTE_8.grass.buckets), "anchored: the overlay's odds ladder is untouched")
+  eq(o8.grass.slots[1].species .. o8.grass.slots[3].species, "FIXAFIXB", "anchored: species are the overlay's")
+  -- FIXA 60,61 -> 10,10   FIXB 60,61 -> 12,16 (quantiles 32,96 | 160,224 of 256 on 10x102 12x64 14x50 16x26 18x11 20x3)
+  eq(o8.grass.slots[1].level .. "," .. o8.grass.slots[2].level, "10,10", "anchored: the weaker species takes the lower vanilla levels")
+  eq(o8.grass.slots[3].level .. "," .. o8.grass.slots[4].level, "12,16", "anchored: the stronger species (base-stat total) takes the higher ones")
+  check(o8.grass.slots[3].level >= o8.grass.slots[1].level, "anchored: equal modern levels are ranked by base-stat total")
+  check(o8.grass.slots[2].level >= o8.grass.slots[1].level and o8.grass.slots[4].level >= o8.grass.slots[3].level,
+    "anchored: a species' levels never decrease with its modern level")
+
+  -- water is anchored on its own vanilla bucket, independently
+  local wlo, whi = stats(o8.water)
+  check(wlo >= 10 and whi <= 20, "anchored: the water bucket also lands in the vanilla water levels")
+  eq(o8.water.slots[1].level .. "," .. o8.water.slots[2].level, "14,10", "anchored: water ranks the modern-30 species below the modern-70 one")
+
+  -- Super Rod: the vanilla group's levels (here the fixture pool below), each entry one pick in four
+  local vrod8 = { { level = 15, species = "PIDGEY" }, { level = 15, species = "RATTATA" },
+                  { level = 23, species = "PIDGEY" }, { level = 23, species = "RATTATA" } }
+  local rod8 = Gen9.fishingPool(mod, game, "ROUTE_8", "SUPER_ROD", vrod8)
+  eq(#rod8, 4, "anchored rod: four entries")
+  local rl, rh = 999, 0
+  for _, e in ipairs(rod8) do rl, rh = math.min(rl, e.level), math.max(rh, e.level) end
+  check(rl >= 15 and rh <= 23, "anchored rod: levels lie inside the vanilla group's 15-23 (got " .. rl .. "-" .. rh .. ")")
+  eq(rod8[1].species, "FIXA", "anchored rod: species are the overlay's")
+  check(rod8[1].level <= rod8[2].level, "anchored rod: the weaker species does not outlevel the stronger")
+  check(deepEq(vrod8, { { level = 15, species = "PIDGEY" }, { level = 15, species = "RATTATA" },
+                        { level = 23, species = "PIDGEY" }, { level = 23, species = "RATTATA" } }),
+    "anchored rod: the vanilla group is never modified")
+
+  -- a single-level vanilla area gives that one level to every slot
+  eq(stats(Gen9.overlayFor(mod, game, "ROUTE_1", game.data.encounters.ROUTE_1).grass), 3, "anchored: a flat vanilla area gives every slot its one level")
+
+  -- unregistered species keep the vanilla fallback and do not take part in the ranking
+  game.data.pokemon.FIXB = nil
+  DexExpansion.invalidate(); Gen9.invalidate()
+  local o8b = Gen9.overlayFor(mod, game, "ROUTE_8", game.data.encounters.ROUTE_8)
+  eq(o8b.grass.slots[3].species, "RATTATA", "anchored: an unregistered slot still falls back to the vanilla slot at its position")
+  check(o8b.grass.slots[3].level >= 10 and o8b.grass.slots[3].level <= 20, "anchored: the fallback keeps a vanilla level")
+  DATA.maps.ROUTE_8 = nil
+  Gen9.invalidate()
+end
+
+-- ---------------------------------------------------------------- authored areas fill in what the generated data lacks
+-- lib/gen9_encounters_authored.lua (tools/generate_gen9_authored.py) covers areas the generated data has no table for.
+-- The merge fills in a missing map or a missing KIND of an existing map, never overrides, and the overlay then works
+-- on those areas like on any other (levels anchored to the vanilla area).
+do
+  local savedData, savedAuth, savedMod = modules.gen9_encounters_data, modules.gen9_encounters_authored, modules.gen9_encounters
+  local GEN_ROUTE2_GRASS = ladder({ { 128, "FIXA", 10 }, { 256, "FIXB", 12 } })
+  local generated = { version = 2, maps = {
+    ROUTE_2 = { grass = GEN_ROUTE2_GRASS },
+    ROUTE_5 = { grass = ladder({ { 256, "FIXA", 20 } }) },
+  } }
+  local AUTH_ROUTE2_GRASS = ladder({ { 256, "FIXB", 99 } })
+  local AUTH_ROUTE2_ROD = { { level = 15, species = "FIXA", dex = 400 }, { level = 15, species = "FIXB", dex = 401 } }
+  local AUTH_ROUTE4_GRASS = ladder({ { 128, "FIXA", 30 }, { 256, "FIXB", 32 } })
+  local authored = { version = 2, maps = {
+    ROUTE_2 = { grass = AUTH_ROUTE2_GRASS, superRod = AUTH_ROUTE2_ROD },  -- grass already generated: must NOT override
+    ROUTE_4 = { grass = AUTH_ROUTE4_GRASS },                              -- a map the generated data lacks entirely
+  } }
+  modules.gen9_encounters_data, modules.gen9_encounters_authored, modules.gen9_encounters = generated, authored, nil
+  local MergedGen9 = V.require("gen9_encounters")
+  local maps = MergedGen9.dataMaps()
+  check(maps == generated.maps, "authored merge: the generated table is filled in place (one shared reference)")
+  check(maps.ROUTE_2.grass == GEN_ROUTE2_GRASS, "authored merge: a generated table is never overridden")
+  check(maps.ROUTE_2.superRod == AUTH_ROUTE2_ROD, "authored merge: a kind the generated map lacks is filled in")
+  check(maps.ROUTE_4 and maps.ROUTE_4.grass == AUTH_ROUTE4_GRASS, "authored merge: a map the generated data lacks is added")
+  check(maps.ROUTE_5.grass ~= nil and maps.ROUTE_5.superRod == nil, "authored merge: untouched maps stay untouched")
+
+  fresh(true)
+  DexExpansion.invalidate(); MergedGen9.invalidate()
+  local vanilla4 = game.data.encounters.ROUTE_4 -- vanilla ROUTE_4 fixture: all level 3
+  local o4 = MergedGen9.overlayFor(mod, game, "ROUTE_4", vanilla4)
+  check(o4 ~= vanilla4, "authored area: the overlay applies to a map only the authored data covers")
+  eq(o4.grass.slots[1].species, "FIXA", "authored area: the authored species are used")
+  eq(o4.grass.slots[1].level, 3, "authored area: levels are anchored to the vanilla area like any other table")
+  local rod = MergedGen9.fishingPool(mod, game, "ROUTE_2", "SUPER_ROD",
+    { { level = 5, species = "PIDGEY" }, { level = 5, species = "RATTATA" } })
+  eq(#rod, 2, "authored Super Rod: the authored group's size is kept")
+  eq(rod[1].level, 5, "authored Super Rod: levels are anchored to the vanilla group")
+
+  -- an absent or malformed authored module never breaks the generated data
+  modules.gen9_encounters_authored = { version = 1, maps = { ROUTE_9 = { grass = AUTH_ROUTE4_GRASS } } }
+  modules.gen9_encounters_data = { version = 2, maps = { ROUTE_2 = { grass = GEN_ROUTE2_GRASS } } }
+  modules.gen9_encounters = nil
+  local NoAuth = V.require("gen9_encounters")
+  check(NoAuth.dataMaps() ~= nil and NoAuth.dataMaps().ROUTE_9 == nil, "authored merge: a wrong-version authored module is ignored")
+
+  modules.gen9_encounters_data, modules.gen9_encounters_authored, modules.gen9_encounters = savedData, savedAuth, savedMod
+  fresh(true)
+  Gen9.invalidate()
+end
+
+-- ---------------------------------------------------------------- Gen 2 `classic` fill under the generation cap
+-- A map's authored `classic` tables (Gen 2 species) are used ONLY when the MAX GEN cap leaves the primary table with no
+-- slot (a Gen 2 cap drops every Gen 3-9 species): the area stays modern-flavoured instead of reverting to the original.
+do
+  local savedData, savedAuth, savedMod = modules.gen9_encounters_data, modules.gen9_encounters_authored, modules.gen9_encounters
+  local function classicLadder(rows)
+    local l = ladder(rows)
+    for _, s in ipairs(l.slots) do s.dex = 200 end
+    return l
+  end
+  local generated = { version = 2, maps = {
+    ROUTE_2 = { grass = ladder({ { 128, "FIXA", 10 }, { 256, "FIXB", 12 } }),
+                superRod = { { level = 20, species = "FIXA", dex = 400 }, { level = 20, species = "FIXB", dex = 401 } } },
+    ROUTE_5 = { grass = ladder({ { 256, "FIXA", 20 } }) },
+  } }
+  local authored = { version = 2, maps = {
+    ROUTE_2 = { classic = { grass = classicLadder({ { 128, "CLA", 10 }, { 256, "CLB", 12 } }),
+                            superRod = { { level = 20, species = "CLA", dex = 200 }, { level = 20, species = "CLB", dex = 200 } } } },
+    ROUTE_5 = { classic = { grass = classicLadder({ { 256, "CLA", 20 } }) } },
+    ROUTE_4 = { grass = ladder({ { 256, "FIXA", 30 } }), classic = { grass = classicLadder({ { 256, "CLB", 30 } }) } },
+  } }
+  modules.gen9_encounters_data, modules.gen9_encounters_authored, modules.gen9_encounters = generated, authored, nil
+  local G = V.require("gen9_encounters")
+  local maps = G.dataMaps()
+  check(maps.ROUTE_2.classic == authored.maps.ROUTE_2.classic, "classic merge: a generated map gets the authored classic block")
+  check(maps.ROUTE_5.classic ~= nil and maps.ROUTE_4.classic ~= nil, "classic merge: also for a map only the authored data has")
+
+  local function reset(cap)
+    fresh(true)
+    game.data.pokemon.CLA = { dex = 200 }; game.data.pokemon.CLB = { dex = 201 }
+    liveBucket.max_generation = cap
+    DexExpansion.invalidate(); G.invalidate()
+  end
+  local function speciesOf(bucket)
+    local seen = {}
+    for _, s in ipairs(bucket.slots) do seen[s.species] = true end
+    return seen
+  end
+  local rodPool = { { level = 5, species = "PIDGEY" }, { level = 5, species = "RATTATA" } }
+  local function overlay(id) return G.overlayFor(mod, game, id, game.data.encounters[id]) end
+
+  -- a higher cap includes everything a lower one does: the Gen 2 table JOINS the primary one wherever the primary has species
+  local function joined(cap, label)
+    reset(cap)
+    local sp = speciesOf(overlay("ROUTE_2").grass)
+    check(sp.FIXA and sp.FIXB and sp.CLA and sp.CLB, "classic: " .. label .. " keeps the Gen 2 species and adds the modern ones")
+    local o = overlay("ROUTE_2").grass
+    eq(o.buckets[#o.buckets], 256, "classic: " .. label .. " ladder is a full 256")
+    local nA, nB = 0, 0
+    local prev = 0
+    for i, thr in ipairs(o.buckets) do
+      local w = thr - prev
+      if o.slots[i].species:sub(1, 3) == "FIX" then nA = nA + w else nB = nB + w end
+      prev = thr
+    end
+    check(math.abs(nA - nB) <= 2, "classic: " .. label .. " gives each block a share by species count (" .. nA .. " vs " .. nB .. ")")
+    local r = G.fishingPool(mod, game, "ROUTE_2", "SUPER_ROD", rodPool)
+    local rs = {}
+    for _, e in ipairs(r) do rs[e.species] = true end
+    eq(#r, 2, "classic Super Rod: " .. label .. " keeps the group's size")
+    check(rs.CLA and rs.FIXA, "classic Super Rod: " .. label .. " mixes a Gen 2 entry with a modern one")
+  end
+  joined(nil, "no cap")
+  joined("9", "a Gen 9 cap")
+  joined("4", "a Gen 4 cap")
+
+  reset("2")
+  local o2 = overlay("ROUTE_2")
+  check(o2 ~= game.data.encounters.ROUTE_2, "classic: a Gen 2 cap still overlays the area")
+  local sp2 = speciesOf(o2.grass)
+  check(sp2.CLA and sp2.CLB and not sp2.FIXA and not sp2.FIXB, "classic: a Gen 2 cap serves the Gen 2 table, not the original or the modern one")
+  eq(o2.grass.buckets[#o2.grass.buckets], 256, "classic: the ladder is a full 256")
+  local lo, hi = 99, 0
+  for _, s in ipairs(o2.grass.slots) do lo, hi = math.min(lo, s.level), math.max(hi, s.level) end
+  check(lo >= 2 and hi <= 6, "classic: levels are anchored to the vanilla area's (got " .. lo .. "-" .. hi .. ")")
+  local rod = G.fishingPool(mod, game, "ROUTE_2", "SUPER_ROD", rodPool)
+  eq(#rod, 2, "classic Super Rod: the group keeps its size")
+  check(rod[1].species == "CLA" and rod[2].species == "CLB", "classic Super Rod: a Gen 2 cap serves the classic group")
+  check(overlay("ROUTE_5").grass.slots[1].species == "CLA", "classic: a generated map with only a classic block gets it under a Gen 2 cap")
+  check(overlay("ROUTE_4").grass.slots[1].species == "CLB", "classic: an authored map's primary is skipped when the cap empties it")
+
+  reset("3")
+  check(speciesOf(overlay("ROUTE_2").grass).CLA and not speciesOf(overlay("ROUTE_2").grass).FIXA,
+    "classic: a Gen 3 cap (dex 386) still empties dex-400 tables, so the Gen 2 table serves")
+
+  -- species sets only ever grow with the cap: cap 2 (CLA, CLB) is inside cap 4 (which adds FIXA, FIXB)
+  reset("2")
+  local low = speciesOf(overlay("ROUTE_2").grass)
+  reset("4")
+  local high = speciesOf(overlay("ROUTE_2").grass)
+  for name in pairs(low) do check(high[name], "classic: " .. name .. " from a Gen 2 cap is still there at a Gen 4 cap") end
+
+  reset("1")
+  local o1c = overlay("ROUTE_2")
+  check(o1c == game.data.encounters.ROUTE_2, "classic: a Gen 1 cap drops the Gen 2 table too, so the original stays")
+  local rod1 = G.fishingPool(mod, game, "ROUTE_2", "SUPER_ROD", rodPool)
+  check(rod1 == rodPool, "classic Super Rod: a Gen 1 cap keeps the original group")
+
+  modules.gen9_encounters_data, modules.gen9_encounters_authored, modules.gen9_encounters = savedData, savedAuth, savedMod
+  liveBucket.max_generation = nil
+  fresh(true)
+  Gen9.invalidate()
+end
 
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))

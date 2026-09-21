@@ -8,6 +8,47 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## Unreleased (fork)
+
+### Features
+
+- **Modern spawns for the last few Kanto areas.** Route 18, Route 24 and Victory Road (1F, 2F
+  and 3F) had no modern table, and five Super Rod spots (Cerulean Gym, Route 11, Route 24,
+  Safari Zone East, Vermilion Dock) still fished up the original species. They now use a mix of
+  Gen 3-9 Pokemon chosen to fit each area: Route 24 gets early basics (Wurmple, Starly, Ralts,
+  Sewaddle...), Route 18 gets birds and Normal types of the same strength as its Spearow and
+  Fearow (Taillow, Staravia, Tranquill, Corvisquire...), Victory Road gets cave dwellers from
+  small fighters and rocks up to Lairon, Medicham and Gurdurr, and each fishing spot gets water
+  Pokemon of a similar size. Levels are the original game's for each area, and each Super Rod
+  group keeps its original size so the bite chance does not change. Only species that suit the
+  area were allowed (a strength range, no fully evolved powerhouses in early areas, no
+  legendaries); the tool that builds these tables checks that and refuses anything outside it.
+
+- **Gen 2 as the MAX GEN cap no longer sends areas back to the original table.** With the cap at
+  Gen 2, 22 tables (Route 17 and 23 grass, Route 20 and 21 water, Route 18, Route 24 and
+  Victory Road, and the Super Rods of Route 20, 21, 23, 25, Cerulean Cave, Safari Zone and the
+  fishing spots above) had only Gen 3-9 species, so the cap emptied them and they fell back
+  to the original game's Pokemon. They now also have a Gen 2 set chosen the same way (Hoothoot,
+  Murkrow and Furret on Route 18, Phanpy, Sneasel and Magcargo in Victory Road, Marill,
+  Remoraid and Chinchou on the water, Lanturn and Qwilfish in Cerulean Cave), at the original
+  area's levels. A higher cap always includes everything a lower one does: those Gen 2
+  Pokemon are the whole table at cap Gen 2 and stay in the mix, alongside the Gen 3-9 species,
+  at every higher cap (each set's share follows how many species it has). A Super Rod group
+  holds at most four Pokemon, so there it keeps its size and mixes Gen 2 and modern entries.
+  At Gen 1 the original species stay.
+
+### Bug fixes
+
+- **Spawn Table levels now match the base game's level spread for each area.** The modern
+  table's levels ran far above the original game's: half the mapped areas were 13 or more
+  levels too high, up to 56 (Route 25 grass was Lv 66-68 against the original 7-14, Route 11
+  was 34-36 against 9-17, the Power Plant 60-62 against 20-36), and Super Rod levels were
+  about 22 too high. The table keeps its species and odds but now takes its levels from the
+  original game's table for the same area, so an area's lowest, highest and average level
+  are the original's, stronger species get the higher levels, and it follows the game you
+  are playing (Red, Blue or Yellow). Random mode uses the same levels on the areas the table
+  covers.
+
 ## 2.7.2 (fork)
 
 ### Features

@@ -3,7 +3,7 @@
     "Maps engine (Gen 1) map ids to the Essentials section ids ('[NNN] # Name') of encounters.txt.",
     "Consumed by tools/generate_gen9_encounters.py. Each engine map lists the section(s) whose",
     "rows are merged (equal weight per section) to build that map's grass/cave, water and Super Rod",
-    "buckets. Engine maps NOT listed here are left vanilla (Victory Road, Route 24, ...).",
+    "buckets. Engine maps NOT listed here are left vanilla by THIS generator (Victory Road, Route 24, ...); tools/generate_gen9_authored.py supplies hand-authored tables for those.",
     "Sections NOT referenced below are ignored on purpose (see 'ignored'); the generator prints them.",
     "Floor and Safari assignments are judgment calls (the source does not name engine floors) --",
     "review them; they are the easiest thing to change."

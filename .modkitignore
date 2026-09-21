@@ -35,6 +35,7 @@ tests/follower_water_movement_unit_test.lua
 tests/game_compat_unit_test.lua
 tests/gen9_encounters_data_unit_test.lua
 tests/gen9_encounters_unit_test.lua
+tests/gen9_encounters_levels_audit_unit_test.lua
 tests/gen1_catching_compat_unit_test.lua
 tests/gen2_aggro_unit_test.lua
 tests/gen2_catch_frame_unit_test.lua

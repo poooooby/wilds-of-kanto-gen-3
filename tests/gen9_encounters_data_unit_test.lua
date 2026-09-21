@@ -15,8 +15,8 @@ local data = assert(loadfile("lib/gen9_encounters_data.lua"))()
 check(type(data) == "table" and data.version == 2, "data: table with version 2")
 check(type(data.maps) == "table", "data: has maps")
 
--- The 59 Gen 1 engine encounter maps (red/yellow data/generated/encounters.lua) plus the towns
--- that have a vanilla Super Rod group (data.field.superRod).
+-- The 59 Gen 1 engine encounter maps (red/yellow data/generated/encounters.lua) plus the towns, the Cerulean
+-- Gym and the Vermilion Dock, which have a vanilla Super Rod group (data.field.superRod).
 local VALID = {}
 for id in ([[
 CERULEAN_CAVE_1F CERULEAN_CAVE_2F CERULEAN_CAVE_B1F DIGLETTS_CAVE MT_MOON_1F MT_MOON_B1F MT_MOON_B2F
@@ -28,6 +28,7 @@ ROUTE_19 ROUTE_20 ROUTE_21 ROUTE_22 ROUTE_23 ROUTE_24 ROUTE_25 SAFARI_ZONE_CENTE
 SAFARI_ZONE_NORTH SAFARI_ZONE_WEST SEAFOAM_ISLANDS_1F SEAFOAM_ISLANDS_B1F SEAFOAM_ISLANDS_B2F
 SEAFOAM_ISLANDS_B3F SEAFOAM_ISLANDS_B4F VICTORY_ROAD_1F VICTORY_ROAD_2F VICTORY_ROAD_3F VIRIDIAN_FOREST
 CELADON_CITY CERULEAN_CITY CINNABAR_ISLAND FUCHSIA_CITY PALLET_TOWN VERMILION_CITY VIRIDIAN_CITY
+CERULEAN_GYM VERMILION_DOCK
 ]]):gmatch("%S+") do VALID[id] = true end
 
 local function checkSlot(s, where)
@@ -41,13 +42,25 @@ end
 
 local maps, ladders, rods, slotsChecked, biggest = 0, 0, 0, 0, 0
 
-for mapId, entry in pairs(data.maps) do
+local auditEntry
+local function auditMaps(mapTable)
+for mapId, entry in pairs(mapTable) do
   maps = maps + 1
   check(VALID[mapId] == true, "map id is a real Gen 1 engine map: " .. tostring(mapId))
+  auditEntry(mapId, entry)
+end
+end
+
+function auditEntry(mapId, entry)
   check(type(entry) == "table" and next(entry) ~= nil, mapId .. ": not empty")
   for kind, list in pairs(entry) do
     local where = mapId .. "." .. tostring(kind)
-    if kind == "superRod" then
+    if kind == "classic" then
+      -- a map's Gen 2 fallback block: same shapes, audited like a map entry of its own
+      check(type(list) == "table" and (list.grass or list.water or list.superRod), where .. " has grass/water/superRod")
+      check(list.classic == nil, where .. " does not nest")
+      auditEntry(where, list)
+    elseif kind == "superRod" then
       rods = rods + 1
       check(type(list) == "table" and #list >= 1 and #list <= 4, where .. " has 1..4 entries (engine rolls a 2-bit index)")
       for i, s in ipairs(list) do checkSlot(s, where .. "[" .. i .. "]"); slotsChecked = slotsChecked + 1 end
@@ -85,6 +98,86 @@ for mapId, entry in pairs(data.maps) do
       check(false, where .. ": unknown bucket kind")
     end
   end
+end
+auditMaps(data.maps)
+
+-- ------------------------------------------------ hand-authored areas (tools/generate_gen9_authored.py)
+-- Route 18, Route 24, Victory Road 1F-3F and five Super Rod groups are not in the generated Essentials data; they come
+-- from lib/gen9_encounters_authored.lua (same shape). Same structural checks, plus: only where the generated data has
+-- nothing, only Gen 3-9 species, never a legendary/mythical/Ultra Beast/Paradox, Super Rod groups sized like the original.
+do
+  local authored = assert(loadfile("lib/gen9_encounters_authored.lua"))()
+  check(type(authored) == "table" and authored.version == 2 and type(authored.maps) == "table", "authored: table with version 2")
+  local restricted = assert(loadfile("lib/species_flags_data.lua"))().restricted
+  auditMaps(authored.maps)
+  local ORIGINAL_ROD_SIZE = { CERULEAN_GYM = 3, ROUTE_11 = 2, ROUTE_24 = 3, SAFARI_ZONE_EAST = 4, VERMILION_DOCK = 2 }
+  -- the Super Rod groups of the maps that get only a Gen 2 `classic` group (the generated data has the modern one)
+  local CLASSIC_ROD_SIZE = { CERULEAN_GYM = 3, ROUTE_11 = 2, ROUTE_24 = 3, SAFARI_ZONE_EAST = 4, VERMILION_DOCK = 2,
+    ROUTE_20 = 4, ROUTE_21 = 4, ROUTE_23 = 4, ROUTE_25 = 3, SAFARI_ZONE_NORTH = 4,
+    CERULEAN_CAVE_1F = 4, CERULEAN_CAVE_2F = 4, CERULEAN_CAVE_B1F = 4 }
+  local seenGrass, seenRod = {}, {}
+  for mapId, entry in pairs(authored.maps) do
+    for kind, list in pairs(entry) do
+      local where = "authored " .. mapId .. "." .. kind
+      if kind == "classic" then
+        for ckind, clist in pairs(list) do
+          local cwhere = where .. "." .. ckind
+          for _, s in ipairs(clist.slots or clist) do
+            check(s.dex >= 152 and s.dex <= 251, cwhere .. ": " .. s.species .. " is Gen 2 (dex " .. tostring(s.dex) .. ")")
+            check(restricted[s.dex] == nil, cwhere .. ": " .. s.species .. " is not a legendary/mythical/Ultra Beast/Paradox")
+          end
+          if ckind == "superRod" then
+            check(#clist == CLASSIC_ROD_SIZE[mapId], cwhere .. ": keeps the original group's size, got " .. #clist)
+          end
+        end
+      else
+        check(not (data.maps[mapId] and data.maps[mapId][kind]), where .. ": the generated data has nothing here")
+        local slots = list.slots or list
+        for _, s in ipairs(slots) do
+          check(s.dex >= 252 and s.dex <= 1025, where .. ": " .. s.species .. " is Gen 3-9 (dex " .. tostring(s.dex) .. ")")
+          check(restricted[s.dex] == nil, where .. ": " .. s.species .. " is not a legendary/mythical/Ultra Beast/Paradox")
+        end
+        if kind == "grass" then seenGrass[mapId] = true end
+        if kind == "superRod" then
+          seenRod[mapId] = true
+          check(#list == ORIGINAL_ROD_SIZE[mapId], where .. ": keeps the original group's size (the bite chance depends on it), got " .. #list)
+        end
+      end
+    end
+  end
+  -- Coverage invariant: a table whose species are ALL past Gen 2 (dex > 251) empties out under a Gen 2 cap, so its map must
+  -- carry a Gen 2 `classic` table of that kind (else the area falls back to the original game's table).
+  local function minDex(list)
+    local lo
+    for _, s in ipairs(list.slots or list) do lo = math.min(lo or s.dex, s.dex) end
+    return lo
+  end
+  local merged = {} -- per kind, the way the runtime merges: authored only fills what the generated data lacks
+  for id, e in pairs(data.maps) do
+    merged[id] = {}
+    for k, v in pairs(e) do merged[id][k] = v end
+  end
+  for id, e in pairs(authored.maps) do
+    merged[id] = merged[id] or {}
+    for _, k in ipairs({ "grass", "water", "superRod" }) do
+      if e[k] and not merged[id][k] then merged[id][k] = e[k] end
+    end
+  end
+  local emptied = 0
+  for mapId, e in pairs(merged) do
+    for _, kind in ipairs({ "grass", "water", "superRod" }) do
+      if e[kind] and (minDex(e[kind]) or 0) > 251 then
+        emptied = emptied + 1
+        local c = authored.maps[mapId] and authored.maps[mapId].classic
+        check(c and c[kind], mapId .. "." .. kind .. " has no Gen 2 species: it needs a `classic` table for a Gen 2 cap")
+      end
+    end
+  end
+  check(emptied >= 20, "the coverage check saw the tables that a Gen 2 cap empties (" .. emptied .. ")")
+  for _, id in ipairs({ "ROUTE_18", "ROUTE_24", "VICTORY_ROAD_1F", "VICTORY_ROAD_2F", "VICTORY_ROAD_3F" }) do
+    check(seenGrass[id], "authored: " .. id .. " has a grass table")
+  end
+  for id in pairs(ORIGINAL_ROD_SIZE) do check(seenRod[id], "authored: " .. id .. " has a Super Rod group") end
 end
 
 check(maps >= 40, "data covers a meaningful number of maps (" .. maps .. ")")

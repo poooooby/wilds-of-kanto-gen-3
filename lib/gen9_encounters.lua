@@ -21,6 +21,11 @@
 -- original objects back (map exit, map entry, option Off, invalidate), so Kanto Reforged's tables take
 -- over untouched when ours are off.
 --
+-- Levels: the generated table's levels come from a modern Kanto table and run far above the ROM's for most
+-- areas (median +13, up to +56) in a narrow window. The overlay keeps its species and odds but takes its LEVELS
+-- from the vanilla table of the same area (see anchorLevels): the resulting level distribution is the base
+-- game's, so an area's spread matches the original.
+--
 -- Data version 2: grass/water carry their own cumulative `buckets` ladder (any length, ending in
 -- 256) with one slot per (species, level). Encounter.roll and EncounterPick both honor a per-bucket
 -- `buckets`, so the copy gets the overlay's ladder and slots together. A slot whose species isn't
@@ -34,12 +39,46 @@ local DexExpansion = V.require("dex_expansion")
 local RandomSpawns = V.require("random_spawns")
 
 local dataModule
+local function validData(t)
+  return type(t) == "table" and t.version == 2 and type(t.maps) == "table"
+end
+
+-- The generated data covers most areas; a few (Route 18, Route 24, Victory Road, five Super Rod groups) come from a
+-- hand-authored module in the same format (tools/generate_gen9_authored.py). Once, in memory, it FILLS IN every map/kind
+-- the generated data lacks and never overrides one (the files on disk are untouched). A map's `classic` block (Gen 2
+-- species per grass/water/superRod, see `pickSource`) is merged the same way: the generated data has none.
+local function fillAuthored(base, extra)
+  for id, em in pairs(extra.maps) do
+    local cur = base.maps[id]
+    if cur == nil then
+      base.maps[id] = em
+    else
+      for _, kind in ipairs({ "grass", "water", "superRod" }) do
+        if em[kind] ~= nil and cur[kind] == nil then cur[kind] = em[kind] end
+      end
+      if em.classic ~= nil and cur.classic == nil then cur.classic = em.classic end
+    end
+  end
+end
+
 local function data()
   if dataModule == nil then
     local ok, t = pcall(function() return V.require("gen9_encounters_data") end)
-    dataModule = (ok and type(t) == "table" and t.version == 2 and type(t.maps) == "table") and t or false
+    if ok and validData(t) then
+      local okA, extra = pcall(function() return V.require("gen9_encounters_authored") end)
+      if okA and validData(extra) then fillAuthored(t, extra) end
+      dataModule = t
+    else
+      dataModule = false
+    end
   end
   return dataModule or nil
+end
+
+--- The merged map table (generated + authored), for tests and diagnostics. nil when the data can't load.
+function Gen9Encounters.dataMaps()
+  local d = data()
+  return d and d.maps or nil
 end
 
 local function gameOf(mod)
@@ -286,29 +325,202 @@ local function capLadder(src, cap)
   return ladder, kept
 end
 
+-- ---------------------------------------------------------------- level anchoring
+-- Sum of a species' base stats (0 when unknown): the tie-break that ranks a stronger species above a weaker one
+-- when the modern data gives them the same level.
+local function baseStatTotal(game, species)
+  local def = game and game.data and game.data.pokemon and game.data.pokemon[species]
+  local stats = def and def.baseStats
+  if type(stats) ~= "table" then return 0 end
+  local sum = 0
+  for _, v in pairs(stats) do
+    if type(v) == "number" then sum = sum + v end
+  end
+  return sum
+end
+
+-- The vanilla bucket's levels as an ascending { level, w } list (w = the slot's odds on its own ladder) plus the
+-- total weight.
+local function vanillaLevelDist(bucket)
+  local list, prev, total = {}, 0, 0
+  for i, thr in ipairs(vanillaLadder(bucket)) do
+    local s = bucket.slots[i]
+    if type(s) == "table" and type(s.level) == "number" and thr > prev then
+      list[#list + 1] = { level = s.level, w = thr - prev }
+      total = total + (thr - prev)
+    end
+    prev = thr
+  end
+  table.sort(list, function(a, b) return a.level < b.level end)
+  return list, total
+end
+
+-- Re-anchor `entries` ({ key, level, w, bst }, w = odds) onto the level distribution `dist` (ascending
+-- { level, w }, total weight `vTotal`) by quantile. Whole species are ranked by their weighted mean modern level
+-- (ties: base-stat total, then name), each species keeping its own slots in level order; walking that order, every
+-- slot takes the vanilla level at its odds-weighted mid-quantile. The result has the vanilla min, max and mean, keeps
+-- the species' relative ranking and a compact band per species, and only uses levels the vanilla table uses.
+-- Returns an array parallel to `entries`, or nil when there is nothing to anchor to.
+local function anchorLevels(entries, dist, vTotal)
+  if #entries == 0 or #dist == 0 or vTotal <= 0 then return nil end
+  local byKey, order, total = {}, {}, 0
+  for i, e in ipairs(entries) do
+    local g = byKey[e.key]
+    if not g then
+      g = { key = e.key, sum = 0, w = 0, bst = e.bst or 0, items = {} }
+      byKey[e.key] = g
+      order[#order + 1] = g
+    end
+    g.sum = g.sum + e.level * e.w
+    g.w = g.w + e.w
+    g.items[#g.items + 1] = { i = i, level = e.level, w = e.w }
+    total = total + e.w
+  end
+  if total <= 0 then return nil end
+  for _, g in ipairs(order) do
+    g.mean = math.floor(g.sum / g.w * 1000 + 0.5) -- milli-levels: equal means compare equal
+    table.sort(g.items, function(a, b)
+      if a.level ~= b.level then return a.level < b.level end
+      return a.i < b.i
+    end)
+  end
+  table.sort(order, function(a, b)
+    if a.mean ~= b.mean then return a.mean < b.mean end
+    if a.bst ~= b.bst then return a.bst < b.bst end
+    return tostring(a.key) < tostring(b.key)
+  end)
+  local out, cum = {}, 0
+  for _, g in ipairs(order) do
+    for _, it in ipairs(g.items) do
+      local u = (cum + it.w / 2) / total * vTotal
+      cum = cum + it.w
+      local acc, level = 0, dist[#dist].level
+      for _, d in ipairs(dist) do
+        acc = acc + d.w
+        if u <= acc then
+          level = d.level
+          break
+        end
+      end
+      out[it.i] = level
+    end
+  end
+  return out
+end
+
+local function distinctSpecies(slots)
+  local seen, n = {}, 0
+  for _, s in ipairs(slots) do
+    if not seen[s.species] then
+      seen[s.species] = true
+      n = n + 1
+    end
+  end
+  return n
+end
+
+-- Two capped ladders as one: each block's share of the 256 is proportional to its number of distinct species (so a species
+-- averages the same odds whichever block it came from) and the blocks keep their own internal proportions. Largest
+-- remainder to exactly 256; a slot that rounds to no odds is dropped. Slots are copies flagged `rankLevel = 0`: the two
+-- blocks' levels are on different scales, so the level anchoring ranks the merged species by base-stat total instead.
+local function mergeLadders(t1, s1, t2, s2)
+  local n1, n2 = distinctSpecies(s1), distinctSpecies(s2)
+  local share1 = n1 / (n1 + n2)
+  local items, prev = {}, 0
+  for i, thr in ipairs(t1) do
+    items[#items + 1] = { slot = s1[i], exact = (thr - prev) * share1 }
+    prev = thr
+  end
+  prev = 0
+  for i, thr in ipairs(t2) do
+    items[#items + 1] = { slot = s2[i], exact = (thr - prev) * (1 - share1) }
+    prev = thr
+  end
+  local used, order = 0, {}
+  for i, it in ipairs(items) do
+    it.units = math.floor(it.exact + 1e-9)
+    used = used + it.units
+    order[i] = { i = i, frac = it.exact - it.units }
+  end
+  table.sort(order, function(a, b)
+    if a.frac ~= b.frac then return a.frac > b.frac end
+    return a.i < b.i
+  end)
+  for k = 1, 256 - used do
+    local o = order[k]
+    items[o.i].units = items[o.i].units + 1
+  end
+  local thresholds, slots, acc = {}, {}, 0
+  for _, it in ipairs(items) do
+    if it.units > 0 then
+      acc = acc + it.units
+      thresholds[#thresholds + 1] = acc
+      slots[#slots + 1] = { level = it.slot.level, species = it.slot.species, dex = it.slot.dex, rankLevel = 0 }
+    end
+  end
+  return thresholds, slots
+end
+
+-- Ladder for one grass/water bucket of map data `m` under the generation cap. A higher cap includes everything a lower one
+-- does: the primary (Gen 3-9) table with its over-cap slots dropped is JOINED by the map's `classic` table of Gen 2 species
+-- (tools/generate_gen9_authored.py; it exists for the areas whose modern set has no Gen 1-2 species), and under a Gen 2
+-- cap -- which drops every Gen 3-9 species -- it is the whole table, so the area never reverts to the original game's.
+-- Returns thresholds, slots; nil when neither has a slot (a Gen 1 cap: the bucket stays original).
+local function pickSource(m, kind, cap)
+  local pt, ps
+  if validLadder(m[kind]) then pt, ps = capLadder(m[kind], cap) end
+  local ct, cs
+  local classic = m.classic and m.classic[kind]
+  if validLadder(classic) then ct, cs = capLadder(classic, cap) end
+  if pt and ct then return mergeLadders(pt, ps, ct, cs) end
+  if pt then return pt, ps end
+  return ct, cs
+end
+
 --- Spawn Table copy of `vanilla` for a mapped map, or nil when the table doesn't apply here (no
 -- data, no expanded dex, unmapped, or no overlay species registered). Uncached; no mode check.
 -- `cap` (optional national dex) is the generation cap: slots above it are dropped and their odds
--- shared among the rest; a bucket with no allowed slot stays as the original.
+-- shared among the rest; the map's `classic` (Gen 2) table joins it where it has one (see `pickSource`); a bucket with
+-- no allowed slot stays as the original.
 local function tableOverlay(mod, game, mapId, vanilla, cap)
   if not tableAvailable(mod, game) then return nil end
   local m = data().maps[mapId]
-  if not (m and (m.grass or m.water)) then return nil end
+  if not (m and (m.grass or m.water or m.classic)) then return nil end
 
   local out = deepCopy(vanilla)
   local changed = false
   for _, kind in ipairs({ "grass", "water" }) do
-    local bucket, src = out[kind], m[kind]
-    if type(bucket) == "table" and type(bucket.slots) == "table" and #bucket.slots > 0
-       and validLadder(src) then
+    local bucket = out[kind]
+    if type(bucket) == "table" and type(bucket.slots) == "table" and #bucket.slots > 0 then
       local vanillaBucket = vanilla[kind]
-      local thresholds, source = capLadder(src, cap)
+      local thresholds, source = pickSource(m, kind, cap)
       if thresholds then
+        -- levels come from the vanilla bucket of this area (registered species only; the rest fall back below)
+        local registered, entries, entryAt = {}, {}, {}
+        do
+          local before = 0
+          for i, thr in ipairs(thresholds) do
+            local s = source[i]
+            if DexExpansion.speciesRegistered(mod, game, s.species) then
+              registered[i] = true
+              entries[#entries + 1] = { key = s.species, level = s.rankLevel or s.level, w = thr - before,
+                bst = baseStatTotal(game, s.species) }
+              entryAt[#entries] = i
+            end
+            before = thr
+          end
+        end
+        local anchoredBySlot = {}
+        local dist, vTotal = vanillaLevelDist(vanillaBucket)
+        local anchored = anchorLevels(entries, dist, vTotal)
+        if anchored then
+          for k, i in ipairs(entryAt) do anchoredBySlot[i] = anchored[k] end
+        end
         local slots, prev, any = {}, 0, false
         for i, thr in ipairs(thresholds) do
           local s = source[i]
-          if DexExpansion.speciesRegistered(mod, game, s.species) then
-            slots[i] = { level = s.level, species = s.species }
+          if registered[i] then
+            slots[i] = { level = anchoredBySlot[i] or s.level, species = s.species }
             any = true
           else
             local v = vanillaSlotAt(vanillaBucket, (prev + thr) / 2)
@@ -417,19 +629,70 @@ end
 local function tableRod(mod, game, mapId, vanillaPool, cap)
   if not tableAvailable(mod, game) then return vanillaPool end
   local m = data().maps[mapId]
-  local src = m and m.superRod
-  if type(src) ~= "table" then return vanillaPool end
-  local out = {}
-  for i, s in ipairs(src) do
-    if cap and type(s.dex) == "number" and s.dex > cap then
-      -- over the generation cap: dropped (the roll is uniform, so the rest share its odds)
-    elseif DexExpansion.speciesRegistered(mod, game, s.species) then
-      out[#out + 1] = { level = s.level, species = s.species }
-    elseif vanillaPool[i] ~= nil then
-      out[#out + 1] = vanillaPool[i]
+  if type(m) ~= "table" then return vanillaPool end
+  local out, entries, entryAt = {}, {}, {}
+  -- the primary group under the cap; when the cap leaves it nothing (or it is registered nowhere), the map's Gen 2 `classic` group
+  local function collect(src)
+    out, entries, entryAt = {}, {}, {}
+    if type(src) ~= "table" then return end
+    for i, s in ipairs(src) do
+      if cap and type(s.dex) == "number" and s.dex > cap then
+        -- over the generation cap: dropped (the roll is uniform, so the rest share its odds)
+      elseif DexExpansion.speciesRegistered(mod, game, s.species) then
+        out[#out + 1] = { level = s.level, species = s.species }
+        entries[#entries + 1] = { key = s.species, level = s.level, w = 1, bst = baseStatTotal(game, s.species) }
+        entryAt[#entries] = #out
+      elseif vanillaPool[i] ~= nil then
+        out[#out + 1] = vanillaPool[i]
+      end
+    end
+  end
+  collect(m.superRod)
+  -- The map's Gen 2 `classic` group joins the primary one (a higher cap includes everything a lower one does), and is the
+  -- whole group when the cap or the registry leaves the primary nothing. The engine picks among <= 4 entries, so a joined
+  -- group keeps the classic group's size (= the original group's, whose bite chance the engine ties to it) and alternates
+  -- primary / classic entries, primary first.
+  local classicRod = {}
+  if m.classic and type(m.classic.superRod) == "table" then
+    for _, s in ipairs(m.classic.superRod) do
+      if not (cap and type(s.dex) == "number" and s.dex > cap) and DexExpansion.speciesRegistered(mod, game, s.species) then
+        classicRod[#classicRod + 1] = { level = s.level, species = s.species }
+      end
+    end
+  end
+  local joined = false
+  if #classicRod > 0 then
+    local primary = {}
+    for k, pos in ipairs(entryAt) do primary[k] = out[pos] end
+    if #primary == 0 then
+      out = classicRod
+    else
+      out = {}
+      local target, p, c = #classicRod, 1, 1
+      while #out < target and (p <= #primary or c <= #classicRod) do
+        if p <= #primary then out[#out + 1] = primary[p]; p = p + 1 end
+        if #out < target and c <= #classicRod then out[#out + 1] = classicRod[c]; c = c + 1 end
+      end
+      joined = true
+    end
+    entries, entryAt = {}, {}
+    for pos, e in ipairs(out) do
+      -- joined groups mix two level scales: rank by base-stat total (see mergeLadders)
+      entries[pos] = { key = e.species, level = joined and 0 or e.level, w = 1, bst = baseStatTotal(game, e.species) }
+      entryAt[pos] = pos
     end
   end
   if #out == 0 then return vanillaPool end
+  -- the Super Rod levels come from the vanilla group of this map (each entry one pick in four)
+  local dist = {}
+  for _, e in ipairs(vanillaPool) do
+    if type(e) == "table" and type(e.level) == "number" then dist[#dist + 1] = { level = e.level, w = 1 } end
+  end
+  table.sort(dist, function(a, b) return a.level < b.level end)
+  local anchored = anchorLevels(entries, dist, #dist)
+  if anchored then
+    for k, pos in ipairs(entryAt) do out[pos].level = anchored[k] end
+  end
   return out
 end
 

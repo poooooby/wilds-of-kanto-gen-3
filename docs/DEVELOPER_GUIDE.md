@@ -148,6 +148,38 @@ Visible water spawns use `lib/water_spawn.lua` (cell → shore zone → pool →
 - **`random`** (see 8.2) draws any registered species for every map with a vanilla table; no dex gate.
 - **`off`** returns the vanilla object untouched.
 
+**Authored areas.** The generated Essentials data has no table for Route 18, Route 24, Victory Road 1F-3F or the Super Rod
+groups of Cerulean Gym, Route 11, Route 24, Safari Zone East and Vermilion Dock. `lib/gen9_encounters_authored.lua` (same shape;
+built by `tools/generate_gen9_authored.py` from `tools/data/gen9_authored_encounters.json`) supplies them, and `data()` fills them
+into the generated table once at load, only for a map/kind the generated data lacks. The generator refuses any species outside the
+area's `band` (base-stat total range from the original area's own species, evolution position, optional type), outside Gen 3-9
+(dex 252..1025), or restricted (`lib/species_flags_data.lua`); Super Rod groups keep the ORIGINAL group's size because the engine's
+bite chance depends on it. Sources for validation live outside the repo: `--national-dex <national_dex>/data/species/generated/national.lua`
+and `--evolutions <national_dex>/data/evolutions/generated`.
+
+**Gen 2 `classic` fill.** A map entry may carry `classic = { grass|water|superRod }` of Gen 2 species (dex 152..251, same band
+validation). A higher MAX GEN cap must include everything a lower one does, so `pickSource` (grass/water) JOINS the classic table to the
+primary one at every cap: each block's share of the 256 is proportional to its distinct species count (`mergeLadders`, largest
+remainder; merged slots carry `rankLevel = 0` so `anchorLevels` ranks the mixed species by base-stat total, not by two unrelated level
+scales). A Gen 2 cap drops every Gen 3-9 species, and 22 tables (the 10 authored ones plus Route 17/23 grass, Route 20/21 water and the
+Super Rods of Route 20/21/23/25, Cerulean Cave and Safari Zone North, whose generated species are all past Gen 2) used to revert to the
+original game's table; the classic table is then the whole table. A Gen 1 cap drops the Gen 2 species too, so the original stays.
+`tableRod` joins the groups too, but the engine picks among <= 4 entries, so a joined group keeps the classic (= original) group's size and
+alternates primary / classic entries (it cannot hold every Gen 2 entry at once). `fillAuthored` merges `classic` into generated maps (the
+generated data has none). `tests/gen9_encounters_data_unit_test.lua` asserts every table with no Gen 1-2 species has a classic table;
+`tests/gen9_encounters_levels_audit_unit_test.lua` runs the real overlays at Gen 2 and Gen 1 caps and checks that species sets only grow from
+cap Gen 2 to Gen 9.
+
+**Levels come from the vanilla area, not from the data.** The generated table's own levels run far above the ROM's
+(median +13, up to +56, in a 2-3 level window). `tableOverlay` / `tableRod` keep the overlay's species and odds but re-anchor
+the levels with `anchorLevels`: the vanilla bucket's slot levels weighted by its ladder give a distribution; whole species are
+ranked by their weighted mean modern level (ties: base-stat total from `game.data.pokemon`, then name) and, walking that order,
+each slot takes the vanilla level at its odds-weighted mid-quantile. The result has the vanilla min, max and mean, keeps the
+species ranking and a compact band per species, and only uses levels the vanilla table itself uses. Registered species only
+(an unregistered slot still falls back to the vanilla slot at its position); Super Rod entries weigh one each. Random mode's
+level spread inherits it (it builds on the Spawn Table overlay where mapped). Audit against the ROM's tables:
+`tests/gen9_encounters_levels_audit_unit_test.lua` (skips without `.deps/gen1recomp/data/generated`).
+
 - **Seam:** `Gen1.encountersForMap` returns the overlay (a cached **copy**; the original table objects are
   never modified). The classic roll is covered by the
   `encounter.roll` wrapper via `Gen9Encounters.rollDef` (the engine passes a synthetic

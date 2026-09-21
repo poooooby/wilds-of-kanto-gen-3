@@ -8,7 +8,10 @@ Inputs (all stay OUTSIDE the repo; only the generated Lua is committed):
                  buckets are inert because the vanilla Gen 1 table has no such bucket
 
 Only the modern blocks are used (Land / Cave / Water / SuperRod); the parallel *Classic pools are
-ignored. Location -> engine map ids come from tools/data/gen9_location_map.json.
+ignored. The source levels are kept in the generated file but are NOT what the game uses: lib/gen9_encounters.lua
+re-anchors them at runtime onto the vanilla table's level distribution for the same area (they run far above the
+ROM's), so regenerating never changes the levels players see. Areas this source has no table for are covered by the
+hand-authored lib/gen9_encounters_authored.lua (tools/generate_gen9_authored.py). Location -> engine map ids come from tools/data/gen9_location_map.json.
 
 Quantization matches the engine's own tables:
   * grass/cave/water -> one slot per (species, level) with a custom cumulative `buckets` ladder
