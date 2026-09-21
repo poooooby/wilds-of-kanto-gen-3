@@ -109,6 +109,21 @@ battle front/back → menu icon → optional save-dir cache → fallback
 
 Fallback chain: **follow variant → follow normal → legacy PNG → black fallback**.
 
+### Unown letter forms (Gold)
+
+Unown is one species whose letter comes from the DVs (`Unown.letterFromDVs`, 1 = A .. 26 = Z). `GameCompat.wildVariant` (Gen 2 adapter
+only) draws a spawn's letter with the engine's own rules -- no puzzle solved means no encounter, otherwise `Unown.wildDVs` rerolls until
+the letter is unlocked -- and `SpawnLogic` keeps `unownLetter` / `unownForm` / `unownDvs` on the record. `Entity.new` sets
+`entity.spriteForm` (1..25 = the `201-b-n-NN` file suffix; nil = A), which `SpriteResolver` passes through
+`SpriteProviders:resolve(style, species, variant, game, form)` to the HGSS/PokeMMO provider only. That provider swaps the id for
+`60000 + form` (`lib/unown_forms.lua`), so runtime sheets, True Size packs, geometry, `species_geometry.displayScale` (aliased to 201) and
+the atlas all serve the letter unchanged, and it falls back to the base sheet when a letter's sheet is missing. The letter sheets are baked
+by the same generators as any species -- `tools/unown_forms.py` synthesizes their mapping entries (they are not in the followsprites
+mapping) -- so a fresh bake needs no extra step; run `generate_runtime_sprite_sheets.py` and
+`generate_true_size_runtime.py --pack hgss --species 60001,...,60025`. The Poke Followers / GSC style has no per-letter art.
+The battle gets the same letter: `GameCompat.startWildBattle(..., { dvs })` swaps `Mon.randomDVs` for a one-shot around the synchronous
+`start_battle` queue and always restores it. Tests: `tests/unown_forms_unit_test.lua`, `tests/gen2_unown_unit_test.lua`.
+
 ## 6. Runtime image cache
 
 `resolvedAssetBySpeciesId` / `runtimeImageCache` hold paths and bake results.
@@ -500,6 +515,8 @@ See `docs/analysis/STANDALONE_CRASH.md` and
 ## 20. Cave support
 
 - No dependence on grass graphics
+- Gold: any map whose header environment is CAVE or DUNGEON counts (`Surface.isIndoorEncounterMap`), the same rule as the engine's
+  step encounters; Gen 1 keeps its `field.indoorEncounters` index rule
 - Walkable indoor tiles
 - Hidden uses dust/shadow, never grass shake
 

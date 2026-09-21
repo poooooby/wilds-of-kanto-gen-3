@@ -41,6 +41,11 @@ function Surface.isIndoorEncounterMap(game, map)
   if not map or not map.def then return false end
   local indoor = indoorConfig(game)
   if not indoor then
+    -- Gold has no Gen 1 indoor table, but its map header names the environment, and the engine's own step-encounter
+    -- rule (FieldMoves.canEncounterWildMon) lets any CAVE / DUNGEON floor roll wild Pokemon. Without this the
+    -- Ruins of Alph chambers, Slowpoke Well, Ice Path, Mt. Mortar... (ids with no "CAVE" in them) had no spawns at all.
+    local env = tostring(map.def.environment or ""):upper()
+    if env == "CAVE" or env == "DUNGEON" then return true end
     -- Fallback when field data is absent (headless fixtures): tileset / id.
     local tileset = tostring(map.def.tileset or ""):upper()
     local id = tostring(map.id or ""):upper()

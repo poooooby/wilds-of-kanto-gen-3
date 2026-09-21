@@ -460,11 +460,22 @@ function GameCompat.specialCatchSessionBlocks(game, ow)
   return false
 end
 
---- Start a wild battle for the visible overworld entity (exact species/level).
-function GameCompat.startWildBattle(world, species, level, game)
+--- Per-spawn variation decided by the engine's DVs (Gold's Unown letter; see Gen2.wildVariant). nil when the
+-- active game / species has none. `false, reason` = this encounter must not happen.
+function GameCompat.wildVariant(game, species, ctx)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.wildVariant then
+    return adapter.wildVariant(game, species, ctx)
+  end
+  return nil
+end
+
+--- Start a wild battle for the visible overworld entity (exact species/level). `opts.dvs` (Gold Unown) makes the
+-- battle mon the one the player saw.
+function GameCompat.startWildBattle(world, species, level, game, opts)
   local adapter = GameCompat.current(nil, game)
   if adapter and adapter.startWildBattle then
-    return adapter.startWildBattle(world, species, level)
+    return adapter.startWildBattle(world, species, level, opts)
   end
   if world and type(world.queueScript) == "function" then
     return world:queueScript({

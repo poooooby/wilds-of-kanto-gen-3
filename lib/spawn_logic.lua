@@ -1998,6 +1998,18 @@ function SpawnLogic:trySpawn(game, opts)
     species, level = pick.species, pick.level
   end
 
+  -- Gold Unown: the engine decides the letter by DVs (and which letters are unlocked). Draw it now so the sprite and
+  -- the battle agree, or refuse the spawn the way the engine refuses the encounter (no puzzle solved yet).
+  -- Forced / test spawns skip the unlock rule. nil for every other species and for Gen 1.
+  local wildVar, wildVarWhy = GameCompat.wildVariant(game, species, {
+    ow = ow, forced = (opts.species ~= nil or opts.force == true or opts.testSpawn == true),
+  })
+  if wildVar == false then
+    occupancy:releaseSpawn(spawnToken)
+    st:noteReject("rejected: " .. tostring(wildVarWhy))
+    return nil, "rejected: " .. tostring(wildVarWhy)
+  end
+
   local behavior = opts.behavior
   if not behavior then
     local safariActive = self:_safariActive(game, ow, mapId)
@@ -2052,9 +2064,15 @@ function SpawnLogic:trySpawn(game, opts)
     visibleSprite = not hidden,
     hiddenEncounter = hidden,
     shiny = self:_rollShiny(game, opts),
+    unownLetter = wildVar and wildVar.unownLetter or nil,
+    unownForm = wildVar and wildVar.unownForm or nil,
+    unownDvs = wildVar and wildVar.dvs or nil,
   }
   if record.shiny then
     self:_log("shiny wild spawned: %s Lv%s id=%s", tostring(species), tostring(level), tostring(id))
+  end
+  if record.unownLetter then
+    self:_log("unown letter drawn: %d (form %s) id=%s", record.unownLetter, tostring(record.unownForm), tostring(id))
   end
 
   local ok, entityOrErr = pcall(self.render.makeEntity, self.render, game, record)
@@ -3310,7 +3328,7 @@ function SpawnLogic:_startBattle(record)
 
   -- The battle mon must be the one the player saw: hand the spawn's shiny roll to BattleState.newWild.
   pcall(Shiny.armForBattle, record, GameCompat.isGen2(self.mod, game))
-  ok, err = GameCompat.startWildBattle(world, record.species, record.level, game)
+  ok, err = GameCompat.startWildBattle(world, record.species, record.level, game, { dvs = record.unownDvs })
   if not ok then
     pcall(Shiny.clearPending)
     self:_warn("could not queue wild battle: %s", tostring(err))

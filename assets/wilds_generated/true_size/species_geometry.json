@@ -74980,5 +74980,1530 @@
     "scaledVisualWidth": 26,
     "sizing": "native",
     "visualScale": 1.0
+  },
+  "60001": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60002": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60003": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60004": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60005": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60006": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60007": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60008": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60009": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60010": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60011": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60012": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60013": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60014": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60015": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60016": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60017": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60018": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60019": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60020": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60021": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60022": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60023": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60024": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
+  },
+  "60025": {
+    "sizing": "native",
+    "class": "M",
+    "heightM": 1.0,
+    "nativeVisualWidth": 21,
+    "nativeVisualHeight": 24,
+    "scaledVisualWidth": 21,
+    "scaledVisualHeight": 24,
+    "visualScale": 1.0,
+    "padding": 2,
+    "manualOverride": false,
+    "override": null,
+    "missingSource": false,
+    "packs": {
+      "pokemmo": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/hgss",
+        "frames": 6,
+        "walker": true
+      },
+      "followers": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/followers",
+        "frames": 6,
+        "walker": true
+      },
+      "pokedex": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/pokedex",
+        "frames": 1,
+        "walker": false
+      },
+      "swimming": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/swimming",
+        "frames": 6,
+        "walker": true
+      },
+      "levitate": {
+        "frameWidth": 25,
+        "frameHeight": 28,
+        "anchorX": 12.5,
+        "anchorY": 26.0,
+        "relativeDir": "assets/wilds_generated/true_size/levitate",
+        "frames": 6,
+        "walker": true
+      }
+    }
   }
 }

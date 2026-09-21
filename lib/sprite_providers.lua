@@ -321,7 +321,7 @@ function SpriteProviders:_makePokemmoProvider()
       end
       return false, sheets and sheets.loadError or "runtime sheets unavailable"
     end,
-    resolve = function(_self, speciesId, variant, game)
+    resolve = function(_self, speciesId, variant, game, form)
       local sheets = render and render.runtimeSheets
       if not sheets then
         return nil, nil, "no runtime sheets"
@@ -334,7 +334,18 @@ function SpriteProviders:_makePokemmoProvider()
         return nil, nil, "dex unresolved"
       end
       local want = normalizeVariant(variant)
-      local def, usedVariant, loadPath, rel = sheets:spriteDef(dex, want)
+      -- Unown letter: the build bakes one sheet per letter as an extra asset id (lib/unown_forms.lua). Use it when it
+      -- exists; without it (an older sheet set) the base art is still a valid Unown.
+      local UnownForms = V.require("unown_forms")
+      local formId = UnownForms.formAssetId(dex, tonumber(form))
+      local def, usedVariant, loadPath, rel
+      if formId then
+        def, usedVariant, loadPath, rel = sheets:spriteDef(formId, want)
+        if def then dex = formId end
+      end
+      if not def then
+        def, usedVariant, loadPath, rel = sheets:spriteDef(dex, want)
+      end
       if not def then
         return nil, nil, "no pokemmo sheet for dex " .. tostring(dex)
       end
@@ -1289,17 +1300,18 @@ function SpriteProviders:providerAvailable(id, game)
   return ok == true, reason
 end
 
--- Resolve one provider attempting shiny then normal when requested shiny.
-local function resolveProviderVariant(provider, speciesId, variant, game)
+-- Resolve one provider attempting shiny then normal when requested shiny. `form` (optional, Unown's letter form 1..25,
+-- see lib/unown_forms.lua) rides along as a trailing argument only the HGSS/PokeMMO provider reads.
+local function resolveProviderVariant(provider, speciesId, variant, game, form)
   local want = normalizeVariant(variant)
   if want == "shiny" then
-    local def, meta, err = provider:resolve(speciesId, "shiny", game)
+    local def, meta, err = provider:resolve(speciesId, "shiny", game, form)
     if def then
       meta = meta or {}
       meta.usedVariant = meta.usedVariant or "shiny"
       return def, meta, nil
     end
-    def, meta, err = provider:resolve(speciesId, "normal", game)
+    def, meta, err = provider:resolve(speciesId, "normal", game, form)
     if def then
       meta = meta or {}
       meta.usedVariant = meta.usedVariant or "normal"
@@ -1309,12 +1321,12 @@ local function resolveProviderVariant(provider, speciesId, variant, game)
     end
     return nil, nil, err or "shiny and normal unresolved"
   end
-  return provider:resolve(speciesId, "normal", game)
+  return provider:resolve(speciesId, "normal", game, form)
 end
 
 -- Preferred auto shiny order is encoded by walking the chain with per-provider
 -- shiny→normal attempts (followers shiny, followers normal, pokemmo shiny, ...).
-function SpriteProviders:resolve(style, speciesId, variant, game)
+function SpriteProviders:resolve(style, speciesId, variant, game, form)
   style = self:normalizeStyle(style or Config.spriteStyle(self.mod) or "followers")
 
   local chain = self:chainForStyle(style)
@@ -1333,7 +1345,7 @@ function SpriteProviders:resolve(style, speciesId, variant, game)
           providerId = providerId, ok = false, reason = availReason or "unavailable",
         }
       else
-        local def, meta, err = resolveProviderVariant(provider, speciesId, variant, game)
+        local def, meta, err = resolveProviderVariant(provider, speciesId, variant, game, form)
         if def then
           meta = meta or {}
           meta.providerId = providerId

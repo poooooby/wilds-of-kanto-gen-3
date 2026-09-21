@@ -8,6 +8,25 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.7.4 (fork)
+
+### Bug fixes
+
+- **Gold: Ruins of Alph and other dungeons now spawn wild Pokemon.** A map only got visible
+  spawns if it had grass or a name the mod recognised as a cave (it looked for "CAVE" in the
+  map id, a Red/Blue/Yellow rule). Every Gold dungeon without that word, such as the Ruins of
+  Alph chambers, Slowpoke Well, Ice Path, Mt. Mortar and Whirl Islands, had none. It now uses
+  the same rule as the game's own step encounters: any cave or dungeon floor.
+
+- **Gold: each Unown is now a specific letter, and it is the letter you fight.**
+  Unown used to spawn as one generic picture and the battle rolled a random letter.
+  Now a spawn picks its letter when it appears, from the letters your solved Ruins of Alph
+  wall puzzles have unlocked (none appear until you solve one, as in the game), and the
+  battle is that same Unown. With the HGSS / PokeMMO sprite style the overworld sprite is that
+  letter, all 25 letters from B to Z plus the base A, shiny too, at Unown's usual size. The
+  Poke Followers / GSC style only has one Unown picture, so it keeps showing that one, but the
+  fight is still the right letter. Not tried in a live Gold game yet.
+
 ## 2.7.3 (fork)
 
 ### Features

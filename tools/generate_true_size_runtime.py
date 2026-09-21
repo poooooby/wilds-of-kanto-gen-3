@@ -34,6 +34,9 @@ for _stream in (sys.stdout, sys.stderr):
         _stream.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import unown_forms  # noqa: E402  (Unown letters B..Z are baked as extra ids 60001..60025)
+
 HEIGHTS_PATH = ROOT / "tools/gen1_heights.json"
 HGSS_SRC = ROOT / "assets/enhanced_overworld/followsprites"
 HGSS_MAP = ROOT / "assets/enhanced_overworld/followsprites_mapping/followsprites_mapping.json"
@@ -623,6 +626,12 @@ def stack_sheet(cards: list[Image.Image], frame_w: int, frame_h: int) -> Image.I
 def hgss_source(dex: int, src_root: Path | None = None) -> dict[str, Path]:
     root = src_root if src_root is not None else HGSS_SRC
     out = {}
+    if unown_forms.is_form_id(dex):
+        # Unown letter forms live under their species' number with a form suffix (tools/unown_forms.py).
+        for variant, fname in unown_forms.source_files(dex).items():
+            if (root / fname).exists():
+                out[variant] = root / fname
+        return out
     for variant, suffixes in (
         ("normal", ["-b-n.png", "-f-n.png", "-m-n.png", "-n.png"]),
         ("shiny", ["-b-s.png", "-f-s.png", "-m-s.png", "-s.png"]),
@@ -670,6 +679,8 @@ def water_sources(kind: str, max_dex: int = 1025) -> dict[tuple[int, str], Path]
 
 
 def override_for(dex: int) -> dict:
+    if unown_forms.is_form_id(dex):
+        dex = unown_forms.BASE_DEX  # a letter is sized like Unown itself
     return dict(MANUAL_OVERRIDES.get(dex) or {})
 
 

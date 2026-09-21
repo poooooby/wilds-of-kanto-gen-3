@@ -41,6 +41,9 @@ from pathlib import Path
 
 from PIL import Image
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import unown_forms  # noqa: E402  (Unown letters B..Z are baked as extra ids 60001..60025)
+
 ROOT = Path(__file__).resolve().parents[1]
 MAPPING = ROOT / "assets/enhanced_overworld/followsprites_mapping/followsprites_mapping.json"
 OUT_DIR = ROOT / "assets/wilds_generated/followsprites_runtime"
@@ -262,6 +265,8 @@ def main() -> int:
     data = json.loads(args.mapping.read_text(encoding="utf-8"))
     layout = data.get("layout") or {}
     species = data.get("species") or {}
+    # Unown's per-letter sheets are not in the mapping file; add them (see tools/unown_forms.py).
+    species.update(unown_forms.mapping_entries(species, ROOT))
     args.out.mkdir(parents=True, exist_ok=True)
 
     manifest = {

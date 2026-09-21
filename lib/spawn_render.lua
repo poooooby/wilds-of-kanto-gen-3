@@ -1108,6 +1108,10 @@ function Entity.new(game, mod, render, record)
   self.level = record.level
   -- Rolled by lib/shiny.lua at spawn; AnimatedSprites.resolveRuntimeVariant turns it into the shiny sheet.
   self.shiny = record.shiny == true
+  -- Gold Unown: the letter drawn at spawn (lib/game_compat/gen2.lua wildVariant). `spriteForm` (1..25 = B..Z, nil = A)
+  -- selects the per-letter sheet and is fixed for the entity's whole lifetime.
+  self.unownLetter = record.unownLetter
+  self.spriteForm = record.unownForm
   self.mapId = record.mapId
   self.state = record.state or Config.STATE.AVAILABLE
   self.cellX = record.x
@@ -2258,7 +2262,7 @@ function SpawnRender:applyProviderSprite(entity, game, options)
   -- Hard rule: explicit PokeMMO land must never keep a Followers sheet.
   if style == "pokemmo" and (result.spriteState == "land" or not result.waterOverride)
      and result.providerId == "followers_ex" then
-    result = self.spriteProviders:resolve("pokemmo", species, variant, game)
+    result = self.spriteProviders:resolve("pokemmo", species, variant, game, tonumber(form))
     if not (result and result.def and type(result.def.image) == "string") then
       return false
     end

@@ -173,15 +173,63 @@ function Gen2.pickEncounter(game, mapId, kind, ctx)
   return Enc.pick(game, mapId, kind, ctx)
 end
 
+--- Per-spawn variation the engine decides by DVs rather than by species. Only Unown today: the Ruins of Alph chambers
+-- roll an UNOWN slot, the LETTER (read off the DVs) is what the player sees, and which letters can appear depends on
+-- which wall puzzles are solved. Mirrors World:tryWildEncounter's Unown arm (src/world/gen2/World.lua):
+--   * no puzzle solved  -> the slot is NO encounter;
+--   * otherwise         -> DVs are rerolled until the letter is unlocked (Unown.wildDVs).
+-- Returns nil when the species has no variation (or the engine cannot say), `false, reason` when the encounter must
+-- not happen, else { unownLetter = 1..26, unownForm = 1..25 | nil, dvs = {...} }. `ctx.forced` (debug / test spawns)
+-- skips the unlock rule and takes any letter.
+function Gen2.wildVariant(game, species, ctx)
+  if species ~= "UNOWN" then return nil end
+  ctx = ctx or {}
+  local Unown = tryRequire("src.core.gen2.Unown")
+  local Mon = tryRequire("src.battle.gen2.Mon")
+  if not (Unown and Mon and type(Mon.randomDVs) == "function") then return nil end
+  local UnownForms = V.require("unown_forms")
+  local dvs
+  if ctx.forced then
+    dvs = Mon.randomDVs()
+  else
+    local world = goldWorld(game, ctx.ow)
+    if not (world and type(world.unownUnlockFlags) == "function") then return nil end
+    local ok, flags = pcall(world.unownUnlockFlags, world)
+    if not ok or type(flags) ~= "table" then return nil end
+    if not Unown.anyUnlocked(flags) then return false, "no Unown puzzle solved" end
+    dvs = Unown.wildDVs(flags, Mon.randomDVs)
+  end
+  local letter = Unown.letterFromDVs(dvs)
+  if not letter then return nil end
+  return { unownLetter = letter, unownForm = UnownForms.formForLetter(letter), dvs = dvs }
+end
+
 --- Gold wild battle: WorldAPI.queueScript start_battle wild species level.
 -- WorldAPI builds src.battle.gen2.Mon and World:startBattle({ wild = mon }).
-function Gen2.startWildBattle(world, species, level)
+-- `opts.dvs` (Unown: the DVs whose letter the player saw) is handed to that Mon: the queue builds the mon
+-- synchronously with Mon.randomDVs(), so it is swapped for a one-shot that returns our DVs and always put back.
+function Gen2.startWildBattle(world, species, level, opts)
   if not (world and type(world.queueScript) == "function") then
     return nil, "no world"
   end
-  return world:queueScript({
+  local dvs = opts and opts.dvs
+  local Mon = type(dvs) == "table" and tryRequire("src.battle.gen2.Mon") or nil
+  local original = Mon and type(Mon.randomDVs) == "function" and Mon.randomDVs or nil
+  local swapped = false
+  if original then
+    swapped = pcall(function()
+      Mon.randomDVs = function()
+        Mon.randomDVs = original
+        return { attack = dvs.attack, defense = dvs.defense, speed = dvs.speed, special = dvs.special }
+      end
+    end)
+  end
+  local ok, res, err = pcall(world.queueScript, world, {
     { "start_battle", "wild", species, tonumber(level) or 5 },
   })
+  if swapped then pcall(function() Mon.randomDVs = original end) end
+  if not ok then return nil, tostring(res) end
+  return res, err
 end
 
 -- STANDING_DOWN (src/world/gen2/Npc.lua MOVE table). STILL=1 carries

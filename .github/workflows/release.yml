@@ -104,7 +104,9 @@ jobs:
             tests/sprite_atlas_unit_test.lua \
             tests/pokemon_dialogue_unit_test.lua \
             tests/shiny_unit_test.lua \
-            tests/shiny_gen2_unit_test.lua
+            tests/shiny_gen2_unit_test.lua \
+            tests/gen2_unown_unit_test.lua \
+            tests/unown_forms_unit_test.lua
           do
             echo "==> luajit $t"
             luajit "$t"

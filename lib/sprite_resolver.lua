@@ -183,7 +183,10 @@ function SpriteResolver:resolveLandSprite(entity, context)
   if not self.spriteProviders then
     return nil
   end
-  local result = self.spriteProviders:resolve(style, species, variant, game)
+  -- Unown's letter (entity.spriteForm 1..25) picks the per-letter sheet in the HGSS/PokeMMO provider; every other
+  -- provider and species ignores it.
+  local form = tonumber(context.form or resolveForm(entity))
+  local result = self.spriteProviders:resolve(style, species, variant, game, form)
   if result then
     result.spriteState = "land"
     result.spriteKind = result.providerId
@@ -867,7 +870,8 @@ function SpriteResolver:resolveForEntity(entity, context)
       "pokemmo",
       context.speciesId or (entity and (entity.species or entity.enhancedDexId)),
       context.variant or resolveVariant(entity),
-      context.game)
+      context.game,
+      tonumber(context.form or resolveForm(entity)))
     if result then
       result.spriteState = "land"
       result.spriteKind = result.providerId
