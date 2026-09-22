@@ -1,12 +1,15 @@
-# Wilds of Kanto Revival
+![GitHub Downloads](https://shields.io)
+![GitHub License](https://shields.io)
+# 🌿 Wilds of Kanto Revival
 
+> [!NOTE]
 > **Fork notice:** this is [poooooby](https://github.com/poooooby)'s fork of
 > [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)
 > ("Wilds of Kanto"), forked after upstream v2.2.0. Full credit for the
 > original mod goes to YoDrehDenSwagAuf and the collaborators listed below —
-> this fork adds Gen 3 species support (via the **Kanto Reforged** companion
-> mod) and additional Voxel renderer compatibility on top of that work. See
-> [CHANGELOG.md](CHANGELOG.md) for exactly what changed and when. Mod id
+> this fork adds Gen 3-9 species support and additional Voxel renderer compatibility
+> on top of that work.
+> See [CHANGELOG.md](CHANGELOG.md) for exactly what changed and when. Mod id
 > `wilds_of_kanto_gen3`; it declares a manifest conflict with the original
 > `overworld_wild_spawns` so the two are not run side by side.
 
@@ -93,8 +96,7 @@ Full license and attribution:
 Open from the pause menu:
 
 ```text
-START → OPTIONS → Poke Followers EX
-START → OPTIONS → Wilds of Kanto
+START → OPTIONS → Wilds of Kanto Revival
 ```
 
 Both menus read and write the same `mod.options` keys as Mod Settings.
@@ -229,6 +231,9 @@ This fork:
 - **Nuclear-Blizzard** — the Pokémon Tower ghost overworld sprite
   (`TOWER_GHOST.png`), shown for wild Pokémon in the Pokémon Tower until the
   player has the Silph Scope. Thank you for the art.
+- [PokeWilds](https://github.com/sheerst/pokewilds#overworld-sprites) overworld sprites
+- [Gen 9 Resource Pack](https://eeveeexpo.com/resources/1101/) 
+- More included in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 
 Original project ([YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)) collaborators — full credit for
 everything through v2.2.0:
