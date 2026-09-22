@@ -168,6 +168,54 @@ do
   resolveDex("Snorlax", 143)
   resolveDex("Mewtwo", 150)
   resolveDex("Mew", 151)
+
+  -- PokeWilds fallback (assets/enhanced_overworld/Pokewilds/, see
+  -- tools/generate_pokewilds_overworld.py): fills dex the primary
+  -- poke_followers/ folder doesn't have, without touching dex 1-251.
+  do
+    -- Dex 1 exists in poke_followers/: must NOT fall through to Pokewilds.
+    local def = p:resolve(1, "normal", nil)
+    check(def ~= nil, "Bulbasaur still resolves")
+    if def then
+      check(def.image:find("poke_followers", 1, true) ~= nil
+        and def.image:find("Pokewilds", 1, true) == nil,
+        "dex present in poke_followers/ is preferred over Pokewilds")
+    end
+
+    -- Dex 252 (Treecko) exists only under Pokewilds/, with real shiny art.
+    local normalDef = p:resolve(252, "normal", nil)
+    check(normalDef ~= nil, "Pokewilds-only dex resolves via fallback")
+    if normalDef then
+      check(normalDef.image:find("Pokewilds", 1, true) ~= nil,
+        "Pokewilds-only dex serves from the Pokewilds/ fallback folder")
+      eq(normalDef.frames, 6, "Pokewilds fallback sheet frames=6")
+    end
+    -- landArtUsesLuminance defaults true headlessly (paletteFxRedpp() has no
+    -- engine PaletteFX to read), which resolves any "shiny" request to the
+    -- normal sheet's path regardless of source folder (pre-existing
+    -- behavior, not specific to the Pokewilds fallback). Force ADVANCED mode
+    -- for these two checks so shiny actually reads the shiny/normal file it
+    -- claims to.
+    local realPaletteFxRedpp = Config.paletteFxRedpp
+    Config.paletteFxRedpp = function() return true end
+
+    local shinyDef = p:resolve(252, "shiny", nil)
+    check(shinyDef ~= nil, "Pokewilds-only dex resolves shiny via fallback")
+    if shinyDef then
+      check(shinyDef.image:find("follower_252_shiny", 1, true) ~= nil,
+        "Pokewilds-only dex serves its own shiny sheet when one exists")
+    end
+
+    -- Dex 393 (Piplup) exists only under Pokewilds/, with no shiny art.
+    local noShinyDef = p:resolve(393, "shiny", nil)
+    check(noShinyDef ~= nil, "Pokewilds-only dex without shiny still resolves")
+    if noShinyDef then
+      check(noShinyDef.image:find("follower_393_normal", 1, true) ~= nil,
+        "Pokewilds-only dex with no shiny art falls back to its own normal sheet")
+    end
+
+    Config.paletteFxRedpp = realPaletteFxRedpp
+  end
 end
 
 -- Options schema default

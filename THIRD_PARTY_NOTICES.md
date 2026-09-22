@@ -28,6 +28,12 @@ See the asset-specific documentation and credits for details.
   overworld walker art integrated for standalone use. Credits follow the
   upstream Followers EX / PokéPC / ShockSlayer (Pokémon Crystal Clear) lineage;
   Wilds does not claim authorship of those sprites.
+- Sheets under `assets/enhanced_overworld/Pokewilds/` extend the same Poke
+  Followers / GSC style to species beyond dex 251, converted (frame order
+  only, colors untouched) by `tools/generate_pokewilds_overworld.py` from
+  the overworld walker sprites of the [Pokémon Wilds](https://github.com/SheerSt/pokewilds)
+  project (SheerSt). Wilds does not claim authorship of those sprites; see
+  that project for its own per-species art credits.
 - Generated runtime sheets under `assets/wilds_generated/followsprites_runtime/`
   are derived from those third-party follow-sprites and inherit the same
   third-party licensing constraints. In the mod menu these are labeled

@@ -8,6 +8,17 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## Unreleased (fork)
+
+### Features
+
+- **Poke Followers / GSC now covers 416 more species beyond dex 251.** Overworld walker art
+  converted from the [Pokémon Wilds](https://github.com/SheerSt/pokewilds) project (SheerSt)
+  fills every gap the built-in GSC pack had, as a fallback the existing style already used for
+  dex 1-251 falls through to automatically — no new Sprite Style option, no changes to the art
+  those 251 species already had. Species without genuine shiny art in the source render with
+  their normal sheet, same as everywhere else that's missing shiny art.
+
 ## 2.7.5 (fork)
 
 ### Bug fixes

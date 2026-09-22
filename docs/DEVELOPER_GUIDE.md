@@ -143,6 +143,25 @@ species: applying the species' pack silently swapped an Unown letter / the ghost
 checks the image the entity actually draws). Tests: `tests/ghost_disguise_unit_test.lua`, `tests/overworld_catch_ghost_dodge_unit_test.lua` and the
 Tower block in the real-engine `tests/overworld_wild_spawns_test.lua`.
 
+### Poke Followers / GSC coverage beyond dex 251 (PokeWilds)
+
+The built-in Poke Followers / GSC style (`followers_ex` provider) ships hand-picked art for dex 1-251 under
+`assets/enhanced_overworld/poke_followers/`. `assets/enhanced_overworld/Pokewilds/` extends it with more species,
+converted from the [Pokémon Wilds](https://github.com/SheerSt/pokewilds) project's overworld walker sprites by
+`tools/generate_pokewilds_overworld.py`: same 16x96 vertical sheet, same `follower_%03d_{normal,shiny}.png`
+naming, but sourced from a 96x16 horizontal sheet whose 6 frames read right to left in a fixed, non-obvious order
+(`walk_left, idle_left, walk_up, idle_up, walk_down, idle_down`) -- the tool's `SOURCE_ORDER` constant maps that
+onto our top-to-bottom `idle_down, idle_up, idle_left, walk_down, walk_up, walk_left` rows and re-verifies the
+mapping against a synthetic fixture on every run. Base species only (no regional/alternate forms this pass,
+matching `followers_ex`'s existing dex-only scope); species without a genuine hand-made shiny sprite in the
+source get no shiny file at all rather than a guessed recolor -- reverse-engineering real normal/shiny pairs
+showed the source's `shiny.pal` files don't reduce to a per-species recolor formula, so it isn't used.
+`_pokeFollowersPath` / `_pokeFollowersShinyPath` in `lib/sprite_providers.lua` try `poke_followers/` first and
+only fall through to `Pokewilds/` when that dex is missing there, so dex 1-251 is completely untouched and a
+missing shiny sheet already falls back to normal through the same path the primary folder uses. Both folders
+are one `poke_followers` atlas family (`tools/generate_sprite_atlases.py`). Tests:
+`tests/poke_followers_assets_unit_test.lua`.
+
 ## 6. Runtime image cache
 
 `resolvedAssetBySpeciesId` / `runtimeImageCache` hold paths and bake results.

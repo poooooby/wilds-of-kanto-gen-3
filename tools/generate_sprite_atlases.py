@@ -53,7 +53,7 @@ FAMILIES: dict[str, list[str]] = {
     "water_levitates": [f"{GEN}/water_runtime/levitates"],
     "silhouette_swimming": [f"{GEN}/swimming_silhouette_runtime"],
     "silhouette_levitates": [f"{GEN}/levitates_silhouette_runtime"],
-    "poke_followers": ["assets/enhanced_overworld/poke_followers"],
+    "poke_followers": ["assets/enhanced_overworld/poke_followers", "assets/enhanced_overworld/Pokewilds"],
     "pika": [f"{GEN}/pika_follower_runtime", f"{GEN}/true_size/pika_*"],
     # PMDCollab dialogue portraits: <dex>/<normal|shiny>/<emotion>.png, all 40x40 (2,050 directories).
     "portraits": ["assets/pmdcollab/portraits/*/*"],

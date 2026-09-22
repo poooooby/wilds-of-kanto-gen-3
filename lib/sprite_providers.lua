@@ -799,6 +799,12 @@ end
 
 local POKE_FOLLOWERS_REL = "assets/enhanced_overworld/poke_followers"
 local POKE_FOLLOWERS_PROBE = POKE_FOLLOWERS_REL .. "/follower_001_normal.png"
+-- PokeWilds (github.com/SheerSt/pokewilds) walker art, converted by
+-- tools/generate_pokewilds_overworld.py: same "follower_%03d_variant.png"
+-- naming, used only for a dex the primary poke_followers/ folder doesn't
+-- have (dex 1-251 stays exactly what it was; this only fills gaps beyond
+-- it). See _pokeFollowersPath / _pokeFollowersShinyPath.
+local POKEWILDS_REL = "assets/enhanced_overworld/Pokewilds"
 
 -- Flat file naming (all variants in one directory):
 --   follower_%03d_normal.png    (colored)
@@ -806,15 +812,28 @@ local POKE_FOLLOWERS_PROBE = POKE_FOLLOWERS_REL .. "/follower_001_normal.png"
 --   follower_%03d_normal_submerged.png (colored submerged)
 --   follower_%03d_shiny_submerged.png  (colored shiny submerged)
 
+-- rel exists either as a real file or as an atlas shard (see sheetPresent).
+function SpriteProviders:_relPresent(rel)
+  return sheetPresent(self.mod, rel) or fsExists(rel) == true
+end
+
 function SpriteProviders:_pokeFollowersPath(dex, render)
   if type(dex) ~= "number" or dex < 1 then return nil, nil end
   local rel = string.format("%s/follower_%03d_normal.png", POKE_FOLLOWERS_REL, dex)
+  if not self:_relPresent(rel) then
+    local altRel = string.format("%s/follower_%03d_normal.png", POKEWILDS_REL, dex)
+    if self:_relPresent(altRel) then rel = altRel end
+  end
   return self:_modRelPath(rel, render)
 end
 
 function SpriteProviders:_pokeFollowersShinyPath(dex, render)
   if type(dex) ~= "number" or dex < 1 then return nil, nil end
   local rel = string.format("%s/follower_%03d_shiny.png", POKE_FOLLOWERS_REL, dex)
+  if not self:_relPresent(rel) then
+    local altRel = string.format("%s/follower_%03d_shiny.png", POKEWILDS_REL, dex)
+    if self:_relPresent(altRel) then rel = altRel end
+  end
   return self:_modRelPath(rel, render)
 end
 
