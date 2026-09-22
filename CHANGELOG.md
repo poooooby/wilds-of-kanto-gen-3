@@ -8,7 +8,7 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
-## Unreleased (fork)
+## 2.7.6 (fork)
 
 ### Features
 
@@ -18,6 +18,13 @@
   dex 1-251 falls through to automatically — no new Sprite Style option, no changes to the art
   those 251 species already had. Species without genuine shiny art in the source render with
   their normal sheet, same as everywhere else that's missing shiny art.
+
+### Bug fixes
+
+- **Poke Followers / GSC followers keep the standard 1-tile trail spacing.** A cosmetic
+  push-back meant only for wide HGSS / True Size art was reading that art's width regardless
+  of the actual Sprite Style, so a species like Onix still got spaced out under Poke Followers /
+  GSC even though that style only ever draws plain 16x16 tiles.
 
 ## 2.7.5 (fork)
 
