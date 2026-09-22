@@ -1,5 +1,6 @@
-![GitHub Downloads](https://shields.io)
-![GitHub License](https://shields.io)
+![Total Downloads](https://img.shields.io/github/downloads/poooooby/wilds-of-kanto-gen-3/total)
+![License](https://img.shields.io/github/license/poooooby/wilds-of-kanto-gen-3)
+
 # 🌿 Wilds of Kanto Revival
 
 > [!NOTE]
