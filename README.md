@@ -1,114 +1,105 @@
+# 🌿 Wilds of Kanto Revival
 ![Total Downloads](https://img.shields.io/github/downloads/poooooby/wilds-of-kanto-gen-3/total)
 [![License](https://img.shields.io/badge/license-Modified%20MIT-blue)](https://github.com/poooooby/wilds-of-kanto-gen-3/blob/main/LICENSE)
 ![Latest release](https://img.shields.io/github/v/release/poooooby/wilds-of-kanto-gen-3)
 ![Release date](https://img.shields.io/github/release-date/poooooby/wilds-of-kanto-gen-3)
 
-
-# 🌿 Wilds of Kanto Revival
+**Wilds of Kanto Revival continues to make Kanto feel alive in
+[Gen1Recomp](https://github.com/bryanthaboi/gen1recomp).**
 
 > [!NOTE]
 > **Fork notice:** this is [poooooby](https://github.com/poooooby)'s fork of
 > [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)
 > ("Wilds of Kanto"), forked after upstream v2.2.0. Full credit for the
-> original mod goes to YoDrehDenSwagAuf and the collaborators listed below —
-> this fork adds Gen 3-9 species support and additional Voxel renderer compatibility
-> on top of that work.
-> See [CHANGELOG.md](CHANGELOG.md) for exactly what changed and when. Mod id
-> `wilds_of_kanto_gen3`; it declares a manifest conflict with the original
-> `overworld_wild_spawns` so the two are not run side by side.
+> original mod goes to YoDrehDenSwagAuf and the collaborators listed below.
+> See [CHANGELOG.md](CHANGELOG.md) for exactly what changed and when.
+> WoK Revival uses new mod id `wilds_of_kanto_gen3`.
+> If another mod referenced `overworld_wilds_spawns`, it will need
+> to add this mod's id for compatibility.
 
-Wilds of Kanto Revival makes Kanto feel alive in
-[Gen1Recomp](https://github.com/bryanthaboi/gen1recomp).
 
-Wild Pokémon appear in the overworld, react to the player, and can be followed
-by party Pokémon — without replacing the classic Gen 1 feel.
+## 🪄 Features of WoK Revival:
 
-It also includes **experimental Pokémon Gold / Gen 2 support (beta)**.
-The mod targets **Gen 1 + Gen 2** in Gen1Recomp's Mod Manager.
-
-**2.4.0** (this fork) adds **Gen 3 species support** — spawning, sprites,
-and True Size geometry for species #252–386 — via the **Kanto Reforged**
-companion mod, plus **Terrarium** Voxel renderer compatibility. See
-[CHANGELOG.md](CHANGELOG.md) for the full list.
-
-Upstream **2.2.0** added optional **PMDCollab** overworld sprites and
-independent dialogue portraits, derived from
-[PMDCollab/SpriteCollab](https://github.com/PMDCollab/SpriteCollab).
-Huge shoutout to that project and its contributors — see below.
-
-## Features
-
-- Visible overworld Pokémon with idle, roam, chase, and hidden behaviours
+- **Massive performance upgrade**
+  - Drops file count from 10k+ to <300. Reduces size by over 50% from 45MB+ to ~20MB 
+    while also adding over 1000 new sprites.
+- Overworld and follower sprites for all 1025 species with dex expansion mods.
+- Updated overworld Pokémon with idle, roam, chase, and hidden behaviours
+- Optional hand authored spawn tables for national dex
+- Random spawn mode + Legendary / Mythic spawn option
+- Included shiny system that carries over to other shiny mods.
 - Optional overworld Poké Ball catching
-- Built-in party followers (trainer or Pokémon control)
-- Water Pokémon (swimming sprites, silhouettes, or classic encounters)
-- Cave spawn filtering
+- Updated party follow system
+- Updated Water Pokémon (swimming sprites, silhouettes, or classic encounters)
 - Town / ambient Pokémon
-- Sprite styles: Poké Followers / GSC, HGSS / PokeMMO
-- Sprite size follows Sprite Style — GSC uses Classic (one-tile 16×16);
-  HGSS uses True Size (larger relative species sizes) when the active
-  renderer can consume variable SpriteDef geometry.
+- New Cave spawn logic so overworld mon stay only where you can reach them.
+- Sprite art styles: Poké Followers / GSC or HGSS / PokeMMO
+  - **Full** species support with HGSS style (1025 + regional forms)
+  - 416 **new** GSC sprites (667 total) spanning multiple dex generation.
+    (GSC falls back to HGSS when a sprite is not available)
+  - *PMDCollab overworld sprites temporarily removed due to voxel sizing bug*
 - PMDCollab dialogue portraits for Wilds Pokémon talk (followers, town Pokémon,
   generic cries) — independent of the selected overworld Sprite Style
-- Red / Blue / Yellow, plus experimental Pokémon Gold (beta)
+- Red / Blue / Yellow, plus experimental Pokémon G/S/C (beta)
 - Safari compatibility
 - Stable species-based sprite identity (reordered Pokédex / Fakemon mods keep
   the correct Wilds art, or the missing-sprite fallback)
 
-## Pokémon Gold / Gen 2 Support — Beta
+> [!TIP]
+> Extended Dex recommendations:
+> - [Kanto Reforged](https://github.com/1Jamie/Kanto-Reforged) - Up to Gen 3 species
+>   OR
+> - [G1R National Dex](https://github.com/sanjinpepic/gen1recomp-national-dex) - National Dex framework
+>   + [Gen9 Dex](https://github.com/tectorifter/Gen9Dex) - National dex **combat**
+>   + [G9 Battle Sprites](https://github.com/tectorifter/g9-battle-sprites/) - National dex combat **sprites**
+>   + (Optional) [G9 Battle Forms](https://github.com/sanjinpepic/gen1recomp-battle-forms) - Mega, Dynamax, etc in **battle**
 
-Wilds includes experimental support for Pokémon Gold through Gen1Recomp's
+
+## 🟨 Pokémon Gold / Gen 2 Support (Beta)
+
+WoK Revival includes experimental support for Pokémon Gold through Gen1Recomp's
 Gen 2 compatibility layer.
 
 - **Gen 1:** Red / Blue / Yellow
 - **Gen 2:** Pokémon Gold (**beta**)
 
-> Pokémon Gold support is currently in beta. The core systems are working,
-> but Gen2 has only recently been integrated and there may still be map,
-> follower, interaction, battle, sprite, or compatibility edge cases.
+> [!IMPORTANT]
+> Pokémon Gold support is currently in beta. The core systems are working.
 > Please report anything that behaves differently from Gen1.
+> If reporting a Gen2 issue, include Pokémon Gold, map / location, sprite style,
+> follower count / control mode if relevant, Voxel mod if enabled, and
+> reproduction steps.
 
-Currently working: overworld wilds from Gold encounter data, roam / chase,
-random-encounter suppression, Wilds settings, HGSS, Poké Followers / GSC
-(including True Size where supported), swimming / water presentation,
-town Pokémon on curated Johto towns, party followers, and overworld catching
-(same throw UX as Gen1). Safari and special engine catch sessions stay off.
 
-If reporting a Gen2 issue, include Pokémon Gold, map / location, sprite style,
-follower count / control mode if relevant, Voxel mod if enabled, and
-reproduction steps.
+## 📥 Installation
 
-## PMDCollab Portraits
+1. Install the latest release of this fork from
+   [GitHub Releases](https://github.com/poooooby/wilds-of-kanto-gen-3/releases)
+   (or the original, unforked mod from
+   [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod/releases) —
+   NOT BOTH.)
+   Use the packed `wilds-of-kanto-v*.zip` (manifest.json at the archive root).
+   Do not import the GitHub "Source code" / `overworld-spawn-mod-main` ZIP.
+2. Import via the Mod Manager in launcher, or place the mod in your Gen1Recomp mods directory.
+3. Enable **Wilds of Kanto Revival**.
 
-Wilds ships dialogue portraits derived from
-[PMDCollab/SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
-(CC BY-NC 4.0).
-
-Shoutout to the [SpriteCollab](https://github.com/PMDCollab/SpriteCollab)
-project and everyone listed in `assets/pmdcollab/CREDITS.txt` — Wilds would
-not have these Mystery Dungeon–style talk portraits without that repo.
-
-- Portraits appear for Wilds Pokémon talk (followers, town Pokémon, generic
-  cries) under every Sprite Style — independent of the selected style
-
-Full license and attribution:
-[THIRD_PARTY_ASSETS.md](THIRD_PARTY_ASSETS.md) and
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
-## Settings
+## 🔧 Settings
 
 Open from the pause menu:
 
 ```text
 START → OPTIONS → Wilds of Kanto Revival
 ```
+### 🎨 Sprite Styles
 
-Both menus read and write the same `mod.options` keys as Mod Settings.
-There is no second settings store. Defaults match `options.lua`.
+| Setting | Values | Default | Description |
+|---------|--------|---------|-------------|
+| Sprite Style | Poke Followers / GSC · HGSS / PokeMMO | Poke Followers / GSC | Overworld sprite style for wilds and followers. GSC uses Classic (16×16); HGSS uses True Size. Dialogue portraits are separate (always PMDCollab for supported Wilds Pokémon talk). |
+| Pika Follower | Multiple | Default | For Yellow only. 12 optional Pikachu Follower sprites to choose from, including caps and cosplay. |
+| Sprite Scale | On / Off | On | Optional display-size tuning for HGSS / PokeMMO under Voxel renderers. Off renders every species at native True Size instead. |
+| Sprite Fade | Solid / Faded | Solid | Opacity of normal wild sprites (Solid = fully opaque). Does not affect followers, Town Pokémon, silhouettes, or UI. |
 
-**Test Spawn** remains available from OPTIONS / Mod Settings as an OPEN row.
-
-### Followers
+### 🐕‍🦺 Followers
 
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
@@ -117,18 +108,20 @@ There is no second settings store. Defaults match `options.lua`.
 | Followers | 0–6 | 1 | Extra party Pokémon trailing the leader. |
 | Leader | Party menu | — | Choose the lead follower from the party menu. |
 
-### Wild Pokémon
+### 🐅 Wild Pokémon
 
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
 | Show Wild Mons | On / Off | On | Spawn visible wild Pokémon in eligible areas. |
-| Sprite Style | Poke Followers / GSC · HGSS / PokeMMO | Poke Followers / GSC | Overworld sprite style for wilds and followers. GSC uses Classic (16×16); HGSS uses True Size. Dialogue portraits are separate (always PMDCollab for supported Wilds Pokémon talk). |
-| Sprite Scale | On / Off | On | Custom per-species display-size tuning for HGSS / PokeMMO under Voxel renderers. Off renders every species at native True Size instead. |
-| Sprite Fade | Solid / Faded | Solid | Opacity of normal wild sprites (Solid = fully opaque). Does not affect followers, Town Pokémon, silhouettes, or UI. |
 | Spawn Amount | Low / Normal / High / Very High | Normal | How many visible overworld Pokémon can appear (including water). |
 | Random Enc | On / Off | On | Classic step-based random encounters. Visible overworld Pokémon stay active. |
 | Water Mons | Swim Sprites / Hid Silhouette / Silhouettes / Classic Enc / Disabled | Swim Sprites | How water Pokémon appear. |
 | Cave Spawns | Reachable Only / Mixed | Reachable Only | Cave spawn reachability filter. Mixed allows ~20% atmospheric scenery in inaccessible pockets. |
+| Modern Spawns | Off / Spawn Table / Random | Off | Use the default spawns, a hand authored spawn table with national dex entries, or randomize spawns. |
+| Legend / Mythic | Off / On | Off | Include Legendaries / Mythics into the spawn pool when Modern Spawns is set to Random. |
+| Shiny Rate | Off, %s, Always | Off | Adds shiny rolls into the spawn pool |
+| Shiny Sparkle | Off / On | Off | Shiny Pokemon play a short jingle and one-time sparkle effect in battle. |
+| Max Gen | All - Gen 1-9 | Gen 1 | Cap the max generation of pokemon that will spawn |
 | Town Pokémon | On / Off | On | Peaceful ambient Pokémon in safe towns and interiors. |
 | Grass View | Above / Immersed | Immersed | Draw wilds fully above tall grass, or partially hidden inside it. |
 | Silhouette | Off / Undiscovered / All | Off | Off keeps normal colours. Undiscovered silhouettes species not yet caught / registered in the Pokédex. All silhouettes every encounter-zone wild. |
@@ -137,7 +130,7 @@ There is no second settings store. Defaults match `options.lua`.
 | Chase Mons | On / Off | On | Allow aggressive chase behaviour. |
 | Hidden Mons | On / Off | On | Allow hidden grass / cave markers. |
 
-### Overworld Catching
+### 🤾 Overworld Catching
 
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
@@ -153,13 +146,13 @@ Throws only hit battleable wilds directly ahead. A miss still consumes a Ball.
 Failed catches make the Pokémon aggressive through the normal `!` → chase →
 battle flow. Safari sessions disable overworld throws.
 
-### Developer
+### 🧑‍💻 Developer
 
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
 | Dev Overlay | On / Off | Off | Show behaviour and facing labels above wild Pokémon. |
 
-## Encounter Behaviors
+## 🧬 Encounter Behaviors
 
 | Behavior | Description |
 |----------|-------------|
@@ -169,23 +162,8 @@ battle flow. Safari sessions disable overworld throws.
 | **Hidden** | Pokémon stays hidden or is shown only via its marker. |
 | **Safari Flee** | Safari Zone only — Pokémon flees after being noticed. |
 
-## Installation
 
-1. Install the latest release of this fork from
-   [GitHub Releases](https://github.com/poooooby/wilds-of-kanto-gen-3/releases)
-   (or the original, unforked mod from
-   [YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod/releases) —
-   not both; they declare a manifest conflict).
-   Use the packed `wilds-of-kanto-v*.zip` (manifest.json at the archive root).
-   Do not import the GitHub "Source code" / `overworld-spawn-mod-main` ZIP.
-2. Place the mod in your Gen1Recomp mods directory.
-3. Enable **Wilds of Kanto Revival**.
-4. No separate Followers EX or PokéPC install is required.
-
-Follower selection, control modes, and overworld sprites are built in.
-Legacy Followers EX / PokéPC installs are detected only for settings migration.
-
-## Compatibility
+## 🔗 Compatibility
 
 - Pokémon Red
 - Pokémon Blue
@@ -193,51 +171,41 @@ Legacy Followers EX / PokéPC installs are detected only for settings migration.
 - Pokémon Gold (beta)
 - **Kanto Reforged** (Gen 3 species extension) — this fork's Gen 3 species
   support (species IDs 252–386, spawning, and sprites) is tested against
-  [1Jamie](https://github.com/1Jamie)'s
-  [Kanto Reforged](https://github.com/1Jamie/Kanto-Reforged) extended
-  Pokédex, read at runtime via `game.data.pokemon`.
-- **National Dex** (Pokédex expansion through Gen 9) — when a Pokédex-expansion
-  mod has registered species past #386, the **MODERN SPAWNS** option (Gen 1
-  only) has three settings. **Spawn Table** (default) swaps the wild tables of
-  mapped Kanto areas (routes, caves, Safari Zone, Super Rod fishing) for a
-  modern species pool. With no such mod — or with Kanto Reforged alone —
-  vanilla tables are untouched, and any slot whose species isn't registered
-  falls back to its original slot. Mapped areas override Kanto Reforged's
-  mixed slots; unmapped areas keep them. **Random** makes any registered
-  Pokemon spawn at the area's own levels (a new roster each time you enter an
-  area; it works on the plain Gen 1 dex too), and **Off** keeps the original
-  tables. In Random, legendary, mythical, Ultra Beast and Paradox Pokemon are
-  left out unless the **LEGEND/MYTHIC** option is on. The **MAX GEN** option
-  (Gen 1 up to All) caps the generations Spawn Table and Random may use, by
-  national Pokedex number; Off is never limited.
-- **Shiny Pokemon** (`SHINY_POKEMON`) — declared a **conflict**, use the built-in
-  **SHINY RATE** option instead (Red/Blue/Yellow and Gold). With Voxel off, Shiny
-  Pokemon redraws the follower with a fixed 16x16 box and ignores True Size
-  frame sizes and anchors, so followers end up offset. SHINY RATE rolls
-  real shiny DVs on wild Pokemon (visible spawns and classic encounters; in
-  Gold it sets the shiny flag through the engine's shiny.roll hook),
-  shows our shiny overworld sprite, keeps the shiny when caught, and the
-  follower switches to its shiny sprite. The **SHINY SPARKLE** option plays a
-  one-time sparkle and chime when a shiny appears in battle; there is no
-  shiny battle recolor.
-- Dramatic Shape Voxel Mod (True Size stays on when the **active** Voxel
-  renderer can consume variable SpriteDef geometry: Battle Art Voxel, Potato
-  Voxel, Dramaless Shape, Stadium2, and Terrarium via public
-  `SpriteBillboards`. Original Dramatic Shape stays Classic unless it ships
-  native variable geometry.)
+  [Kanto Reforged](https://github.com/1Jamie/Kanto-Reforged).
+- **Full National Dex** (Pokédex expansion through Gen 9) — this fork's national dex
+  support (251-1025) is tested against [Gen1Recomp National Dex](https://github.com/sanjinpepic/gen1recomp-national-dex)
+- **Shiny Pokemon** (`SHINY_POKEMON`) — The original [Shiny Pokemon](https://github.com/masterwebx/gen1recomp-shiny-pokemon)
+  mod conflicted with updated spawns, now declared a **conflict**, use the built-in.
+- Voxel Mods: Battle Art (Gen 1+2), Potato (Gen 1), Dramaless Shape (Gen 1), and Terrarium (Gen 1) via public
+  `SpriteBillboards`.
 
-## Collaborators
+## 🤝 Collaborators
 
 This fork:
 
-- [poooooby](https://github.com/poooooby) — fork maintainer; Gen 3 species
-  support, additional Voxel renderer compatibility (see CHANGELOG.md)
-- **Nuclear-Blizzard** — the Pokémon Tower ghost overworld sprite
-  (`TOWER_GHOST.png`), shown for wild Pokémon in the Pokémon Tower until the
-  player has the Silph Scope. Thank you for the art.
-- [PokeWilds](https://github.com/sheerst/pokewilds#overworld-sprites) overworld sprites
-- [Gen 9 Resource Pack](https://eeveeexpo.com/resources/1101/) 
-- More included in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+- [poooooby](https://github.com/poooooby) — fork maintainer
+- [PokeWilds](https://github.com/sheerst/pokewilds#overworld-sprites) - Additional GSC overworld sprites
+  Major thanks to the sprite artists for their work (Full credits linked)
+- [Gen 9 Resource Pack](https://eeveeexpo.com/resources/1101/)
+  Huge thanks to these sprite artists for their work!
+  - **Gen 1-5 Pokemon Overworlds:** MissingLukey, help-14, Kymoyonian, cSc-A7X,
+  2and2makes5, Pokegirl4ever, Fernandojl, Silver-Skies, TyranitarDark, Getsuei-H,
+  Kid1513, Milomilotic11, Kyt666, kdiamo11, Chocosrawlooid, Syledude, Gallanty,
+  Gizamimi-Pichu, 2and2makes5, Zyon17,LarryTurbo, spritesstealer, LarryTurbo
+  - **Gen 6 Pokemon Overworlds:** princess-pheonix, LunarDusk, Wolfang62, TintjeMadelintje101, piphybuilder88
+  - **Gen 7 Pokemon Overworlds:** Larry Turbo, princess-pheonix
+  - **Gen 8 Pokemon Overworlds:** SageDeoxys, Wolfang62, LarryTurbo, tammyclaydon
+  - **PLA Pokemon Overworlds:** Boonzeet, DarkusShadow, princess-phoenix, Ezeart, WolfPP
+  - **Gen 9 Pokemon Overworlds:** Azria, DarkusShadow, EduarPokeN, Carmanekko, StarWolff, Caruban
+  - **PLZA Pokemon Overworlds:** DarkusShadow
+- **Pokemon Tower Ghost:** Nuclear-Blizzard (DeviantArt)
+- [masterwebx](https://github.com/masterwebx) (WEX): author of the
+  [**Shiny Pokemon**](https://github.com/masterwebx/gen1recomp-shiny-pokemon)
+  mod (MIT). This fork's **SHINY RATE** and **SHINY SPARKLE** options
+  incorporate that mod's ideas: rolling real shiny DVs on wild Pokémon at a
+  configurable rate and the one-time battle sparkle and chime that waits for
+  the intro to finish. They were reimplemented here (`lib/shiny.lua`, `lib/shiny_sparkle.lua`)
+  rather than copied; thank you, masterwebx, for the design and the original mod!
 
 Original project ([YoDrehDenSwagAuf/overworld-spawn-mod](https://github.com/YoDrehDenSwagAuf/overworld-spawn-mod)) collaborators — full credit for
 everything through v2.2.0:
@@ -246,39 +214,24 @@ everything through v2.2.0:
   overworld systems / integration
 - [masterwebx](https://github.com/masterwebx) (WEX) — Followers EX / follower
   systems
-- [masterwebx](https://github.com/masterwebx) (WEX) — also the author of the
-  [**Shiny Pokemon**](https://github.com/masterwebx/gen1recomp-shiny-pokemon)
-  mod (MIT). This fork's **SHINY RATE** and **SHINY SPARKLE** options
-  incorporate that mod's ideas: rolling real shiny DVs on wild Pokémon at a
-  configurable rate (the same rate steps) and the one-time battle sparkle and
-  chime that waits for the intro to finish. They were reimplemented here
-  (`lib/shiny.lua`, `lib/shiny_sparkle.lua`) rather than copied; thank you,
-  masterwebx, for the design and the original mod.
 - [TheRhysWyrill](https://github.com/TheRhysWyrill) (TRW) — PokéPC / follower
   selection / integration / Poke Followers / GSC - Sprites
 - **ShockSlayer / Crystal Clear team** — for the GSC-style Pokémon sprite work that the Poké Followers / GSC presentation is based on
 - [gamecorner-033](https://github.com/gamecorner-033) — Original PokéPC / Overworld Catching inspiration / overworld follower concepts and related work
-- [PMDCollab / SpriteCollab](https://github.com/PMDCollab/SpriteCollab) —
+- [PMDCollab / SpriteCollab](https://github.com/PMDCollab/SpriteCollab) (CC BY-NC 4.0) —
   Mystery Dungeon–style dialogue portraits (talk portraits). Shoutout to
   that repo and its contributors.
-- [1Jamie](https://github.com/1Jamie) —
-  [**Kanto Reforged**](https://github.com/1Jamie/Kanto-Reforged) (GPLv3),
-  the companion mod that extends the base Gen1Recomp/Gen2 game's own species
-  data (stats, types, moves, dex entries) through Gen 3. Wilds of Kanto Revival reads
-  that data at runtime (`game.data.pokemon`) to resolve Gen 3 species for
-  spawning and sprites; no Kanto Reforged code or data is copied into this
-  repository. This fork's Gen 3 species support is tested against her
-  Kanto Reforged extended Pokédex — thank you, 1Jamie, for the work that
-  makes it possible.
 
-## Credits
-
-Short credits only — full license, asset, and third-party notices live in
+Full license and attribution:
+[THIRD_PARTY_ASSETS.md](THIRD_PARTY_ASSETS.md) and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Release history: [CHANGELOG.md](CHANGELOG.md).
 
-Developer documentation:
+### Release history
+
+[CHANGELOG.md](CHANGELOG.md).
+
+### Developer documentation (outdated)
 
 - [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md)
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
