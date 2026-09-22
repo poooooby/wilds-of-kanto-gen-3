@@ -1,5 +1,8 @@
 ![Total Downloads](https://img.shields.io/github/downloads/poooooby/wilds-of-kanto-gen-3/total)
-![License](https://img.shields.io/github/license/poooooby/wilds-of-kanto-gen-3)
+[![License](https://img.shields.io/badge/license-Modified%20MIT-blue)](https://github.com/poooooby/wilds-of-kanto-gen-3/blob/main/LICENSE)
+![Latest release](https://img.shields.io/github/v/release/poooooby/wilds-of-kanto-gen-3)
+![Release date](https://img.shields.io/github/release-date/poooooby/wilds-of-kanto-gen-3)
+
 
 # 🌿 Wilds of Kanto Revival
 
