@@ -81,6 +81,12 @@ end
 ----------------------------------------------------------------
 do
   local engine = makeEngine()
+  -- _visualTrailSpacingActive probes real engine APIs (VariableSize.effectiveMode)
+  -- that are never available in this headless harness, so it would always read
+  -- false here regardless of Sprite Style. Force it "on" to exercise the
+  -- frameWidth-driven formula below; the "gated off" behavior itself (Poke
+  -- Followers / GSC, or True Size simply not effective) is covered separately.
+  engine._visualTrailSpacingActive = function() return true end
 
   -- Numeric dex takes the simplest path through _speciesIdForTrailSource
   -- (passthrough), so this exercises the real SpeciesGeometry table without
@@ -110,6 +116,27 @@ do
   eq(engine:_largeTrailerPushbackPx(nil), 0, "nil source gets zero push-back")
   eq(engine:_largeTrailerPushbackPx("not-a-number-or-table"), 0,
     "unresolvable source gets zero push-back")
+end
+
+----------------------------------------------------------------
+-- Gated on _visualTrailSpacingActive: no push-back at all -- not even for a
+-- species whose pokemmo art is wider than one tile -- unless True Size is
+-- effectively active. Poke Followers / GSC (and Flat 2D, and engine-API-less
+-- headless environments) must always keep the standard 1-tile spacing.
+----------------------------------------------------------------
+do
+  local engine = makeEngine()
+  engine._visualTrailSpacingActive = function() return false end
+  local onixPack = select(1, SpeciesGeometry.packGeometry(95, "pokemmo"))
+  check(tonumber(onixPack.frameWidth) > 16, "Onix is wider than one tile (fixture sanity)")
+  eq(engine:_largeTrailerPushbackPx(95), 0,
+    "wide species gets zero push-back when True Size is not effectively active")
+
+  -- The real (unmocked) headless default: no engine API, so effectiveMode can
+  -- never be MODE_TRUE_SIZE regardless of Sprite Style -- same zero result.
+  local plainEngine = makeEngine()
+  eq(plainEngine:_largeTrailerPushbackPx(95), 0,
+    "headless default (no engine API) also gets zero push-back for a wide species")
 end
 
 ----------------------------------------------------------------

@@ -1293,13 +1293,20 @@ end
 --- Cosmetic-only draw nudge (pixels) for a trailer whose True Size art is
 -- wider than one tile. Does NOT touch cellX/cellY, walk goals, or
 -- reservations -- see largeTrailerVisualOffset's header (near behindOffset)
--- for how this gets applied. Deliberately NOT gated on
--- _visualTrailSpacingActive: it's pure rendering, unlike _followGapForSource
--- which affects (dead, currently unused) logical trail lag.
+-- for how this gets applied. Gated on _visualTrailSpacingActive (0 unless
+-- True Size is effectively active) -- Poke Followers / GSC and every other
+-- Classic-sized style must keep the standard 1-tile spacing.
 --
 -- Data-driven, not a per-class guess: a species whose baked pokemmo
 -- frameWidth exceeds one tile is (roughly) centered on its own tile, so it
 -- overhangs by half the excess on EACH side -- (frameWidth - CELL) / 2.
+--
+-- Gated on _visualTrailSpacingActive (True Size effectively active): this
+-- reads the pokemmo pack's frameWidth regardless of the CURRENT Sprite
+-- Style, so without the gate a species whose HGSS/True Size art happens to
+-- be wider than one tile got pushed back even under Poke Followers / GSC,
+-- which only ever draws plain 16x16 tiles and must keep the standard
+-- 1-tile spacing.
 --
 -- Deliberately a PER-TRAILER, independent amount -- never summed with a
 -- neighbor's overhang (own-overhang-only, no cumulative/pairwise chain).
@@ -1319,6 +1326,7 @@ end
 -- ahead of it, never zero and never negative, but doesn't guarantee a fully
 -- cleared gap when two wide species are adjacent deeper in the convoy.
 function ControlEngine:_largeTrailerPushbackPx(source)
+  if not self:_visualTrailSpacingActive() then return 0 end
   local ok, SpeciesGeometry = pcall(function() return V.require("species_geometry") end)
   if not ok or not SpeciesGeometry or not SpeciesGeometry.packGeometry then return 0 end
   local dex = self:_speciesIdForTrailSource(source)
