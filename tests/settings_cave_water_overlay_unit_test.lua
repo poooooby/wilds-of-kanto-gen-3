@@ -253,11 +253,16 @@ check(key:find("shiny", 1, true) ~= nil, "cache key includes variant")
 fw:invalidateStyle()
 eq(fw.status.lastAction, "style_invalidated", "invalidateStyle works")
 
--- Manifest / export version
+-- Manifest / export version: cross-check that main.lua's exported version matches
+-- manifest.json's, without hardcoding a literal that would go stale every release
+-- (tools/validate_release_version.py is the authoritative check for this).
 local mf = io.open("manifest.json", "r"):read("*a")
-check(mf:find('"2.8.0"', 1, true) ~= nil, "manifest 2.8.0")
+local manifestVersion = mf:match('"version"%s*:%s*"([%d%.]+)"')
+check(manifestVersion ~= nil, "manifest declares a version")
 local main = io.open("main.lua", "r"):read("*a")
-check(main:find('version = "2.8.0"', 1, true) ~= nil, "export version 2.8.0")
+local exportVersion = main:match('mod%.exports%.version%s*=%s*"([%d%.]+)"')
+check(exportVersion ~= nil, "main.lua exports a version")
+eq(exportVersion, manifestVersion, "main.lua version export matches manifest.json")
 
 print("")
 if failures > 0 then

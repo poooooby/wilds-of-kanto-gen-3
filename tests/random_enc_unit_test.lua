@@ -219,11 +219,15 @@ local tHigh = SpawnRegions.targetCount({
 })
 check(tHigh > tLow, "high density > low density")
 
--- Version
+-- Version: manifest.json declares a well-formed semver. Not compared against a hardcoded
+-- literal (tools/validate_release_version.py is the authoritative version-agreement check;
+-- a hardcoded string here just has to be remembered and bumped by hand every release, and
+-- silently goes stale otherwise -- see settings_cave_water_overlay_unit_test.lua for the
+-- manifest/main.lua cross-check).
 local mf = io.open("manifest.json", "r")
 local mft = mf:read("*a")
 mf:close()
-check(mft:find('"version"%s*:%s*"2%.8%.0"') ~= nil, "manifest version 2.8.0")
+check(mft:find('"version"%s*:%s*"%d+%.%d+%.%d+"') ~= nil, "manifest declares a semver version")
 
 -- Start menu no longer injects Wilds gameplay settings.
 do
