@@ -97,11 +97,8 @@ available), and with Sprite Style HGSS/PokeMMO / Poke Followers / Pokedex.
 
 ### Cave Spawns
 
-1. Default **Reachable Only**: no Pokémon behind walls / on decorative plateaus.
-2. **Mixed**: most on reachable paths; up to ~20% atmospheric scenery in
-   inaccessible pockets (0 scenery when total target &lt; 3).
-3. Scenery never aggros through walls or starts battles.
-4. Dev Overlay: `CAVE · REACHABLE` / `CAVE · SCENERY`.
+1. Always **Reachable Only** (no option): no Pokémon behind walls / on decorative plateaus.
+2. Dev Overlay: `CAVE · REACHABLE`.
 
 ### Classic Enc
 

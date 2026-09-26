@@ -636,18 +636,9 @@ function Diagnostics.hudLines(logic)
       lines[#lines + 1] = ("Safari active: %s"):format(
         (sStatus == SafariCompat.STATUS.ACTIVE) and "YES" or "NO")
     end
-    local waterMode = Config.waterDisplayMode(logic.mod)
-    local classicWater = onOff
-    if Config.waterEncountersDisabled(logic.mod) then
-      classicWater = "OFF"
-    elseif Config.waterClassicEncountersForced(logic.mod) then
-      classicWater = "ON"
-    end
-    lines[#lines + 1] = ("Random Enc: %s"):format(onOff)
-    lines[#lines + 1] = ("Classic Grass: %s"):format(onOff)
-    lines[#lines + 1] = ("Classic Cave: %s"):format(onOff)
-    lines[#lines + 1] = ("Classic Water: %s"):format(classicWater)
-    lines[#lines + 1] = ("Water Mons: %s"):format(tostring(waterMode))
+    -- Classic Encounters covers grass, caves and water alike.
+    lines[#lines + 1] = ("Classic Enc: %s"):format(onOff)
+    lines[#lines + 1] = ("Water Mons: %s"):format(tostring(Config.waterDisplayMode(logic.mod)))
     lines[#lines + 1] = ("Water target: %d"):format(logic.targetWaterCount or 0)
     lines[#lines + 1] = ("Water minimum spacing: %d"):format(
       Config.waterMinSpacing(logic.mod))

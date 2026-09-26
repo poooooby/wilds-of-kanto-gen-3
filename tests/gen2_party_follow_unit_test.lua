@@ -101,7 +101,7 @@ local modules = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end, error = function() end },
     find = function() return nil end,
     options = {
@@ -404,12 +404,9 @@ do
   menus:_applyFollowerCount(game, 3)
   eq(optionStore.follower_count, 3, "13. FOLLOWERS writes Config bucket")
   eq(game.save.pokepcFollowerCount, 3, "9. pokepcFollowerCount mirrored")
-  menus:_applyControlMode(game, "pokemon")
-  eq(optionStore.follow_control, "pokemon", "14. CONTROL writes Config bucket")
-  menus:_applyTrainerTrail(game, true)
-  eq(optionStore.trainer_trail, true, "15. TRAIL writes Config bucket")
-  menus:_applyControlMode(game, "trainer")
-  menus:_applyTrainerTrail(game, false)
+  -- Control Mode / Trainer Trail are locked (trainer, off); the menu only sets the count.
+  check(menus._applyControlMode == nil, "14. no CONTROL setter")
+  check(menus._applyTrainerTrail == nil, "15. no TRAIL setter")
   menus:_applyFollowerCount(game, 1)
 end
 

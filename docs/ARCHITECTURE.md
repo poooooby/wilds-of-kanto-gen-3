@@ -29,8 +29,6 @@ Public name: **Wilds of Kanto Revival**. Technical id: `wilds_of_kanto_gen3` (th
 | `lib/cell_occupancy.lua` | Atomic spawn / move cell reservations |
 | `lib/followers_water_compat.lua` | Optional Followers EX water sprite swaps |
 | `lib/follower/` | Standalone follower core (selection, control engine, trailers) |
-| `lib/catching/` | Optional overworld Poké Ball throw / catch (HUD, meter, projectile) |
-| `lib/catching/bindings.lua` | Catch Key / combo configuration (defaults C / Q / B+A / B+Dpad) |
 | `lib/grass_occlusion.lua` | Flat feet-overdraw + above-lift helpers |
 | `lib/voxel_adapter.lua` | DS hooks; emergency overlay filter |
 | `lib/surface.lua` | GRASS / CAVE / WATER surface resolve |
@@ -54,7 +52,8 @@ Public name: **Wilds of Kanto Revival**. Technical id: `wilds_of_kanto_gen3` (th
 `GameCompat` is a small facade so shared Wilds systems do not own Gen1-only
 assumptions. Gold is an **experimental gameplay target**: visible wild
 encounters reuse the shared Wilds entity/AI layer with a separate Gen2
-encounter provider. Followers and overworld catching are on; Safari stays off.
+encounter provider. Followers are on; Safari stays off. (Overworld catching moved out
+of this mod.)
 
 ```text
 GameCompat.current(mod, game)      → Gen1 or Gen2 adapter or nil
@@ -72,17 +71,12 @@ GameCompat.currentMapId(game, ow)
 GameCompat.encountersForMap(game, mapId, ctx)
 GameCompat.pickEncounter(game, mapId, kind, ctx)
 GameCompat.startWildBattle(world, species, level, game)
-GameCompat.ballCount / consumeBall / attemptCatch
-GameCompat.createCaughtPokemon / giveCaughtPokemon / markSpeciesCaught
-GameCompat.catchWorld / catchPlayer / playerCell
-GameCompat.catchPlayerHasControl / catchUiBlocked
-GameCompat.attachCatchProjectile
 ```
 
 Detection uses Gen1Recomp `GameVersion.get()` + `GameVersion.generation(id)`
 (set in `bootGame` before mod entry). Gold is generation 2 and uses the Gen2
 adapter. `isSupported` is **not** permission to install every subsystem:
-Gen2 capabilities keep safari off. Catching is on via GameCompat.
+Gen2 capabilities keep safari off.
 
 Production `manifest.json` claims `"games": ["gen1", "gen2"]`
 (Mod Manager: **Gen 1+2**). See `docs/analysis/GEN2_PREPARATION.md`.
@@ -147,7 +141,7 @@ Path types:
 ```text
 relativePath = assets/wilds_generated/followsprites_runtime/001-normal.png
 loadPath     = mod.assets:path(relativePath)
-             = mods/overworld_wild_spawns/assets/wilds_generated/.../001-normal.png
+             = mods/wilds_of_kanto_gen3/assets/wilds_generated/.../001-normal.png
 ```
 
 `SpriteRenderer.def.image` and `Assets.image` always use `loadPath`.

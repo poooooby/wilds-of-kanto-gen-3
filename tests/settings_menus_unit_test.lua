@@ -28,16 +28,14 @@ local optionStore = {
   random_encounters = true,
   water_spawns = "swimming_sprites",
   cave_spawns = "reachable",
-  town_pokemon = true,
   pokemon_grass_render_mode = "immersed",
-  overworld_catching = true,
   enable_idle = true,
   enable_wander = true,
   enable_aggressive = true,
   enable_hidden = true,
   dev_overlay = false,
 }
-local modOptions = { overworld_wild_spawns = optionStore }
+local modOptions = { wilds_of_kanto_gen3 = optionStore }
 local game = {
   save = { options = { modOptions = modOptions } },
   mods = { modOptions = modOptions },
@@ -51,7 +49,7 @@ local wrappedHooks = {}
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     world = { game = game },
@@ -197,10 +195,8 @@ local ok = Config.setSpriteStyle(V.mod, "followers", "options_menu", {
 check(ok == true, "setSpriteStyle from wilds menu path")
 eq(optionStore.sprite_style, "followers", "sprite_style shared key updated")
 
-menus:_applyControlMode(game, "pokemon")
-eq(optionStore.follow_control, "pokemon", "control mode shared key")
-menus:_applyTrainerTrail(game, true)
-eq(optionStore.trainer_trail, true, "trainer trail shared key")
+check(menus._applyControlMode == nil and menus._applyTrainerTrail == nil,
+      "no Control Mode / Trainer Trail setters (locked)")
 
 -- Menus map onto existing options.lua keys (no parallel persistence)
 local schema = assert(loadfile("options.lua"))()
@@ -213,14 +209,14 @@ for _, k in ipairs(SettingsMenus.WILDS_OPTION_KEYS) do
   check(keys[k], "wilds key in schema: " .. k)
 end
 
--- Followers root: control options only (Sprite Color removed in 1.11.1)
+-- Followers root: follower count only (Control / Trail locked; Sprite Color removed in 1.11.1)
 local followRoot = menus:_openFollowersRoot(game)
 local flabels = {}
 for _, it in ipairs(followRoot.items) do flabels[#flabels + 1] = it.label end
 local fjoin = table.concat(flabels, ",")
 check(fjoin:find("FOLLOWERS", 1, true), "followers menu has Followers count")
-check(fjoin:find("CONTROL", 1, true), "followers menu has Control")
-check(fjoin:find("TRAIL", 1, true), "followers menu has Trail")
+check(not fjoin:find("CONTROL", 1, true), "no Control row (locked trainer)")
+check(not fjoin:find("TRAIL", 1, true), "no Trail row (locked off)")
 check(not fjoin:find("SPRITE COLOR", 1, true), "no Sprite Color entry")
 check(not fjoin:find("BOX LEADER", 1, true), "no unimplemented Box Leader")
 -- Root right-label reads live options after apply
@@ -236,13 +232,19 @@ for _, it in ipairs(followRoot.items) do
 end
 check(hasFollowers, "FOLLOWERS row present")
 
--- Wilds root includes fade + town + OW catch
+-- Wilds root: only the remaining public options
 local wildsRoot = menus:_openWildsRoot(game)
 local wlabels = {}
 for _, it in ipairs(wildsRoot.items) do wlabels[#wlabels + 1] = it.label end
 local wjoin = table.concat(wlabels, ",")
-check(wjoin:find("SPRITE FADE", 1, true), "wilds menu has Sprite Fade")
-check(wjoin:find("TOWN POKEMON", 1, true), "wilds menu has Town Pokémon")
+for _, gone in ipairs({ "SPRITE FADE", "SPRITE SCALE", "SPAWN AMT", "WATER MONS", "SHINY SPARKLE",
+                        "IDLE MONS", "ROAM MONS", "CHASE MONS", "HIDDEN MONS", "DEV OVERLAY",
+                        "OW CATCH", "CATCH KEY", "BALL SWITCH", "CATCH COMBO", "SWITCH COMBO",
+                        "CATCH HUD", "TEST SPAWN" }) do
+  check(not wjoin:find(gone, 1, true), "wilds menu has no " .. gone .. " row")
+end
+check(wjoin:find("CLASSIC ENC", 1, true), "wilds menu has Classic Enc")
+check(wjoin:find("TOWN POKEMON", 1, true), "wilds menu has Town Pokemon")
 check(wjoin:find("SILHOUETTE", 1, true), "wilds menu has Silhouette")
 do
   local silItem
@@ -262,25 +264,19 @@ do
 end
 check(not wjoin:find("INDOOR POKEMON", 1, true), "no Indoor Pokémon public row")
 check(not wjoin:find("WILDS AI", 1, true), "no internal WILDS AI public row")
-check(wjoin:find("OW CATCH", 1, true), "wilds menu has OW Catch")
-check(wjoin:find("CATCH KEY", 1, true), "wilds menu has Catch Key")
-check(wjoin:find("BALL SWITCH", 1, true), "wilds menu has Ball Switch")
-check(wjoin:find("CATCH COMBO", 1, true), "wilds menu has Catch Combo")
-check(wjoin:find("SWITCH COMBO", 1, true), "wilds menu has Switch Combo")
-check(wjoin:find("CATCH HUD", 1, true), "wilds menu has Catch HUD")
-check(wjoin:find("OW CATCH,CATCH KEY,BALL SWITCH,CATCH COMBO,SWITCH COMBO,CATCH HUD", 1, true)
-      or (wjoin:find("OW CATCH", 1, true) and wjoin:find("CATCH KEY", 1, true)
-          and wjoin:find("CATCH HUD", 1, true)
-          and wjoin:find("OW CATCH") < wjoin:find("CATCH KEY")
-          and wjoin:find("CATCH KEY") < wjoin:find("CATCH HUD")),
-      "catch binding rows sit between OW Catch and Catch HUD")
-for _, it in ipairs(wildsRoot.items) do
-  if it.label == "CATCH KEY" or it.label == "BALL SWITCH"
-     or it.label == "CATCH COMBO" or it.label == "SWITCH COMBO" then
-    check(#it.label <= 14, it.label .. " ≤14")
+-- Test Spawn only appears with the developer flag file.
+do
+  local devMenus = SettingsMenus.new(setmetatable({
+    read = function(_, rel) if rel == "wilds_dev.flag" then return "" end return nil end,
+  }, { __index = V.mod }), nil, nil, nil)
+  local devRoot = devMenus:_openWildsRoot(game)
+  local hasTest = false
+  for _, it in ipairs(devRoot.items) do
+    if it.label == "TEST SPAWN" then hasTest = true end
   end
+  check(hasTest, "TEST SPAWN row present with wilds_dev.flag")
+  eq(devRoot.items[#devRoot.items].label, "CANCEL", "CANCEL stays last")
 end
-check(not wjoin:find("CONTROL", 1, true) or wjoin:find("OW CATCH", 1, true), "wilds menu intact")
 check(not fjoin:find("SHOW WILD MONS", 1, true), "no wilds rows in followers menu")
 
 if failures > 0 then

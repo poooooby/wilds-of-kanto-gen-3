@@ -32,7 +32,7 @@ end
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = modRoot,
     log = { info = function() end },
     find = function(_, id) return fakeMods[id] end,
@@ -42,7 +42,7 @@ local V = {
       end,
     },
     assets = {
-      path = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+      path = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
     },
     read = function(_, rel)
       local f = io.open(rel, "rb")
@@ -140,7 +140,7 @@ local render = {
   fallbackPath = "assets/fallback/pokemon_missing.png",
   fallbackId = "SPRITE_OW_WILD_FALLBACK",
   _modAssetPath = function(_, rel)
-    return "mods/overworld_wild_spawns/" .. rel
+    return "mods/wilds_of_kanto_gen3/" .. rel
   end,
   _fallbackPath = function()
     return "assets/fallback/pokemon_missing.png"
@@ -395,28 +395,18 @@ eq(Config.normalizeSpriteStyle("poke_followers"), "followers", "migrate poke_fol
 eq(Config.normalizeSpriteStyle("followers"), "followers", "followers stays")
 eq(Config.normalizeSpriteStyle("weird"), "followers", "migrate unknown → followers")
 
--- SPRITE SCALE: master switch for the Voxel-only per-species display scale.
+-- SPRITE SCALE is locked ON (Config.LOCKED): the per-species display scale always applies,
+-- even for an old save that had it off.
 savedOpts = {}
-eq(Config.dynScaleEnabled(V.mod), true, "dyn_scale defaults on")
+eq(Config.dynScaleEnabled(V.mod), true, "dyn_scale always on")
 savedOpts.dyn_scale = false
-eq(Config.dynScaleEnabled(V.mod), false, "dyn_scale off once saved false")
-local dsOk, dsOn, dsRefreshed = Config.setDynScale(V.mod, true, "test", {})
-check(dsOk == true, "setDynScale succeeds with no game context")
-eq(dsOn, true, "setDynScale reports the value it set")
-eq(dsRefreshed, 0, "setDynScale skips refresh without render/logic")
+eq(Config.dynScaleEnabled(V.mod), true, "saved dyn_scale off ignored")
+check(Config.setDynScale == nil, "no Sprite Scale setter")
 
 modules.species_geometry = nil
 local SpeciesGeometry = V.require("species_geometry")
-savedOpts.dyn_scale = true
 local scaleOn = SpeciesGeometry.displayScale(6, "pokemmo")
-check(scaleOn ~= 1, "Charizard has a real base-table scale when dyn_scale is on")
-savedOpts.dyn_scale = false
-eq(SpeciesGeometry.displayScale(6, "pokemmo"), 1,
-  "Charizard falls back to native True Size (scale 1) when dyn_scale is off")
-eq(SpeciesGeometry.displayScale(6), 1, "style-less lookup also honors dyn_scale off")
-savedOpts.dyn_scale = true
-eq(SpeciesGeometry.displayScale(6, "pokemmo"), scaleOn,
-  "re-enabling dyn_scale restores the base-table scale")
+check(scaleOn ~= 1, "Charizard has a real base-table scale")
 
 -- Gen2 (dex > 151): SpeciesGeometry.displayScale never receives a `game`
 -- object, so it can only place a species in the Gen2 range when GameCompat
@@ -435,15 +425,8 @@ end
 local GameCompat = V.require("game_compat")
 eq(GameCompat.generation(nil, nil), 2, "mocked engine reports Gen2 with no game object")
 
-savedOpts.dyn_scale = true
 local cyndaquil = SpeciesGeometry.displayScale(155, "pokemmo")
-check(cyndaquil ~= 1, "Gen2 dex (Cyndaquil) has a real base-table scale when dyn_scale is on")
-savedOpts.dyn_scale = false
-eq(SpeciesGeometry.displayScale(155, "pokemmo"), 1,
-  "Gen2 dex falls back to native True Size (scale 1) when dyn_scale is off")
-savedOpts.dyn_scale = true
-eq(SpeciesGeometry.displayScale(155, "pokemmo"), cyndaquil,
-  "re-enabling dyn_scale restores the Gen2 base-table scale")
+check(cyndaquil ~= 1, "Gen2 dex (Cyndaquil) has a real base-table scale")
 
 -- Clean up the engine mock so later checks in this file keep running under
 -- the default headless/no-engine (Gen1 fallback) assumption.
@@ -453,31 +436,31 @@ package.loaded["src.core.GameVersion"] = nil
 savedOpts = { use_animated_overworld_sprites = false }
 V.mod.world = {
   game = {
-    save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-    mods = { modOptions = { overworld_wild_spawns = savedOpts },
-             loader = { modOptions = { overworld_wild_spawns = savedOpts } } },
+    save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+    mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts },
+             loader = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
   },
 }
 eq(Config.spriteStyle(V.mod), "pokedex", "legacy false migrates to pokedex")
 savedOpts = { use_animated_overworld_sprites = true }
-V.mod.world.game.save.options.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.loader.modOptions.overworld_wild_spawns = savedOpts
+V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.loader.modOptions.wilds_of_kanto_gen3 = savedOpts
 eq(Config.spriteStyle(V.mod), "followers", "legacy true without style → followers default")
 savedOpts = { sprite_style = "pokemmo", use_animated_overworld_sprites = false }
-V.mod.world.game.save.options.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.loader.modOptions.overworld_wild_spawns = savedOpts
+V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.loader.modOptions.wilds_of_kanto_gen3 = savedOpts
 eq(Config.spriteStyle(V.mod), "pokemmo", "explicit sprite_style wins over legacy")
 savedOpts = { sprite_style = "gold" }
-V.mod.world.game.save.options.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.loader.modOptions.overworld_wild_spawns = savedOpts
+V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.loader.modOptions.wilds_of_kanto_gen3 = savedOpts
 eq(Config.spriteStyle(V.mod), "pokemmo", "saved gold migrates to pokemmo")
 savedOpts = { sprite_style = "followers_ex" }
-V.mod.world.game.save.options.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.modOptions.overworld_wild_spawns = savedOpts
-V.mod.world.game.mods.loader.modOptions.overworld_wild_spawns = savedOpts
+V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.modOptions.wilds_of_kanto_gen3 = savedOpts
+V.mod.world.game.mods.loader.modOptions.wilds_of_kanto_gen3 = savedOpts
 eq(Config.spriteStyle(V.mod), "followers", "saved followers_ex migrates to followers")
 
 -- setSpriteStyle writes the same key used by Mod Settings
@@ -497,9 +480,9 @@ local okSet = Config.setSpriteStyle(V.mod, "gold", "start_menu", {
   confirm = false,
 })
 check(okSet == true, "setSpriteStyle accepts legacy gold (normalizes)")
-eq(V.mod.world.game.save.options.modOptions.overworld_wild_spawns.sprite_style,
+eq(V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3.sprite_style,
    "pokemmo", "legacy gold writes pokemmo")
-eq(V.mod.world.game.mods.modOptions.overworld_wild_spawns.sprite_style,
+eq(V.mod.world.game.mods.modOptions.wilds_of_kanto_gen3.sprite_style,
    "pokemmo", "legacy gold writes mod-manager cache pokemmo")
 eq(refreshed, 1, "setSpriteStyle refreshes sprites once")
 
@@ -510,7 +493,7 @@ okSet = Config.setSpriteStyle(V.mod, "pokemmo", "mod_settings", {
   confirm = false,
 })
 check(okSet == true, "setSpriteStyle accepts pokemmo from mod settings path")
-eq(V.mod.world.game.save.options.modOptions.overworld_wild_spawns.sprite_style,
+eq(V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3.sprite_style,
    "pokemmo", "mod settings path writes same sprite_style key")
 
 okSet = Config.setSpriteStyle(V.mod, "followers", "mod_settings", {
@@ -520,7 +503,7 @@ okSet = Config.setSpriteStyle(V.mod, "followers", "mod_settings", {
   confirm = false,
 })
 check(okSet == true, "setSpriteStyle accepts followers")
-eq(V.mod.world.game.save.options.modOptions.overworld_wild_spawns.sprite_style,
+eq(V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3.sprite_style,
    "followers", "followers written as public value")
 
 -- Menu module registers screens once and does NOT inject Start Menu rows.
@@ -565,7 +548,7 @@ V.mod.ui = {
 menu:register()
 menu:register() -- second call must no-op
 eq(wraps, 0, "start menu hook not registered by sprite style menu")
-check(screens >= 4, "style/spawn/random/water screens registered")
+eq(screens, 2, "style + classic encounters screens registered (spawn/water are locked)")
 eq(menu._registered, true, "menu marked registered")
 
 -- options.lua exposes the three public styles (Pokedex and PMDCollab are no
@@ -617,7 +600,7 @@ do
     return realRead(self, rel)
   end
   local function atlasHas(dex, kind)
-    fsPaths["mods/overworld_wild_spawns/" .. POKE_REL .. string.format("follower_%03d_%s.png", dex, kind)] = true
+    fsPaths["mods/wilds_of_kanto_gen3/" .. POKE_REL .. string.format("follower_%03d_%s.png", dex, kind)] = true
   end
   for _, dex in ipairs({ 25, 26 }) do
     atlasHas(dex, "normal"); atlasHas(dex, "shiny"); atlasHas(dex, "normal_submerged")

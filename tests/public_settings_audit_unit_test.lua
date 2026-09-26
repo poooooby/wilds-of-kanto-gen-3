@@ -24,7 +24,7 @@ end
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
@@ -74,7 +74,19 @@ eq(schemaByKey.wild_silhouettes.type, "choice", "Silhouette is a choice")
 eq(schemaByKey.sprite_style.default, "followers", "Sprite Style default followers")
 eq(schemaByKey.enabled.default, true, "Show Wild Mons default on")
 eq(schemaByKey.follower_count.default, 1, "Followers default 1")
-eq(schemaByKey.catch_hud_size.default, 5, "Catch HUD Size default 5")
+eq(schemaByKey.random_encounters.label, "Classic Enc", "Classic Encounters label")
+
+-- Options tightening: these are fixed behaviour (Config.LOCKED), moved out (catching) or
+-- developer-only (dev_overlay via wilds_dev.flag) -- never public options.
+for _, key in ipairs({
+  "enable_idle", "enable_wander", "enable_aggressive", "enable_hidden",
+  "follow_control", "trainer_trail", "dyn_scale", "sprite_fade", "spawn_density",
+  "shiny_sparkle", "water_spawns", "dev_overlay",
+  "overworld_catching", "catch_throw_key", "catch_cycle_key", "catch_throw_combo",
+  "catch_cycle_combo", "catch_hud_size",
+}) do
+  check(schemaByKey[key] == nil, "not a public option: " .. key)
+end
 
 local readme = assert(io.open("README.md", "r")):read("*a")
 check(not readme:find("Indoor Pokémon", 1, true), "README has no Indoor Pokémon setting")

@@ -23,7 +23,7 @@ local modules = {}
 local savedOpts = {}
 local liveBucket = {}
 local V = {
-  mod = { path = ".", id = "overworld_wild_spawns",
+  mod = { path = ".", id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
     options = { get = function(_, k) return savedOpts[k] end },
@@ -34,7 +34,7 @@ local V = {
     -- This is the exact bucket a stale Config.pikaFollower implementation
     -- (using only Config.get/mod.options:get) silently never checked.
     world = { game = { save = { options = { modOptions = {
-      overworld_wild_spawns = liveBucket,
+      wilds_of_kanto_gen3 = liveBucket,
     } } } } },
   },
   path = ".",

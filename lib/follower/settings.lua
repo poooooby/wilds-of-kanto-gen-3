@@ -8,7 +8,6 @@ local DebugLog = V.require("debug_log")
 local Settings = {}
 Settings.__index = Settings
 
-local VALID_UI_CONTROL = { trainer = true, pokemon = true }
 local VALID_ENGINE = {
   follow = true,
   pokemon = true,
@@ -46,27 +45,14 @@ function Settings.new(mod)
   return self
 end
 
---- UI control mode: "trainer" | "pokemon"
+--- UI control mode. Locked to "trainer": Control Mode is no longer an option (Config.LOCKED).
 function Settings:followControl()
-  local v
-  if Config and type(Config.get) == "function" then
-    v = Config.get(self.mod, "follow_control")
-  elseif self.mod.options and self.mod.options.get then
-    v = self.mod.options:get("follow_control")
-  end
-  if VALID_UI_CONTROL[v] then return v end
   return "trainer"
 end
 
---- Trainer trail when controlling a Pokémon: boolean
+--- Trainer trail when controlling a Pokémon. Locked off (Config.LOCKED).
 function Settings:trainerTrail()
-  local v
-  if Config and type(Config.get) == "function" then
-    v = Config.get(self.mod, "trainer_trail")
-  elseif self.mod.options and self.mod.options.get then
-    v = self.mod.options:get("trainer_trail")
-  end
-  return v == true
+  return false
 end
 
 --- Extra party trailers 0–6
@@ -99,6 +85,8 @@ end
 function Settings:setEngineMode(game, mode)
   if mode == "lead" then mode = "lead_trainer" end
   if not VALID_ENGINE[mode] then return false end
+  -- Trainer control is the only mode now; Pokemon control / trainer trail are not offered.
+  mode = "follow"
   if game and game.save then
     game.save.pokepcControlMode = mode
   end
@@ -166,20 +154,14 @@ function Settings:migrateFromLegacy(game)
     return nil
   end
 
-  -- Only fill Wilds keys when unset / still default-ish.
-  local currentControl, currentTrail, currentCount
+  -- Only the follower count is imported; Control Mode / Trainer Trail are fixed (trainer, off).
+  local currentCount
   if Config and type(Config.get) == "function" then
-    currentControl = Config.get(mod, "follow_control")
-    currentTrail = Config.get(mod, "trainer_trail")
     currentCount = Config.get(mod, "follower_count")
   elseif mod.options and type(mod.options.get) == "function" then
-    currentControl = mod.options:get("follow_control")
-    currentTrail = mod.options:get("trainer_trail")
     currentCount = mod.options:get("follower_count")
   end
 
-  local exMode = optGet(Constants.FOLLOWERS_EX_ID, "control_mode")
-  local exTrail = optGet(Constants.FOLLOWERS_EX_ID, "trainer_follows")
   local exCount = optGet(Constants.FOLLOWERS_EX_ID, "follower_count")
 
   local function writeOpt(key, value)
@@ -190,21 +172,6 @@ function Settings:migrateFromLegacy(game)
   end
 
   if game and game.save then
-    if game.save.pokepcControlMode and (currentControl == nil or currentControl == "trainer") then
-      local m = game.save.pokepcControlMode
-      if m == "lead" then m = "lead_trainer" end
-      if m == "follow" then
-        -- keep trainer
-      elseif m == "lead_trainer" then
-        writeOpt("follow_control", "pokemon")
-        writeOpt("trainer_trail", true)
-        changed = true
-      elseif m == "pokemon" or m == "pack" then
-        writeOpt("follow_control", "pokemon")
-        writeOpt("trainer_trail", false)
-        changed = true
-      end
-    end
     if game.save.pokepcFollowerCount ~= nil and (currentCount == nil or currentCount == 1) then
       local n = clampCount(game.save.pokepcFollowerCount)
       writeOpt("follower_count", n)
@@ -212,16 +179,6 @@ function Settings:migrateFromLegacy(game)
     end
   end
 
-  if exMode == "pokemon" and (currentControl == nil or currentControl == "trainer") then
-    writeOpt("follow_control", "pokemon")
-    changed = true
-  elseif exMode == "trainer" or exMode == "follow" then
-    -- already default trainer
-  end
-  if exTrail == true and currentTrail ~= true then
-    writeOpt("trainer_trail", true)
-    changed = true
-  end
   if exCount ~= nil then
     local n = clampCount(exCount)
     if type(exCount) == "boolean" then n = 1 end

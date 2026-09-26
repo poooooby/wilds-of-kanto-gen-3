@@ -19,7 +19,7 @@ local modules = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     read = function(_, rel)
       local f = io.open(rel, "rb") or io.open("./" .. rel, "rb")
@@ -135,7 +135,7 @@ do
   eq(GameCompat.supportsFeature("species", nil, {}), true, "gold species capability")
   eq(GameCompat.supportsFeature("encounters", nil, {}), true, "gold encounters on")
   eq(GameCompat.supportsFeature("followers", nil, {}), true, "gold followers on")
-  eq(GameCompat.supportsFeature("catching", nil, {}), true, "gold catching on")
+  check(GameCompat.supportsFeature("catching", nil, {}) ~= true, "gold: overworld catching moved out of this mod")
   eq(GameCompat.supportsFeature("ambient", nil, {}), true, "gold ambient/town on")
   eq(GameCompat.supportsFeature("townPokemon", nil, {}), true, "gold townPokemon on")
   eq(GameCompat.supportsFeature("safari", nil, {}), false, "gold safari off")
@@ -379,7 +379,7 @@ do
   setEngineVersion("red")
   eq(GameCompat.supportsFeature("encounters", nil, {}), true, "red encounters")
   eq(GameCompat.supportsFeature("followers", nil, {}), true, "red followers")
-  eq(GameCompat.supportsFeature("catching", nil, {}), true, "red catching")
+  check(GameCompat.supportsFeature("catching", nil, {}) ~= true, "red: overworld catching moved out of this mod")
   eq(GameCompat.supportsFeature("ambient", nil, {}), true, "red ambient")
   eq(GameCompat.supportsFeature("safari", nil, {}), true, "red safari")
   eq(GameCompat.supportsFeature("townPokemon", nil, {}), true, "red townPokemon")
@@ -477,16 +477,15 @@ do
         "main.lua gates spawn/hooks on encounters capability")
   check(raw:find('supports("followers")', 1, true) ~= nil,
         "main.lua gates follower install on followers capability")
-  check(raw:find('supports("catching")', 1, true) ~= nil,
-        "main.lua gates catching on catching capability")
+  check(raw:find("catching/init", 1, true) == nil,
+        "main.lua no longer loads Overworld Catching")
   check(raw:find('supports("ambient")', 1, true) ~= nil,
         "main.lua gates ambient/town on ambient capability")
   local ready = raw:find('mod.events:on("game.ready"', 1, true)
   check(ready ~= nil, "main.lua has game.ready handler")
   if ready then
     local afterReady = raw:sub(ready, ready + 2800)
-    check(afterReady:find('supports("encounters")', 1, true) ~= nil
-          or afterReady:find('supports("catching")', 1, true) ~= nil,
+    check(afterReady:find('supports("encounters")', 1, true) ~= nil,
           "game.ready re-asserts pipelines only for enabled features")
   end
 end
@@ -508,16 +507,10 @@ do
         "Gen2.pickEncounter exists")
   check(type(GameCompat.Gen2.startWildBattle) == "function",
         "Gen2.startWildBattle exists")
-  check(type(GameCompat.Gen2.ballCount) == "function", "Gen2.ballCount exists")
-  check(type(GameCompat.Gen2.consumeBall) == "function", "Gen2.consumeBall exists")
-  check(type(GameCompat.Gen2.createCaughtPokemon) == "function",
-        "Gen2.createCaughtPokemon exists")
-  check(type(GameCompat.Gen2.giveCaughtPokemon) == "function",
-        "Gen2.giveCaughtPokemon exists")
-  check(type(GameCompat.Gen2.markSpeciesCaught) == "function",
-        "Gen2.markSpeciesCaught exists")
-  check(type(GameCompat.ballCount) == "function", "GameCompat.ballCount exists")
-  check(type(GameCompat.attemptCatch) == "function", "GameCompat.attemptCatch exists")
+  -- Overworld Catching moved out of this mod: its catch-only adapter helpers are gone.
+  check(GameCompat.Gen2.ballCount == nil and GameCompat.ballCount == nil,
+        "no catch-only ball helpers")
+  check(GameCompat.attemptCatch == nil, "no catch-only attemptCatch")
   check(type(GameCompat.showWildAlertEmote) == "function",
         "showWildAlertEmote exists")
   check(type(GameCompat.pollWildAlertEmote) == "function",

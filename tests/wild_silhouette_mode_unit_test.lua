@@ -52,7 +52,7 @@ end
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
@@ -77,9 +77,9 @@ local V = {
       game = {
         save = {
           pokedex = { seen = {}, owned = {}, caught = {} },
-          options = { modOptions = { overworld_wild_spawns = savedOpts } },
+          options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
         },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -162,9 +162,9 @@ local function makeGame(opts)
         owned = opts.owned or {},
         caught = opts.caught or {},
       },
-      options = { modOptions = { overworld_wild_spawns = savedOpts } },
+      options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
     },
-    mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+    mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
   }
 end
 
@@ -308,14 +308,22 @@ engineVersion = "gold"
 do
   local g = makeGame({ caught = { LAPRAS = true }, seen = { LAPRAS = true } })
   savedOpts.wild_silhouettes = "undiscovered"
+  -- A wild in water gets the WATER silhouette (flagged; Flat tints it at draw), never the land
+  -- black-out. Undiscovered still decides per species.
   local unseen = resolver:resolveWaterSprite({
-    species = "MAGIKARP", surface = Surface.WATER, spriteState = "water",
+    species = "MAGIKARP", surface = Surface.WATER, spriteState = "water", overworldWildSpawn = true,
   }, { style = "pokemmo", game = g, speciesId = "MAGIKARP", variant = "normal" })
   local seen = resolver:resolveWaterSprite({
-    species = "LAPRAS", surface = Surface.WATER, spriteState = "water",
+    species = "LAPRAS", surface = Surface.WATER, spriteState = "water", overworldWildSpawn = true,
   }, { style = "pokemmo", game = g, speciesId = "LAPRAS", variant = "normal" })
-  check(isSilo(unseen), "water UNDISC uncaught → silhouette")
-  check(not isSilo(seen), "water UNDISC caught → color")
+  check(unseen and unseen.waterSilhouette == true, "water UNDISC uncaught → water silhouette")
+  check(not isSilo(unseen), "water wild is not given the land black-out")
+  check(not (seen and seen.waterSilhouette), "water UNDISC caught → color")
+  local follower = resolver:resolveWaterSprite({
+    species = "MAGIKARP", surface = Surface.WATER, spriteState = "water",
+  }, { style = "pokemmo", game = g, speciesId = "MAGIKARP", variant = "normal" })
+  check(not (follower and follower.waterSilhouette) and not isSilo(follower),
+        "non-wild (follower) in water is never silhouetted")
 end
 
 ----------------------------------------------------------------

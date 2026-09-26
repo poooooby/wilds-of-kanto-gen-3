@@ -13,11 +13,10 @@
 --   lib/cell_occupancy.lua  - atomic spawn / move cell reservations
 --   lib/followers_water_compat.lua - optional Followers EX water sprites
 --   lib/follower/           - unified follower core (selection/lifecycle/talk)
---   lib/catching/           - optional overworld Poké Ball catching
 --   lib/diagnostics.lua     - status derivation for HUD/logs
 --   options.lua             - Mod Manager option schema
 --
--- Fail-safe: encounter.roll is suppressed when Random Enc is OFF (all
+-- Fail-safe: encounter.roll is suppressed when Classic Encounters is OFF (all
 -- classic terrains). Visible overworld Pokémon and Water Mons stay independent.
 --
 -- The Pokédex is never a spawn condition. The player is never teleported.
@@ -75,7 +74,7 @@ return function(mod)
     if goldFoundationLogged then return end
     goldFoundationLogged = true
     pcall(function()
-      mod.log:info("[Wilds] Pokémon Gold: experimental Gen2 wild encounters, followers, and overworld catching. Safari / special-session compatibility remains separate.")
+      mod.log:info("[Wilds] Pokémon Gold: experimental Gen2 wild encounters and followers. Safari / special-session compatibility remains separate.")
     end)
   end
 
@@ -112,10 +111,7 @@ return function(mod)
   Config.defineOptions(mod)
   Config.migrateSpriteStyleOption(mod)
   Config.migrateRandomEncountersOption(mod)
-  Config.migrateWaterDisplayMode(mod)
-  Config.migrateCaveSpawnMode(mod)
   Config.migrateDevOverlayOption(mod)
-  Config.migrateSpriteFadeOption(mod)
   Config.migrateSpriteColorOption(mod)
 
   -- Sprite atlases (release ZIP build output): serve sheets that have no file of their own from shard PNGs under
@@ -198,14 +194,6 @@ return function(mod)
     ambient:install()
   end
 
-  local OverworldCatching = V.require("catching/init")
-  local catching = OverworldCatching.new(mod, logic)
-  logic.catching = catching
-  local catchRegOk, catchRegErr = catching:registerContent()
-  if not catchRegOk then
-    DebugLog.warn(mod, "overworld catch ball sprites: %s", tostring(catchRegErr))
-  end
-
   local spriteStyleMenu = SpriteStyleMenu.new(mod, logic)
   local settingsMenus = SettingsMenus.new(mod, logic, follower, ambient)
 
@@ -217,9 +205,6 @@ return function(mod)
   -- settingsMenus:register() after handleOptionsChanged is wired below
   if supports("encounters") then
     behaviorTick:register()
-  end
-  if supports("catching") then
-    catching:register()
   end
   if not supports("encounters") then
     noteGameplaySkipped()
@@ -236,37 +221,8 @@ return function(mod)
   -- ------- events (always registered; logic no-ops when feature is off
   -- or when the running game generation is unsupported)
 
-  -- Re-evaluate the modern-encounter overlay's dex gate on every load boundary
-  -- (a cached "expansion not present" must not outlive the event that changes it).
-  local function invalidateModernEncounters()
-    local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
-    if okG9 and Gen9 and Gen9.invalidate then pcall(Gen9.invalidate) end
-  end
-
-  -- Publish the current map's overlay into game.data (Gen 1 only) so other readers -- a DexNav mod,
-  -- the engine's own roll -- see what actually spawns; restore the original tables on map exit / when
-  -- the option goes Off. Never throws into the engine: a failure restores and stays vanilla.
-  local function publishModernEncounters(mapId)
-    local game = liveGame()
-    if not game or GameCompat.isGen2(mod, game) then return end
-    local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
-    if not (okG9 and Gen9 and Gen9.publish) then return end
-    local ok, err = pcall(Gen9.publish, mod, game, mapId)
-    if not ok then
-      pcall(Gen9.restoreAll, game)
-      DebugLog.warn(mod, "modern encounter publish failed: %s", tostring(err))
-    end
-  end
-
-  local function restoreModernEncounters()
-    local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
-    if okG9 and Gen9 and Gen9.restoreAll then pcall(Gen9.restoreAll, liveGame()) end
-  end
-
   mod.events:on("map.entered", function(ev)
     pcall(Shiny.clearPending) -- a battle that never started must not leak its shiny roll
-    invalidateModernEncounters() -- also restores anything still published
-    publishModernEncounters(ev and ev.mapId)
     if not supports("encounters") then
       noteGameplaySkipped()
       return
@@ -294,7 +250,6 @@ return function(mod)
   end)
 
   mod.events:on("map.exited", function(ev)
-    restoreModernEncounters()
     if not supports("encounters") then return end
     local ok, err = pcall(logic.onMapExited, logic, ev)
     if not ok then
@@ -303,9 +258,6 @@ return function(mod)
     end
     if supports("ambient") then
       pcall(function() ambient:onMapExited(ev) end)
-    end
-    if supports("catching") then
-      pcall(function() catching:onMapExited(ev) end)
     end
   end)
 
@@ -409,26 +361,19 @@ return function(mod)
   end)
 
   mod.events:on("game.ready", function()
-    invalidateModernEncounters()
     logGen2Event("game.ready")
     hud:syncPipelineLevel()
     if devOverlay then devOverlay:syncPipelineLevel() end
     -- The engine's Pipelines.applyOptions restores pipeline levels from the
     -- save right after mods load, wiping our registered level back to OFF.
     -- Re-assert Gen1 gameplay pipelines only when that generation is supported.
-    -- Catching / WILDS AI are not registered on unsupported generations.
+    -- WILDS AI is not registered on unsupported generations.
     if supports("encounters") and behaviorTick then
       behaviorTick:syncPipelineLevel()
     end
-    if supports("catching") and catching then
-      catching:syncPipelineLevel()
-    end
     Config.migrateSpriteStyleOption(mod)
     Config.migrateRandomEncountersOption(mod)
-    Config.migrateWaterDisplayMode(mod)
-    Config.migrateCaveSpawnMode(mod)
     Config.migrateDevOverlayOption(mod)
-    Config.migrateSpriteFadeOption(mod)
     Config.migrateSpriteColorOption(mod)
     render:finalizeSpriteProviders(mod.world and mod.world.game)
     if supports("followers") then
@@ -469,7 +414,6 @@ return function(mod)
 
   -- After Followers EX (priority 160) may wrap makeEntity / register providers.
   mod.events:on("mods.loaded", function()
-    invalidateModernEncounters()
     Config.migrateSpriteStyleOption(mod)
     local game = mod.world and mod.world.game
     render:finalizeSpriteProviders(game)
@@ -513,42 +457,12 @@ return function(mod)
     end
     if unwraps.encounter or unwraps.collision then return end
 
-    -- Modern encounter overlay (Gen 1 only): substitute the encounter table the classic roll
-    -- sees so step encounters agree with visible spawns. Never throws into the engine.
-    local function modernEncounterOverlay(fnName, ...)
-      local game = liveGame()
-      if GameCompat.isGen2(mod, game) then return nil end
-      local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
-      if not (okG9 and Gen9 and Gen9[fnName]) then return nil end
-      local ok, result = pcall(Gen9[fnName], mod, game, ...)
-      if ok then return result end
-      return nil
-    end
-
     unwraps.encounter = mod.hooks:wrap("encounter.roll", function(next, encDef, ctx)
       if logic:shouldSuppressClassicEncounter(ctx) then
         return nil
       end
-      local mapId = ctx and ctx.mapId
-      local overlaid = mapId and modernEncounterOverlay("rollDef", mapId, ctx.terrain, encDef)
-      if overlaid ~= nil then encDef = overlaid end
       return next(encDef, ctx)
     end)
-
-    -- Super Rod: engine calls Runtime.call("encounter.fishing", roll, rod, mapId, pool);
-    -- the wrapped chain may replace the candidate list before the roll.
-    local okFish, unwrapFish = pcall(function()
-      return mod.hooks:wrap("encounter.fishing", function(next, rod, mapId, pool)
-        local replaced = modernEncounterOverlay("fishingPool", mapId, rod, pool)
-        if replaced ~= nil then pool = replaced end
-        return next(rod, mapId, pool)
-      end)
-    end)
-    if okFish then
-      unwraps.fishing = unwrapFish
-    else
-      DebugLog.warn(mod, "encounter.fishing hook unavailable: %s", tostring(unwrapFish))
-    end
 
     -- SHINY RATE for Gold: arm each wild encounter's roll and let the engine's shiny.roll hook consume it.
     -- Registered for both games (Gen 1 never calls shiny.roll) but only armed while Gold is running.
@@ -608,9 +522,6 @@ return function(mod)
     if supports("ambient") then
       pcall(function() ambient:onOptionsChanged(payload) end)
     end
-    if supports("catching") then
-      pcall(function() catching:onOptionsChanged(payload) end)
-    end
     if payload and payload.mod == mod.id and payload.key == "enabled" then
       if supports("encounters") then
         syncFeatureState()
@@ -649,12 +560,8 @@ return function(mod)
   mod.exports.spriteProviders = render.spriteProviders
   mod.exports.follower = follower
   mod.exports.ambient = ambient
-  mod.exports.catching = catching
   mod.exports.handleOptionsChanged = handleOptionsChanged
   mod.exports.isBattleableWild = Config.isBattleableWild
-  mod.exports.overworldCatchingEnabled = function()
-    return Config.overworldCatchingEnabled(mod)
-  end
   mod.exports.getActiveFollowerMon = function(game, needHealthy)
     return follower:getActiveFollowerMon(game, needHealthy ~= false)
   end
@@ -714,25 +621,12 @@ return function(mod)
     opts.render = opts.render or render
     return Config.setSpriteStyle(mod, value, source or "export", opts)
   end
-  mod.exports.setSpawnAmount = function(value, source, opts)
-    opts = opts or {}
-    opts.game = opts.game or (mod.world and mod.world.game)
-    opts.logic = opts.logic or logic
-    return Config.setSpawnAmount(mod, value, source or "export", opts)
-  end
   mod.exports.setRandomEncounters = function(value, source, opts)
     opts = opts or {}
     opts.game = opts.game or (mod.world and mod.world.game)
     opts.logic = opts.logic or logic
     return Config.setRandomEncounters(mod, value, source or "export", opts)
   end
-  mod.exports.setWaterMons = function(value, source, opts)
-    opts = opts or {}
-    opts.game = opts.game or (mod.world and mod.world.game)
-    opts.logic = opts.logic or logic
-    return Config.setWaterMons(mod, value, source or "export", opts)
-  end
-  mod.exports.setWaterDisplayMode = mod.exports.setWaterMons
   mod.exports.waterDisplayMode = function()
     return Config.waterDisplayMode(mod)
   end

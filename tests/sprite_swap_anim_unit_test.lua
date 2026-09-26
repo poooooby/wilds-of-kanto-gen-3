@@ -22,14 +22,14 @@ local savedOpts = { sprite_style = "pokemmo" }
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end, error = function() end },
     find = function() return nil end,
     options = {
       get = function(_, key) return savedOpts[key] end,
     },
     assets = {
-      path = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+      path = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
     },
     read = function(_, rel)
       local f = io.open(rel, "rb") or io.open("./" .. rel, "rb")

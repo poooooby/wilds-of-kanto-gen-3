@@ -220,7 +220,7 @@ function SafariCompat.shouldSpawnVisible(game, overworld, mapId)
 end
 
 -- During ACTIVE Safari: always suppress classic step encounters so the player
--- can pursue visible Pokémon. FALLBACK_VANILLA / inactive leave Random Enc alone.
+-- can pursue visible Pokémon. FALLBACK_VANILLA / inactive leave Classic Encounters alone.
 function SafariCompat.shouldSuppressClassicEncounters(game, overworld, mapId)
   return SafariCompat.status(game, overworld, mapId) == SafariCompat.STATUS.ACTIVE
 end

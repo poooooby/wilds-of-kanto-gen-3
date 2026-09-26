@@ -17,7 +17,7 @@ end
 
 local modules = {}
 local V = {
-  mod = { path = ".", id = "overworld_wild_spawns", log = { info = function() end, warn = function() end } },
+  mod = { path = ".", id = "wilds_of_kanto_gen3", log = { info = function() end, warn = function() end } },
   path = ".",
 }
 function V.require(name)

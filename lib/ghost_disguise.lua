@@ -3,8 +3,7 @@
 -- OverworldController's step-encounter path); our visible overworld spawns start their battles another way, so this module
 -- mirrors the same rule for them:
 --   * the overworld sprite is replaced by the TOWER_GHOST sheet (baked as extra asset id ASSET_ID, see tools/unown_forms.py),
---   * a battle started from the spawn is a real ghost battle (GameCompat.startGhostBattle),
---   * an overworld Poke Ball thrown at it is dodged (lib/catching).
+--   * a battle started from the spawn is a real ghost battle (GameCompat.startGhostBattle).
 -- The rule is read from the engine so a map whose def carries its own `ghostBattles` keeps working; the prefix rule below is only
 -- the fallback for an engine that is not reachable (unit tests, older builds).
 local GhostDisguise = {}

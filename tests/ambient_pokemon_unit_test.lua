@@ -19,7 +19,7 @@ local optionStore = { town_pokemon = true, sprite_style = "followers", sprite_co
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -139,6 +139,61 @@ check(not AmbientPokemon.isSafeSpawnCell(ow, map, 2, 2), "safe cell rejects play
 check(not AmbientPokemon.isSafeSpawnCell(ow, map, 5, 4), "rejects adjacent to warp")
 check(AmbientPokemon.isSafeSpawnCell(ow, map, 10, 10), "accepts free walkable cell")
 
+-- ------- Narrow passage safety (body-block prevention)
+-- A wall along row 8 with a single-tile doorway at x=8: the classic 1-wide
+-- gap shape (left+right of the doorway are both blocked).
+local corridorMap = {
+  id = "NARROW_TEST",
+  widthCells = 20, heightCells = 18,
+  inBounds = function(_, x, y) return x >= 0 and y >= 0 and x < 20 and y < 18 end,
+  isWalkableCell = function(_, x, y)
+    if y == 8 and x ~= 8 then return false end
+    return true
+  end,
+  isWaterCell = function() return false end,
+  warpAtCell = function() return false end,
+  isDoorCell = function() return false end,
+  isCounterCell = function() return false end,
+}
+check(AmbientPokemon.isNarrowPassageCell(corridorMap, 8, 8), "doorway cell is a narrow passage")
+check(not AmbientPokemon.isNarrowPassageCell(corridorMap, 8, 3), "open cell far from the wall is not narrow")
+
+local corridorOw = { player = { cellX = 0, cellY = 0 }, entities = {}, npcs = {}, map = corridorMap }
+check(not AmbientPokemon.isSafeSpawnCell(corridorOw, corridorMap, 8, 8),
+  "rejects spawning directly in the doorway")
+check(not AmbientPokemon.isSafeSpawnCell(corridorOw, corridorMap, 8, 6),
+  "rejects spawning 2 tiles from the doorway")
+check(not AmbientPokemon.isSafeSpawnCell(corridorOw, corridorMap, 9, 9),
+  "rejects spawning 2 tiles diagonal from the doorway")
+check(AmbientPokemon.isSafeSpawnCell(corridorOw, corridorMap, 8, 3),
+  "accepts a cell more than 2 tiles from the doorway")
+
+-- ------- Entity proximity safety (no shoulder-to-shoulder body blocks)
+local openMap = {
+  id = "OPEN_TEST",
+  widthCells = 20, heightCells = 18,
+  inBounds = function(_, x, y) return x >= 0 and y >= 0 and x < 20 and y < 18 end,
+  isWalkableCell = function() return true end,
+  isWaterCell = function() return false end,
+  warpAtCell = function() return false end,
+  isDoorCell = function() return false end,
+  isCounterCell = function() return false end,
+}
+local npcOw = {
+  player = { cellX = 0, cellY = 0 },
+  entities = { { cellX = 10, cellY = 10 } },
+  npcs = {},
+  map = openMap,
+}
+check(not AmbientPokemon.isSafeSpawnCell(npcOw, openMap, 10, 10), "rejects the NPC's own cell")
+check(not AmbientPokemon.isSafeSpawnCell(npcOw, openMap, 12, 10), "rejects 2 tiles from an NPC")
+check(not AmbientPokemon.isSafeSpawnCell(npcOw, openMap, 12, 12), "rejects 2 tiles diagonal from an NPC")
+check(AmbientPokemon.isSafeSpawnCell(npcOw, openMap, 13, 10), "accepts 3 tiles from an NPC")
+
+local playerOw = { player = { cellX = 5, cellY = 5 }, entities = {}, npcs = {}, map = openMap }
+check(not AmbientPokemon.isSafeSpawnCell(playerOw, openMap, 7, 7), "rejects 2 tiles from the player")
+check(AmbientPokemon.isSafeSpawnCell(playerOw, openMap, 8, 8), "accepts 3 tiles from the player")
+
 -- ------- Entity markers / battle guards
 local ambient = AmbientPokemon.new(V.mod, {})
 local fake = {}
@@ -150,10 +205,11 @@ eq(fake.wildsEncounterEnabled, false, "encounter false")
 eq(fake.overworldWildSpawn, false, "not wild spawn")
 check(Config.isBattleableWild(fake) == false, "isBattleableWild false for ambient")
 
--- ------- Toggle clear / density defaults
+-- ------- Toggle / density defaults
 eq(Config.townPokemonEnabled(V.mod), true, "town_pokemon default on")
 optionStore.town_pokemon = false
 eq(Config.townPokemonEnabled(V.mod), false, "town toggle off")
+optionStore.town_pokemon = true
 
 local dens = AmbientPokemon.DENSITY
 check(dens.pokecenter.min == 1 and dens.pokecenter.max == 2, "center density 1–2")
@@ -209,6 +265,11 @@ fake.id = "ambient_test"
 local n = ambient:refreshSprites(game)
 check(type(n) == "number", "refreshSprites returns count")
 
+-- clearAll removes active ambient entities
+ambient.active[fake] = true
+ambient:clearAll(ow)
+eq(ambient:countActive(), 0, "clearAll removes ambient entities")
+
 -- Toggle off clears
 ambient.active[fake] = true
 ambient:onTownPokemonToggled(false, game)
@@ -217,7 +278,6 @@ eq(ambient:countActive(), 0, "town toggle removes ambient entities")
 -- Hostile map spawn count 0
 ow.map.id = "MT_MOON_1F"
 ow.map.def = game.data.maps.MT_MOON_1F
-optionStore.town_pokemon = true
 local spawned = ambient:spawnForMap(game, ow)
 eq(spawned, 0, "no ambient spawn on hostile map")
 

@@ -111,6 +111,8 @@ FORBIDDEN_NAMES = {
     ".gitignore",
     ".DS_Store",
     ".modkitignore",
+    # Developer-only switch for Dev Overlay / Test Spawn (Config.devOverlay); never ships.
+    "wilds_dev.flag",
 }
 # Authoring / host scripts are never runtime content. A GitHub source archive
 # that includes these is not a Wilds release ZIP.
@@ -447,26 +449,10 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
     if not have_sprite(sample):
         fail(f"ZIP missing sample runtime sheet: {sample}")
 
-    for throw_png in (
-        "assets/balls/throw/poke_ball.png",
-        "assets/balls/throw/great_ball.png",
-        "assets/balls/throw/ultra_ball.png",
-        "assets/balls/throw/master_ball.png",
-    ):
-        if throw_png not in names:
-            fail(f"ZIP missing throw Ball asset: {throw_png}")
-    for sm_png in (
-        "assets/balls/poke_ball_sm.png",
-        "assets/balls/great_ball_sm.png",
-        "assets/balls/ultra_ball_sm.png",
-        "assets/balls/master_ball_sm.png",
-    ):
-        if sm_png in names:
-            fail(f"ZIP still contains retired small Ball asset: {sm_png}")
+    # Overworld Catching moved out of this mod; its Ball art must not ship here.
     for banned in names:
-        lower = banned.lower()
-        if lower.endswith(".json") and "ball" in lower and "throw" in lower:
-            fail(f"ZIP must not ship throw-ball source JSON: {banned}")
+        if banned.startswith("assets/balls/") or banned.startswith("lib/catching/"):
+            fail(f"ZIP must not ship Overworld Catching files: {banned}")
 
 
     water_map_swim = (

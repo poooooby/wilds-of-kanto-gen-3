@@ -24,7 +24,7 @@ local V = {
     find = function() return nil end,
     assets = {
       path = function(_, rel)
-        return "mods/overworld_wild_spawns/" .. rel
+        return "mods/wilds_of_kanto_gen3/" .. rel
       end,
     },
     read = function(_, rel)
@@ -179,7 +179,7 @@ pcall(function() rs:load() end)
 local fakeRender = {
   runtimeSheets = rs,
   _modAssetPath = function(_, rel)
-    return "mods/overworld_wild_spawns/" .. rel
+    return "mods/wilds_of_kanto_gen3/" .. rel
   end,
 }
 local providers = SpriteProviders.new(V.mod, fakeRender)

@@ -33,7 +33,6 @@ end
 
 local optionStore = {
   enabled = true,
-  town_pokemon = true,
   follower_count = 1,
   follow_control = "trainer",
   sprite_style = "followers",
@@ -73,7 +72,7 @@ end
 local ow = makeOw("ROUTE_1")
 local game = { save = { party = {}, options = {} }, overworld = ow }
 local mod = {
-  id = "overworld_wild_spawns",
+  id = "wilds_of_kanto_gen3",
   path = ".",
   log = { info = function() end, warn = function() end, error = function() end },
   find = function() return nil end,

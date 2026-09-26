@@ -103,7 +103,7 @@ local events = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
     options = {

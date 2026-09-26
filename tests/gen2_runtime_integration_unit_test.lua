@@ -42,8 +42,6 @@ local optionStore = {
   follow_control = "trainer",
   trainer_trail = false,
   follower_count = 1,
-  town_pokemon = true,
-  overworld_catching = true,
   spawn_density = "normal",
   water_spawns = "swimming_sprites",
   cave_spawns = "reachable",
@@ -164,7 +162,7 @@ local definedSchema = nil
 
 local mod = {
   path = ".",
-  id = "overworld_wild_spawns",
+  id = "wilds_of_kanto_gen3",
   game = goldGame,
   log = {
     info = function(_, fmt, ...)
@@ -271,12 +269,12 @@ for i, row in ipairs(injected) do
   labels[#labels + 1] = row.label
   if row.label == "CANCEL" then cancelAt = i end
   if row.label == "WILDS OF KANTO" then wildsAt = i end
-  if row.label == "RANDOM ENC" then randomAt = i end
+  if row.label == "CLASSIC ENC" then randomAt = i end
   if row.label == "SHOW WILD MONS" then showAt = i end
 end
 check(wildsAt ~= nil, "Gold OPTIONS has WILDS OF KANTO")
 check(showAt ~= nil, "Gold OPTIONS has SHOW WILD MONS")
-check(randomAt ~= nil, "Gold OPTIONS has RANDOM ENC")
+check(randomAt ~= nil, "Gold OPTIONS has CLASSIC ENC")
 check(cancelAt ~= nil and wildsAt < cancelAt,
       "Wilds rows appear BEFORE CANCEL (not after it)")
 local wildsRow
@@ -291,7 +289,7 @@ check(type(wildsRow.activate) == "function", "Gold OPTIONS Wilds row activates")
 do
   local optionRows
   local menusMod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     options = { get = function(_, k) return optionStore[k] end },
     hooks = {

@@ -47,11 +47,11 @@ local OverworldState = {
 }
 package.loaded["src.world.OverworldController"] = OverworldState
 
-local optionStore = { town_pokemon = true, sprite_style = "followers" }
+local optionStore = { sprite_style = "followers" }
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {

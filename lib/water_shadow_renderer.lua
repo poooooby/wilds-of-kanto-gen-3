@@ -85,7 +85,7 @@ function WaterShadowRenderer.shadowModeFor(mod, entity, voxelActive)
   if not voxelActive or not WaterDisplay.isWaterEntity(entity) then
     return WaterShadowRenderer.MODE.NONE
   end
-  if WaterDisplay.isHiddenSilhouettes(mod) or WaterDisplay.isSilhouettes(mod) then
+  if WaterDisplay.isHiddenSilhouettes(mod) or WaterDisplay.wantsWaterSilhouette(mod, entity) then
     return WaterShadowRenderer.MODE.FLAT_WORLD
   end
   return WaterShadowRenderer.MODE.NONE

@@ -24,7 +24,7 @@ local savedOpts = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -39,8 +39,8 @@ local V = {
     end,
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -60,74 +60,25 @@ local Config = V.require("config")
 local WaterDisplay = V.require("water_display")
 local Behavior = V.require("behavior")
 
--- ------- Schema -------
+-- ------- Schema: Water Mons is no longer an option -------
 local schema = assert(loadfile("options.lua"))()
 local byKey = {}
 for _, row in ipairs(schema) do byKey[row.key] = row end
-check(byKey.water_spawns ~= nil, "water_spawns present")
-eq(byKey.water_spawns.type, "choice", "water_spawns is choice")
-eq(byKey.water_spawns.default, "swimming_sprites", "default swimming_sprites")
-eq(byKey.water_spawns.label, "Water Mons", "label Water Mons")
-check(#byKey.water_spawns.label <= 14, "label <= 14")
-eq(#byKey.water_spawns.choices, 5, "five water choices")
-for _, c in ipairs(byKey.water_spawns.choices) do
-  check(#c[1] <= 14, "choice display <= 14: " .. tostring(c[1]))
-end
+check(byKey.water_spawns == nil, "Water Mons is not a public option (locked Swim Sprites)")
+check(byKey.random_encounters ~= nil, "Classic Encounters option present")
+check(byKey.wild_silhouettes ~= nil, "Silhouette option present")
 
--- ------- Defaults / readers -------
+-- ------- Locked water display -------
+for _, saved in ipairs({ "classic_encounters", "disabled", "silhouettes", "hidden_silhouettes", false }) do
+  savedOpts.water_spawns = saved
+  eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "saved " .. tostring(saved) .. " ignored")
+  check(Config.waterMons(V.mod) == true, "water wilds spawn with saved " .. tostring(saved))
+end
 savedOpts.water_spawns = nil
-eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "unset → swimming_sprites")
-check(Config.waterMons(V.mod) == true, "default waterMons spawn-enabled")
-check(not Config.waterClassicEncountersForced(V.mod), "default not classic forced")
-check(not Config.waterEncountersDisabled(V.mod), "default not disabled")
 check(WaterDisplay.isSwimmingSprites(V.mod), "WaterDisplay swimming")
-
--- ------- Legacy bool migration -------
-savedOpts.water_spawns = true
-eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "legacy true → swimming")
-savedOpts.water_spawns = false
-eq(Config.waterDisplayMode(V.mod), "classic_encounters", "legacy false → classic")
-check(Config.waterMons(V.mod) == false, "classic does not spawn")
-check(Config.waterClassicEncountersForced(V.mod) == true, "classic forced")
-
-Config.migrateWaterDisplayMode(V.mod)
-eq(savedOpts.water_spawns, "classic_encounters", "migrate writes string mode")
-eq(savedOpts.enable_water_spawns, false, "migrate sets enable_water_spawns false")
-
--- ------- Mode matrix -------
-local modes = {
-  swimming_sprites = { spawn = true, classicForce = false, disabled = false },
-  hidden_silhouettes = { spawn = true, classicForce = false, disabled = false },
-  silhouettes = { spawn = true, classicForce = false, disabled = false },
-  classic_encounters = { spawn = false, classicForce = true, disabled = false },
-  disabled = { spawn = false, classicForce = false, disabled = true },
-}
-for mode, expect in pairs(modes) do
-  savedOpts.water_spawns = mode
-  eq(Config.waterDisplayMode(V.mod), mode, "mode " .. mode)
-  eq(Config.waterMons(V.mod), expect.spawn, mode .. " spawn")
-  eq(Config.waterClassicEncountersForced(V.mod), expect.classicForce, mode .. " classic")
-  eq(Config.waterEncountersDisabled(V.mod), expect.disabled, mode .. " disabled")
-end
-
--- ------- Setter -------
-local ok, written = Config.setWaterMons(V.mod, "silhouettes", "test", {
-  game = V.mod.world.game, confirm = false,
-})
-check(ok == true, "setWaterMons accepts silhouettes")
-eq(written, "silhouettes", "setter returns mode")
-eq(savedOpts.water_spawns, "silhouettes", "persisted silhouettes")
-eq(savedOpts.enable_water_spawns, true, "enable alias true for silhouettes")
-
-ok = Config.setWaterMons(V.mod, false, "test", { game = V.mod.world.game, confirm = false })
-check(ok == true, "setWaterMons accepts legacy false")
-eq(savedOpts.water_spawns, "classic_encounters", "false coerces to classic")
-
-ok = Config.setWaterMons(V.mod, true, "test", { game = V.mod.world.game, confirm = false })
-eq(savedOpts.water_spawns, "swimming_sprites", "true coerces to swimming")
-
-check(Config.setWaterMons(V.mod, "nope", "t", { confirm = false }) == false,
-      "rejects invalid mode")
+check(not WaterDisplay.isSilhouettes(V.mod), "water-only Silhouettes mode gone")
+check(not WaterDisplay.isHiddenSilhouettes(V.mod), "water-only Hidden Silhouette mode gone")
+check(Config.setWaterMons == nil, "no Water Mons setter")
 
 -- ------- Terrain helpers -------
 check(WaterDisplay.isWaterTerrain({ terrain = "water" }), "terrain water")
@@ -142,7 +93,7 @@ check(not WaterDisplay.isWaterEntity({ surface = "GRASS", behavior = Behavior.ID
       "land entity not water")
 
 -- ------- Silhouette tint / proximity -------
-local farEnt = { cellX = 10, cellY = 10, surface = "WATER" }
+local farEnt = { cellX = 10, cellY = 10, surface = "WATER", overworldWildSpawn = true, species = "MAGIKARP" }
 local nearEnt = { cellX = 5, cellY = 5, surface = "WATER" }
 local player = { cellX = 5, cellY = 5 }
 local farB = WaterDisplay.proximityBrightness(farEnt, player)
@@ -159,38 +110,43 @@ local r2, g2, b2 = WaterDisplay.silhouetteColor(nearEnt, player)
 check(r2 >= r and g2 >= g and b2 >= b, "near tint not darker than far")
 check(r2 < 0.4 and g2 < 0.45, "near still detail-free / dark")
 
-eq(WaterDisplay.silhouetteSink(V.mod), 0, "sink 0 when not silhouettes")
-savedOpts.water_spawns = "silhouettes"
-eq(WaterDisplay.silhouetteSink(V.mod), 3, "sink 3px in silhouettes")
-eq(WaterDisplay.silhouetteSink(V.mod, farEnt), 3, "water entity gets sink")
-eq(WaterDisplay.silhouetteSink(V.mod, { surface = "GRASS" }), 0,
-   "land entity never gets silhouette sink")
+-- ------- One Silhouette option: water silhouette only for wilds standing in water -------
+savedOpts.wild_silhouettes = "off"
+eq(WaterDisplay.silhouetteSink(V.mod, farEnt), 0, "Silhouette OFF: no sink")
+check(not WaterDisplay.wantsWaterSilhouette(V.mod, farEnt), "Silhouette OFF: no water silhouette")
+savedOpts.wild_silhouettes = "all"
+check(WaterDisplay.wantsWaterSilhouette(V.mod, farEnt), "Silhouette ALL: water wild -> water silhouette")
+eq(WaterDisplay.silhouetteSink(V.mod, farEnt), 3, "water silhouette sits 3px deeper (Flat)")
+eq(WaterDisplay.silhouetteSink(V.mod, nil), 0, "no entity -> no sink")
+local landWild = { surface = "GRASS", overworldWildSpawn = true, species = "PIDGEY" }
+check(not WaterDisplay.wantsWaterSilhouette(V.mod, landWild),
+      "land wild gets the land silhouette, never the water one")
+eq(WaterDisplay.silhouetteSink(V.mod, landWild), 0, "land wild never gets the water sink")
+local shoreWild = { surface = "GRASS", originSurface = "WATER", behavior = Behavior.WATER_WANDER,
+                    overworldWildSpawn = true, species = "PSYDUCK" }
+check(not WaterDisplay.wantsWaterSilhouette(V.mod, shoreWild),
+      "water-origin wild standing on land is judged by where it is now (land)")
+local nowInWater = { spriteState = "water", overworldWildSpawn = true, species = "PSYDUCK" }
+check(WaterDisplay.wantsWaterSilhouette(V.mod, nowInWater), "spriteState water counts as in water")
+check(not WaterDisplay.wantsWaterSilhouette(V.mod, { surface = "WATER", species = "PSYDUCK" }),
+      "follower (not a wild spawn) in water: no silhouette")
+check(not WaterDisplay.wantsWaterSilhouette(V.mod,
+        { surface = "WATER", overworldWildSpawn = true, wildsAmbientPokemon = true, species = "PSYDUCK" }),
+      "Town Pokemon: no silhouette")
 check(WaterDisplay.needsOverlayPresentation(V.mod, farEnt) == false,
       "silhouettes do not force overlay (native sheets in Voxel)")
 check(WaterDisplay.needsNativeSilhouetteSheet(V.mod, farEnt) == true,
-      "silhouettes need native sheet flag")
-savedOpts.water_spawns = "swimming_sprites"
-check(WaterDisplay.needsOverlayPresentation(V.mod, farEnt) == false,
-      "swimming does not force overlay")
-savedOpts.water_spawns = "hidden_silhouettes"
-check(WaterDisplay.needsOverlayPresentation(V.mod, farEnt) == false,
-      "hidden no longer forces emergency overlay")
-check(WaterDisplay.needsNativeHiddenShadow(V.mod, farEnt) == true,
-      "hidden needs native flat shadow marker")
-check(WaterDisplay.needsNativeSilhouetteSheet(V.mod, farEnt) == false,
-      "hidden does not use native silhouette sheet")
-check(WaterDisplay.useNativeHiddenShadow(V.mod, farEnt, true) == true,
-      "voxel hidden uses native shadow")
-check(WaterDisplay.useNativeHiddenShadow(V.mod, farEnt, false) == false,
-      "flat hidden keeps circle path")
+      "Voxel water silhouette uses the native water sheet")
+check(WaterDisplay.needsNativeHiddenShadow(V.mod, farEnt) == false,
+      "no hidden-circle water marker")
+savedOpts.wild_silhouettes = "off"
 
--- ------- shouldSuppressClassicEncounter -------
+-- ------- shouldSuppressClassicEncounter: one Classic Encounters option for grass and water -------
 local SpawnLogic = V.require("spawn_logic")
 local logic = {
   mod = V.mod,
   activeMapId = "ROUTE_19",
 }
--- Minimal stub: bind method from prototype via setmetatable if needed.
 local suppress = SpawnLogic.shouldSuppressClassicEncounter
 
 -- Mock Safari off by ensuring no safari map helpers trip; use empty world.
@@ -199,46 +155,29 @@ V.mod.world.overworld = function()
 end
 
 savedOpts.random_encounters = false
-savedOpts.water_spawns = "swimming_sprites"
-check(suppress(logic, { terrain = "grass", mapId = "ROUTE_1" }) == true,
-      "Random Enc OFF suppresses grass")
-check(suppress(logic, { terrain = "water", mapId = "ROUTE_19" }) == true,
-      "swimming + Random OFF suppresses water")
-
-savedOpts.water_spawns = "classic_encounters"
-check(suppress(logic, { terrain = "grass", mapId = "ROUTE_1" }) == true,
-      "classic mode still suppresses grass when Random OFF")
-check(suppress(logic, { terrain = "water", mapId = "ROUTE_19" }) == false,
-      "classic mode allows water when Random OFF")
-check(suppress(logic, { terrain = "fishing", mapId = "ROUTE_19" }) == false,
-      "classic mode allows fishing when Random OFF")
-
-savedOpts.water_spawns = "disabled"
-check(suppress(logic, { terrain = "water", mapId = "ROUTE_19" }) == true,
-      "disabled suppresses water")
-check(suppress(logic, { terrain = "fishing", mapId = "ROUTE_19" }) == true,
-      "disabled suppresses fishing")
-savedOpts.random_encounters = true
-check(suppress(logic, { terrain = "water", mapId = "ROUTE_19" }) == true,
-      "disabled suppresses water even when Random ON")
-check(suppress(logic, { terrain = "grass", mapId = "ROUTE_1" }) == false,
-      "disabled does not suppress grass when Random ON")
-
-savedOpts.water_spawns = "silhouettes"
-savedOpts.random_encounters = true
-check(suppress(logic, { terrain = "water" }) == false,
-      "silhouettes + Random ON allows classic water (unchanged Random Enc rule)")
-savedOpts.random_encounters = false
-check(suppress(logic, { terrain = "water" }) == true,
-      "silhouettes + Random OFF suppresses water")
-
--- ------- Menu choices -------
-local SpriteStyleMenu = assert(loadfile("lib/sprite_style_menu.lua"))(V)
-eq(#SpriteStyleMenu.WATER_CHOICES, 5, "menu has five water choices")
-for _, c in ipairs(SpriteStyleMenu.WATER_CHOICES) do
-  check(#c.label <= 14, "menu label <= 14: " .. c.label)
-  check(Config.VALID_WATER_MODES[c.value] == true, "menu value valid: " .. c.value)
+for _, terrain in ipairs({ "grass", "cave", "water", "fishing" }) do
+  check(suppress(logic, { terrain = terrain, mapId = "ROUTE_19" }) == true,
+        "Classic Enc OFF suppresses " .. terrain)
 end
+savedOpts.random_encounters = true
+for _, terrain in ipairs({ "grass", "cave", "water", "fishing" }) do
+  check(suppress(logic, { terrain = terrain, mapId = "ROUTE_19" }) == false,
+        "Classic Enc ON allows " .. terrain)
+end
+-- A leftover saved Water Mons mode no longer overrides Classic Encounters for water.
+savedOpts.water_spawns = "classic_encounters"
+savedOpts.random_encounters = false
+check(suppress(logic, { terrain = "water", mapId = "ROUTE_19" }) == true,
+      "saved classic_encounters water mode no longer forces water rolls on")
+savedOpts.water_spawns = "disabled"
+savedOpts.random_encounters = true
+check(suppress(logic, { terrain = "water", mapId = "ROUTE_19" }) == false,
+      "saved disabled water mode no longer blocks water rolls")
+savedOpts.water_spawns = nil
+
+-- ------- Menu -------
+local SpriteStyleMenu = assert(loadfile("lib/sprite_style_menu.lua"))(V)
+check(SpriteStyleMenu.WATER_CHOICES == nil, "no Water Mons menu choices")
 
 -- ------- Label validator -------
 local okPy = dofile("tests/_shell.lua").pythonFile("tools/validate_option_labels.py")

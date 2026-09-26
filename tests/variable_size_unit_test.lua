@@ -21,7 +21,7 @@ package.path = "./?.lua;./?/init.lua;" .. package.path
 local modules = {}
 local savedOpts = { pokemon_size = "classic", sprite_style = "pokemmo" }
 local mod = {
-  id = "overworld_wild_spawns",
+  id = "wilds_of_kanto_gen3",
   path = ".",
   log = { info = function() end, warn = function() end },
   options = {

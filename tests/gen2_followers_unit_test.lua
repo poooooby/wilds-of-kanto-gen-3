@@ -116,7 +116,7 @@ local modules = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
     options = {
@@ -608,7 +608,7 @@ do
     generation = function() return nil end,
   }
   local lonely = Follower.new({
-    path = ".", id = "overworld_wild_spawns",
+    path = ".", id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
     options = optionStore and {

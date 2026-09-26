@@ -42,7 +42,7 @@ local V = {
     end,
     assets = {
       path = function(_, rel)
-        return "mods/overworld_wild_spawns/" .. rel
+        return "mods/wilds_of_kanto_gen3/" .. rel
       end,
     },
     content = {

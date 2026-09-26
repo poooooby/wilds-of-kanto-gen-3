@@ -1,6 +1,6 @@
 -- Sprite Style choice helpers (shared confirm labels / availability checks).
 -- Wilds gameplay settings live exclusively in Mod Settings now — this module
--- no longer injects SPRITE STYLE / SPAWN AMOUNT / RANDOM ENC / WATER MONS into
+-- no longer injects SPRITE STYLE / CLASSIC ENC into
 -- the normal Start / Pause menu.
 --
 -- Screens remain registered so Mod Settings / exports can still open them if
@@ -13,17 +13,13 @@ local SpriteStyleMenu = {}
 SpriteStyleMenu.__index = SpriteStyleMenu
 
 SpriteStyleMenu.SCREEN_STYLE = "wilds_of_kanto_gen3:sprite_style"
-SpriteStyleMenu.SCREEN_SPAWN = "wilds_of_kanto_gen3:spawn_amount"
 SpriteStyleMenu.SCREEN_RANDOM = "wilds_of_kanto_gen3:random_enc"
-SpriteStyleMenu.SCREEN_WATER = "wilds_of_kanto_gen3:water_mons"
 -- Back-compat aliases.
 SpriteStyleMenu.SCREEN = SpriteStyleMenu.SCREEN_STYLE
 SpriteStyleMenu.SCREEN_GRASS = SpriteStyleMenu.SCREEN_RANDOM
 
 SpriteStyleMenu.LABEL_STYLE = "SPRITE STYLE"
-SpriteStyleMenu.LABEL_SPAWN = "SPAWN AMOUNT"
-SpriteStyleMenu.LABEL_RANDOM = "RANDOM ENC"
-SpriteStyleMenu.LABEL_WATER = "WATER MONS"
+SpriteStyleMenu.LABEL_RANDOM = "CLASSIC ENC"
 SpriteStyleMenu.MENU_LABEL = SpriteStyleMenu.LABEL_STYLE
 SpriteStyleMenu.LABEL_GRASS = SpriteStyleMenu.LABEL_RANDOM
 
@@ -39,24 +35,9 @@ SpriteStyleMenu.STYLE_CHOICES = {
 }
 SpriteStyleMenu.CHOICES = SpriteStyleMenu.STYLE_CHOICES
 
-SpriteStyleMenu.SPAWN_CHOICES = {
-  { label = "LOW", value = "low" },
-  { label = "NORMAL", value = "normal" },
-  { label = "HIGH", value = "high" },
-  { label = "VERY HIGH", value = "very_high" },
-}
-
 SpriteStyleMenu.RANDOM_CHOICES = {
   { label = "ON", value = true },
   { label = "OFF", value = false },
-}
-
-SpriteStyleMenu.WATER_CHOICES = {
-  { label = "SWIM SPRITES", value = "swimming_sprites" },
-  { label = "HID SILHOUETTE", value = "hidden_silhouettes" },
-  { label = "SILHOUETTES", value = "silhouettes" },
-  { label = "CLASSIC ENC", value = "classic_encounters" },
-  { label = "DISABLED", value = "disabled" },
 }
 
 local STYLE_CONFIRM = {
@@ -132,18 +113,6 @@ function SpriteStyleMenu:_applyStyle(game, value)
   return ok
 end
 
-function SpriteStyleMenu:_applySpawn(game, value)
-  local ok, err = Config.setSpawnAmount(self.mod, value, "mod_settings", {
-    game = game,
-    logic = self.logic,
-    confirm = true,
-  })
-  if not ok then
-    DebugLog.warn(self.mod, "spawn amount apply failed: %s", tostring(err))
-  end
-  return ok
-end
-
 function SpriteStyleMenu:_applyRandom(game, value)
   local ok, err = Config.setRandomEncounters(self.mod, value, "mod_settings", {
     game = game,
@@ -151,19 +120,7 @@ function SpriteStyleMenu:_applyRandom(game, value)
     confirm = true,
   })
   if not ok then
-    DebugLog.warn(self.mod, "random enc apply failed: %s", tostring(err))
-  end
-  return ok
-end
-
-function SpriteStyleMenu:_applyWater(game, value)
-  local ok, err = Config.setWaterMons(self.mod, value, "mod_settings", {
-    game = game,
-    logic = self.logic,
-    confirm = true,
-  })
-  if not ok then
-    DebugLog.warn(self.mod, "water mons apply failed: %s", tostring(err))
+    DebugLog.warn(self.mod, "classic enc apply failed: %s", tostring(err))
   end
   return ok
 end
@@ -201,28 +158,6 @@ function SpriteStyleMenu:_openStyleMenu(game)
   })
 end
 
-function SpriteStyleMenu:_openSpawnMenu(game)
-  local mod = self.mod
-  local current = Config.spawnAmount(mod)
-  local items = {}
-  for _, choice in ipairs(SpriteStyleMenu.SPAWN_CHOICES) do
-    items[#items + 1] = {
-      label = markCurrent(choice.label, choice.value == current),
-      value = choice.value,
-    }
-  end
-  items[#items + 1] = { label = "CANCEL", value = nil }
-
-  return mod.ui.ListMenu.new(game, SpriteStyleMenu.LABEL_SPAWN, items, {
-    onChoose = function(item, menu)
-      if item and item.value then
-        self:_applySpawn(game, item.value)
-      end
-      if menu and menu.close then menu:close() end
-    end,
-  })
-end
-
 function SpriteStyleMenu:_openRandomMenu(game)
   local mod = self.mod
   local current = Config.randomEncountersEnabled(mod)
@@ -239,28 +174,6 @@ function SpriteStyleMenu:_openRandomMenu(game)
     onChoose = function(item, menu)
       if item and item.value ~= nil then
         self:_applyRandom(game, item.value)
-      end
-      if menu and menu.close then menu:close() end
-    end,
-  })
-end
-
-function SpriteStyleMenu:_openWaterMenu(game)
-  local mod = self.mod
-  local current = Config.waterDisplayMode(mod)
-  local items = {}
-  for _, choice in ipairs(SpriteStyleMenu.WATER_CHOICES) do
-    items[#items + 1] = {
-      label = markCurrent(choice.label, choice.value == current),
-      value = choice.value,
-    }
-  end
-  items[#items + 1] = { label = "CANCEL", value = nil }
-
-  return mod.ui.ListMenu.new(game, SpriteStyleMenu.LABEL_WATER, items, {
-    onChoose = function(item, menu)
-      if item and item.value ~= nil then
-        self:_applyWater(game, item.value)
       end
       if menu and menu.close then menu:close() end
     end,
@@ -284,14 +197,8 @@ function SpriteStyleMenu:register()
     mod.content.screens:register(SpriteStyleMenu.SCREEN_STYLE, {
       new = function(game) return menu:_openStyleMenu(game) end,
     })
-    mod.content.screens:register(SpriteStyleMenu.SCREEN_SPAWN, {
-      new = function(game) return menu:_openSpawnMenu(game) end,
-    })
     mod.content.screens:register(SpriteStyleMenu.SCREEN_RANDOM, {
       new = function(game) return menu:_openRandomMenu(game) end,
-    })
-    mod.content.screens:register(SpriteStyleMenu.SCREEN_WATER, {
-      new = function(game) return menu:_openWaterMenu(game) end,
     })
   end
 

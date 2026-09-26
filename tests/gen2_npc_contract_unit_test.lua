@@ -44,7 +44,7 @@ package.loaded["src.core.GameVersion"] = {
 }
 
 local V = {
-  mod = { path = ".", id = "overworld_wild_spawns", log = { info = function() end, warn = function() end } },
+  mod = { path = ".", id = "wilds_of_kanto_gen3", log = { info = function() end, warn = function() end } },
   path = ".",
 }
 local modules = {}

@@ -25,7 +25,7 @@ local savedOpts = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -40,8 +40,8 @@ local V = {
     end,
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -66,33 +66,24 @@ local SpawnFx = V.require("spawn_fx")
 -- ------- Defaults / option schema -------
 eq(Config.DEFAULTS.random_encounters, true, "default random_encounters is true")
 check(Config.randomEncountersEnabled(V.mod) == true, "randomEncountersEnabled defaults ON")
-eq(Config.spawnAmount(V.mod), "normal", "spawnAmount defaults to normal")
-check(Config.waterMons(V.mod) == true, "waterMons defaults ON (spawn-enabled)")
-eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "waterDisplayMode defaults swimming")
+eq(Config.spawnAmount(V.mod), "normal", "spawnAmount locked to normal")
+check(Config.waterMons(V.mod) == true, "water wilds always spawn (swimming sprites)")
+eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "waterDisplayMode locked to swimming")
 
 local schema = assert(loadfile("options.lua"))()
 local byKey = {}
 for _, row in ipairs(schema) do byKey[row.key] = row end
-check(byKey.spawn_density ~= nil, "spawn_density present in Mod Settings schema")
-eq(byKey.spawn_density.label, "Spawn Amount", "Spawn Amount label")
-eq(byKey.spawn_density.default, "normal", "spawn_density schema default")
-check(#byKey.spawn_density.label <= 14, "Spawn Amount label <= 14")
+check(byKey.spawn_density == nil, "Spawn Amount is not an option (locked Normal)")
 check(byKey.grass_encounters == nil, "grass_encounters removed from Mod Settings")
 check(byKey.suppress_random_grass == nil, "suppress_random_grass removed from Mod Settings")
 check(byKey.random_encounters ~= nil, "random_encounters present in Mod Settings")
 eq(byKey.random_encounters.default, true, "random_encounters schema default")
-eq(byKey.random_encounters.label, "Random Enc", "Random Enc label")
-check(#byKey.random_encounters.label <= 14, "Random Enc label <= 14")
+eq(byKey.random_encounters.label, "Classic Enc", "Classic Encounters label")
+check(#byKey.random_encounters.label <= 14, "Classic Enc label <= 14")
 eq(byKey.random_encounters.type, "toggle", "random_encounters is toggle")
 check(byKey.sprite_style ~= nil, "Sprite Style remains in Mod Settings")
-check(byKey.water_spawns ~= nil, "water_spawns present in Mod Settings")
-eq(byKey.water_spawns.label, "Water Mons", "Water Mons label")
-eq(byKey.water_spawns.type, "choice", "water_spawns is choice")
-eq(byKey.water_spawns.default, "swimming_sprites", "water_spawns default swimming_sprites")
-eq(#byKey.water_spawns.choices, 5, "five water display modes")
-check(byKey.dev_overlay ~= nil, "dev_overlay present in Mod Settings")
-eq(byKey.dev_overlay.default, false, "dev_overlay defaults OFF")
-eq(byKey.dev_overlay.label, "Dev Overlay", "Dev Overlay label")
+check(byKey.water_spawns == nil, "Water Mons is not an option (locked Swim Sprites)")
+check(byKey.dev_overlay == nil, "Dev Overlay is developer-only (not in Mod Settings)")
 check(byKey.dev_mode == nil, "dev_mode removed from public schema")
 check(byKey.debug_hud_always_visible == nil, "debug_hud_always_visible removed")
 check(byKey.show_behavior_overlays == nil, "show_behavior_overlays removed")
@@ -132,30 +123,14 @@ check(Config.randomEncountersEnabled(V.mod) == true, "reads ON")
 check(Config.setRandomEncounters(V.mod, "nope", "t", { confirm = false }) == false,
       "rejects invalid random value")
 
-local okSpawn = Config.setSpawnAmount(V.mod, "high", "start_menu", {
-  game = V.mod.world.game, confirm = false,
-})
-check(okSpawn == true, "setSpawnAmount accepts high")
-eq(Config.spawnAmount(V.mod), "high", "spawnAmount reads high")
-
-Config.setWaterMons(V.mod, false, "start_menu", {
-  game = V.mod.world.game, confirm = false,
-})
-check(Config.waterMons(V.mod) == false, "legacy false → spawn disabled")
-eq(Config.waterDisplayMode(V.mod), "classic_encounters", "legacy false → classic_encounters")
-Config.setWaterMons(V.mod, true, "start_menu", {
-  game = V.mod.world.game, confirm = false,
-})
-check(Config.waterMons(V.mod) == true, "legacy true → spawn enabled")
-eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "legacy true → swimming_sprites")
-Config.setWaterMons(V.mod, "silhouettes", "start_menu", {
-  game = V.mod.world.game, confirm = false,
-})
-eq(Config.waterDisplayMode(V.mod), "silhouettes", "set silhouettes mode")
-Config.setWaterMons(V.mod, "swimming_sprites", "start_menu", {
-  game = V.mod.world.game, confirm = false,
-})
-eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "restore swimming_sprites")
+-- Locked options ignore old saved values.
+check(Config.setSpawnAmount == nil and Config.setWaterMons == nil, "no setters for locked options")
+savedOpts.spawn_density = "high"
+savedOpts.water_spawns = "classic_encounters"
+eq(Config.spawnAmount(V.mod), "normal", "saved spawn_density ignored")
+eq(Config.waterDisplayMode(V.mod), "swimming_sprites", "saved water_spawns ignored")
+savedOpts.spawn_density = nil
+savedOpts.water_spawns = nil
 
 -- ------- No HIDDEN_IDLE -------
 check(Behavior.HIDDEN_IDLE == nil, "HIDDEN_IDLE constant removed")
@@ -226,16 +201,12 @@ check(type(fx.grassRustle) ~= "function", "grassRustle removed")
 -- ------- Menu constants -------
 local SpriteStyleMenu = assert(loadfile("lib/sprite_style_menu.lua"))(V)
 eq(SpriteStyleMenu.LABEL_STYLE, "SPRITE STYLE", "style label")
-eq(SpriteStyleMenu.LABEL_SPAWN, "SPAWN AMOUNT", "spawn label")
-eq(SpriteStyleMenu.LABEL_RANDOM, "RANDOM ENC", "random label")
-eq(SpriteStyleMenu.LABEL_WATER, "WATER MONS", "water label")
+eq(SpriteStyleMenu.LABEL_RANDOM, "CLASSIC ENC", "classic encounters label")
 check(#SpriteStyleMenu.LABEL_STYLE <= 14, "SPRITE STYLE <= 14")
-check(#SpriteStyleMenu.LABEL_SPAWN <= 14, "SPAWN AMOUNT <= 14")
-check(#SpriteStyleMenu.LABEL_RANDOM <= 14, "RANDOM ENC <= 14")
-check(#SpriteStyleMenu.LABEL_WATER <= 14, "WATER MONS <= 14")
-eq(#SpriteStyleMenu.SPAWN_CHOICES, 4, "four spawn choices")
-eq(#SpriteStyleMenu.RANDOM_CHOICES, 2, "two random choices")
-eq(#SpriteStyleMenu.WATER_CHOICES, 5, "five water choices")
+check(#SpriteStyleMenu.LABEL_RANDOM <= 14, "CLASSIC ENC <= 14")
+eq(#SpriteStyleMenu.RANDOM_CHOICES, 2, "two classic encounters choices")
+check(SpriteStyleMenu.SCREEN_SPAWN == nil and SpriteStyleMenu.SCREEN_WATER == nil,
+      "no Spawn Amount / Water Mons submenus (locked options)")
 
 -- Density still works.
 local tLow = SpawnRegions.targetCount({

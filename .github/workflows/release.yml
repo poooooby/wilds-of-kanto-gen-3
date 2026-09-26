@@ -63,8 +63,8 @@ jobs:
           (
             cd .deps/gen1recomp
             for t in \
-              mods/overworld_wild_spawns/tests/overworld_wild_spawns_test.lua \
-              mods/overworld_wild_spawns/tests/voxel_aggressive_compat_test.lua
+              mods/wilds_of_kanto_gen3/tests/overworld_wild_spawns_test.lua \
+              mods/wilds_of_kanto_gen3/tests/voxel_aggressive_compat_test.lua
             do
               echo "==> luajit $t"
               luajit "$t"
@@ -108,7 +108,6 @@ jobs:
             tests/gen2_unown_unit_test.lua \
             tests/unown_forms_unit_test.lua \
             tests/ghost_disguise_unit_test.lua \
-            tests/overworld_catch_ghost_dodge_unit_test.lua \
             tests/cave_reachability_gold_unit_test.lua \
             tests/terrarium_swimmer_flag_unit_test.lua
           do

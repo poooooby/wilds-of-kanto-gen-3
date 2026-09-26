@@ -1,5 +1,5 @@
 -- Standalone: from gen1recomp root
---   lua5.1 mods/overworld_wild_spawns/tests/overworld_wild_spawns_test.lua
+--   lua5.1 mods/wilds_of_kanto_gen3/tests/overworld_wild_spawns_test.lua
 -- ROM-free: merges against tests/fixture_data via the modkit harness.
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
@@ -7,7 +7,7 @@ local T = require("tests.modkit")
 local Data = T.fixtures.fresh()
 local Runtime = require("src.mods.Runtime")
 
-local run = T.sdk.loadMod("mods/overworld_wild_spawns", { data = Data })
+local run = T.sdk.loadMod("mods/wilds_of_kanto_gen3", { data = Data })
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
 
 local modMeta = run.loader.mods["wilds_of_kanto_gen3"]
@@ -53,13 +53,12 @@ local modApi = exports.lib.mod
 
 local schema = run.loader.optionSchemas["wilds_of_kanto_gen3"]
 T.check(schema ~= nil, "option schema registered")
-local enabledRow, debugRow, forceRow, catchCycleRow
+local enabledRow, debugRow, forceRow
 local removedDevKeys = {}
 for _, row in ipairs(schema) do
   if row.key == "enabled" then enabledRow = row end
   if row.key == "debug_logging" then debugRow = row end
   if row.key == "force_test_spawn" then forceRow = row end
-  if row.key == "catch_cycle_key" then catchCycleRow = row end
   if row.key == "dev_mode"
      or row.key == "debug_hud_always_visible"
      or row.key == "allow_debug_spawn_outside_encounter_areas"
@@ -81,9 +80,11 @@ T.check(removedDevKeys.allow_debug_spawn_outside_encounter_areas == nil,
         "allow_debug_spawn_outside not public")
 T.check(removedDevKeys.show_spawn_tile_overlay == nil,
         "show_spawn_tile_overlay not public")
-T.check(catchCycleRow ~= nil, "catch_cycle_key present")
-T.eq(catchCycleRow.label, "Ball Switch", "Ball Switch label")
-T.check(#catchCycleRow.label <= 14, "Ball Switch label <= 14")
+for _, row in ipairs(schema) do
+  T.check(row.key ~= "overworld_catching" and not row.key:find("^catch_"),
+          "no Overworld Catching option (moved out of this mod): " .. row.key)
+end
+T.check(exports.catching == nil, "no catching export")
 T.eq(Config.get(modApi, "enabled"), true, "options:get(enabled) is true")
 T.eq(Config.get(modApi, "dev_mode"), false, "options:get(dev_mode) is false")
 T.eq(Config.DEFAULTS.max_visible_pokemon, 12, "default max_visible_pokemon")
@@ -94,10 +95,11 @@ T.eq(Config.DEFAULTS.spawn_density, "normal", "default spawn_density")
 T.eq(Config.DEFAULTS.tiles_per_additional_pokemon, 24, "default tiles_per_additional")
 T.eq(Config.DEFAULTS.initial_spawns, 1, "default initial_spawns is minimal path")
 T.eq(Config.DEFAULTS.dev_mode, false, "DEFAULTS.dev_mode false")
-T.eq(Config.DEFAULTS.enable_idle, true, "idle behaviour enabled by default")
-T.eq(Config.DEFAULTS.enable_wander, true, "wander behaviour enabled by default")
-T.eq(Config.DEFAULTS.enable_aggressive, true, "aggressive behaviour enabled by default")
-T.eq(Config.DEFAULTS.enable_hidden, true, "hidden behaviour enabled by default")
+-- Behaviour is locked (Config.LOCKED): Idle + Roam on, Chase + Hidden off.
+T.eq(Config.get(modApi, "enable_idle"), true, "idle behaviour always on")
+T.eq(Config.get(modApi, "enable_wander"), true, "wander behaviour always on")
+T.eq(Config.get(modApi, "enable_aggressive"), false, "chase behaviour always off")
+T.eq(Config.get(modApi, "enable_hidden"), false, "hidden behaviour always off")
 
 -- ------- pokedex independence (source + runtime)
 
@@ -793,23 +795,21 @@ mockGame.data.pokemon.MAGIKARP = {
   id = "MAGIKARP", name = "Magikarp", dex = 129, spriteFront = "z.png",
 }
 
--- Dev Overlay off: HUD hidden, browser gated.
+-- Dev Overlay off (no wilds_dev.flag): HUD hidden, browser gated.
 run.loader.modOptions["wilds_of_kanto_gen3"] = {
   enabled = true,
   random_encounters = false,
-  dev_overlay = false,
+  dev_overlay = true, -- a saved value is ignored: developer flag file only
 }
-T.eq(Config.devMode(modApi), false, "dev_overlay false")
+Config.setDevFlagForTest(modApi, false)
+T.eq(Config.devMode(modApi), false, "saved dev_overlay ignored without the developer flag")
 T.check(not exports.hud:shouldShow(), "HUD hidden when dev_overlay false")
 logic:onMapEntered({ mapId = "ROUTE_TEST" })
 T.check(not exports.hud:shouldShow(), "HUD still hidden after map enter without overlay")
 
--- Enable Dev Overlay (runtime option change).
-run.loader.modOptions["wilds_of_kanto_gen3"].dev_overlay = true
-logic:onOptionsChanged({
-  mod = "wilds_of_kanto_gen3", key = "dev_overlay", value = true,
-})
-T.check(Config.devMode(modApi), "dev_overlay true after options_changed")
+-- Enable Dev Overlay (developer flag; see Config.devOverlay).
+Config.setDevFlagForTest(modApi, true)
+T.check(Config.devMode(modApi), "developer flag turns Dev Overlay on")
 T.check(exports.hud:shouldShow(), "HUD appears after map enter with dev_overlay")
 
 -- HUD values: unique species vs slots, tiles, assets.
@@ -919,7 +919,7 @@ logic.state.rendererAvailable = true
 logic.state.updateCallbackRegistered = true
 logic.state.pipelineVerified = true
 logic.grassCache = Grass.cells(fakeMap)
-run.loader.modOptions["wilds_of_kanto_gen3"].dev_overlay = true
+Config.setDevFlagForTest(modApi, true)
 run.loader.modOptions["wilds_of_kanto_gen3"].allow_debug_spawn_outside_encounter_areas = false
 
 local px0, py0 = mockPlayer.cellX, mockPlayer.cellY
@@ -1271,7 +1271,7 @@ T.check(spawnSrc:find("Diagnostic only", 1, true)
         "spawn_logic documents pokedex as diagnostic only")
 
 -- Dev Overlay off: detail HUD inactive; Test Spawn stays available.
-run.loader.modOptions["wilds_of_kanto_gen3"].dev_overlay = false
+Config.setDevFlagForTest(modApi, false)
 run.loader.modOptions["wilds_of_kanto_gen3"].debug_hud_always_visible = true
 run.loader.modOptions["wilds_of_kanto_gen3"].allow_debug_spawn_outside_encounter_areas = true
 run.loader.modOptions["wilds_of_kanto_gen3"].show_spawn_tile_overlay = true
@@ -1306,32 +1306,23 @@ T.check(mockGame.save.pokedex == nil
 
 local schemaKeys = {}
 for _, row in ipairs(schema) do schemaKeys[row.key] = row end
-T.check(schemaKeys.spawn_density ~= nil, "spawn_density (Spawn Amount) remains public")
-T.eq(schemaKeys.spawn_density.label, "Spawn Amount", "spawn_density label")
+T.check(schemaKeys.spawn_density == nil, "Spawn Amount is locked (not public)")
 T.check(schemaKeys.grass_encounters == nil, "grass_encounters removed from schema")
 T.check(schemaKeys.random_encounters ~= nil, "random_encounters option present")
 T.eq(schemaKeys.random_encounters.default, true, "random_encounters default ON")
-T.eq(schemaKeys.random_encounters.label, "Random Enc", "random_encounters label")
-T.check(schemaKeys.water_spawns ~= nil, "water_spawns option present")
-T.eq(schemaKeys.water_spawns.type, "choice", "water_spawns is choice")
-T.eq(schemaKeys.water_spawns.default, "swimming_sprites", "water_spawns default swimming_sprites")
-T.eq(schemaKeys.water_spawns.label, "Water Mons", "water_spawns label")
-T.eq(#schemaKeys.water_spawns.choices, 5, "five water display modes")
+T.eq(schemaKeys.random_encounters.label, "Classic Enc", "random_encounters label")
+T.check(schemaKeys.water_spawns == nil, "Water Mons is locked (not public)")
 T.check(schemaKeys.max_visible_pokemon == nil, "max_visible_pokemon removed from public schema")
 T.check(schemaKeys.min_sprite_size == nil, "min_sprite_size removed from public schema")
 T.check(schemaKeys.sprite_opacity == nil, "sprite_opacity removed from public schema")
 T.check(schemaKeys.strict_world_billboard_debug == nil, "strict billboard debug removed")
 T.check(schemaKeys.max_spawns == nil, "legacy max_spawns removed from schema")
-T.check(schemaKeys.enable_idle ~= nil, "enable_idle option")
-T.check(schemaKeys.enable_wander ~= nil, "enable_wander option")
-T.check(schemaKeys.enable_aggressive ~= nil, "enable_aggressive option")
-T.check(schemaKeys.enable_hidden ~= nil, "enable_hidden option")
-T.check(schemaKeys.dev_overlay ~= nil, "dev_overlay option")
+for _, key in ipairs({ "enable_idle", "enable_wander", "enable_aggressive", "enable_hidden",
+                       "dev_overlay", "follow_control", "trainer_trail", "dyn_scale",
+                       "sprite_fade", "shiny_sparkle" }) do
+  T.check(schemaKeys[key] == nil, key .. " is locked / developer-only (not public)")
+end
 T.check(schemaKeys.show_behavior_overlays == nil, "show_behavior_overlays removed from public schema")
-T.eq(schemaKeys.dev_overlay.label, "Dev Overlay", "dev_overlay label")
-T.eq(schemaKeys.enable_wander.label, "Roam Mons", "wander label")
-T.eq(schemaKeys.enable_aggressive.label, "Chase Mons", "aggressive label")
-T.eq(schemaKeys.enable_hidden.label, "Hidden Mons", "hidden label")
 T.eq(schemaKeys.pokemon_grass_render_mode.label, "Grass View", "grass view label")
 -- Option labels must fit Gen1Recomp's 14-character option row.
 -- Choice display strings may exceed 14 (Mod Manager choice rows; see options.lua).

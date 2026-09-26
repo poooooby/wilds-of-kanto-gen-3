@@ -156,6 +156,7 @@ local function copyResult(result)
     waterSilhouetteSheet = result.waterSilhouetteSheet,
     waterHiddenShadow = result.waterHiddenShadow,
     waterFlatShadow = result.waterFlatShadow,
+    waterSilhouette = result.waterSilhouette,
     shadowRendererMode = result.shadowRendererMode,
     fallbackReason = result.fallbackReason,
     error = result.error,
@@ -258,8 +259,30 @@ function SpriteResolver:resolveWaterSprite(entity, context)
   local fallbackStep = 0
   local WaterDisplay = V.require("water_display")
   local WaterShadowRenderer = V.require("water_shadow_renderer")
+  -- Silhouette option (one setting for land and water): a wild Pokemon standing in water gets the
+  -- WATER silhouette -- Voxel: the pre-baked swimming/levitates silhouette sheets; Flat: the dark
+  -- tint Entity:draw applies (WaterDisplay.wantsWaterSilhouette). The land black-out is never
+  -- applied here. Followers / Town Pokemon / previews (no overworldWildSpawn) are never silhouetted.
+  local speciesKey = nil
+  do
+    if type(speciesId) == "string" then
+      speciesKey = speciesId
+    else
+      local okSA, SpeciesAssets = pcall(function() return V.require("species_assets") end)
+      if okSA and SpeciesAssets and SpeciesAssets.speciesFor then
+        speciesKey = SpeciesAssets.speciesFor(waterAssetId or speciesId)
+      end
+    end
+    if not speciesKey and entity then
+      speciesKey = entity.species
+    end
+  end
+  local isWild = entity ~= nil and entity.overworldWildSpawn == true
+    and entity.wildsAmbientPokemon ~= true
+  local wildSilo = isWild and type(Config.shouldWildSilhouette) == "function"
+    and Config.shouldWildSilhouette(self.mod, game, speciesKey) == true
   local wantSilhouette = context.nativeSilhouette == true
-    or (context.voxelActive == true and WaterDisplay.isSilhouettes(self.mod))
+    or (context.voxelActive == true and wildSilo)
   local wantHiddenShadow = context.nativeHiddenShadow == true
     or (context.voxelActive == true and WaterDisplay.isHiddenSilhouettes(self.mod))
 
@@ -304,29 +327,8 @@ function SpriteResolver:resolveWaterSprite(entity, context)
     return result
   end
 
-  -- Encounter silhouettes also black out water sprites (swim / submerged /
-  -- provider / land-fallback art). Hidden circle markers and native (voxel)
-  -- silhouette sheets keep their own presentation.
-  local speciesKey = nil
-  do
-    if type(speciesId) == "string" then
-      speciesKey = speciesId
-    else
-      local okSA, SpeciesAssets = pcall(function() return V.require("species_assets") end)
-      if okSA and SpeciesAssets and SpeciesAssets.speciesFor then
-        speciesKey = SpeciesAssets.speciesFor(waterAssetId or speciesId)
-      end
-    end
-    if not speciesKey and entity then
-      speciesKey = entity.species
-    end
-  end
-  local wildSilo = type(Config.shouldWildSilhouette) == "function"
-    and Config.shouldWildSilhouette(self.mod, game, speciesKey) == true
   local function finish(result)
-    if wildSilo and result and result.def and result.def.image then
-      self:_applyWildSilhouette(result)
-    end
+    if wildSilo and result then result.waterSilhouette = true end
     return result
   end
 
@@ -574,11 +576,9 @@ function SpriteResolver:resolveWaterSprite(entity, context)
         providerId = result.providerId, ok = true, kind = waterDef.kind,
         silhouette = waterDef.silhouette == true,
       }
-      -- Native silhouette sheets (voxel) are already dark; only black out
-      -- the coloured swimming/levitates art.
-      if wildSilo and not waterDef.silhouette then
-        self:_applyWildSilhouette(result)
-      end
+      -- Water silhouette: Voxel serves the pre-baked silhouette sheet above; Flat keeps the
+      -- colour sheet and Entity:draw tints it (never the land black-out).
+      if wildSilo then result.waterSilhouette = true end
       self:_devLogWaterResolve(result, waterAssetId or speciesId, style)
       self:_devLogWaterTransitionResolve(entity, context, speciesId, waterAssetId,
         preferred, result, true)
@@ -799,10 +799,10 @@ function SpriteResolver:cacheKey(entity, context, state)
     if context.voxelActive == true then
       voxel = "voxel"
       local WaterShadowRenderer = V.require("water_shadow_renderer")
-      if waterMode == "hidden_silhouettes" then
-        shadowMode = WaterShadowRenderer.MODE.FLAT_WORLD
-        imagePath = WaterShadowRenderer.HIDDEN_RELATIVE
-      elseif waterMode == "silhouettes" then
+      -- Voxel water silhouette sheet: the Silhouette option on a wild standing in water.
+      local isWild = type(entity) == "table" and entity.overworldWildSpawn == true
+        and entity.wildsAmbientPokemon ~= true
+      if silo == "silo" and isWild then
         shadowMode = WaterShadowRenderer.MODE.FLAT_WORLD
         imagePath = "silhouette"
       end

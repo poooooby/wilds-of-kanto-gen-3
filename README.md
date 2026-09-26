@@ -24,13 +24,12 @@
   - Drops file count from 10k+ to <300. Reduces size by over 50% from 45MB+ to ~20MB 
     while also adding over 1000 new sprites.
 - Overworld and follower sprites for all 1025 species with dex expansion mods.
-- Updated overworld Pokémon with idle, roam, chase, and hidden behaviours
+- Updated overworld Pokémon with idle and roam behaviours
 - Optional hand authored spawn tables for national dex
 - Random spawn mode + Legendary / Mythic spawn option
 - Included shiny system that carries over to other shiny mods.
-- Optional overworld Poké Ball catching
 - Updated party follow system
-- Updated Water Pokémon (swimming sprites, silhouettes, or classic encounters)
+- Updated Water Pokémon (swimming sprites, water silhouettes)
 - Town / ambient Pokémon
 - New Cave spawn logic so overworld mon stay only where you can reach them.
 - Sprite art styles: Poké Followers / GSC or HGSS / PokeMMO
@@ -67,7 +66,7 @@ Gen 2 compatibility layer.
 > Pokémon Gold support is currently in beta. The core systems are working.
 > Please report anything that behaves differently from Gen1.
 > If reporting a Gen2 issue, include Pokémon Gold, map / location, sprite style,
-> follower count / control mode if relevant, Voxel mod if enabled, and
+> follower count if relevant, Voxel mod if enabled, and
 > reproduction steps.
 
 
@@ -96,15 +95,11 @@ START → OPTIONS → Wilds of Kanto Revival
 |---------|--------|---------|-------------|
 | Sprite Style | Poke Followers / GSC · HGSS / PokeMMO | Poke Followers / GSC | Overworld sprite style for wilds and followers. GSC uses Classic (16×16); HGSS uses True Size. Dialogue portraits are separate (always PMDCollab for supported Wilds Pokémon talk). |
 | Pika Follower | Multiple | Default | For Yellow only. 12 optional Pikachu Follower sprites to choose from, including caps and cosplay. |
-| Sprite Scale | On / Off | On | Optional display-size tuning for HGSS / PokeMMO under Voxel renderers. Off renders every species at native True Size instead. |
-| Sprite Fade | Solid / Faded | Solid | Opacity of normal wild sprites (Solid = fully opaque). Does not affect followers, Town Pokémon, silhouettes, or UI. |
 
 ### 🐕‍🦺 Followers
 
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
-| Control Mode | Trainer / Pokémon | Trainer | Who you control in the overworld. |
-| Trainer Trail | On / Off | Off | When controlling a Pokémon, the trainer follows behind. |
 | Followers | 0–6 | 1 | Extra party Pokémon trailing the leader. |
 | Leader | Party menu | — | Choose the lead follower from the party menu. |
 
@@ -113,44 +108,11 @@ START → OPTIONS → Wilds of Kanto Revival
 | Setting | Values | Default | Description |
 |---------|--------|---------|-------------|
 | Show Wild Mons | On / Off | On | Spawn visible wild Pokémon in eligible areas. |
-| Spawn Amount | Low / Normal / High / Very High | Normal | How many visible overworld Pokémon can appear (including water). |
-| Random Enc | On / Off | On | Classic step-based random encounters. Visible overworld Pokémon stay active. |
-| Water Mons | Swim Sprites / Hid Silhouette / Silhouettes / Classic Enc / Disabled | Swim Sprites | How water Pokémon appear. |
-| Cave Spawns | Reachable Only / Mixed | Reachable Only | Cave spawn reachability filter. Mixed allows ~20% atmospheric scenery in inaccessible pockets. |
-| Modern Spawns | Off / Spawn Table / Random | Off | Use the default spawns, a hand authored spawn table with national dex entries, or randomize spawns. |
-| Legend / Mythic | Off / On | Off | Include Legendaries / Mythics into the spawn pool when Modern Spawns is set to Random. |
+| Classic Enc | On / Off | On | Classic Encounters: step-based random encounters in grass, caves and water (Surf). Visible overworld Pokémon stay active either way. |
 | Shiny Rate | Off, %s, Always | Off | Adds shiny rolls into the spawn pool |
-| Shiny Sparkle | Off / On | Off | Shiny Pokemon play a short jingle and one-time sparkle effect in battle. |
-| Max Gen | All - Gen 1-9 | Gen 1 | Cap the max generation of pokemon that will spawn |
-| Town Pokémon | On / Off | On | Peaceful ambient Pokémon in safe towns and interiors. |
+| Town Pokémon | On / Off | On | Peaceful ambient Pokémon in safe towns and interiors. They never block your path. |
 | Grass View | Above / Immersed | Immersed | Draw wilds fully above tall grass, or partially hidden inside it. |
-| Silhouette | Off / Undiscovered / All | Off | Off keeps normal colours. Undiscovered silhouettes species not yet caught / registered in the Pokédex. All silhouettes every encounter-zone wild. |
-| Idle Mons | On / Off | On | Allow idle look behaviour. |
-| Roam Mons | On / Off | On | Allow wander behaviour. |
-| Chase Mons | On / Off | On | Allow aggressive chase behaviour. |
-| Hidden Mons | On / Off | On | Allow hidden grass / cave markers. |
-
-### 🤾 Overworld Catching
-
-| Setting | Values | Default | Description |
-|---------|--------|---------|-------------|
-| OW Catch | On / Off | On | Direct Poké Ball throws at visible wild Pokémon. |
-| Catch Key | C / V / F / G / R / T | C | Desktop key that charges and throws. |
-| Ball Switch | Q / E / R / F / G / T | Q | Desktop key that cycles Balls. |
-| Catch Combo | B + A / Select + A / Disabled | B + A | Controller/touch charge-and-throw combo. |
-| Switch Combo | B + Left/Right / Select + Left/Right / Disabled | B + Left/Right | Controller/touch Ball-switch combo. |
-| Catch HUD Size | 0–10 | 5 | Size of the Ball HUD. 0 hides the HUD only; catching stays on. |
-
-Hold Catch Key (or Catch Combo) to charge 1–6 tiles, release to throw.
-Throws only hit battleable wilds directly ahead. A miss still consumes a Ball.
-Failed catches make the Pokémon aggressive through the normal `!` → chase →
-battle flow. Safari sessions disable overworld throws.
-
-### 🧑‍💻 Developer
-
-| Setting | Values | Default | Description |
-|---------|--------|---------|-------------|
-| Dev Overlay | On / Off | Off | Show behaviour and facing labels above wild Pokémon. |
+| Silhouette | Off / Undiscovered / All | Off | Off keeps normal colours. Undiscovered silhouettes species not yet caught / registered in the Pokédex. All silhouettes every encounter-zone wild. A wild on land is blacked out; one in the water shows as a dark underwater shape. |
 
 ## 🧬 Encounter Behaviors
 
@@ -158,8 +120,6 @@ battle flow. Safari sessions disable overworld throws.
 |----------|-------------|
 | **Idle** | Pokémon stands around and looks about. |
 | **Wander** | Pokémon moves within its area. |
-| **Aggressive** | Pokémon notices the trainer, reacts, and chases. |
-| **Hidden** | Pokémon stays hidden or is shown only via its marker. |
 | **Safari Flee** | Safari Zone only — Pokémon flees after being noticed. |
 
 
@@ -184,10 +144,13 @@ battle flow. Safari sessions disable overworld throws.
 This fork:
 
 - [poooooby](https://github.com/poooooby) — fork maintainer
-- [PokeWilds](https://github.com/sheerst/pokewilds#overworld-sprites) - Additional GSC overworld sprites
-  Major thanks to the sprite artists for their work (Full credits linked)
+- MegaMan-Omega - Original GSC sprites
+- FrenchOrange - Custom GSC Sprites
+- Wooble - Manually recoloring of MegaMan-Omega/FrenchOrange sprites
+- [PokeWilds](https://github.com/sheerst/pokewilds#overworld-sprites) - Additional GSC overworld sprites 
+  (Full credits linked)
 - [Gen 9 Resource Pack](https://eeveeexpo.com/resources/1101/)
-  Huge thanks to these sprite artists for their work!
+  Huge thanks to these sprite artists for their work and the HGSS-style sprites!
   - **Gen 1-5 Pokemon Overworlds:** MissingLukey, help-14, Kymoyonian, cSc-A7X,
   2and2makes5, Pokegirl4ever, Fernandojl, Silver-Skies, TyranitarDark, Getsuei-H,
   Kid1513, Milomilotic11, Kyt666, kdiamo11, Chocosrawlooid, Syledude, Gallanty,

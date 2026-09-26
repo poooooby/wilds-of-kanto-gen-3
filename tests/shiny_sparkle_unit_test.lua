@@ -50,23 +50,18 @@ local function step(battle) return Sparkle.step(mod, battle, deps) end
 local function reset() now, sfx = 0, 0 end
 
 -- ---------------------------------------------------------------- option
+-- Shiny Sparkle is always on (Config.LOCKED); an old saved OFF is ignored.
 savedOpts = {}
-eq(Config.shinySparkleEnabled(mod), true, "option: defaults ON")
+eq(Config.shinySparkleEnabled(mod), true, "option: always ON")
 savedOpts.shiny_sparkle = false
-eq(Config.shinySparkleEnabled(mod), false, "option: schema value false")
+eq(Config.shinySparkleEnabled(mod), true, "option: saved OFF ignored")
 savedOpts = {}
 local schema = assert(loadfile("options.lua"))()
 local row
 for _, r in ipairs(schema) do if r.key == "shiny_sparkle" then row = r end end
-check(row ~= nil and row.type == "toggle" and row.default == true, "options: shiny_sparkle toggle, default ON")
-check(row and #row.label <= 14, "options: label fits")
+check(row == nil, "options: shiny_sparkle is not a public option")
 
--- ---------------------------------------------------------------- off / non-shiny
-reset()
-savedOpts.shiny_sparkle = false
-eq(#step(readyBattle(shinyMon(), nil)), 0, "off: no sparkle")
-eq(sfx, 0, "off: no chime")
-savedOpts = {}
+-- ---------------------------------------------------------------- non-shiny
 reset()
 eq(#step(readyBattle(plainMon(), plainMon())), 0, "non-shiny: no sparkle")
 eq(sfx, 0, "non-shiny: no chime")

@@ -29,7 +29,7 @@ end
 
 -- Real Gen1Recomp option storage shape.
 local modOptions = {
-  overworld_wild_spawns = {
+  wilds_of_kanto_gen3 = {
     follow_control = "trainer",
     trainer_trail = false,
     follower_count = 1,
@@ -105,14 +105,14 @@ local screens = {}
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     world = { game = game },
     -- NO options.set — matches Gen1Recomp Loader._api
     options = {
       get = function(_, key)
-        local bucket = modOptions.overworld_wild_spawns
+        local bucket = modOptions.wilds_of_kanto_gen3
         if bucket and bucket[key] ~= nil then return bucket[key] end
         return nil
       end,
@@ -244,18 +244,18 @@ game.stack._items = stack
 
 local root = menus:_openFollowersRoot(game)
 game.stack:push(root)
-eq(root.items[3].label, "FOLLOWERS", "third row is FOLLOWERS")
-eq(root.items[3].right, "1", "root shows initial count 1")
-check(type(root.items[3].onSelect) ~= "function",
+eq(root.items[1].label, "FOLLOWERS", "first row is FOLLOWERS (Control / Trail are locked)")
+eq(root.items[1].right, "1", "root shows initial count 1")
+check(type(root.items[1].onSelect) ~= "function",
       "FOLLOWERS has no fragile onSelect-only handler")
-check(root.items[3].stepper == true, "FOLLOWERS is an in-place stepper")
-check(root.items[3].screen == nil, "FOLLOWERS does not push a nested screen")
+check(root.items[1].stepper == true, "FOLLOWERS is an in-place stepper")
+check(root.items[1].screen == nil, "FOLLOWERS does not push a nested screen")
 
-confirmUntil(root, 3, 4, "FOLLOWERS")
+confirmUntil(root, 1, 4, "FOLLOWERS")
 check(game.stack:top() == root, "A on stepper stays on the followers root")
 eq(#pushedScreens, 0, "no nested FOLLOWERS:count screen pushed")
 
-eq(modOptions.overworld_wild_spawns.follower_count, 4,
+eq(modOptions.wilds_of_kanto_gen3.follower_count, 4,
    "bucket follower_count == 4 after ListMenu path")
 eq(V.mod.options:get("follower_count"), 4, "mod.options:get == 4")
 eq(settings:followerCount(game), 4, "settings:followerCount == 4")
@@ -282,66 +282,28 @@ stack = {}
 game.stack._items = stack
 root = menus:_openFollowersRoot(game)
 game.stack:push(root)
-confirmUntil(root, 3, 0, "FOLLOWERS")
-eq(modOptions.overworld_wild_spawns.follower_count, 0, "FOLLOWERS=0 writes 0")
+confirmUntil(root, 1, 0, "FOLLOWERS")
+eq(modOptions.wilds_of_kanto_gen3.follower_count, 0, "FOLLOWERS=0 writes 0")
 eq(game.save.pokepcFollowerCount, 0, "save mirror 0")
 
 ----------------------------------------------------------------
--- CONTROL → POKEMON via ListMenu stepper path
+-- Control Mode / Trainer Trail are locked (trainer, off): no rows, trainer control at any count
 ----------------------------------------------------------------
 stack = {}
 game.stack._items = stack
 root = menus:_openFollowersRoot(game)
 game.stack:push(root)
-eq(root.items[1].label, "CONTROL", "first row is CONTROL")
-confirmUntil(root, 1, "pokemon", "CONTROL")
-eq(modOptions.overworld_wild_spawns.follow_control, "pokemon",
-   "control mode pokemon written")
-eq(settings:followControl(), "pokemon", "settings followControl pokemon")
--- count is 0 → engineMode pokemon
-eq(settings:engineMode(game), "pokemon", "engineMode pokemon at count 0")
-eq(game.save.pokepcControlMode, "pokemon", "save mode mirror pokemon")
-
-local root3 = menus:_openFollowersRoot(game)
-local modeRight
-for _, it in ipairs(root3.items) do
-  if it.label == "CONTROL" then modeRight = it.right end
+for _, it in ipairs(root.items) do
+  check(it.label ~= "CONTROL" and it.label ~= "TRAIL", "no " .. tostring(it.label) .. " control/trail row")
 end
-eq(modeRight, "POKEMON", "root shows CONTROL POKEMON")
-
-----------------------------------------------------------------
--- TRAIL → ON (false→true) via ListMenu stepper path
-----------------------------------------------------------------
-stack = {}
-game.stack._items = stack
-root = menus:_openFollowersRoot(game)
-game.stack:push(root)
-eq(root.items[2].label, "TRAIL", "second row is TRAIL")
-confirmUntil(root, 2, true, "TRAIL")
-eq(modOptions.overworld_wild_spawns.trainer_trail, true, "trainer_trail true")
-eq(settings:trainerTrail(), true, "settings trainerTrail true")
-eq(settings:engineMode(game), "lead_trainer", "engineMode lead_trainer")
-eq(game.save.pokepcControlMode, "lead_trainer", "save mode lead_trainer")
-
-local root4 = menus:_openFollowersRoot(game)
-local trailRight
-for _, it in ipairs(root4.items) do
-  if it.label == "TRAIL" then trailRight = it.right end
-end
-eq(trailRight, "ON", "root shows TRAIL ON")
-
-----------------------------------------------------------------
--- FOLLOWERS 6 + pack mode
-----------------------------------------------------------------
-modOptions.overworld_wild_spawns.trainer_trail = false
-stack = {}
-game.stack._items = stack
-root = menus:_openFollowersRoot(game)
-game.stack:push(root)
-confirmUntil(root, 3, 6, "FOLLOWERS")
-eq(modOptions.overworld_wild_spawns.follower_count, 6, "FOLLOWERS=6")
-eq(settings:engineMode(game), "pack", "pokemon+6 → pack")
-eq(game.save.pokepcControlMode, "pack", "save mode pack")
+modOptions.wilds_of_kanto_gen3.follow_control = "pokemon"
+modOptions.wilds_of_kanto_gen3.trainer_trail = true
+confirmUntil(root, 1, 6, "FOLLOWERS")
+eq(modOptions.wilds_of_kanto_gen3.follower_count, 6, "FOLLOWERS=6")
+eq(settings:followControl(), "trainer", "stale saved pokemon control ignored")
+eq(settings:trainerTrail(), false, "stale saved trainer trail ignored")
+eq(settings:engineMode(game), "follow", "trainer control at 6 followers")
+eq(game.save.pokepcControlMode, "follow", "save mode mirror follow")
 
 ----------------------------------------------------------------
 -- Confirming a stepper does not push a nested child menu

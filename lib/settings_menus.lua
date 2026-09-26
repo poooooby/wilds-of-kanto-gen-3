@@ -304,14 +304,6 @@ function SettingsMenus:_stepItem(item, dir)
   if item.apply then item.apply(chosen.value) end
 end
 
-function SettingsMenus:_applyControlMode(game, value)
-  self:_setOption("follow_control", value, game)
-end
-
-function SettingsMenus:_applyTrainerTrail(game, value)
-  self:_setOption("trainer_trail", value == true, game)
-end
-
 function SettingsMenus:_applyFollowerCount(game, value)
   local n = tonumber(value) or 1
   -- Config.setOption is the canonical writer (Gen1Recomp has no
@@ -341,8 +333,6 @@ end
 function SettingsMenus:_openFollowersRoot(game)
   local mod = self.mod
   local menus = self
-  local control = optGet(mod, "follow_control", "trainer")
-  local trail = optGet(mod, "trainer_trail", false) == true
   local count = tonumber(optGet(mod, "follower_count", 1)) or 1
 
   local countChoices = {}
@@ -351,30 +341,6 @@ function SettingsMenus:_openFollowersRoot(game)
   end
 
   local items = {
-    {
-      label = "CONTROL",
-      stepper = true,
-      wrap = true,
-      choices = {
-        { label = "TRAINER", value = "trainer" },
-        { label = "POKEMON", value = "pokemon" },
-      },
-      current = control,
-      right = tostring(control):upper(),
-      apply = function(v) menus:_applyControlMode(game, v) end,
-    },
-    {
-      label = "TRAIL",
-      stepper = true,
-      wrap = true,
-      choices = {
-        { label = "OFF", value = false },
-        { label = "ON",  value = true  },
-      },
-      current = trail == true,
-      right = trail and "ON" or "OFF",
-      apply = function(v) menus:_applyTrainerTrail(game, v) end,
-    },
     {
       label = "FOLLOWERS",
       stepper = true,
@@ -408,25 +374,7 @@ function SettingsMenus:_openWildsRoot(game)
       end,
     },
     {
-      label = "SPAWN AMT",
-      stepper = true,
-      wrap = true,
-      choices = {
-        { label = "LOW",    value = "low" },
-        { label = "NORM",   value = "normal" },
-        { label = "HIGH",   value = "high" },
-        { label = "V.HIGH", value = "very_high" },
-      },
-      current = Config.spawnAmount(mod),
-      right = ({ low = "LOW", normal = "NORM", high = "HIGH", very_high = "V.HIGH" })[tostring(Config.spawnAmount(mod))] or "NORM",
-      apply = function(v)
-        Config.setSpawnAmount(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end,
-    },
-    {
-      label = "RANDOM ENC",
+      label = "CLASSIC ENC",
       stepper = true,
       wrap = true,
       choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
@@ -436,104 +384,6 @@ function SettingsMenus:_openWildsRoot(game)
         Config.setRandomEncounters(mod, v, "options_menu", {
           game = game, logic = menus.logic, confirm = true,
         })
-      end,
-    },
-    {
-      label = "WATER MONS",
-      stepper = true,
-      wrap = true,
-      choices = {
-        { label = "SWIM",    value = "swimming_sprites" },
-        { label = "HIDDEN",  value = "hidden_silhouettes" },
-        { label = "SILHOU",  value = "silhouettes" },
-        { label = "CLASSIC", value = "classic_encounters" },
-        { label = "OFF",     value = "disabled" },
-      },
-      current = Config.waterDisplayMode(mod),
-      right = ({ swimming_sprites = "SWIM", hidden_silhouettes = "HIDDEN", silhouettes = "SILHOU", classic_encounters = "CLASSIC", disabled = "OFF" })[tostring(Config.waterDisplayMode(mod))] or "SWIM",
-      apply = function(v)
-        Config.setWaterMons(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end,
-    },
-    {
-      label = "CAVE",
-      stepper = true,
-      wrap = true,
-      choices = {
-        { label = "REACH", value = "reachable" },
-        { label = "MIXED", value = "mixed" },
-      },
-      current = tostring(optGet(mod, "cave_spawns", "reachable") or "reachable"),
-      right = ({ reachable = "REACH", mixed = "MIXED" })[tostring(optGet(mod, "cave_spawns", "reachable") or "reachable")] or "REACH",
-      apply = function(v)
-        Config.setCaveSpawnMode(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end,
-    },
-    {
-      label = "MODERN SPAWNS",
-      stepper = true,
-      wrap = true,
-      -- Gen 1 wild table source: modern overlay / random species / original.
-      -- See lib/gen9_encounters.lua and lib/random_spawns.lua.
-      choices = {
-        { label = "TABLE", value = "table" },
-        { label = "RANDOM", value = "random" },
-        { label = "OFF", value = "off" },
-      },
-      current = Config.modernSpawnsMode(mod),
-      right = ({ table = "TABLE", random = "RANDOM", off = "OFF" })[Config.modernSpawnsMode(mod)] or "TABLE",
-      apply = function(v)
-        optSet(mod, "modern_spawns", v)
-        menus:_notifyLogic("modern_spawns", v)
-      end,
-    },
-    {
-      label = "LEGEND/MYTHIC",
-      stepper = true,
-      wrap = true,
-      -- Random mode only: allow legendary/mythical/Ultra Beast/Paradox species.
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = Config.legendarySpawnsEnabled(mod),
-      right = Config.legendarySpawnsEnabled(mod) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "legendary_spawns", v == true)
-        menus:_notifyLogic("legendary_spawns", v == true)
-      end,
-    },
-    {
-      label = "MAX GEN",
-      stepper = true,
-      wrap = true,
-      -- Highest generation Spawn Table / Random may use; see lib/gen9_encounters.lua.
-      choices = {
-        { label = "GEN 1", value = "1" }, { label = "GEN 1-2", value = "2" },
-        { label = "GEN 1-3", value = "3" }, { label = "GEN 1-4", value = "4" },
-        { label = "GEN 1-5", value = "5" }, { label = "GEN 1-6", value = "6" },
-        { label = "GEN 1-7", value = "7" }, { label = "GEN 1-8", value = "8" },
-        { label = "ALL", value = "9" },
-      },
-      current = tostring(Config.maxGeneration(mod)),
-      right = Config.maxGeneration(mod) >= 9 and "ALL" or ("GEN 1-" .. Config.maxGeneration(mod)),
-      apply = function(v)
-        optSet(mod, "max_generation", tostring(v))
-        menus:_notifyLogic("max_generation", tostring(v))
-      end,
-    },
-    {
-      label = "SHINY SPARKLE",
-      stepper = true,
-      wrap = true,
-      -- One-time battle sparkle + chime for shiny Pokemon; see lib/shiny_sparkle.lua.
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = Config.shinySparkleEnabled(mod),
-      right = Config.shinySparkleEnabled(mod) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "shiny_sparkle", v == true)
-        menus:_notifyLogic("shiny_sparkle", v == true)
       end,
     },
     {
@@ -579,36 +429,6 @@ function SettingsMenus:_openWildsRoot(game)
         if menus.ambient and menus.ambient.refreshSprites then
           pcall(menus.ambient.refreshSprites, menus.ambient, game)
         end
-      end,
-    },
-    {
-      label = "SPRITE SCALE",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = Config.dynScaleEnabled(mod),
-      right = Config.dynScaleEnabled(mod) and "ON" or "OFF",
-      apply = function(v)
-        Config.setDynScale(mod, v == true, "options_menu", {
-          game = game, logic = menus.logic,
-          render = menus.logic and menus.logic.render, confirm = true,
-        })
-      end,
-    },
-    {
-      label = "SPRITE FADE",
-      stepper = true,
-      wrap = true,
-      choices = {
-        { label = "SOLID", value = "solid" },
-        { label = "FADED", value = "faded" },
-      },
-      current = Config.spriteFade(mod),
-      right = (Config.spriteFade(mod) == "faded") and "FADED" or "SOLID",
-      apply = function(v)
-        Config.setSpriteFade(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
       end,
     },
     {
@@ -693,196 +513,12 @@ function SettingsMenus:_openWildsRoot(game)
         menus:_notifyLogic("wild_silhouettes", mode)
       end,
     },
-    {
-      label = "OW CATCH",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = optGet(mod, "overworld_catching", true) ~= false,
-      right = (optGet(mod, "overworld_catching", true) ~= false) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "overworld_catching", v == true)
-        menus:_notifyLogic("overworld_catching", v == true)
-      end,
-    },
-    (function()
-      local throwKey = tostring(optGet(mod, "catch_throw_key", "c") or "c")
-      local throwChoices = {
-        { label = "C", value = "c" },
-        { label = "V", value = "v" },
-        { label = "F", value = "f" },
-        { label = "G", value = "g" },
-        { label = "R", value = "r" },
-        { label = "T", value = "t" },
-      }
-      local throwRight = string.upper(throwKey)
-      return {
-        label = "CATCH KEY",
-        stepper = true,
-        wrap = true,
-        choices = throwChoices,
-        current = throwKey,
-        right = throwRight,
-        apply = function(v)
-          menus:_setOption("catch_throw_key", tostring(v or "c"))
-        end,
-      }
-    end)(),
-    (function()
-      local cycleKey = tostring(optGet(mod, "catch_cycle_key", "q") or "q")
-      local cycleChoices = {
-        { label = "Q", value = "q" },
-        { label = "E", value = "e" },
-        { label = "R", value = "r" },
-        { label = "F", value = "f" },
-        { label = "G", value = "g" },
-        { label = "T", value = "t" },
-      }
-      return {
-        label = "BALL SWITCH",
-        stepper = true,
-        wrap = true,
-        choices = cycleChoices,
-        current = cycleKey,
-        right = string.upper(cycleKey),
-        apply = function(v)
-          menus:_setOption("catch_cycle_key", tostring(v or "q"))
-        end,
-      }
-    end)(),
-    (function()
-      local throwCombo = tostring(optGet(mod, "catch_throw_combo", "b_a") or "b_a")
-      local comboRight = ({
-        b_a = "B+A",
-        select_a = "SEL+A",
-        disabled = "OFF",
-      })[throwCombo] or "B+A"
-      return {
-        label = "CATCH COMBO",
-        stepper = true,
-        wrap = true,
-        choices = {
-          { label = "B+A", value = "b_a" },
-          { label = "SEL+A", value = "select_a" },
-          { label = "OFF", value = "disabled" },
-        },
-        current = throwCombo,
-        right = comboRight,
-        apply = function(v)
-          menus:_setOption("catch_throw_combo", tostring(v or "b_a"))
-        end,
-      }
-    end)(),
-    (function()
-      local cycleCombo = tostring(optGet(mod, "catch_cycle_combo", "b_dpad") or "b_dpad")
-      local comboRight = ({
-        b_dpad = "B+L/R",
-        select_dpad = "SEL+L/R",
-        disabled = "OFF",
-      })[cycleCombo] or "B+L/R"
-      return {
-        label = "SWITCH COMBO",
-        stepper = true,
-        wrap = true,
-        choices = {
-          { label = "B+L/R", value = "b_dpad" },
-          { label = "SEL+L/R", value = "select_dpad" },
-          { label = "OFF", value = "disabled" },
-        },
-        current = cycleCombo,
-        right = comboRight,
-        apply = function(v)
-          menus:_setOption("catch_cycle_combo", tostring(v or "b_dpad"))
-        end,
-      }
-    end)(),
-    (function()
-      local hudSize = Config.catchHudSize(mod)
-      local hudChoices = {}
-      for i = 0, 10 do
-        hudChoices[#hudChoices + 1] = {
-          label = (i == 0) and "HIDDEN" or tostring(i),
-          value = i,
-        }
-      end
-      return {
-        label = "CATCH HUD",
-        stepper = true,
-        wrap = true,
-        choices = hudChoices,
-        current = hudSize,
-        right = (hudSize == 0) and "HIDDEN" or tostring(hudSize),
-        apply = function(v)
-          local n = tonumber(v) or 5
-          if n < 0 then n = 0 end
-          if n > 10 then n = 10 end
-          n = math.floor(n)
-          -- Canonical bucket write + shared options-changed handler (live).
-          menus:_setOption("catch_hud_size", n)
-        end,
-      }
-    end)(),
-    {
-      label = "IDLE MONS",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = optGet(mod, "enable_idle", true) ~= false,
-      right = (optGet(mod, "enable_idle", true) ~= false) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "enable_idle", v == true)
-        menus:_notifyLogic("enable_idle", v == true)
-      end,
-    },
-    {
-      label = "ROAM MONS",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = optGet(mod, "enable_wander", true) ~= false,
-      right = (optGet(mod, "enable_wander", true) ~= false) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "enable_wander", v == true)
-        menus:_notifyLogic("enable_wander", v == true)
-      end,
-    },
-    {
-      label = "CHASE MONS",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = optGet(mod, "enable_aggressive", true) ~= false,
-      right = (optGet(mod, "enable_aggressive", true) ~= false) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "enable_aggressive", v == true)
-        menus:_notifyLogic("enable_aggressive", v == true)
-      end,
-    },
-    {
-      label = "HIDDEN MONS",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "ON", value = true }, { label = "OFF", value = false } },
-      current = optGet(mod, "enable_hidden", true) ~= false,
-      right = (optGet(mod, "enable_hidden", true) ~= false) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "enable_hidden", v == true)
-        menus:_notifyLogic("enable_hidden", v == true)
-      end,
-    },
-    {
-      label = "DEV OVERLAY",
-      stepper = true,
-      wrap = true,
-      choices = { { label = "OFF", value = false }, { label = "ON", value = true } },
-      current = Config.devOverlay(mod) == true,
-      right = (Config.devOverlay(mod) == true) and "ON" or "OFF",
-      apply = function(v)
-        optSet(mod, "dev_overlay", v == true)
-        menus:_notifyLogic("dev_overlay", v == true)
-      end,
-    },
-    {
+    { label = "CANCEL", onSelect = function() end },
+  }
+
+  -- Developer-only (wilds_dev.flag; see Config.devOverlay): never shown to players.
+  if Config.devOverlay(mod) then
+    table.insert(items, #items, {
       label = "TEST SPAWN",
       onSelect = function()
         if mod.ui and mod.ui.push then
@@ -890,9 +526,8 @@ function SettingsMenus:_openWildsRoot(game)
         end
       end,
       right = "OPEN",
-    },
-    { label = "CANCEL", onSelect = function() end },
-  }
+    })
+  end
 
   return menus:_makeStepperMenu(game, SettingsMenus.LABEL_WILDS, items, mod)
 end
@@ -960,7 +595,7 @@ function SettingsMenus:_wrapOptionsRows()
       })
       out = menus:_insertOptionsRow(out, {
         id = "wilds_of_kanto_gen3:random",
-        label = "RANDOM ENC",
+        label = "CLASSIC ENC",
         text = function()
           return Config.randomEncountersEnabled(mod) and "ON" or "OFF"
         end,
@@ -1022,26 +657,6 @@ function SettingsMenus:register()
   mod.content.screens:register(SettingsMenus.SCREEN_FOLLOWERS, {
     new = function(game) return menus:_openFollowersRoot(game) end,
   })
-  mod.content.screens:register(SettingsMenus.SCREEN_FOLLOWERS .. ":control", {
-    new = function(game)
-      return menus:_openChoice(game, "CONTROL MODE", {
-        { label = "TRAINER", value = "trainer" },
-        { label = "POKEMON", value = "pokemon" },
-      }, optGet(mod, "follow_control", "trainer"), function(v)
-        menus:_applyControlMode(game, v)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_FOLLOWERS .. ":trail", {
-    new = function(game)
-      return menus:_openChoice(game, "TRAINER TRAIL", {
-        { label = "OFF", value = false },
-        { label = "ON", value = true },
-      }, optGet(mod, "trainer_trail", false) == true, function(v)
-        menus:_applyTrainerTrail(game, v)
-      end)
-    end,
-  })
   mod.content.screens:register(SettingsMenus.SCREEN_FOLLOWERS .. ":count", {
     new = function(game)
       local choices = {}
@@ -1067,132 +682,13 @@ function SettingsMenus:register()
       end)
     end,
   })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":ow_catch", {
-    new = function(game)
-      return menus:_openChoice(game, "OW CATCH", {
-        { label = "ON", value = true },
-        { label = "OFF", value = false },
-      }, optGet(mod, "overworld_catching", true) ~= false, function(v)
-        menus:_setOption("overworld_catching", v == true, game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":catch_key", {
-    new = function(game)
-      return menus:_openChoice(game, "CATCH KEY", {
-        { label = "C", value = "c" },
-        { label = "V", value = "v" },
-        { label = "F", value = "f" },
-        { label = "G", value = "g" },
-        { label = "R", value = "r" },
-        { label = "T", value = "t" },
-      }, tostring(optGet(mod, "catch_throw_key", "c") or "c"), function(v)
-        menus:_setOption("catch_throw_key", tostring(v or "c"), game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":ball_key", {
-    new = function(game)
-      return menus:_openChoice(game, "BALL SWITCH", {
-        { label = "Q", value = "q" },
-        { label = "E", value = "e" },
-        { label = "R", value = "r" },
-        { label = "F", value = "f" },
-        { label = "G", value = "g" },
-        { label = "T", value = "t" },
-      }, tostring(optGet(mod, "catch_cycle_key", "q") or "q"), function(v)
-        menus:_setOption("catch_cycle_key", tostring(v or "q"), game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":catch_combo", {
-    new = function(game)
-      return menus:_openChoice(game, "CATCH COMBO", {
-        { label = "B+A", value = "b_a" },
-        { label = "SEL+A", value = "select_a" },
-        { label = "OFF", value = "disabled" },
-      }, tostring(optGet(mod, "catch_throw_combo", "b_a") or "b_a"), function(v)
-        menus:_setOption("catch_throw_combo", tostring(v or "b_a"), game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":switch_combo", {
-    new = function(game)
-      return menus:_openChoice(game, "SWITCH COMBO", {
-        { label = "B+L/R", value = "b_dpad" },
-        { label = "SEL+L/R", value = "select_dpad" },
-        { label = "OFF", value = "disabled" },
-      }, tostring(optGet(mod, "catch_cycle_combo", "b_dpad") or "b_dpad"), function(v)
-        menus:_setOption("catch_cycle_combo", tostring(v or "b_dpad"), game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":catch_hud", {
-    new = function(game)
-      local choices = {}
-      for i = 0, 10 do
-        choices[#choices + 1] = {
-          label = (i == 0) and "HIDDEN" or tostring(i),
-          value = i,
-        }
-      end
-      return menus:_openChoice(game, "CATCH HUD", choices,
-        Config.catchHudSize(mod), function(v)
-          local n = tonumber(v) or 5
-          if n < 0 then n = 0 end
-          if n > 10 then n = 10 end
-          menus:_setOption("catch_hud_size", math.floor(n), game)
-        end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":spawn", {
-    new = function(game)
-      return menus:_openChoice(game, "SPAWN AMOUNT", {
-        { label = "LOW", value = "low" },
-        { label = "NORMAL", value = "normal" },
-        { label = "HIGH", value = "high" },
-        { label = "VERY HIGH", value = "very_high" },
-      }, Config.spawnAmount(mod), function(v)
-        Config.setSpawnAmount(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end)
-    end,
-  })
   mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":random", {
     new = function(game)
-      return menus:_openChoice(game, "RANDOM ENC", {
+      return menus:_openChoice(game, "CLASSIC ENC", {
         { label = "ON", value = true },
         { label = "OFF", value = false },
       }, Config.randomEncountersEnabled(mod), function(v)
         Config.setRandomEncounters(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":water", {
-    new = function(game)
-      return menus:_openChoice(game, "WATER MONS", {
-        { label = "SWIM SPRITES", value = "swimming_sprites" },
-        { label = "HID SILHOUETTE", value = "hidden_silhouettes" },
-        { label = "SILHOUETTES", value = "silhouettes" },
-        { label = "CLASSIC ENC", value = "classic_encounters" },
-        { label = "DISABLED", value = "disabled" },
-      }, Config.waterDisplayMode(mod), function(v)
-        Config.setWaterMons(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":cave", {
-    new = function(game)
-      return menus:_openChoice(game, "CAVE SPAWNS", {
-        { label = "REACHABLE", value = "reachable" },
-        { label = "MIXED", value = "mixed" },
-      }, tostring(optGet(mod, "cave_spawns", "reachable") or "reachable"), function(v)
-        Config.setCaveSpawnMode(mod, v, "options_menu", {
           game = game, logic = menus.logic, confirm = true,
         })
       end)
@@ -1216,30 +712,6 @@ function SettingsMenus:register()
       end)
     end,
   })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":fade", {
-    new = function(game)
-      return menus:_openChoice(game, "SPRITE FADE", {
-        { label = "SOLID", value = "solid" },
-        { label = "FADED", value = "faded" },
-      }, Config.spriteFade(mod), function(v)
-        Config.setSpriteFade(mod, v, "options_menu", {
-          game = game, logic = menus.logic, confirm = true,
-        })
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":town", {
-    new = function(game)
-      return menus:_openChoice(game, "TOWN POKEMON", {
-        { label = "ON", value = true },
-        { label = "OFF", value = false },
-      }, Config.townPokemonEnabled(mod), function(v)
-        Config.setTownPokemon(mod, v, "options_menu", {
-          game = game, ambient = menus.ambient, confirm = true,
-        })
-      end)
-    end,
-  })
   mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":grass", {
     new = function(game)
       return menus:_openChoice(game, "GRASS VIEW", {
@@ -1250,57 +722,6 @@ function SettingsMenus:register()
       end)
     end,
   })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":idle", {
-    new = function(game)
-      return menus:_openChoice(game, "IDLE MONS", {
-        { label = "ON", value = true },
-        { label = "OFF", value = false },
-      }, optGet(mod, "enable_idle", true) ~= false, function(v)
-        menus:_setOption("enable_idle", v == true, game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":roam", {
-    new = function(game)
-      return menus:_openChoice(game, "ROAM MONS", {
-        { label = "ON", value = true },
-        { label = "OFF", value = false },
-      }, optGet(mod, "enable_wander", true) ~= false, function(v)
-        menus:_setOption("enable_wander", v == true, game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":chase", {
-    new = function(game)
-      return menus:_openChoice(game, "CHASE MONS", {
-        { label = "ON", value = true },
-        { label = "OFF", value = false },
-      }, optGet(mod, "enable_aggressive", true) ~= false, function(v)
-        menus:_setOption("enable_aggressive", v == true, game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":hidden", {
-    new = function(game)
-      return menus:_openChoice(game, "HIDDEN MONS", {
-        { label = "ON", value = true },
-        { label = "OFF", value = false },
-      }, optGet(mod, "enable_hidden", true) ~= false, function(v)
-        menus:_setOption("enable_hidden", v == true, game)
-      end)
-    end,
-  })
-  mod.content.screens:register(SettingsMenus.SCREEN_WILDS .. ":dev", {
-    new = function(game)
-      return menus:_openChoice(game, "DEV OVERLAY", {
-        { label = "OFF", value = false },
-        { label = "ON", value = true },
-      }, Config.devOverlay(mod) == true, function(v)
-        menus:_setOption("dev_overlay", v == true, game)
-      end)
-    end,
-  })
-
   self._registered = true
   if Config.debug(mod) then
     DebugLog.info(mod, "OPTIONS menus registered: POKE FOLLOW EX + WILDS OF KANTO")
@@ -1309,16 +730,11 @@ end
 
 -- Keys shown in each submenu (for tests / docs).
 SettingsMenus.FOLLOWERS_OPTION_KEYS = {
-  "follow_control", "trainer_trail", "follower_count",
+  "follower_count",
 }
 SettingsMenus.WILDS_OPTION_KEYS = {
-  "enabled", "spawn_density", "random_encounters", "water_spawns",
-  "cave_spawns", "modern_spawns", "legendary_spawns", "max_generation", "shiny_rate", "shiny_sparkle", "sprite_style", "pika_follower", "dyn_scale", "sprite_fade", "town_pokemon",
-  "pokemon_grass_render_mode", "wild_silhouettes", "overworld_catching",
-  "catch_throw_key", "catch_cycle_key", "catch_throw_combo", "catch_cycle_combo",
-  "catch_hud_size",
-  "enable_idle", "enable_wander", "enable_aggressive", "enable_hidden",
-  "dev_overlay",
+  "enabled", "random_encounters", "shiny_rate", "sprite_style", "pika_follower",
+  "town_pokemon", "pokemon_grass_render_mode", "wild_silhouettes",
 }
 
 return SettingsMenus

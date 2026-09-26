@@ -51,10 +51,11 @@ else
   say "DramaticShapeVoxelMod already present at .deps/DramaticShapeVoxelMod"
 fi
 
-say "linking this repo into .deps/gen1recomp/mods/overworld_wild_spawns"
+say "linking this repo into .deps/gen1recomp/mods/wilds_of_kanto_gen3"
 mkdir -p "$ENGINE/mods"
 rm -f "$ENGINE/mods/overworld-spawns"
-ln -sfn "$ROOT" "$ENGINE/mods/overworld_wild_spawns"
+rm -f "$ENGINE/mods/overworld_wild_spawns"
+ln -sfn "$ROOT" "$ENGINE/mods/wilds_of_kanto_gen3"
 
 if [ -d "$VOXEL/.git" ]; then
   say "linking Dramatic Shape into .deps/gen1recomp/mods/DRAMATIC_SHAPE"

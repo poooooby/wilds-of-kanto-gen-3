@@ -30,6 +30,7 @@ CLAUDE.md
 # Love save / bake cache
 overworld-spawns-cache/
 overworld_wild_spawns-cache/
+wilds_of_kanto_gen3-cache/
 .cache/
 
 # Commercial Anima atlas — keep locally if present, never commit or ship.
@@ -42,3 +43,5 @@ overworld_wild_spawns-cache/
 
 # mod scanner
 /mod-scanner/
+# Developer-only switch for Dev Overlay / Test Spawn (lib/config.lua Config.devOverlay)
+wilds_dev.flag

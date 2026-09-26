@@ -22,14 +22,14 @@ local savedOpts = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
       get = function(_, key) return savedOpts[key] end,
     },
     assets = {
-      path = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+      path = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
     },
     read = function(_, rel)
       local f = io.open(rel, "rb") or io.open("./" .. rel, "rb")
@@ -40,8 +40,8 @@ local V = {
     end,
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
       overworld = function()
         return { cameraMode = "FLAT", player = { cellX = 1, cellY = 1 } }
@@ -97,33 +97,32 @@ check(WaterShadowRenderer.isWaterShadowDef(silDef), "silhouette def tagged")
 eq(WaterShadowRenderer.sinkFor(silDef), WaterShadowRenderer.SILHOUETTE_SINK,
    "silhouette sink")
 
-local waterEnt = { surface = "WATER", behavior = "WATER_IDLE" }
+local waterEnt = { surface = "WATER", behavior = "WATER_IDLE", overworldWildSpawn = true, species = "PSYDUCK" }
 eq(WaterShadowRenderer.shadowModeFor(V.mod, waterEnt, false),
    WaterShadowRenderer.MODE.NONE, "flat → no shadow mode")
+savedOpts.wild_silhouettes = "all"
+eq(WaterShadowRenderer.shadowModeFor(V.mod, waterEnt, true),
+   WaterShadowRenderer.MODE.FLAT_WORLD, "voxel water silhouette → flat_world")
+savedOpts.wild_silhouettes = "off"
+eq(WaterShadowRenderer.shadowModeFor(V.mod, waterEnt, true),
+   WaterShadowRenderer.MODE.NONE, "voxel, Silhouette OFF → none")
 savedOpts.water_spawns = "hidden_silhouettes"
 eq(WaterShadowRenderer.shadowModeFor(V.mod, waterEnt, true),
-   WaterShadowRenderer.MODE.FLAT_WORLD, "voxel hidden → flat_world")
-savedOpts.water_spawns = "silhouettes"
-eq(WaterShadowRenderer.shadowModeFor(V.mod, waterEnt, true),
-   WaterShadowRenderer.MODE.FLAT_WORLD, "voxel silhouettes → flat_world")
+   WaterShadowRenderer.MODE.NONE, "a leftover saved hidden_silhouettes mode does nothing")
 savedOpts.water_spawns = "swimming_sprites"
-eq(WaterShadowRenderer.shadowModeFor(V.mod, waterEnt, true),
-   WaterShadowRenderer.MODE.NONE, "voxel swimming → none")
 
--- Flat 2D presentation helpers unchanged
-savedOpts.water_spawns = "hidden_silhouettes"
+-- Flat 2D presentation helpers
 check(WaterDisplay.needsOverlayPresentation(V.mod, waterEnt) == false,
       "no emergency overlay")
-check(WaterDisplay.useNativeHiddenShadow(V.mod, waterEnt, false) == false,
-      "flat hidden not native sheet")
-check(WaterDisplay.useNativeHiddenShadow(V.mod, waterEnt, true) == true,
-      "voxel hidden uses native sheet")
-savedOpts.water_spawns = "silhouettes"
-eq(WaterDisplay.silhouetteSink(V.mod, waterEnt), 3, "flat silhouette sink unchanged")
-eq(WaterDisplay.silhouetteSink(V.mod, { surface = "WATER", waterSilhouetteSheet = true }),
+check(WaterDisplay.useNativeHiddenShadow(V.mod, waterEnt, true) == false,
+      "no hidden-circle marker (mode removed)")
+savedOpts.wild_silhouettes = "all"
+eq(WaterDisplay.silhouetteSink(V.mod, waterEnt), 3, "flat water silhouette sink")
+eq(WaterDisplay.silhouetteSink(V.mod, { surface = "WATER", overworldWildSpawn = true,
+                                        species = "PSYDUCK", waterSilhouetteSheet = true }),
    0, "native sheet skips runtime sink")
 
--- Resolver: voxel hidden returns shadow marker
+-- Resolver: Voxel water silhouette serves the pre-baked silhouette sheet
 local RuntimeSheets = V.require("runtime_sheets")
 local render = { runtimeSheets = RuntimeSheets.new(V.mod) }
 render.runtimeSheets:load()
@@ -134,31 +133,21 @@ local reg = WaterSpriteRegistry.new(V.mod)
 reg:load()
 local resolver = SpriteResolver.new(V.mod, providers, reg)
 
-savedOpts.water_spawns = "hidden_silhouettes"
-local hidden = resolver:resolveWaterSprite(waterEnt, {
-  style = "pokemmo",
-  speciesId = 54,
-  variant = "normal",
-  voxelActive = true,
-  nativeHiddenShadow = true,
+local silo = resolver:resolveWaterSprite(waterEnt, {
+  style = "pokemmo", speciesId = 54, variant = "normal", voxelActive = true,
 })
-check(hidden ~= nil, "voxel hidden resolves")
-eq(hidden.providerId, "water_hidden_shadow", "hidden provider id")
-check(hidden.waterHiddenShadow == true, "waterHiddenShadow flag")
-check(hidden.waterFlatShadow == true, "waterFlatShadow flag")
-check(WaterShadowRenderer.isWaterShadowDef(hidden.def), "resolved def tagged")
-check(hidden.def.image:find("hidden-water-shadow", 1, true),
-      "resolved image is shadow marker")
-
--- Flat hidden must NOT resolve the shadow marker
-local flatHidden = resolver:resolveWaterSprite(waterEnt, {
-  style = "pokemmo",
-  speciesId = 54,
-  variant = "normal",
-  voxelActive = false,
+check(silo ~= nil and silo.def ~= nil, "voxel water silhouette resolves")
+if silo and silo.def then
+  check(silo.waterSilhouetteSheet == true, "voxel water silhouette uses the native sheet")
+  check(silo.def.image:find("silhouette_runtime", 1, true) ~= nil, "image is a water silhouette sheet")
+  eq(silo.waterSilhouette, true, "flagged as water silhouette")
+end
+local flat = resolver:resolveWaterSprite(waterEnt, {
+  style = "pokemmo", speciesId = 54, variant = "normal", voxelActive = false,
 })
-check(flatHidden == nil or flatHidden.providerId ~= "water_hidden_shadow",
-      "flat hidden does not bind shadow marker")
+check(flat ~= nil and flat.def ~= nil and flat.waterSilhouetteSheet ~= true,
+      "flat water silhouette keeps the colour sheet (tinted at draw)")
+check(flat == nil or flat.providerId ~= "water_hidden_shadow", "flat never binds the hidden marker")
 
 -- Cache key includes shadow mode + voxel
 local keyFlat = resolver:cacheKey(waterEnt, {
@@ -171,8 +160,12 @@ local keyVoxel = resolver:cacheKey(waterEnt, {
 }, "water")
 check(keyFlat ~= keyVoxel, "flat/voxel cache keys differ")
 check(keyVoxel:find("flat_world", 1, true) ~= nil, "voxel key includes shadow mode")
-check(keyVoxel:find("hidden-water-shadow", 1, true) ~= nil,
-      "voxel hidden key includes asset path")
+savedOpts.wild_silhouettes = "off"
+local keyOff = resolver:cacheKey(waterEnt, {
+  style = "pokemmo", speciesId = 54, variant = "normal", form = nil,
+  voxelActive = true,
+}, "water")
+check(keyOff ~= keyVoxel, "Silhouette OFF/ALL cache keys differ")
 
 -- Tilt / pivot constants
 check(WaterShadowRenderer.FLAT_TILT_RAD > math.rad(70)

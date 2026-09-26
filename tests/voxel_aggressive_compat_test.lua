@@ -1,6 +1,6 @@
 -- Voxel + aggressive chase compatibility (ROM-free).
 -- From gen1recomp root:
---   lua mods/overworld_wild_spawns/tests/voxel_aggressive_compat_test.lua
+--   lua mods/wilds_of_kanto_gen3/tests/voxel_aggressive_compat_test.lua
 --
 -- Given:
 --   Dramatic Shape Voxel Mod is active (simulated posesOf contract)
@@ -15,7 +15,7 @@ package.path = "./?.lua;./?/init.lua;" .. package.path
 
 local T = require("tests.modkit")
 local Data = T.fixtures.fresh()
-local run = T.sdk.loadMod("mods/overworld_wild_spawns", { data = Data })
+local run = T.sdk.loadMod("mods/wilds_of_kanto_gen3", { data = Data })
 T.eq(#run.errors, 0, "loads clean")
 
 local exports = run.loader.exports["wilds_of_kanto_gen3"]

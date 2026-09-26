@@ -32,7 +32,7 @@ local modules = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     read = function(_, rel)
       local f = io.open(rel, "rb") or io.open("./" .. rel, "rb")

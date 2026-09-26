@@ -41,7 +41,7 @@ local modules = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
     read = function(_, rel)
@@ -60,7 +60,7 @@ local V = {
       set = function(_, k, v) optionStore[k] = v end,
     },
     assets = {
-      path = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+      path = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
     },
   },
   path = ".",
@@ -102,7 +102,7 @@ end
 do
   local saveBucket = { sprite_style = "pokemmo" }
   V.mod.world = { game = { save = { options = { modOptions = {
-    overworld_wild_spawns = saveBucket,
+    wilds_of_kanto_gen3 = saveBucket,
   } } } } }
   eq(Config.spriteStyle(V.mod), "pokemmo", "existing HGSS save preserved")
   saveBucket.sprite_style = "pokedex"
@@ -140,7 +140,7 @@ do
   local fakeRender = {
     runtimeSheets = modules.runtime_sheets,
     _modAssetPath = function(_, rel)
-      return "mods/overworld_wild_spawns/" .. rel
+      return "mods/wilds_of_kanto_gen3/" .. rel
     end,
   }
   local SpriteProviders = V.require("sprite_providers")
@@ -206,11 +206,11 @@ do
         "Pokewilds-only dex serves its own shiny sheet when one exists")
     end
 
-    -- Dex 393 (Piplup) exists only under Pokewilds/, with no shiny art.
-    local noShinyDef = p:resolve(393, "shiny", nil)
+    -- Dex 501 (Oshawott) exists only under Pokewilds/, with no shiny art.
+    local noShinyDef = p:resolve(501, "shiny", nil)
     check(noShinyDef ~= nil, "Pokewilds-only dex without shiny still resolves")
     if noShinyDef then
-      check(noShinyDef.image:find("follower_393_normal", 1, true) ~= nil,
+      check(noShinyDef.image:find("follower_501_normal", 1, true) ~= nil,
         "Pokewilds-only dex with no shiny art falls back to its own normal sheet")
     end
 

@@ -160,7 +160,7 @@ end
 local installed = {}
 
 local mod = {
-  id = "overworld_wild_spawns",
+  id = "wilds_of_kanto_gen3",
   path = ".",
   log = { info = function() end, warn = function() end },
   options = {

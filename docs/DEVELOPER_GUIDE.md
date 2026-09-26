@@ -35,7 +35,7 @@ assets/  lib/  docs/  tests/  scripts/  tools/
 ```
 
 Local engine: `./scripts/bootstrap.sh` → `.deps/gen1recomp` with symlink
-`mods/overworld_wild_spawns` → repo root.
+`mods/wilds_of_kanto_gen3` → repo root.
 
 Follow-sprite assets:
 
@@ -63,7 +63,7 @@ See `docs/ANIMATED_SPRITE_FORMAT.md`.
 
 Generation gate: `GameCompat.supportsFeature` decides which subsystems
 install. Red / Blue / Yellow keep full Gen1 capabilities. Gold installs
-wild encounters, followers, overworld catching, and the New Bark town
+wild encounters, followers, and the New Bark town
 Pokémon; Safari stays off. Content registration and the options schema still run.
 
 Gen1Recomp freezes content registries after all mods load.
@@ -135,12 +135,11 @@ which `SpriteResolver` passes as a string through `SpriteProviders:resolve(..., 
 style and it swaps in extra asset id 60100, the baked `TOWER_GHOST.png` (flat sheet + True Size pack + geometry, via `tools/unown_forms.py`, same
 mechanism as the Unown letters). (2) **battle** -- `SpawnLogic:_startBattle` calls `GameCompat.startGhostBattle` (`Gen1.startGhostBattle`: `newWild`,
 `wild_encounter` checkpoint, `makeGhost`, `ow:afterBattle` on finish, `ow:pushBattle`, exactly the engine's step-encounter block) and never falls back
-to a normal battle. (3) **throws** -- `OverworldCatching:_releaseThrow` flies the ball to the ghost and shows the vanilla `_ItemUseBallText00`
-("It dodged the thrown BALL!"); the ball is spent, no catch attempt. Picking up the scope changes battles and throws immediately; already-spawned
+to a normal battle. (Overworld ball throws, and their dodge, moved out with Overworld Catching.) Picking up the scope changes battles immediately; already-spawned
 sprites keep the disguise until the next spawn. The pokemmo provider reports the extra asset id it served as `meta.formAssetId`, and the two places
 that re-apply True Size after resolving (`Entity.new` and the bind refresh in `spawn_render.lua`) pass THAT to `VariableSize.applyToDef` instead of the
 species: applying the species' pack silently swapped an Unown letter / the ghost back to the base sprite (only the real-engine harness sees it: it
-checks the image the entity actually draws). Tests: `tests/ghost_disguise_unit_test.lua`, `tests/overworld_catch_ghost_dodge_unit_test.lua` and the
+checks the image the entity actually draws). Tests: `tests/ghost_disguise_unit_test.lua` and the
 Tower block in the real-engine `tests/overworld_wild_spawns_test.lua`.
 
 ### Poke Followers / GSC coverage beyond dex 251 (PokeWilds)
@@ -162,10 +161,30 @@ missing shiny sheet already falls back to normal through the same path the prima
 are one `poke_followers` atlas family (`tools/generate_sprite_atlases.py`). Tests:
 `tests/poke_followers_assets_unit_test.lua`.
 
+### Town Pokemon body-block prevention (always on)
+
+`lib/ambient_pokemon.lua`'s `AmbientPokemon.isSafeSpawnCell(ow, map, x, y, ignore)` is the single
+gate shared by initial placement (`findSpawnCell`) and every wander step in both generations (the
+wrapped `npc.update` inside Gen 1's `_makeNpc`, and Gen 2's `_makeGoldGuest`). Beyond the existing
+exact-cell checks (walkable / not water / not a warp, door or counter / not already occupied), it
+now also rejects a candidate cell within `AmbientPokemon.PROXIMITY_RADIUS` (2, Chebyshev) tiles of:
+- a **narrow-passage cell** (`AmbientPokemon.isNarrowPassageCell`): walkable ground whose
+  left+right neighbors are both blocked, or whose up+down neighbors are both blocked -- the
+  doorway / counter-gap / bridge shape, built from the same `map:inBounds` / `isWalkableCell` /
+  `isWaterCell` primitives `isBlockedSpecial` already uses;
+- **any other entity** (player, NPC, another Town Pokemon) -- `nearAnyEntity` generalizes the old
+  exact-match-only occupancy check to a radius over the same `ow.entities`/`ow.npcs` lists.
+
+A Town Pokemon collides like a normal NPC (`passable = false`), so without this it could stand in
+or beside a 1-wide passage and fully block the player's only route through. There is no longer a
+TOWN POKEMON toggle -- the feature (curated per-map species/counts for Gen 2 in
+`lib/gen2/town_pokemon.lua`, dynamic pool selection for Gen 1) is always on now that placement is
+safe. Tests: `tests/ambient_pokemon_unit_test.lua`.
+
 ## 6. Runtime image cache
 
 `resolvedAssetBySpeciesId` / `runtimeImageCache` hold paths and bake results.
-Optional bake writes `overworld_wild_spawns-cache/<id>.png` as a **LÖVE virtual**
+Optional bake writes `wilds_of_kanto_gen3-cache/<id>.png` as a **LÖVE virtual**
 path (never `getSaveDirectory()` absolute paths).
 
 ## 7. Fallback sprite
@@ -187,194 +206,10 @@ path (never `getSaveDirectory()` absolute paths).
 Visible water spawns use `lib/water_spawn.lua` (cell → shore zone → pool → species).
 `EncounterPick.pick(..., "fishing")` still returns nil.
 
-### 8.1 Modern encounter overlay (Gen 1 only)
-
-`lib/gen9_encounters.lua` is the single Gen 1 wild-table seam. `modern_spawns` is a three-way choice
-(`Config.modernSpawnsMode`, peekSavedOption-first; legacy boolean saves migrate `true` -> `table`,
-`false` -> `off`):
-
-- **`table`** (default) replaces the slots of mapped Gen 1 maps with the generated table in
-  `lib/gen9_encounters_data.lua`. It is **inactive unless** `lib/dex_expansion.lua` finds a real
-  species above #386 (and below the 30000 alternate-form range) in `game.data.pokemon` — i.e. a
-  Pokedex-expansion mod such as National Dex is active. Kanto Reforged alone (max #386) does not
-  activate it.
-- **`random`** (see 8.2) draws any registered species for every map with a vanilla table; no dex gate.
-- **`off`** returns the vanilla object untouched.
-
-**Authored areas.** The generated Essentials data has no table for Route 18, Route 24, Victory Road 1F-3F or the Super Rod
-groups of Cerulean Gym, Route 11, Route 24, Safari Zone East and Vermilion Dock. `lib/gen9_encounters_authored.lua` (same shape;
-built by `tools/generate_gen9_authored.py` from `tools/data/gen9_authored_encounters.json`) supplies them, and `data()` fills them
-into the generated table once at load, only for a map/kind the generated data lacks. The generator refuses any species outside the
-area's `band` (base-stat total range from the original area's own species, evolution position, optional type), outside Gen 3-9
-(dex 252..1025), or restricted (`lib/species_flags_data.lua`); Super Rod groups keep the ORIGINAL group's size because the engine's
-bite chance depends on it. Sources for validation live outside the repo: `--national-dex <national_dex>/data/species/generated/national.lua`
-and `--evolutions <national_dex>/data/evolutions/generated`.
-
-**Gen 2 `classic` fill.** A map entry may carry `classic = { grass|water|superRod }` of Gen 2 species (dex 152..251, same band
-validation). A higher MAX GEN cap must include everything a lower one does, so `pickSource` (grass/water) JOINS the classic table to the
-primary one at every cap: each block's share of the 256 is proportional to its distinct species count (`mergeLadders`, largest
-remainder; merged slots carry `rankLevel = 0` so `anchorLevels` ranks the mixed species by base-stat total, not by two unrelated level
-scales). A Gen 2 cap drops every Gen 3-9 species, and 22 tables (the 10 authored ones plus Route 17/23 grass, Route 20/21 water and the
-Super Rods of Route 20/21/23/25, Cerulean Cave and Safari Zone North, whose generated species are all past Gen 2) used to revert to the
-original game's table; the classic table is then the whole table. A Gen 1 cap drops the Gen 2 species too, so the original stays.
-`tableRod` joins the groups too, but the engine picks among <= 4 entries, so a joined group keeps the classic (= original) group's size and
-alternates primary / classic entries (it cannot hold every Gen 2 entry at once). `fillAuthored` merges `classic` into generated maps (the
-generated data has none). `tests/gen9_encounters_data_unit_test.lua` asserts every table with no Gen 1-2 species has a classic table;
-`tests/gen9_encounters_levels_audit_unit_test.lua` runs the real overlays at Gen 2 and Gen 1 caps and checks that species sets only grow from
-cap Gen 2 to Gen 9.
-
-**Levels come from the vanilla area, not from the data.** The generated table's own levels run far above the ROM's
-(median +13, up to +56, in a 2-3 level window). `tableOverlay` / `tableRod` keep the overlay's species and odds but re-anchor
-the levels with `anchorLevels`: the vanilla bucket's slot levels weighted by its ladder give a distribution; whole species are
-ranked by their weighted mean modern level (ties: base-stat total from `game.data.pokemon`, then name) and, walking that order,
-each slot takes the vanilla level at its odds-weighted mid-quantile. The result has the vanilla min, max and mean, keeps the
-species ranking and a compact band per species, and only uses levels the vanilla table itself uses. Registered species only
-(an unregistered slot still falls back to the vanilla slot at its position); Super Rod entries weigh one each. Random mode's
-level spread inherits it (it builds on the Spawn Table overlay where mapped). Audit against the ROM's tables:
-`tests/gen9_encounters_levels_audit_unit_test.lua` (skips without `.deps/gen1recomp/data/generated`).
-
-- **Seam:** `Gen1.encountersForMap` returns the overlay (a cached **copy**; the original table objects are
-  never modified). The classic roll is covered by the
-  `encounter.roll` wrapper via `Gen9Encounters.rollDef` (the engine passes a synthetic
-  `{ grass = map.water }` for water rolls, so it is terrain-aware) and Super Rod by an
-  `encounter.fishing` wrapper via `Gen9Encounters.fishingPool`. `encounter_index`, `ambient_pokemon`
-  and `water_spawn` read through the same overlay.
-- **Only existing buckets are replaced** (grass/cave, water, and vanilla Super Rod groups), so the
-  engine's `rate` survives; maps or buckets the vanilla data lacks stay vanilla.
-- **Variable-length ladders (data version 2):** grass/water are NOT limited to the default 10
-  slots. Each overlay bucket carries its own cumulative `buckets` list (ending 256, one threshold
-  per slot) with one slot per (species, level); `Encounter.roll` and `EncounterPick` both honor a
-  per-bucket `buckets`. A source row's percentage is spread evenly over every level in its min-max
-  range (20% Roggenrola 15-17 -> L15/L16/L17 at ~6.9% each after normalizing), in whole 256ths
-  (the roll is `rng(0,255)`, so a slot's odds are integers out of 256). Tables run 6-88 slots.
-- **Per-slot fallback:** a slot whose species is not registered is replaced by the vanilla slot at
-  the same *probability position* (the midpoint of the overlay slot's odds interval looked up on the
-  vanilla ladder), so nothing can reference a missing species and the probability mass is kept.
-  Malformed ladders (length mismatch, non-increasing, not ending 256) fail closed to vanilla.
-- **Data:** generated by `tools/generate_gen9_encounters.py` (Essentials PBS-style `encounters.txt`
-  + `national_dex` species keys; location mapping in `tools/data/gen9_location_map.json`). Rounding
-  is two-stage largest-remainder (species totals first, then split across levels), each pair >= 1/256.
-  Super Rod stays <= 4 uniformly-picked entries (hard engine limit, so it cannot spread levels).
-  The sources live outside the repo; only the generated Lua is committed. Re-run the generator and
-  review its printed report (per-table slot counts and max error, unused sections, form-token table)
-  before committing.
-
-### 8.0 Shiny system (SHINY RATE)
-
-`lib/shiny.lua` replaces the Shiny Pokemon mod for Red/Blue/Yellow, and applies the same rate in Gold (Gen 2, see the last bullet below; that mod is a manifest conflict: with Voxel off
-its `SpriteRenderer.draw` wrap redraws `SPRITE_PIKACHU` / `SPRITE_PLAYER_POKEMON` followers with a hardcoded 16x16
-quad at `(px - camX, py - camY - 4)`, ignoring `frameWidth` / `frameHeight` / `anchorX` / `anchorY`).
-
-- **Definition:** the engine's RBY virtual shiny (`Stats.isShiny`): Defense/Speed/Special DV 10 and Attack DV in
-  {2,3,6,7,10,11,14,15}. `Shiny.makeDVs` builds them, `Shiny.applyToMon` sets `dvs`/`shiny` and recomputes stats.
-- **Gold (Gen 2):** Gold builds every mon through `Mon.new`, which asks the `shiny.roll` hook whether the DVs make it shiny -- for trainers,
-  starters, gifts and eggs too, and again on every summary open. So `Shiny.installGen2` (called from `main.lua` `installHooks`) uses an
-  arm-then-consume token: `encounter.species` / `encounter.fishing` (classic encounters) and `Shiny.armForBattle(record, true)` (visible spawns) arm
-  `{ species, level, shiny }` right before the wild mon is built, and the `shiny.roll` wrapper consumes it once for that species (TTL
-  `Shiny.GEN2_TTL`; also cleared by `Shiny.clearPending`). Everything else is the vanilla DV check. A hook-made shiny keeps ordinary DVs (it will not
-  breed shiny) and a wild that rolled non-shiny but reads shiny by DV can flip shiny on a summary open (~1/8192); static script encounters and roamers
-  are not armed. `SHINY SPARKLE` stays Gen 1 only (Gold has its own shiny flash). Tests: `tests/shiny_gen2_unit_test.lua`.
-- **Rate:** `Config.shinyRate` (`off`, `gen2` 1/8192, `modern` 1/4096 default, `common` 1/1024, `frequent` 1/512,
-  `often` 1/100, `high` 1/10, `always`), `Shiny.roll` draws `rng(1, denom) == 1`.
-- **Where it rolls:** visible land spawns roll at creation (`SpawnLogic:_rollShiny` -> `record.shiny` ->
-  `Entity.shiny` -> `AnimatedSprites.resolveRuntimeVariant` = the shiny sheet; water scenery does not roll because
-  it cannot start a battle). Before the contact battle starts, `Shiny.armForBattle(record)` hands the result to the
-  engine, so the fought mon is the seen one. Classic encounters roll inside `BattleState.newWild`.
-- **How:** `Shiny.install` (main.lua, Gen 1 only, `engine_internals`) wraps `BattleState.newWild` and `Pokemon.new`.
-  `Pokemon.new` is only altered while `newWild` runs (trainers, gifts, eggs and starters are untouched). The pending
-  hand-off is `{ dvs }` or an explicit `{ none = true }` (a visible non-shiny stays non-shiny even against a natural
-  shiny spread), cleared after every `newWild` (also on error), on `map.entered` and on `battle.ended`.
-- **Off means none:** wilds and overworld catches (`Gen1.createCaughtPokemon` -> `Shiny.finalize`) nudge a natural
-  shiny spread (about 1 in 8192) to Special DV 9.
-- **Battle sparkle (`lib/shiny_sparkle.lua`, SHINY SPARKLE option, default ON, Gen 1 only):** a wrapper on the
-  engine's draw-only `battle.overlay` hook (called at the end of `BattleState` / `WideBattle` draw, 160x144
-  coordinates) paints one 1.35 s burst of sparks over a shiny enemy and over the player's shiny lead, with the
-  engine SFX `Dex_Page_Added`. It waits for the intro to finish (`introSlide`, `showEnemyTrainer`, `enemySendingOut`,
-  `showPlayerBack`, `sendingOut`, `growInScale`), fires once per Pokemon per battle (state is weak-keyed by battle and
-  mon, so a swapped-in shiny gets its own), and skips a fainted enemy and the player side in Safari / demo battles.
-  Anchors: classic (120,32) enemy / (40,88) player; wide layout (200,40) / (60,100). The colors are opaque because
-  alpha vanishes under some of the engine's palette passes. Visual placement has not been verified in every layout
-  (Voxel / Dramatic Shape battle HUDs).
-- **Not included:** shiny recolor in battle (Shiny Pokemon did that), Safari Zone encounters (separate battle path),
-  Gold (native shiny, `shiny.roll` hook).
-
-### 8.1.0 Generation cap (MAX GEN)
-
-`max_generation` (`"1"`..`"9"`, default `"9"` = no cap; `Config.maxGeneration`, peekSavedOption-first) caps
-the species **Spawn Table and Random** may use by national dex number (`DexExpansion.GENERATION_LAST_DEX`:
-151 / 251 / 386 / 493 / 649 / 721 / 809 / 905 / 1025; `DexExpansion.lastDexOf` returns nil for 9 = no cap).
-Off is never capped, and species other mods put into the original tables are not touched.
-
-- **Spawn Table (`tableOverlay` / `capLadder`):** slots whose `dex` is above the cap are dropped and their odds
-  are shared among the surviving slots (largest-remainder rounding back to exactly 256, every survivor >= 1
-  unit). The existing "uninstalled species -> original slot at the same odds position" fallback then runs on
-  the renormalized ladder. A bucket with no allowed slot stays as the original. Super Rod entries above the cap
-  are dropped (the roll is uniform, so the rest share it), or the original pool is kept if none survive.
-- **Random:** `RandomSpawns.pool(..., maxDex)` filters the pool (cached per cap); levels come from the capped
-  Spawn Table where the map is mapped.
-- Alternate forms have dex >= 30000, so any cap below All excludes them.
-- The cap is part of the `overlayCache` / `rodCache` keys, so changing it rebuilds without `invalidate()`;
-  `SpawnLogic:onOptionsChanged` re-publishes and rebuilds the current map for `max_generation`.
-
-### 8.1.1 Publishing the current map (DexNav compatibility)
-
-Other mods read `game.data.encounters[mapId]` and `game.data.field.superRod[mapId]` directly -- Kanto
-Reforged's DexNav (`ui/dexnav.lua`, `DexNav.sourcesForMap`) builds its list from them at open time -- so a
-copy that only our seams hand out is invisible to them. `Gen9Encounters.publish(mod, game, mapId)` therefore
-swaps the overlay into those two slots **by reference for the current map only**; nothing else changes.
-
-- **Originals are never modified.** `restoreAll` puts the same objects back, but only into a slot that still
-  holds our overlay (a table another mod put there since is left alone). That is why turning MODERN SPAWNS Off
-  (or leaving the map) hands Kanto Reforged's own tables back exactly as they were.
-- **Seams normalize.** `overlayFor`, `rollDef` and `fishingPool` map a published overlay back to its source
-  (`byOverlay`) first, so a published table is not overlaid again, Random never builds on its own previous
-  roster, and the engine's classic roll (which now reads the overlay) sees `overlay == real` and is left alone.
-- **Lifecycle** (`main.lua`): `map.entered` -> `invalidate()` (restores, redraws Random) -> `publish`;
-  `map.exited` -> `restoreAll`; `game.ready` / `mods.loaded` -> `invalidate()`;
-  `SpawnLogic:onOptionsChanged` (`modern_spawns` / `legendary_spawns`) -> `publish` before rebuilding the map.
-  Gen 1 only; every call is pcall-guarded and a failure restores and stays vanilla.
-- **Tamper guard:** if something merges into the published object and leaves it half-shaped (Kanto Reforged
-  re-applying its mix mid-visit; `#slots ~= #buckets` makes `Encounter.roll` skip slots or hand `newWild` a
-  bad one), the next seam call restores
-  the original, drops the caches and rebuilds. The one thing not covered: that re-apply's new mix for the
-  current map is lost on our next restore until it re-applies or the game restarts.
-- Limits: only the current map is published (the Pokedex Town Map, which iterates `game.data.encounters`, sees
-  the overlay for that map only), and readers that cache tables at load are not covered.
-
-### 8.2 Random spawn mode
-
-`lib/random_spawns.lua` holds the pure builders; `Gen9Encounters.overlayFor`/`fishingPool` dispatch to
-them when the mode is `random`.
-
-- **Pool:** every entry of `game.data.pokemon` (plus `mod.content.pokemon`) with an integer dex in
-  1..29999 (alternate forms at 30000+ are skipped), minus the restricted set unless the
-  `legendary_spawns` option (LEGEND/MYTHIC) is on. Independent of the dex gate, so a plain Gen 1 dex
-  randomizes among Gen 1 species.
-- **Restricted set:** `lib/species_flags_data.lua` (generated by `tools/generate_species_flags.py` from a
-  PokeAPI `pokemon_species.csv`; source stays outside the repo): 71 legendary + 23 mythical from the CSV
-  flags, plus the 11 Ultra Beasts and 20 Paradox Pokemon (no flag in the CSV, listed by dex and verified
-  against CSV identifiers). Keyed by national dex. Babies stay eligible. Static/gift/trainer Pokemon are
-  not affected, only wild tables.
-- **Shape:** each grass/water bucket the vanilla table has keeps the **vanilla ladder** (the engine's
-  10-slot default, or the bucket's own custom `buckets`), so an area has <= 10 distinct species, like the
-  engine and Kanto Reforged's `pure_random`. Species are distinct, from a shuffled pool (it only cycles if the
-  pool is smaller than the ladder). A slot's level is the *base* table's level at a random probability unit
-  inside that slot's own odds interval (base = the Spawn Table overlay where the map is mapped and the dex is
-  expanded, else vanilla), so common slots keep common levels. Vanilla `rate` is preserved; buckets vanilla
-  lacks are not created. Super Rod keeps the vanilla group length (<= 4) with levels from the same base
-  group; Old/Good Rod stay vanilla.
-- **Why the roster is kept small:** every distinct species costs sprite work (`resolveAsset` decodes a PNG,
-  then SpriteDef/renderer creation). A first version used 256 one-unit slots (up to ~146-256 species per
-  area, redrawn every map entry) and caused a large CPU spike on map entry, mostly from the per-species
-  asset probe. `SpawnLogic:onMapEntered` now runs `SpawnRender:countAssets` (diagnostics only) only when
-  `Config.debug`/dev mode is on. Do not widen the roster without measuring `spriteResolves` /
-  `spriteRendererNews` (PerfStats, debug on).
-- **Lifetime:** the roster is cached per `DexExpansion.epoch()` (bumped by `Gen9Encounters.invalidate()` on
-  `map.entered`, `game.ready`, `mods.loaded`), so it is redrawn on each map entry and fixed within a
-  visit. The cache key also carries the mode and the legendary flag, and
-  `SpawnLogic:onOptionsChanged` rebuilds the current map when either option changes.
-- Uses its own Park-Miller RNG (`RandomSpawns.newRng`) rather than `math.random`, so the engine's stream
-  is never reseeded or consumed; tests inject a seeded `rng`.
+The Gen 1 Spawn Table and Random modern-spawn modes (previously `lib/gen9_encounters.lua`,
+`lib/random_spawns.lua`, `lib/dex_expansion.lua`, `lib/species_flags_data.lua`, and the
+MODERN SPAWNS / LEGEND-MYTHIC / MAX GEN options) have been removed. That functionality now
+lives in the separate `g1r_modern_spawns` repo, which will integrate through its own API.
 
 ## 9. Map analysis
 
@@ -504,8 +339,12 @@ Contact: `world.stepped` tile match + `movement.collision` bump.
   wild water spawns (`Surface.isSwimmer`, applied per entity by the behavior tick; hidden / submerged-shadow mons excluded). Gen 1
   only: Gold's engine reads `mover.surfing` as a collision flag. Inert without Terrarium. Tests:
   `tests/terrarium_swimmer_flag_unit_test.lua`.
-- Classic Surf / fishing `encounter.roll` gated by Random Enc, with Water Mons
-  overrides: `classic_encounters` forces water rolls ON; `disabled` forces them OFF
+- Classic Surf `encounter.roll` gated by Classic Enc (`random_encounters`), the same switch as grass and caves.
+  Water Mons is locked to swimming sprites (`Config.LOCKED.water_spawns`).
+- Silhouette (`wild_silhouettes`) is one option for land and water, decided per wild spawn by where it stands NOW
+  (`WaterDisplay.inWaterNow`, never `originSurface`): land -> `SpriteResolver:resolveLandSprite` black-out; in water ->
+  `result.waterSilhouette` (Voxel: baked `swimming/levitates_silhouette_runtime` sheets; Flat: draw tint). Followers
+  and Town Pokemon never silhouette (`WaterDisplay.wantsWaterSilhouette`).
 
 ### Deferred: Followers EX water integration
 
@@ -526,7 +365,7 @@ lib/follower/
   constants.lua        - state keys, save keys, external mod IDs
   state.lua            - selection persistence
   selection.lua        - party resolve, fingerprint (+ species), health
-  settings.lua         - Control Mode / Trainer Trail / Followers + migration
+  settings.lua         - Followers count + migration (control mode locked to trainer)
   sprite_service.lua   - resolveFollowerSprite + SPRITE_PIKACHU registration
   control_engine.lua   - pack/trailers/modes (Followers EX concepts)
   lifecycle.lua        - fallback hooks, party submenu, sprite refresh
@@ -541,12 +380,11 @@ lib/follower/
 
 | Label | Key | Values |
 |-------|-----|--------|
-| Control Mode | `follow_control` | trainer / pokemon |
-| Trainer Trail | `trainer_trail` | off / on |
 | Followers | `follower_count` | 0–6 |
 
-Engine mapping: trainer→`follow`; pokemon+trail→`lead_trainer`;
-pokemon+count>0→`pack`; pokemon+count0→`pokemon`.
+Control Mode and Trainer Trail are locked (`Config.LOCKED`: trainer / off), so the
+engine mode is always `follow`. The `lead_trainer` / `pack` / `pokemon` engine paths
+remain in code but are unreachable.
 
 **Not duplicated:** `show_in_menu`, `wilds_grass_lift` (use Grass View),
 `wilds_town_spawns` (future Wilds feature).
@@ -598,15 +436,15 @@ Global encounter index; Test spawn 7 phases; never mutates registries.
 python3 tools/validate_option_labels.py
 python3 tools/validate_release_version.py
 cd .deps/gen1recomp
-luajit mods/overworld_wild_spawns/tests/overworld_wild_spawns_test.lua
-luajit mods/overworld_wild_spawns/tests/voxel_aggressive_compat_test.lua
-lua mods/overworld_wild_spawns/tests/battle_art_variable_geometry_unit_test.lua
-lua mods/overworld_wild_spawns/tests/voxel_provider_variable_geometry_unit_test.lua
-lua mods/overworld_wild_spawns/tests/stadium2_variable_geometry_unit_test.lua
+luajit mods/wilds_of_kanto_gen3/tests/overworld_wild_spawns_test.lua
+luajit mods/wilds_of_kanto_gen3/tests/voxel_aggressive_compat_test.lua
+lua mods/wilds_of_kanto_gen3/tests/battle_art_variable_geometry_unit_test.lua
+lua mods/wilds_of_kanto_gen3/tests/voxel_provider_variable_geometry_unit_test.lua
+lua mods/wilds_of_kanto_gen3/tests/stadium2_variable_geometry_unit_test.lua
 # Follower core (host lua; no engine required)
-lua mods/overworld_wild_spawns/tests/follower_core_unit_test.lua
-lua mods/overworld_wild_spawns/tests/game_compat_unit_test.lua
-lua mods/overworld_wild_spawns/tests/manifest_targets_unit_test.lua
+lua mods/wilds_of_kanto_gen3/tests/follower_core_unit_test.lua
+lua mods/wilds_of_kanto_gen3/tests/game_compat_unit_test.lua
+lua mods/wilds_of_kanto_gen3/tests/manifest_targets_unit_test.lua
 ```
 
 ## 25. Release build

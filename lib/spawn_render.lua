@@ -1916,8 +1916,7 @@ function Entity:draw(camX, camY)
       opacity = Config.get(self.mod, "sprite_opacity") or 1
     end
     -- Flat 2D silhouettes: runtime tint. Voxel silhouettes: baked sheet (no tint).
-    local silhouette = WaterDisplay.isSilhouettes(self.mod)
-      and WaterDisplay.isWaterEntity(self)
+    local silhouette = WaterDisplay.wantsWaterSilhouette(self.mod, self)
       and self.waterSilhouetteSheet ~= true
     local player = silhouette and WaterDisplay.resolvePlayer(self.mod) or nil
 

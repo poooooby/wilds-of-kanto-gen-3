@@ -127,10 +127,36 @@ function WaterDisplay.needsOverlayPresentation(mod, entity)
   return false
 end
 
+-- True while this entity stands in water right now (its current sprite state / surface), never
+-- where it spawned: a water Pokemon that is on land gets the regular land silhouette instead.
+function WaterDisplay.inWaterNow(entity)
+  if not entity then return false end
+  if entity.spriteState == "water" then return true end
+  return entity.surface == "WATER" or entity.surface == "water"
+end
+
+-- Water silhouette for one wild Pokemon: the single Silhouette option (per species,
+-- Config.shouldWildSilhouette) applied to a wild that is standing in water. Land wilds get the
+-- regular black-out instead (SpriteResolver land path). Followers, Town Pokemon, hidden
+-- markers and previews never.
+function WaterDisplay.wantsWaterSilhouette(mod, entity, game)
+  if not WaterDisplay.inWaterNow(entity) then return false end
+  -- Visible wild spawns only (same gate as SpriteResolver:resolveWaterSprite).
+  if entity.overworldWildSpawn ~= true or entity.wildsAmbientPokemon == true
+     or entity.hiddenEncounter then
+    return false
+  end
+  if type(Config.shouldWildSilhouette) ~= "function" then return false end
+  if game == nil then
+    local world = mod and mod.world
+    game = world and world.game
+  end
+  return Config.shouldWildSilhouette(mod, game, entity.species) == true
+end
+
 -- True when Voxel should bind a native silhouette water sheet (not tint).
 function WaterDisplay.needsNativeSilhouetteSheet(mod, entity)
-  return WaterDisplay.isWaterEntity(entity)
-    and WaterDisplay.isSilhouettes(mod)
+  return WaterDisplay.wantsWaterSilhouette(mod, entity)
 end
 
 -- True when Voxel should bind the generic Hidden underwater shadow marker.
@@ -225,11 +251,10 @@ function WaterDisplay.silhouetteColor(entity, player)
 end
 
 function WaterDisplay.silhouetteSink(mod, entity)
-  if not WaterDisplay.isSilhouettes(mod) then return 0 end
-  if entity and not WaterDisplay.isWaterEntity(entity) then return 0 end
+  if not WaterDisplay.wantsWaterSilhouette(mod, entity) then return 0 end
   -- Native voxel silhouette sheets already bake the under-water sink.
   if entity and entity.waterSilhouetteSheet == true then return 0 end
-  -- Flat 2D tint path: runtime sink. Tests without entity use mode alone.
+  -- Flat 2D tint path: runtime sink.
   return tonumber(WaterDisplay.SILHOUETTE.sinkPx) or 3
 end
 

@@ -2,7 +2,7 @@
 -- wander, touch -> battle, developer test spawn. Rendering is delegated to
 -- SpawnRender.
 --
--- Fail-safe: vanilla encounter rolls are suppressed when Random Enc is OFF
+-- Fail-safe: vanilla encounter rolls are suppressed when Classic Encounters is OFF
 -- (see SpawnLogic:shouldSuppressClassicEncounter / canSuppressVanilla).
 -- The Pokédex is never a spawn gate. The player is never teleported.
 local V = ...
@@ -518,11 +518,8 @@ end
 
 -- True when classic encounter RNG must be blocked (grass / cave / water).
 -- Active Safari sessions always suppress step encounters (independent of
--- Random Enc) so visible Safari Pokémon can be approached safely.
--- Water Mons modes may override Random Enc for water / fishing only:
---   classic_encounters → never suppress water (even if Random Enc OFF)
---   disabled           → always suppress water
--- Land / cave remain gated solely by Random Enc (+ Safari).
+-- Classic Encounters) so visible Safari Pokémon can be approached safely.
+-- Otherwise grass, caves and water all follow the Classic Encounters option.
 function SpawnLogic:shouldSuppressClassicEncounter(ctx)
   local game = gameOf(self.mod)
   local ow = GameCompat.liveOverworld(self.mod, game)
@@ -531,16 +528,7 @@ function SpawnLogic:shouldSuppressClassicEncounter(ctx)
     return true
   end
 
-  local WaterDisplay = V.require("water_display")
-  if WaterDisplay.isWaterTerrain(ctx) then
-    if Config.waterEncountersDisabled(self.mod) then
-      return true
-    end
-    if Config.waterClassicEncountersForced(self.mod) then
-      return false
-    end
-  end
-
+  -- Classic Encounters covers grass, caves and water (Surf) alike.
   return not Config.randomEncountersEnabled(self.mod)
 end
 
@@ -617,9 +605,6 @@ function SpawnLogic:_clearMap(mapId)
 end
 
 function SpawnLogic:clearAll()
-  if self.catching and self.catching.cancelAll then
-    pcall(function() self.catching:cancelAll("clearAll") end)
-  end
   local maps = {}
   for mapId in pairs(self.byMap) do maps[#maps + 1] = mapId end
   for _, mapId in ipairs(maps) do
@@ -877,36 +862,6 @@ function SpawnLogic:countCaveReachableOnMap(mapId)
     end
   end
   return n
-end
-
-function SpawnLogic:applyCaveSpawnMode(mode, source)
-  mode = mode or Config.caveSpawnMode(self.mod)
-  self.caveMode = mode
-  self:_log("cave_spawns -> %s via %s", tostring(mode), tostring(source))
-  -- Rebuild map eligibility with the new mode (despawn scenery when leaving Mixed).
-  if mode ~= "mixed" and self.activeMapId then
-    local doomed = {}
-    for _, id in ipairs(self.byMap[self.activeMapId] or {}) do
-      local r = self.spawns[id]
-      local e = self.entities[id]
-      if r and (r.caveScenery or (e and e.caveScenery))
-         and r.state == Config.STATE.AVAILABLE then
-        if not (e and e.state == Config.STATE.ENCOUNTER_STARTING) then
-          doomed[#doomed + 1] = id
-        end
-      end
-    end
-    for _, id in ipairs(doomed) do
-      self:_despawn(id, true)
-    end
-    self.caveSceneryTarget = 0
-    self.caveSceneryCache = {}
-  end
-  local world = self.mod.world
-  local ow = self:_ow()
-  if ow and ow.map and self.state and self.state.initialized then
-    self:onMapEntered({ mapId = ow.map.id, map = ow.map })
-  end
 end
 
 function SpawnLogic:countWaterZone(mapId, zone)
@@ -1631,7 +1586,7 @@ function SpawnLogic:initializeForMap(mapId, game)
             tostring(Config.randomEncountersEnabled(self.mod)),
             tostring(Config.waterDisplayMode(self.mod)))
   if Config.devMode(self.mod) then
-    self:_log("Random Enc: %s",
+    self:_log("Classic Enc: %s",
               tostring(Config.randomEncountersEnabled(self.mod)))
     self:_log("Water Mons: %s cells=%d target=%d",
               tostring(Config.waterDisplayMode(self.mod)),
@@ -1996,6 +1951,13 @@ function SpawnLogic:trySpawn(game, opts)
       return nil, "rejected: no encounter data"
     end
     species, level = pick.species, pick.level
+    -- Modern Spawns' LEGENDARIES: the same rare roll a step encounter gets,
+    -- at the level the table picked (nil unless that mod is active and ON).
+    if not (opts.testSpawn or opts.readinessProbe) then
+      local legend = V.require("modern_spawns_bridge").legendary(mapId,
+        encounterKind == "water" and "water" or "grass")
+      if legend then species = legend end
+    end
   end
 
   -- Gold Unown: the engine decides the letter by DVs (and which letters are unlocked). Draw it now so the sprite and
@@ -2920,9 +2882,6 @@ function SpawnLogic:onMapEntered(ev)
 end
 
 function SpawnLogic:onMapExited(ev)
-  if self.catching and self.catching.cancelAll then
-    pcall(function() self.catching:cancelAll("map exited") end)
-  end
   if ev.mapId then self:_clearMap(ev.mapId) end
   if self.overlay then self.overlay:clear() end
   -- Safari flee state must not leak onto the next map.
@@ -3041,13 +3000,6 @@ function SpawnLogic:onOptionsChanged(payload)
     pcall(self.behaviorTick.syncPipelineLevel, self.behaviorTick)
   end
   local key = payload.key
-  if key == "enable_idle" or key == "enable_wander"
-      or key == "enable_aggressive" or key == "enable_hidden" then
-    local n = self:refreshBehaviorOptions()
-    self:_log("behavior option %s -> %s; revalidated %d existing entities (no respawn)",
-              tostring(key), tostring(payload.value), n)
-    return
-  end
   if key == "enabled" and payload.value == false then
     self:clearAll()
   elseif key == "enabled" and payload.value == true then
@@ -3055,53 +3007,9 @@ function SpawnLogic:onOptionsChanged(payload)
     if ow and ow.map and ow.map.id then
       self:onMapEntered({ mapId = ow.map.id, map = ow.map })
     end
-  elseif key == "spawn_density"
-      or key == "max_visible_pokemon"
-      or key == "min_visible_pokemon"
-      or key == "tiles_per_additional_pokemon"
-      or key == "max_spawns" then
-    self:applySpawnAmount(Config.spawnDensity(self.mod), "options_changed")
   elseif key == "random_encounters" then
     self:applyRandomEncounters(
       payload.value == true, "options_changed")
-  elseif key == "water_spawns" or key == "enable_water_spawns" then
-    local mode = Config.waterDisplayMode(self.mod)
-    self:applyWaterMons(Config.waterMons(self.mod), "options_changed", mode)
-    -- Presentation-only mode switches (swim ↔ silhouette ↔ hidden) must rebind
-    -- sprites without respawning. invalidate caches so old colour/silhouette
-    -- SpriteRenderers are never reused.
-    if Config.waterMons(self.mod) and self.render then
-      local world = self.mod.world
-      local game = world and world.game
-      if self.render.invalidateAssetCache then
-        pcall(self.render.invalidateAssetCache, self.render)
-      end
-      if self.render.spriteResolver and self.render.spriteResolver.invalidateCache then
-        pcall(self.render.spriteResolver.invalidateCache, self.render.spriteResolver)
-      end
-      pcall(self.render.refreshAllEntitySprites, self.render, self, game)
-    end
-  elseif key == "cave_spawns" or key == "enable_cave_spawns" then
-    self:applyCaveSpawnMode(Config.caveSpawnMode(self.mod), "options_changed")
-  elseif key == "modern_spawns" or key == "legendary_spawns" or key == "max_generation" then
-    -- The wild table source changed (Spawn Table / Random / Off, or the Random legendary filter):
-    -- rebuild the current map from the new tables. The overlay cache is keyed by mode and filter,
-    -- so the next lookup already serves the new roster.
-    self:_log("%s -> %s; rebuilding current map", tostring(key), tostring(payload.value))
-    local ow = self:_ow()
-    -- Re-publish first (or restore, when the mode went Off) so other readers of game.data -- a DexNav
-    -- mod -- follow the option even if the spawner itself isn't initialized on this map.
-    local game = gameOf(self.mod)
-    if game and ow and ow.map and not GameCompat.isGen2(self.mod, game) then
-      local okG9, Gen9 = pcall(function() return V.require("gen9_encounters") end)
-      if okG9 and Gen9 then
-        local ok = pcall(Gen9.publish, self.mod, game, ow.map.id)
-        if not ok then pcall(Gen9.restoreAll, game) end
-      end
-    end
-    if ow and ow.map and self.state and self.state.initialized then
-      self:onMapEntered({ mapId = ow.map.id, map = ow.map })
-    end
   elseif key == "wild_silhouettes" then
     -- Presentation switch: rebind entity sprites to/from the silhouette
     -- sheets without respawning.  Invalidate caches so old coloured /
@@ -3123,31 +3031,6 @@ function SpawnLogic:onOptionsChanged(payload)
   elseif key == "wilds_ai" then
     self:_log("wilds_ai -> %s", tostring(payload.value))
     if self.behaviorTick then self.behaviorTick:syncPipelineLevel() end
-  elseif key == "dev_overlay"
-      or key == "dev_mode"
-      or key == "debug_hud_always_visible"
-      or key == "show_spawn_tile_overlay"
-      or key == "show_behavior_overlays"
-      or key == "allow_debug_spawn_outside_encounter_areas"
-      or key == "debug_logging"
-      or key == "force_test_spawn"
-      or key == "suppress_random_grass"
-      or key == "enabled" then
-    self:_log("option %s -> %s (suppress_ready=%s overlay=%s)",
-              tostring(key), tostring(payload.value),
-              tostring(self:canSuppressVanilla()),
-              tostring(Config.devOverlay(self.mod)))
-    if self.hud then self.hud:syncPipelineLevel() end
-    if self.behaviorTick then self.behaviorTick:syncPipelineLevel() end
-    if self.devOverlay and self.devOverlay.syncPipelineLevel then
-      self.devOverlay:syncPipelineLevel()
-    end
-    if key == "dev_overlay" and payload.value == true and self.hud then
-      self.hud:markMapEnter()
-    end
-    if key == "dev_overlay" and payload.value == false then
-      if self.overlay then self.overlay:clear() end
-    end
   elseif key == "sprite_style"
       or key == "use_animated_overworld_sprites" then
     -- Legacy Mon Sprites toggles map onto sprite_style via Config.spriteStyle.
@@ -3184,12 +3067,6 @@ function SpawnLogic:onOptionsChanged(payload)
         and self.follower.lifecycle._spriteRefreshHandler then
       pcall(self.follower.lifecycle._spriteRefreshHandler, game)
     end
-  elseif key == "sprite_fade" or key == "sprite_opacity" then
-    self:_log("sprite_fade -> %s (opacity=%s)",
-              tostring(Config.spriteFade(self.mod)),
-              tostring(Config.spriteOpacity(self.mod)))
-  elseif key == "town_pokemon" then
-    self:_log("town_pokemon -> %s", tostring(Config.townPokemonEnabled(self.mod)))
   elseif key == "pokemon_grass_render_mode"
       or key == "show_pokemon_in_grass" then
     local Movement = V.require("movement")

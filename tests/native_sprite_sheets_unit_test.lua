@@ -15,7 +15,7 @@ local function eq(a, b, msg)
   check(a == b, string.format("%s (got %s expected %s)", msg, tostring(a), tostring(b)))
 end
 
-local modRoot = "mods/overworld_wild_spawns"
+local modRoot = "mods/wilds_of_kanto_gen3"
 local modules = {}
 local V = {
   mod = {

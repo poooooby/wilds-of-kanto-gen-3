@@ -307,7 +307,7 @@ function VoxelAdapter:updateEntity(entity)
   -- No respawn; at most one targeted rebind per entity.
   if waterShadow then
     local needRebind = (entity.waterVoxelActive ~= true)
-      or (WaterDisplay.isSilhouettes(self.mod) and entity.waterSilhouetteSheet ~= true)
+      or (WaterDisplay.wantsWaterSilhouette(self.mod, entity) and entity.waterSilhouetteSheet ~= true)
       or (WaterDisplay.isHiddenSilhouettes(self.mod) and entity.waterHiddenShadow ~= true)
     if needRebind and entity.render and entity.render.applyProviderSprite then
       local game = self.mod.world and self.mod.world.game

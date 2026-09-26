@@ -76,7 +76,16 @@ local function isKindFirst(tables)
   return false
 end
 
-function Enc.rawTables(game, ctx)
+local function cartTables(game)
+  if game and game.data then
+    if isKindFirst(game.data.gen2Encounters) then return game.data.gen2Encounters end
+    -- Gen2Compat may expose the same table as data.encounters.
+    if isKindFirst(game.data.encounters) then return game.data.encounters end
+  end
+  return nil
+end
+
+local function gameTables(game, ctx)
   ctx = ctx or {}
   local world = ctx.world or (game and game.world)
   if world then
@@ -86,12 +95,14 @@ function Enc.rawTables(game, ctx)
     end
     if isKindFirst(world.encounters) then return world.encounters end
   end
-  if game and game.data then
-    if isKindFirst(game.data.gen2Encounters) then return game.data.gen2Encounters end
-    -- Gen2Compat may expose the same table as data.encounters.
-    if isKindFirst(game.data.encounters) then return game.data.encounters end
-  end
-  return nil
+  return cartTables(game)
+end
+
+-- The kind-first tables visible spawns pick from: the game's (with any
+-- active swarm), seen through Modern Spawns' generated tables when that mod
+-- is active (lib/modern_spawns_bridge.lua). A swarm entry is kept as is.
+function Enc.rawTables(game, ctx)
+  return V.require("modern_spawns_bridge").gen2Tables(gameTables(game, ctx), cartTables(game))
 end
 
 -- Engine daytime: MORN / DAY / NITE / DARK. DARK reuses NITE lists.

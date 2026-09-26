@@ -20,7 +20,7 @@ local optionStore = {}
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -32,8 +32,8 @@ local V = {
     },
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -54,9 +54,8 @@ local schema = assert(loadfile("options.lua"))()
 local byKey = {}
 for _, row in ipairs(schema) do byKey[row.key] = row end
 
-check(byKey.sprite_fade ~= nil, "sprite_fade in schema")
+check(byKey.sprite_fade == nil, "Sprite Fade is not a public option (locked Solid)")
 check(byKey.sprite_color == nil, "sprite_color is not a public option")
-eq(byKey.sprite_fade.default, "solid", "sprite_fade default solid")
 eq(byKey.town_pokemon.default, true, "town_pokemon default true")
 
 eq(Config.spriteFade(V.mod), "solid", "runtime fade default solid")
@@ -65,26 +64,17 @@ eq(Config.spriteColor(V.mod), "colored", "runtime color default colored")
 eq(Config.spriteTrueColor(V.mod), Config.paletteFxRedpp(),
    "trueColor follows PaletteFX ADVANCED, not a public sprite_color option")
 
--- Legacy sprite_opacity migration
+-- Sprite Fade is locked Solid: old saved Faded / legacy opacity values change nothing.
 savedOpts.sprite_opacity = 0.72
+savedOpts.sprite_fade = "faded"
+eq(Config.spriteFade(V.mod), "solid", "saved faded ignored")
+eq(Config.spriteOpacity(V.mod), 1.0, "opacity stays 1.0")
+check(Config.setSpriteFade == nil, "no Sprite Fade setter")
+savedOpts.sprite_opacity = nil
 savedOpts.sprite_fade = nil
-eq(Config.spriteFade(V.mod), "faded", "legacy opacity 0.72 → faded")
-check(Config.spriteOpacity(V.mod) < 1.0, "faded opacity < 1")
-eq(Config.spriteOpacity(V.mod), 0.72, "faded alpha is 0.72")
-
-Config.migrateSpriteFadeOption(V.mod)
-eq(savedOpts.sprite_fade, "faded", "migrate writes sprite_fade")
--- New value wins over legacy
-savedOpts.sprite_fade = "solid"
-eq(Config.spriteFade(V.mod), "solid", "explicit solid wins")
-eq(Config.spriteOpacity(V.mod), 1.0, "solid opacity 1.0")
-
-Config.setSpriteFade(V.mod, "faded", "test", { confirm = false })
-eq(optionStore.sprite_fade, "faded", "setSpriteFade writes key")
-eq(Config.spriteOpacity(V.mod), 0.72, "set faded opacity")
 
 -- Sprite Color is not public. Legacy color_mode / classic requests stay colored.
-savedOpts = V.mod.world.game.save.options.modOptions.overworld_wild_spawns
+savedOpts = V.mod.world.game.save.options.modOptions.wilds_of_kanto_gen3
 savedOpts.sprite_color = nil
 savedOpts.color_mode = "gbc"
 eq(Config.spriteColor(V.mod), "colored", "color_mode gbc is ignored (always colored)")

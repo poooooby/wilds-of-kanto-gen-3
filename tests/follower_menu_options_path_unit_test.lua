@@ -21,7 +21,7 @@ local optionStore = {
   follower_count = 1,
   sprite_style = "pokemmo",
 }
-local modOptions = { overworld_wild_spawns = optionStore }
+local modOptions = { wilds_of_kanto_gen3 = optionStore }
 
 package.loaded["src.render.SpriteRenderer"] = {
   new = function(def, id) return { def = def, id = id } end,
@@ -80,7 +80,7 @@ local game = {
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     world = { game = game },
@@ -161,17 +161,18 @@ check(engine._optCache.follower_count == nil,
       "setFollowerCount clears cache slot")
 eq(engine:followerCount(game), 5, "followerCount follows options after set")
 
--- alignSaveFromOptions must not re-write options via setFollowerCount loop;
--- it should update derived control mode when count hits 0.
+-- alignSaveFromOptions must not re-write options via setFollowerCount loop.
+-- Control Mode is locked to trainer (Config.LOCKED): even an old save still holding
+-- follow_control = "pokemon" aligns to "follow" at any follower count.
 optionStore.follow_control = "pokemon"
 optionStore.trainer_trail = false
 optionStore.follower_count = 0
 engine:alignSaveFromOptions(game)
 eq(game.save.pokepcFollowerCount, 0, "align mirrors count 0")
-eq(game.save.pokepcControlMode, "pokemon", "align derives pokemon mode at 0")
+eq(game.save.pokepcControlMode, "follow", "locked trainer control at 0")
 optionStore.follower_count = 3
 engine:alignSaveFromOptions(game)
-eq(game.save.pokepcControlMode, "pack", "align derives pack mode at 3")
+eq(game.save.pokepcControlMode, "follow", "locked trainer control at 3")
 
 -- Follower facade uses payload.game
 local Follower = V.require("follower/init")

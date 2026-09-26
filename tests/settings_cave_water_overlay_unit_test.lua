@@ -27,7 +27,7 @@ local savedOpts = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -42,8 +42,8 @@ local V = {
     end,
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -74,8 +74,7 @@ for _, row in ipairs(schema) do
 end
 
 local required = {
-  "enabled", "sprite_style", "spawn_density", "random_encounters",
-  "water_spawns", "cave_spawns", "dev_overlay",
+  "enabled", "sprite_style", "random_encounters",
 }
 for _, k in ipairs(required) do
   check(byKey[k] ~= nil, "core option present: " .. k)
@@ -86,6 +85,8 @@ local removed = {
   "show_behavior_overlays", "allow_debug_spawn_outside_encounter_areas",
   "debug_logging", "force_test_spawn", "preview_filter", "preview_search",
   "preview_map_filter", "preview_encounter_kind",
+  -- Options tightening: locked behaviour / developer-only.
+  "spawn_density", "water_spawns", "dev_overlay", "cave_spawns",
 }
 for _, k in ipairs(removed) do
   check(byKey[k] == nil, "removed public option: " .. k)
@@ -98,33 +99,33 @@ for _, row in ipairs(schema) do
   seen[row.key] = true
 end
 
-eq(byKey.dev_overlay.default, false, "dev_overlay default false")
-eq(byKey.spawn_density.default, "normal", "spawn_density default normal")
-
-print("== migration ==")
-savedOpts.dev_overlay = nil
+print("== developer flag ==")
+-- Dev Overlay is developer-only: only a wilds_dev.flag file turns it on; old saved values
+-- (dev_overlay / debug / dev_mode) never do, and migration clears them.
+Config.resetDevFlagCache()
+savedOpts.dev_overlay = true
 savedOpts.debug = true
-check(Config.devOverlay(V.mod) == true, "debug=true migrates to dev_overlay")
-savedOpts.debug = nil
 savedOpts.dev_mode = true
-check(Config.devOverlay(V.mod) == true, "dev_mode=true migrates to dev_overlay")
+eq(Config.devOverlay(V.mod), false, "saved dev_overlay/debug/dev_mode ignored without the flag file")
 Config.migrateDevOverlayOption(V.mod)
-eq(savedOpts.dev_overlay, true, "migrate writes dev_overlay")
+eq(savedOpts.dev_overlay, nil, "migrate clears saved dev_overlay")
 eq(savedOpts.dev_mode, nil, "migrate clears obsolete dev_mode")
-savedOpts.dev_overlay = false
-eq(Config.devOverlay(V.mod), false, "explicit false wins")
+eq(savedOpts.debug, nil, "migrate clears obsolete debug")
 eq(Config.devMode(V.mod), false, "devMode aliases overlay")
+local devMod = {
+  id = "wilds_of_kanto_gen3",
+  read = function(_, rel) if rel == "wilds_dev.flag" then return "" end return nil end,
+}
+eq(Config.devOverlay(devMod), true, "wilds_dev.flag present -> developer tools on")
 
 print("== water density / spacing ==")
 eq(Config.waterMinSpacing(V.mod), 4, "normal spacing 4")
-savedOpts.spawn_density = "low"
-eq(Config.waterMinSpacing(V.mod), 5, "low spacing 5")
-eq(Config.waterDensityFactor(V.mod), 0.60, "low density 60%")
-savedOpts.spawn_density = "high"
-eq(Config.waterMinSpacing(V.mod), 3, "high spacing 3")
-eq(Config.waterDensityFactor(V.mod), 1.40, "high density 140%")
-savedOpts.spawn_density = "normal"
 eq(Config.waterDensityFactor(V.mod), 1.0, "normal density 100%")
+-- Spawn Amount is locked to Normal: an old saved value changes nothing.
+savedOpts.spawn_density = "high"
+eq(Config.waterMinSpacing(V.mod), 4, "saved high density ignored (spacing)")
+eq(Config.waterDensityFactor(V.mod), 1.0, "saved high density ignored (factor)")
+savedOpts.spawn_density = "normal"
 
 -- Inline water target formula (mirrors SpawnLogic:_computeWaterTarget).
 local function computeWaterTarget(waterCells, factor)
@@ -240,10 +241,7 @@ local w1, w2 = DevOverlay.labelLines(w)
 check(w1:find("WATER", 1, true) ~= nil, "WATER WANDER label")
 check(w2:find("UP", 1, true) ~= nil, "UP facing")
 
-savedOpts.dev_overlay = false
-eq(Config.devOverlay(V.mod), false, "overlay off")
-savedOpts.dev_overlay = true
-eq(Config.devOverlay(V.mod), true, "overlay on")
+eq(Config.devOverlay(V.mod), false, "overlay off without the developer flag")
 
 print("== follower cache key ==")
 local Followers = V.require("followers_water_compat")

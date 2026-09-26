@@ -30,7 +30,7 @@ local modules = {}
 local V = {
   mod = {
     path = ".",
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     log = {
       info = function(_, fmt, ...) end,
       warn = function(_, fmt, ...) end,
@@ -53,7 +53,7 @@ local V = {
       },
     },
     assets = {
-      path = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+      path = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
     },
     events = {
       on = function(_, name, fn)
@@ -128,7 +128,7 @@ local fakeRender = {
       return { def = def, providerId = "pokemmo" }
     end,
   },
-  _modAssetPath = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+  _modAssetPath = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
 }
 
 ----------------------------------------------------------------

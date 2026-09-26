@@ -66,7 +66,7 @@ end
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end, error = function() end },
     find = function() return nil end,
@@ -93,8 +93,8 @@ local V = {
     },
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -529,18 +529,21 @@ do
   end
 end
 
--- Encounter silhouettes still black-out Gold water
+-- Silhouette on a Gold wild in water: the WATER silhouette (Flat: tint at draw; flagged on the
+-- result), never the land black-out.
 savedOpts.sprite_style = "pokemmo"
 savedOpts.wild_silhouettes = true
 do
-  local silo = resolver:resolveWaterSprite(waterEntity(SPECIES.RATTATA, "RATTATA"), {
+  local ent = waterEntity(SPECIES.RATTATA, "RATTATA")
+  ent.overworldWildSpawn = true
+  local silo = resolver:resolveWaterSprite(ent, {
     style = "pokemmo", speciesId = SPECIES.RATTATA, variant = "normal",
   })
   check(silo ~= nil and silo.def ~= nil, "Gold water silhouette resolves")
   if silo and silo.def then
-    eq(silo.def.trueColor, false, "Gold water silhouette trueColor false")
-    check(silo.wildSilhouette == true or isSiloPath(silo.def.image),
-          "Gold water silhouette flagged or silo image")
+    eq(silo.waterSilhouette, true, "Gold water wild flagged for the water silhouette")
+    check(silo.wildSilhouette ~= true and not isSiloPath(silo.def.image),
+          "Gold water wild is not blacked out like a land wild")
   end
 end
 savedOpts.wild_silhouettes = nil

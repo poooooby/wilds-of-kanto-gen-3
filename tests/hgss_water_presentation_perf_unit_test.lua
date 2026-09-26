@@ -53,7 +53,7 @@ local saved = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     find = function() return nil end,
     options = { get = function(_, k) return saved[k] end },
@@ -63,7 +63,7 @@ local V = {
       local d = f:read("*a"); f:close(); return d
     end,
     assets = {
-      path = function(_, r) return "mods/overworld_wild_spawns/" .. r end,
+      path = function(_, r) return "mods/wilds_of_kanto_gen3/" .. r end,
     },
     log = { info = function() end, warn = function() end, error = function() end },
     content = {

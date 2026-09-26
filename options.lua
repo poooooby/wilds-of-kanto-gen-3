@@ -8,23 +8,18 @@
 -- Internal keys are stable so saved settings survive across releases.
 --
 -- Types match Gen1Recomp ManagerState.OPTION_TYPES: toggle, choice, number, text.
--- There is no action/button option type; Test Spawn opens via the public
--- ui.options.rows activate hook (see lib/preview_browser.lua).
 --
 -- All options are live-toggleable through Mod Manager (mod.options_changed).
 --
+-- Behaviour that used to be configurable is fixed (see Config.LOCKED in lib/config.lua):
+-- Idle + Roam wilds, no Chase / Hidden wilds, trainer control without a trainer trail,
+-- Sprite Scale on, solid sprites, Normal spawn amount, Shiny Sparkle on, water wilds as
+-- swimming sprites, cave wilds only on tiles the player can reach. Dev Overlay / Test Spawn are developer-only (wilds_dev.flag).
+--
 -- UI submenu mapping (both write the SAME mod.options keys):
---   Poke Followers EX -> follow_control, trainer_trail, follower_count
---                       (+ Leader via party menu hint)
---   Wilds of Kanto    -> enabled, spawn_density, random_encounters,
---                       water_spawns, cave_spawns, modern_spawns, legendary_spawns, max_generation, shiny_rate, shiny_sparkle, sprite_style, dyn_scale,
---                       sprite_fade, town_pokemon, pokemon_grass_render_mode,
---                       wild_silhouettes,
---                       overworld_catching, catch_throw_key, catch_cycle_key,
---                       catch_throw_combo, catch_cycle_combo, catch_hud_size,
---                       enable_idle,
---                       enable_wander, enable_aggressive, enable_hidden,
---                       dev_overlay
+--   Poke Followers EX -> follower_count (+ Leader via party menu hint)
+--   Wilds of Kanto    -> enabled, random_encounters, shiny_rate, sprite_style,
+--                       town_pokemon, pokemon_grass_render_mode, wild_silhouettes
 --
 -- Pokemon size is not a separate option: it is tied to Sprite Style.
 --   GSC sprites (followers)   -> Classic (one-tile 16x16 presentation)
@@ -76,42 +71,6 @@ return {
     description = "Cosmetic costume for the Yellow starter Pikachu companion only -- does not affect any other Pikachu you use as a follower.",
   },
   {
-    key = "dyn_scale",
-    label = "Sprite Scale",
-    type = "toggle",
-    default = true,
-    description = "Custom per-species display-size tuning for HGSS / PokeMMO sprites under Voxel renderers (lib/species_display_scale.lua). Turn off to render every species at native True Size instead.",
-  },
-  {
-    key = "sprite_fade",
-    label = "Sprite Fade",
-    type = "choice",
-    default = "solid",
-    choices = {
-      { "Solid", "solid" },
-      { "Faded", "faded" },
-    },
-    description = "Opacity of normal visible wild Pokemon. Solid is fully opaque. Faded uses the classic semi-transparent wild look. Does not affect followers, Town Pokemon, silhouettes, or UI.",
-  },
-  {
-    key = "follow_control",
-    label = "Control Mode",
-    type = "choice",
-    default = "trainer",
-    choices = {
-      { "Trainer", "trainer" },
-      { "Pokemon", "pokemon" },
-    },
-    description = "Choose whether you control the trainer or the selected Pokemon.",
-  },
-  {
-    key = "trainer_trail",
-    label = "Trainer Trail",
-    type = "toggle",
-    default = false,
-    description = "When controlling a Pokemon, the trainer follows behind.",
-  },
-  {
     key = "follower_count",
     label = "Followers",
     type = "choice",
@@ -128,93 +87,11 @@ return {
     description = "Number of additional party Pokemon following the active leader.",
   },
   {
-    key = "spawn_density",
-    label = "Spawn Amount",
-    type = "choice",
-    default = "normal",
-    choices = {
-      { "Low", "low" },
-      { "Normal", "normal" },
-      { "High", "high" },
-      { "Very High", "very_high" },
-    },
-    description = "Controls how many visible overworld Pokemon can appear. This also affects visible water Pokemon.",
-  },
-  {
     key = "random_encounters",
-    label = "Random Enc",
+    label = "Classic Enc",
     type = "toggle",
     default = true,
-    description = "Enables or disables classic step-based random encounters. Visible overworld Pokemon remain active.",
-  },
-  {
-    key = "water_spawns",
-    label = "Water Mons",
-    type = "choice",
-    default = "swimming_sprites",
-    choices = {
-      { "Swim Sprites", "swimming_sprites" },
-      { "Hid Silhouette", "hidden_silhouettes" },
-      { "Silhouettes", "silhouettes" },
-      { "Classic Enc", "classic_encounters" },
-      { "Disabled", "disabled" },
-    },
-    description = "How water Pokemon appear: swimming sprites (default), hidden dark circles, tinted silhouettes, classic random encounters only, or fully disabled.",
-  },
-  {
-    key = "cave_spawns",
-    label = "Cave Spawns",
-    type = "choice",
-    default = "reachable",
-    choices = {
-      { "Reachable Only", "reachable" },
-      { "Mixed", "mixed" },
-    },
-    description = "Cave Pokemon spawn only on tiles the player can reach, or Mixed (~20% atmospheric scenery in inaccessible cave pockets).",
-  },
-  {
-    key = "modern_spawns",
-    label = "MODERN SPAWNS",
-    type = "choice",
-    default = "table",
-    choices = {
-      { "Spawn Table", "table" },
-      { "Random", "random" },
-      { "Off", "off" },
-    },
-    description = "Gen 1 only. Spawn Table: replaces the wild tables of mapped Kanto areas (routes, caves, Safari Zone, Super Rod fishing) with a modern species pool; needs a Pokedex-expansion mod (e.g. National Dex), otherwise vanilla tables stay. Random: any registered Pokemon at the area's level. Off: original game tables.",
-  },
-  {
-    key = "legendary_spawns",
-    label = "LEGEND/MYTHIC",
-    type = "toggle",
-    default = false,
-    description = "Random mode only. Include legendary, mythical, Ultra Beast and Paradox Pokemon in random spawns. Off keeps them out. Spawn Table mode is unaffected.",
-  },
-  {
-    key = "shiny_sparkle",
-    label = "SHINY SPARKLE",
-    type = "toggle",
-    default = true,
-    description = "Red/Blue/Yellow only. When a shiny Pokemon appears in battle (a wild one, or your own when it is sent out), play a one-time sparkle and chime. Off means neither.",
-  },
-  {
-    key = "max_generation",
-    label = "MAX GEN",
-    type = "choice",
-    default = "9",
-    choices = {
-      { "Gen 1", "1" },
-      { "Gen 1-2", "2" },
-      { "Gen 1-3", "3" },
-      { "Gen 1-4", "4" },
-      { "Gen 1-5", "5" },
-      { "Gen 1-6", "6" },
-      { "Gen 1-7", "7" },
-      { "Gen 1-8", "8" },
-      { "All (Gen 1-9)", "9" },
-    },
-    description = "Highest generation of Pokemon that Spawn Table and Random spawns may use (by national Pokedex number). All means no limit. Off keeps the original game tables and is never limited.",
+    description = "Classic Encounters: the original step-based random encounters in grass, caves and water (Surf). Visible overworld Pokemon stay active either way.",
   },
   {
     key = "shiny_rate",
@@ -238,7 +115,7 @@ return {
     label = "Town Pokemon",
     type = "toggle",
     default = true,
-    description = "Adds peaceful Pokemon to safe towns and interiors. They behave like NPCs and cannot start battles.",
+    description = "Adds peaceful Pokemon to safe towns and interiors. They behave like NPCs, cannot start battles, and never block your path.",
   },
   {
     key = "pokemon_grass_render_mode",
@@ -261,113 +138,6 @@ return {
       { "Undiscovered", "undiscovered" },
       { "All", "all" },
     },
-    description = "Off keeps normal colours. Undiscovered silhouettes species not yet caught / registered in the Pokedex. All silhouettes every encounter-zone wild.",
-  },
-  {
-    key = "overworld_catching",
-    label = "OW Catch",
-    type = "toggle",
-    default = true,
-    description = "Enables direct Poke Ball throws at visible wild Pokemon.",
-  },
-  {
-    key = "catch_throw_key",
-    label = "Catch Key",
-    type = "choice",
-    default = "c",
-    choices = {
-      { "C", "c" },
-      { "V", "v" },
-      { "F", "f" },
-      { "G", "g" },
-      { "R", "r" },
-      { "T", "t" },
-    },
-    description = "Desktop keyboard key that charges and throws a Poke Ball. Default C. Does not replace the controller/touch Catch Combo.",
-  },
-  {
-    key = "catch_cycle_key",
-    label = "Ball Switch",
-    type = "choice",
-    default = "q",
-    choices = {
-      { "Q", "q" },
-      { "E", "e" },
-      { "R", "r" },
-      { "F", "f" },
-      { "G", "g" },
-      { "T", "t" },
-    },
-    description = "Desktop keyboard key that cycles the selected Ball. Default Q. If it matches Catch Key, throw wins and this falls back to Q (or E if Catch Key is Q).",
-  },
-  {
-    key = "catch_throw_combo",
-    label = "Catch Combo",
-    type = "choice",
-    default = "b_a",
-    choices = {
-      { "B + A", "b_a" },
-      { "Select + A", "select_a" },
-      { "Disabled", "disabled" },
-    },
-    description = "Controller/touch charge-and-throw combo using logical Game Boy buttons. Default B + A. Desktop Catch Key still works when this is disabled.",
-  },
-  {
-    key = "catch_cycle_combo",
-    label = "Switch Combo",
-    type = "choice",
-    default = "b_dpad",
-    choices = {
-      { "B + Left/Right", "b_dpad" },
-      { "Select + Left/Right", "select_dpad" },
-      { "Disabled", "disabled" },
-    },
-    description = "Controller/touch Ball-switch combo using logical Game Boy buttons. Default B + Left/Right. Desktop Ball Switch still works when this is disabled.",
-  },
-  {
-    key = "catch_hud_size",
-    label = "Catch HUD Size",
-    type = "number",
-    default = 5,
-    min = 0,
-    max = 10,
-    description = "Size of the Poke Ball catching HUD. 0 = hidden, 1 = compact, 5 = default, 10 = large. Hiding the HUD does not disable Overworld Catching.",
-  },
-  {
-    key = "enable_idle",
-    label = "Idle Mons",
-    type = "toggle",
-    default = true,
-    description = "Allow Idle Look behaviour (stand still, glance around).",
-  },
-  {
-    key = "enable_wander",
-    label = "Roam Mons",
-    type = "toggle",
-    default = true,
-    description = "Allow wander behaviour within a connected encounter region.",
-  },
-  {
-    key = "enable_aggressive",
-    label = "Chase Mons",
-    type = "toggle",
-    default = true,
-    description = "Allow aggressive Pokemon that spot, chase, and force a battle.",
-  },
-  {
-    key = "enable_hidden",
-    label = "Hidden Mons",
-    type = "toggle",
-    default = true,
-    description = "Allow hidden grass (or cave dust) encounter markers with no Pokemon sprite.",
-  },
-
-  -- ------- Developer (only Dev Overlay + Test Spawn)
-  {
-    key = "dev_overlay",
-    label = "Dev Overlay",
-    type = "toggle",
-    default = false,
-    description = "Shows each wild Pokemon's behaviour and facing direction above it.",
+    description = "Silhouettes for visible wild Pokemon on land and in water. On land they are blacked out; in the water they show as a dark underwater shape. Undiscovered silhouettes only species you have not caught yet; All silhouettes every wild.",
   },
 }

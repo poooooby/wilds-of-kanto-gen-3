@@ -4,7 +4,7 @@
 -- Path types (do not mix):
 --   relativePath  — mod-root relative, e.g. assets/wilds_generated/.../001-normal.png
 --   loadPath      — engine asset path via mod.assets:path(relativePath)
---                   e.g. mods/overworld_wild_spawns/assets/wilds_generated/.../001-normal.png
+--                   e.g. mods/wilds_of_kanto_gen3/assets/wilds_generated/.../001-normal.png
 --
 -- SpriteRenderer / Assets.image MUST receive loadPath, never a bare relativePath
 -- and never an OS absolute path.

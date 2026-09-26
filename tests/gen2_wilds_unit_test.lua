@@ -37,8 +37,6 @@ local optionStore = {
   follow_control = "trainer",
   trainer_trail = false,
   follower_count = 1,
-  town_pokemon = true,
-  overworld_catching = true,
 }
 local wrapped = {}
 local events = {}
@@ -120,7 +118,7 @@ local goldGame = {
 
 local mod = {
   path = ".",
-  id = "overworld_wild_spawns",
+  id = "wilds_of_kanto_gen3",
   game = goldGame,
   log = {
     info = function(_, fmt, ...)
@@ -191,7 +189,7 @@ local GameCompat = mod.exports.gameCompat
 check(GameCompat ~= nil, "exports.gameCompat")
 eq(GameCompat.supportsFeature("encounters", mod, goldGame), true, "encounters on")
 eq(GameCompat.supportsFeature("followers", mod, goldGame), true, "followers on")
-eq(GameCompat.supportsFeature("catching", mod, goldGame), true, "catching on")
+check(GameCompat.supportsFeature("catching", mod, goldGame) ~= true, "overworld catching moved out of this mod")
 eq(GameCompat.supportsFeature("ambient", mod, goldGame), true, "ambient on")
 eq(GameCompat.supportsFeature("townPokemon", mod, goldGame), true, "townPokemon on")
 eq(GameCompat.supportsFeature("safari", mod, goldGame), false, "safari off")
@@ -208,7 +206,7 @@ check(not wrappedHook("pikachu_follower"), "Yellow Pikachu hook NOT wrapped")
 check(wrappedHook("ui.party.submenu"), "follower party submenu wrapped")
 
 eq(mod.exports.follower._installed, true, "follower hooks install on Gold")
-eq(mod.exports.catching._registered, true, "catching registers on Gold")
+check(mod.exports.catching == nil, "no catching export")
 eq(mod.exports.ambient._installed, true, "ambient / town Pokémon installed")
 eq(mod.exports.behaviorTick._registered, true, "shared WILDS AI pipeline registered")
 

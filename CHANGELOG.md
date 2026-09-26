@@ -8,6 +8,55 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## Unreleased (fork)
+
+### Modern Spawns compatibility
+
+- **Visible wild Pokémon now follow [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns).**
+  Wilds picks visible species straight from the encounter tables, so Modern Spawns' encounter
+  hooks never ran for them and every visible spawn stayed vanilla. With Modern Spawns installed
+  and MODERN SPAWNS ON, grass/cave and surf spawns, town Pokémon, Gen 1 Super Rod water mons and
+  the encounter index now use its generated tables (Red/Blue/Yellow and Gold), in every SPAWN
+  MODE (RANDOM draws afresh per spawn), and visible spawns get its rare LEGENDARIES roll.
+  Without Modern Spawns, or with it OFF, nothing changes. `lib/modern_spawns_bridge.lua` looks
+  the mod up at pick time, so no dependency is declared. Gold fishing water mons stay vanilla.
+
+### Bug fixes
+
+- **Town Pokemon no longer body-block the player.** They could spawn or wander into (or right
+  beside) a 1-tile-wide passage — a doorway, a gap between counters, a bridge — and, since they
+  collide like a normal NPC, fully block the only route through. Placement and every wander step
+  now keep a 2-tile buffer around both narrow passages and anything else already standing nearby
+  (the player, another NPC, another Town Pokemon), so they can no longer park themselves somewhere
+  that traps the player.
+
+### Features
+
+- **Random Enc is now Classic Encounters (CLASSIC ENC)** and is the single switch for classic
+  random encounters everywhere: grass, caves and water (Surf). Existing settings carry over.
+- **One Silhouette option for land and water.** A wild Pokemon standing on land gets the regular
+  blacked-out silhouette; one actually standing in the water gets the dark underwater
+  silhouette. It follows where the Pokemon is right now, so one that walks out of the water
+  switches to the land silhouette.
+- **Options tightened.** These now behave one fixed way and no longer have a toggle: Idle Mons ON,
+  Roam Mons ON, Chase Mons OFF, Hidden Mons OFF, Control Mode TRAINER, Trainer Trail OFF,
+  Sprite Scale ON, Sprite Fade SOLID, Spawn Amount NORMAL, Shiny Sparkle ON, Water Mons
+  SWIM SPRITES, Cave Spawns REACHABLE ONLY (cave Pokemon only appear where you can walk to them).
+  Old saved values for these are ignored.
+
+### Removed
+
+- **Overworld Catching.** Poke Ball throwing at visible wilds (and its OW CATCH, key, combo and
+  HUD options) has been removed from this mod. It is planned as a separate optional companion mod.
+- **Dev Overlay and Test Spawn** are no longer public options. Developers enable them by placing a
+  `wilds_dev.flag` file in the mod folder (never included in release builds).
+
+- **MODERN SPAWNS, LEGEND/MYTHIC and MAX GEN.** The built-in Spawn Table and Random modern-spawn
+  modes for Gen 1 have been removed, along with the two options that only existed to configure
+  them. Wild encounters use the original game tables everywhere those modes used to override them
+  (routes, caves, Safari Zone, Super Rod fishing). This functionality is moving to a separate
+  `g1r_modern_spawns` project with its own API.
+
 ## 2.7.6 (fork)
 
 ### Features

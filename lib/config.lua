@@ -34,15 +34,8 @@ Config.DEFAULTS = {
   -- Cosmetic costume for the Yellow starter Pikachu companion only (see
   -- ControlEngine:forceYellowStockPikachuArt). "default" = normal art.
   pika_follower = "default",
-  -- Wild table source for Gen 1 maps (lib/gen9_encounters.lua): "table" = modern Kanto overlay
-  -- (only when the runtime dex is expanded past Gen 3, lib/dex_expansion.lua), "random" = any
-  -- registered species at the area's level, "off" = original tables. Pre-choice saves stored a
-  -- boolean (true = "table", false = "off"); Config.modernSpawnsMode migrates it.
-  modern_spawns = "table",
-  -- Random mode only: allow legendary/mythical/Ultra Beast/Paradox species (lib/species_flags_data.lua).
-  legendary_spawns = false,
-  -- Highest generation Spawn Table and Random may use (1..9; "9" = no cap). Off is never capped.
-  max_generation = "9",
+  -- Peaceful ambient NPCs in towns / safe interiors (not wild battles).
+  town_pokemon = true,
   -- Chance a Gen 1 wild Pokemon is shiny (lib/shiny.lua): off | gen2 (1/8192) | modern (1/4096) |
   -- common (1/1024) | frequent (1/512) | often (1/100) | high (1/10) | always.
   shiny_rate = "modern",
@@ -66,8 +59,6 @@ Config.DEFAULTS = {
   follow_control = "trainer", -- trainer | pokemon
   trainer_trail = false,
   follower_count = 1, -- 0–6 extra party trailers
-  -- Peaceful ambient NPCs in towns / safe interiors (not wild battles).
-  town_pokemon = true,
   -- Ambient NPCs inside buildings (Poké Centers, houses, labs, etc.).
   indoor_pokemon = true,
   -- Legacy key kept for save migration only (Mon Sprites toggle).
@@ -91,21 +82,12 @@ Config.DEFAULTS = {
   -- Legacy bool false→off, true→all. Default off (never silently enable
   -- Undiscovered for existing users).
   wild_silhouettes = "off",
-  -- Optional overworld Poké Ball throws at visible wilds (default ON).
-  overworld_catching = true,
-  -- Catch input (live). Defaults match the original hardcoded C / Q / B+A / B+Dpad.
-  catch_throw_key = "c",
-  catch_cycle_key = "q",
-  catch_throw_combo = "b_a",
-  catch_cycle_combo = "b_dpad",
-  -- Top-screen Ball inventory HUD size (1–10). Live; UI-only (not projectiles).
-  catch_hud_size = 5,
   enable_idle = true,
   enable_wander = true,
-  enable_aggressive = true,
-  enable_hidden = true,
+  enable_aggressive = false,
+  enable_hidden = false,
   -- Classic step-based random encounters (grass / cave / water).
-  -- Public label "Random Enc"; independent of visible overworld spawns.
+  -- Public label "Classic Enc" (Classic Encounters); independent of visible overworld spawns.
   random_encounters = true,
   aggressive_frequency = 1.0,
   aggressive_sight_range = 4,
@@ -129,8 +111,8 @@ Config.DEFAULTS = {
   land_water_chase_shore_max = 1,
   land_water_chase_player_max = 5,
   water_aggressive_sight_range = 5,
-  enable_cave_spawns = true, -- internal master; public choice is cave_spawns
-  -- Public "Cave Spawns": reachable (default) | mixed (~20% scenery).
+  enable_cave_spawns = true, -- internal master; cave_spawns itself is locked (reachable)
+  -- Cave Spawns: locked to reachable (Config.LOCKED); mixed (~20% scenery) is dormant.
   cave_spawns = "reachable",
   -- Public developer overlay (behaviour + facing labels).
   dev_overlay = false,
@@ -160,6 +142,23 @@ Config.DEFAULTS = {
   water_density_high = 1.40,
   water_density_very_high = 1.60,
   max_water_mons = 6, -- soft global cap for visible water mons
+}
+
+-- Behaviour that is no longer configurable. Config.get and the dedicated getters return these
+-- regardless of any saved value, so an old save cannot re-enable a removed option.
+Config.LOCKED = {
+  enable_idle = true,
+  enable_wander = true,
+  enable_aggressive = false, -- no Chase Mons
+  enable_hidden = false, -- no Hidden Mons
+  follow_control = "trainer",
+  trainer_trail = false,
+  dyn_scale = true,
+  sprite_fade = "solid",
+  spawn_density = "normal",
+  shiny_sparkle = true,
+  water_spawns = "swimming_sprites",
+  cave_spawns = "reachable", -- Reachable Only; Mixed scenery is no longer selectable
 }
 
 -- Entity lifecycle states for encounter safety.
@@ -206,6 +205,8 @@ function Config.defineOptions(mod)
 end
 
 function Config.get(mod, key)
+  local locked = Config.LOCKED[key]
+  if locked ~= nil then return locked end
   local v = mod.options:get(key)
   if v == nil then return Config.DEFAULTS[key] end
   return v
@@ -215,75 +216,37 @@ function Config.isEnabled(mod)
   return Config.get(mod, "enabled") == true
 end
 
---- Optional overworld Poké Ball catching (live-toggleable).
-function Config.overworldCatchingEnabled(mod)
-  return Config.get(mod, "overworld_catching") ~= false
-end
+-- Developer tools (Dev Overlay world labels, detail HUD, Test Spawn row) are not a player
+-- option. They turn on only when a `wilds_dev.flag` file sits at the mod root -- a repo checkout
+-- can create one; the release ZIP never contains it (.gitignore, .modkitignore, build-mod.py).
+-- Saved dev_overlay / debug / dev_mode values are ignored, so a player who had the old public
+-- toggle on is switched off. Cached per mod: this is read on hot draw paths.
+Config.DEV_FLAG_FILE = "wilds_dev.flag"
+local devFlagCache = setmetatable({}, { __mode = "k" })
 
---- Catch HUD size setting (0–10). Clamped; falls back to 5.
---- 0 = hidden (catching stays active). Prefer the saved/loader option bucket
---- (same path menus write) so live Catch HUD Size changes apply immediately.
-function Config.catchHudSize(mod)
-  local n = nil
-  local raw, present = Config.peekSavedOption(mod, "catch_hud_size")
-  if present then
-    n = tonumber(raw)
-  end
-  if n == nil then
-    n = tonumber(Config.get(mod, "catch_hud_size"))
-  end
-  if n == nil then n = 5 end
-  if n < 0 then n = 0 end
-  if n > 10 then n = 10 end
-  return math.floor(n)
-end
-
---- Whether the Catch HUD should be drawn. Size 0 hides presentation only;
---- Overworld Catching, meter, range tiles, and throws stay active.
-function Config.catchHudEnabled(mod)
-  return Config.catchHudSize(mod) > 0
-end
-
---- Normalized Catch HUD scale. Size 1≈0.75×, 5≈1.08×, 10=1.50×.
---- UI-only — never used by thrown Ball / projectile code.
---- Size 0 is hidden (see catchHudEnabled); do not return a zero scale.
-function Config.catchHudScale(mod)
-  local size = Config.catchHudSize(mod)
-  if size <= 0 then
-    return 1
-  end
-  return 0.75 + (size - 1) * (0.75 / 9)
-end
-
---- Pixel size for top-screen Ball HUD icons. Does not affect projectiles.
---- Base 14px at scale 1.0 → roughly 11 / 15 / 21 px at sizes 1 / 5 / 10.
---- Mapping is intentionally bold so size changes are obvious on 160×144.
-function Config.catchHudIconPx(mod)
-  local px = math.floor(14 * Config.catchHudScale(mod) + 0.5)
-  if px < 8 then px = 8 end
-  if px > 24 then px = 24 end
-  return px
-end
-
--- Public Dev Overlay toggle. Migrates legacy debug / Dev Mode when unset.
 function Config.devOverlay(mod)
-  local raw, present = Config.peekSavedOption(mod, "dev_overlay")
-  if present then
-    return raw == true
+  if type(mod) ~= "table" then return false end
+  local cached = devFlagCache[mod]
+  if cached ~= nil then return cached end
+  local on = false
+  if type(mod.read) == "function" then
+    local ok, data = pcall(mod.read, mod, Config.DEV_FLAG_FILE)
+    on = ok and data ~= nil and data ~= false
   end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local v = mod.options:get("dev_overlay")
-    if v ~= nil then return v == true end
-  end
-  -- One-shot legacy: general debug / Dev Mode ON → Dev Overlay ON.
-  local legacyDebug, legacyPresent = Config.peekSavedOption(mod, "debug")
-  if legacyPresent and legacyDebug == true then return true end
-  local legacyDev, legacyDevPresent = Config.peekSavedOption(mod, "dev_mode")
-  if legacyDevPresent and legacyDev == true then return true end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    if mod.options:get("dev_mode") == true then return true end
-  end
-  return Config.DEFAULTS.dev_overlay == true
+  devFlagCache[mod] = on
+  return on
+end
+
+--- Test hook: forget the cached developer-flag answer.
+function Config.resetDevFlagCache()
+  devFlagCache = setmetatable({}, { __mode = "k" })
+end
+
+--- Test hook: act as if wilds_dev.flag is present (true) or absent (false) for `mod`; nil
+-- forgets the override so the file is checked again. Never called by the mod itself.
+function Config.setDevFlagForTest(mod, on)
+  if type(mod) ~= "table" then return end
+  if on == nil then devFlagCache[mod] = nil else devFlagCache[mod] = on == true end
 end
 
 -- Back-compat alias: older call sites treated "dev mode" as developer tools.
@@ -322,9 +285,8 @@ function Config.migrateDevOverlayOption(mod)
   local function write(bucket)
     if type(bucket) ~= "table" then return end
     bucket[mod.id] = bucket[mod.id] or {}
-    if bucket[mod.id].dev_overlay == nil then
-      bucket[mod.id].dev_overlay = on
-    end
+    -- Dev Overlay is no longer a saved option (developer flag file only).
+    bucket[mod.id].dev_overlay = nil
     -- Drop obsolete public developer keys (ignore on load; no crash).
     bucket[mod.id].dev_mode = nil
     bucket[mod.id].debug_hud_always_visible = nil
@@ -485,54 +447,10 @@ end
 
 Config.VALID_POKEMON_SIZES = VALID_POKEMON_SIZES
 
---- Master switch for the Voxel-only per-species display-size scale
--- (lib/species_display_scale.lua, consulted by SpeciesGeometry.displayScale).
--- OFF disables custom sizing entirely -- every HGSS/PokeMMO species renders
--- at native True Size (scale 1) instead.
-function Config.dynScaleEnabled(mod)
-  return Config.get(mod, "dyn_scale") ~= false
+function Config.dynScaleEnabled(_mod)
+  return Config.LOCKED.dyn_scale
 end
 
-local VALID_MODERN_SPAWNS = { table = true, random = true, off = true }
-
--- Accepts the choice strings plus the pre-choice boolean (true -> "table", false -> "off").
-local function coerceModernSpawnsMode(value)
-  if value == true then return "table" end
-  if value == false then return "off" end
-  if type(value) == "string" then
-    local v = value:lower()
-    if VALID_MODERN_SPAWNS[v] then return v end
-  end
-  return nil
-end
-
---- MODERN SPAWNS mode: "table" | "random" | "off". Prefers the live save-data bucket the in-game
--- Settings menu writes to (Config.setOption / writeOptionBucket) over the Mod Manager schema value,
--- same as Config.pikaFollower/Config.spriteFade -- checking only mod.options:get would make an
--- in-game change invisible here. Unknown values fall back to the default ("table").
-function Config.modernSpawnsMode(mod)
-  local raw, present = Config.peekSavedOption(mod, "modern_spawns")
-  if present then
-    local mode = coerceModernSpawnsMode(raw)
-    if mode then return mode end
-  end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local mode = coerceModernSpawnsMode(mod.options:get("modern_spawns"))
-    if mode then return mode end
-  end
-  return coerceModernSpawnsMode(Config.DEFAULTS.modern_spawns) or "table"
-end
-
---- Anything other than "off" (kept for callers that only need the old on/off meaning).
-function Config.modernSpawnsEnabled(mod)
-  return Config.modernSpawnsMode(mod) ~= "off"
-end
-
-local function coerceMaxGeneration(value)
-  local n = tonumber(value)
-  if n and n % 1 == 0 and n >= 1 and n <= 9 then return math.floor(n) end
-  return nil
-end
 
 local VALID_SHINY_RATES = {
   off = true, gen2 = true, modern = true, common = true, frequent = true, often = true, high = true,
@@ -563,33 +481,8 @@ function Config.shinyRate(mod)
   return coerce(Config.DEFAULTS.shiny_rate) or "modern"
 end
 
---- SHINY SPARKLE: the one-time battle sparkle and chime. Live save bucket first, then the schema value.
-function Config.shinySparkleEnabled(mod)
-  local raw, present = Config.peekSavedOption(mod, "shiny_sparkle")
-  if present and type(raw) == "boolean" then return raw end
-  return Config.get(mod, "shiny_sparkle") ~= false
-end
-
---- MAX GEN: highest generation (1..9) Spawn Table and Random may spawn. Live save bucket first (same as
--- the other spawn options), then the schema value; anything unusable means 9 (no cap).
-function Config.maxGeneration(mod)
-  local raw, present = Config.peekSavedOption(mod, "max_generation")
-  if present then
-    local g = coerceMaxGeneration(raw)
-    if g then return g end
-  end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local g = coerceMaxGeneration(mod.options:get("max_generation"))
-    if g then return g end
-  end
-  return coerceMaxGeneration(Config.DEFAULTS.max_generation) or 9
-end
-
---- "Include Legendary/Mythical": Random mode only. Same live-bucket-first read as above.
-function Config.legendarySpawnsEnabled(mod)
-  local raw, present = Config.peekSavedOption(mod, "legendary_spawns")
-  if present and type(raw) == "boolean" then return raw end
-  return Config.get(mod, "legendary_spawns") == true
+function Config.shinySparkleEnabled(_mod)
+  return Config.LOCKED.shiny_sparkle
 end
 
 local VALID_PIKA_FOLLOWER = {
@@ -602,7 +495,7 @@ local VALID_PIKA_FOLLOWER = {
 -- ControlEngine:forceYellowStockPikachuArt). Prefers the live save-data
 -- bucket the in-game Settings menu writes to (Config.setOption /
 -- writeOptionBucket) over the Mod Manager schema value, same pattern as
--- Config.spriteFade/Config.catchHudSize -- otherwise a selection made via
+-- Config.wildSilhouetteMode -- otherwise a selection made via
 -- the in-game PIKA FOLLOWER row would never be seen here. Returns "default"
 -- for any unrecognized/stale saved value rather than erroring.
 function Config.pikaFollower(mod)
@@ -817,73 +710,9 @@ end
 Config.VALID_SPRITE_STYLES = VALID_SPRITE_STYLES
 Config.SPRITE_STYLE_CONFIRM = SPRITE_STYLE_CONFIRM
 
---- Toggle the Voxel-only per-species display-size scale. Refreshes already-
--- spawned entities the same way setSpriteStyle does, since the scale is
--- baked into each entity's SpriteDef (displayWidth/Height) at resolve time
--- and would otherwise only take effect on the next map re-enter.
-function Config.setDynScale(mod, value, source, opts)
-  opts = opts or {}
-  local on = value == true
-  local game = resolveGame(mod, opts)
-  writeOptionBucket(mod, game, "dyn_scale", on)
 
-  local render = opts.render
-  local logic = opts.logic
-  if (not render or not logic) and mod and mod.exports then
-    render = render or mod.exports.render
-    logic = logic or mod.exports.logic
-  end
-  local refreshed = 0
-  if render and logic and type(render.refreshAllEntitySprites) == "function" then
-    if type(render.invalidateAssetCache) == "function" then
-      pcall(render.invalidateAssetCache, render)
-    end
-    local ok, n = pcall(render.refreshAllEntitySprites, render, logic, game)
-    if ok and type(n) == "number" then refreshed = n end
-  end
-
-  local confirmMsg = opts.message
-  if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "SPRITE SCALE: " .. (on and "ON" or "OFF")
-  end
-  confirmText(game, mod, confirmMsg)
-
-  if source and mod and mod.log and type(mod.log.info) == "function" then
-    pcall(mod.log.info, mod.log,
-      "dyn_scale set to %s via %s (refreshed=%d)",
-      tostring(on), tostring(source), refreshed)
-  end
-
-  return true, on, refreshed
-end
-
-local VALID_SPAWN_AMOUNTS = {
-  low = true,
-  normal = true,
-  high = true,
-  very_high = true,
-}
-
-local SPAWN_AMOUNT_CONFIRM = {
-  low = "LOW",
-  normal = "NORMAL",
-  high = "HIGH",
-  very_high = "VERY HIGH",
-}
-
-Config.VALID_SPAWN_AMOUNTS = VALID_SPAWN_AMOUNTS
-Config.SPAWN_AMOUNT_CONFIRM = SPAWN_AMOUNT_CONFIRM
-
-function Config.spawnAmount(mod)
-  local raw, present = Config.peekSavedOption(mod, "spawn_density")
-  if present and type(raw) == "string" and VALID_SPAWN_AMOUNTS[raw] then
-    return raw
-  end
-  local v = Config.get(mod, "spawn_density")
-  if type(v) == "string" and VALID_SPAWN_AMOUNTS[v] then
-    return v
-  end
-  return "normal"
+function Config.spawnAmount(_mod)
+  return Config.LOCKED.spawn_density
 end
 
 -- Classic step-based random encounters (grass / cave / water / indoor).
@@ -922,9 +751,6 @@ function Config.migrateRandomEncountersOption(mod)
     end
     -- Drop obsolete choice key once migrated.
     bucket[mod.id].grass_encounters = nil
-    if bucket[mod.id].water_spawns == nil then
-      bucket[mod.id].water_spawns = Config.waterDisplayMode(mod)
-    end
   end
   local world = mod.world
   local game = world and world.game
@@ -944,86 +770,8 @@ end
 -- Back-compat alias used during transition.
 Config.migrateGrassEncountersOption = Config.migrateRandomEncountersOption
 
-local VALID_WATER_MODES = {
-  swimming_sprites = true,
-  hidden_silhouettes = true,
-  silhouettes = true,
-  classic_encounters = true,
-  disabled = true,
-}
-
-local WATER_MODE_CONFIRM = {
-  swimming_sprites = "SWIM SPRITES",
-  hidden_silhouettes = "HID SILHOUETTE",
-  silhouettes = "SILHOUETTES",
-  classic_encounters = "CLASSIC ENC",
-  disabled = "DISABLED",
-}
-
-Config.VALID_WATER_MODES = VALID_WATER_MODES
-Config.WATER_MODE_CONFIRM = WATER_MODE_CONFIRM
-
-local function coerceWaterMode(value)
-  if value == true or value == "true" or value == "on" or value == "ON" then
-    return "swimming_sprites"
-  end
-  if value == false or value == "false" or value == "off" or value == "OFF" then
-    -- Legacy OFF: no visible water mons; classic rolls still followed Random Enc.
-    return "classic_encounters"
-  end
-  if type(value) == "string" and VALID_WATER_MODES[value] then
-    return value
-  end
-  return nil
-end
-
--- Public Water Mons choice (string mode). Migrates legacy boolean saves.
-function Config.waterDisplayMode(mod)
-  local raw, present = Config.peekSavedOption(mod, "water_spawns")
-  if present then
-    local mode = coerceWaterMode(raw)
-    if mode then return mode end
-  end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local v = mod.options:get("water_spawns")
-    local mode = coerceWaterMode(v)
-    if mode then return mode end
-    local legacy = mod.options:get("enable_water_spawns")
-    if legacy ~= nil then
-      return coerceWaterMode(legacy) or "swimming_sprites"
-    end
-  end
-  local def = Config.DEFAULTS.water_spawns
-  return coerceWaterMode(def) or "swimming_sprites"
-end
-
-function Config.migrateWaterDisplayMode(mod)
-  local mode = Config.waterDisplayMode(mod)
-  local function write(bucket)
-    if type(bucket) ~= "table" then return end
-    bucket[mod.id] = bucket[mod.id] or {}
-    local cur = bucket[mod.id].water_spawns
-    if cur == true or cur == false or cur == nil
-       or (type(cur) == "string" and not VALID_WATER_MODES[cur]) then
-      bucket[mod.id].water_spawns = mode
-    end
-    bucket[mod.id].enable_water_spawns = (mode == "swimming_sprites"
-      or mode == "hidden_silhouettes"
-      or mode == "silhouettes")
-  end
-  local world = mod.world
-  local game = world and world.game
-  if game and game.save and game.save.options then
-    game.save.options.modOptions = game.save.options.modOptions or {}
-    write(game.save.options.modOptions)
-  end
-  if game and game.mods then
-    if game.mods.modOptions then write(game.mods.modOptions) end
-    if game.mods.loader and game.mods.loader.modOptions then
-      write(game.mods.loader.modOptions)
-    end
-  end
-  return mode
+function Config.waterDisplayMode(_mod)
+  return Config.LOCKED.water_spawns
 end
 
 -- True when visible water overworld entities may spawn
@@ -1033,14 +781,6 @@ function Config.waterMons(mod)
   return mode == "swimming_sprites"
     or mode == "hidden_silhouettes"
     or mode == "silhouettes"
-end
-
-function Config.waterClassicEncountersForced(mod)
-  return Config.waterDisplayMode(mod) == "classic_encounters"
-end
-
-function Config.waterEncountersDisabled(mod)
-  return Config.waterDisplayMode(mod) == "disabled"
 end
 
 -- Encounter silhouette mode: "off" | "undiscovered" | "all".
@@ -1125,44 +865,7 @@ function Config.maxWaterMons(mod)
       or Config.DEFAULTS.max_water_mons or 12
 end
 
--- Central setter for Spawn Amount (Start Menu). Same key as legacy Mod Settings.
--- opts: { game=, logic=, confirm=, message= }
-function Config.setSpawnAmount(mod, value, source, opts)
-  opts = opts or {}
-  value = tostring(value or "")
-  if not VALID_SPAWN_AMOUNTS[value] then
-    return false, "invalid spawn_density: " .. value
-  end
-
-  local game = resolveGame(mod, opts)
-  writeOptionBucket(mod, game, "spawn_density", value)
-
-  local logic = opts.logic
-  if not logic and mod and mod.exports then
-    logic = mod.exports.logic
-  end
-  if logic and type(logic.applySpawnAmount) == "function" then
-    pcall(logic.applySpawnAmount, logic, value, source)
-  elseif logic and type(logic.onOptionsChanged) == "function" then
-    pcall(logic.onOptionsChanged, logic, {
-      mod = mod.id, key = "spawn_density", value = value, source = source,
-    })
-  end
-
-  local confirmMsg = opts.message
-  if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "SPAWN: " .. (SPAWN_AMOUNT_CONFIRM[value] or value:upper())
-  end
-  confirmText(game, mod, confirmMsg)
-
-  if source and mod and mod.log and type(mod.log.info) == "function" then
-    pcall(mod.log.info, mod.log,
-      "spawn_density set to %s via %s", value, tostring(source))
-  end
-  return true, value
-end
-
--- Central setter for Random Enc (Start Menu + Mod Settings).
+-- Central setter for Classic Encounters (Start Menu + Mod Settings).
 -- opts: { game=, logic=, confirm=, message= }
 function Config.setRandomEncounters(mod, value, source, opts)
   opts = opts or {}
@@ -1194,7 +897,7 @@ function Config.setRandomEncounters(mod, value, source, opts)
 
   local confirmMsg = opts.message
   if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "RANDOM: " .. (on and "ON" or "OFF")
+    confirmMsg = "CLASSIC ENC: " .. (on and "ON" or "OFF")
   end
   confirmText(game, mod, confirmMsg)
 
@@ -1205,88 +908,9 @@ function Config.setRandomEncounters(mod, value, source, opts)
   return true, on
 end
 
-function Config.setWaterMons(mod, value, source, opts)
-  opts = opts or {}
-  local mode = coerceWaterMode(value)
-  if not mode then
-    return false, "invalid water_spawns: " .. tostring(value)
-  end
-
-  local game = resolveGame(mod, opts)
-  local spawnOn = (mode == "swimming_sprites"
-    or mode == "hidden_silhouettes"
-    or mode == "silhouettes")
-  writeOptionBucket(mod, game, "water_spawns", mode)
-  writeOptionBucket(mod, game, "enable_water_spawns", spawnOn)
-
-  local logic = opts.logic
-  if not logic and mod and mod.exports then
-    logic = mod.exports.logic
-  end
-  if logic and type(logic.applyWaterMons) == "function" then
-    pcall(logic.applyWaterMons, logic, spawnOn, source, mode)
-  elseif logic and type(logic.onOptionsChanged) == "function" then
-    pcall(logic.onOptionsChanged, logic, {
-      mod = mod.id, key = "water_spawns", value = mode, source = source,
-    })
-  end
-
-  local confirmMsg = opts.message
-  if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "WATER: " .. (WATER_MODE_CONFIRM[mode] or mode:upper())
-  end
-  confirmText(game, mod, confirmMsg)
-
-  if source and mod and mod.log and type(mod.log.info) == "function" then
-    pcall(mod.log.info, mod.log,
-      "water_spawns set to %s via %s", tostring(mode), tostring(source))
-  end
-  return true, mode
-end
-
--- Alias used by menus / docs.
-Config.setWaterDisplayMode = Config.setWaterMons
-
-local VALID_CAVE_MODES = {
-  reachable = true,
-  mixed = true,
-}
-
-local CAVE_MODE_CONFIRM = {
-  reachable = "REACHABLE ONLY",
-  mixed = "MIXED",
-}
-
-Config.VALID_CAVE_MODES = VALID_CAVE_MODES
-Config.CAVE_MODE_CONFIRM = CAVE_MODE_CONFIRM
-
-local function coerceCaveMode(value)
-  if value == true or value == "true" or value == "on" or value == "ON"
-     or value == "strict" or value == "reachable_only" then
-    return "reachable"
-  end
-  if value == false or value == "false" or value == "off" or value == "OFF"
-     or value == "classic" then
-    return "mixed"
-  end
-  if type(value) == "string" and VALID_CAVE_MODES[value] then
-    return value
-  end
-  return nil
-end
-
+-- Cave Spawns is locked to Reachable Only (Config.LOCKED); old saved "mixed" values are ignored.
 function Config.caveSpawnMode(mod)
-  local raw, present = Config.peekSavedOption(mod, "cave_spawns")
-  if present then
-    local mode = coerceCaveMode(raw)
-    if mode then return mode end
-  end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local v = mod.options:get("cave_spawns")
-    local mode = coerceCaveMode(v)
-    if mode then return mode end
-  end
-  return coerceCaveMode(Config.DEFAULTS.cave_spawns) or "reachable"
+  return Config.get(mod, "cave_spawns")
 end
 
 function Config.caveSpawnsMixed(mod)
@@ -1296,60 +920,6 @@ end
 function Config.caveSpawnsEnabled(mod)
   if Config.get(mod, "enable_cave_spawns") == false then return false end
   return true
-end
-
-function Config.migrateCaveSpawnMode(mod)
-  local mode = Config.caveSpawnMode(mod)
-  local function write(bucket)
-    if type(bucket) ~= "table" then return end
-    bucket[mod.id] = bucket[mod.id] or {}
-    local cur = bucket[mod.id].cave_spawns
-    if cur == nil or not VALID_CAVE_MODES[cur] then
-      bucket[mod.id].cave_spawns = mode
-    end
-  end
-  local world = mod.world
-  local game = world and world.game
-  if game and game.save and game.save.options then
-    game.save.options.modOptions = game.save.options.modOptions or {}
-    write(game.save.options.modOptions)
-  end
-  if game and game.mods then
-    if game.mods.modOptions then write(game.mods.modOptions) end
-    if game.mods.loader and game.mods.loader.modOptions then
-      write(game.mods.loader.modOptions)
-    end
-  end
-  return mode
-end
-
-function Config.setCaveSpawnMode(mod, value, source, opts)
-  opts = opts or {}
-  local mode = coerceCaveMode(value)
-  if not mode then
-    return false, "invalid cave_spawns: " .. tostring(value)
-  end
-  local game = resolveGame(mod, opts)
-  writeOptionBucket(mod, game, "cave_spawns", mode)
-
-  local logic = opts.logic
-  if not logic and mod and mod.exports then
-    logic = mod.exports.logic
-  end
-  if logic and type(logic.applyCaveSpawnMode) == "function" then
-    pcall(logic.applyCaveSpawnMode, logic, mode, source)
-  elseif logic and type(logic.onOptionsChanged) == "function" then
-    pcall(logic.onOptionsChanged, logic, {
-      mod = mod.id, key = "cave_spawns", value = mode, source = source,
-    })
-  end
-
-  local confirmMsg = opts.message
-  if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "CAVE: " .. (CAVE_MODE_CONFIRM[mode] or mode:upper())
-  end
-  confirmText(game, mod, confirmMsg)
-  return true, mode
 end
 
 function Config.pokemonGrassRenderMode(mod)
@@ -1383,56 +953,56 @@ function Config.refillSteps(mod)
   return tonumber(v) or Config.DEFAULTS.spawn_every_steps
 end
 
--- ------- Sprite Fade (Solid / Faded)
+-- ------- Town Pokémon (ambient NPCs)
 
-local VALID_SPRITE_FADE = { solid = true, faded = true }
-local SPRITE_FADE_CONFIRM = { solid = "SOLID", faded = "FADED" }
-Config.VALID_SPRITE_FADE = VALID_SPRITE_FADE
-Config.SPRITE_FADE_CONFIRM = SPRITE_FADE_CONFIRM
-Config.SPRITE_FADE_ALPHA = Config.DEFAULTS.sprite_fade_alpha or 0.72
-
-local function coerceSpriteFade(value)
-  if value == "solid" or value == "SOLID" or value == 1 or value == 1.0
-     or value == "1" or value == "1.0" then
-    return "solid"
+function Config.townPokemonEnabled(mod)
+  local raw, present = Config.peekSavedOption(mod, "town_pokemon")
+  if present then
+    return raw == true
   end
-  if value == "faded" or value == "FADED" or value == "tucked" or value == "faint"
-     or value == 0.88 or value == 0.72 or value == "0.88" or value == "0.72" then
-    return "faded"
+  if mod and mod.options and type(mod.options.get) == "function" then
+    local v = mod.options:get("town_pokemon")
+    if v ~= nil then return v == true end
   end
-  if type(value) == "number" then
-    if value >= 0.999 then return "solid" end
-    if value > 0 then return "faded" end
-  end
-  if type(value) == "string" and VALID_SPRITE_FADE[value] then
-    return value
-  end
-  return nil
+  -- Do not treat Followers EX wilds_town_spawns (battleable borrow) as this.
+  return Config.DEFAULTS.town_pokemon == true
 end
 
-function Config.spriteFade(mod)
-  local raw, present = Config.peekSavedOption(mod, "sprite_fade")
-  if present then
-    local mode = coerceSpriteFade(raw)
-    if mode then return mode end
+function Config.setTownPokemon(mod, value, source, opts)
+  opts = opts or {}
+  local on = (value == true or value == "on" or value == "ON" or value == "true")
+  if value == false or value == "off" or value == "OFF" or value == "false" then
+    on = false
+  elseif value ~= true and value ~= "on" and value ~= "ON" and value ~= "true" then
+    if type(value) ~= "boolean" then
+      return false, "invalid town_pokemon: " .. tostring(value)
+    end
   end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local v = mod.options:get("sprite_fade")
-    local mode = coerceSpriteFade(v)
-    if mode then return mode end
+  local game = resolveGame(mod, opts)
+  writeOptionBucket(mod, game, "town_pokemon", on)
+
+  local ambient = opts.ambient
+  if not ambient and mod and mod.exports then
+    ambient = mod.exports.ambient
   end
-  -- Legacy numeric sprite_opacity (pre-1.0.0 public option).
-  local legacy, legPresent = Config.peekSavedOption(mod, "sprite_opacity")
-  if legPresent then
-    local mode = coerceSpriteFade(legacy)
-    if mode then return mode end
+  if ambient and type(ambient.onTownPokemonToggled) == "function" then
+    pcall(ambient.onTownPokemonToggled, ambient, on, game)
   end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local legacyOpt = mod.options:get("sprite_opacity")
-    local mode = coerceSpriteFade(legacyOpt)
-    if mode then return mode end
+
+  local confirmMsg = opts.message
+  if not confirmMsg and opts.confirm ~= false then
+    confirmMsg = "TOWN: " .. (on and "ON" or "OFF")
   end
-  return coerceSpriteFade(Config.DEFAULTS.sprite_fade) or "solid"
+  confirmText(game, mod, confirmMsg)
+  return true, on
+end
+
+-- ------- Sprite Fade (Solid / Faded)
+
+Config.SPRITE_FADE_ALPHA = Config.DEFAULTS.sprite_fade_alpha or 0.72
+
+function Config.spriteFade(_mod)
+  return Config.LOCKED.sprite_fade
 end
 
 function Config.spriteOpacity(mod)
@@ -1440,66 +1010,6 @@ function Config.spriteOpacity(mod)
     return tonumber(Config.DEFAULTS.sprite_fade_alpha) or 0.72
   end
   return 1.0
-end
-
-function Config.migrateSpriteFadeOption(mod)
-  local mode = Config.spriteFade(mod)
-  local function write(bucket)
-    if type(bucket) ~= "table" then return end
-    bucket[mod.id] = bucket[mod.id] or {}
-    if bucket[mod.id].sprite_fade == nil
-       or not VALID_SPRITE_FADE[bucket[mod.id].sprite_fade] then
-      bucket[mod.id].sprite_fade = mode
-    end
-    -- Keep legacy numeric in sync for old readers; do not delete.
-    if bucket[mod.id].sprite_opacity == nil then
-      bucket[mod.id].sprite_opacity = (mode == "faded")
-        and (tonumber(Config.DEFAULTS.sprite_fade_alpha) or 0.72) or 1.0
-    end
-  end
-  local world = mod.world
-  local game = world and world.game
-  if game and game.save and game.save.options then
-    game.save.options.modOptions = game.save.options.modOptions or {}
-    write(game.save.options.modOptions)
-  end
-  if game and game.mods then
-    if game.mods.modOptions then write(game.mods.modOptions) end
-    if game.mods.loader and game.mods.loader.modOptions then
-      write(game.mods.loader.modOptions)
-    end
-  end
-  return mode
-end
-
-function Config.setSpriteFade(mod, value, source, opts)
-  opts = opts or {}
-  local mode = coerceSpriteFade(value)
-  if not mode then
-    return false, "invalid sprite_fade: " .. tostring(value)
-  end
-  local game = resolveGame(mod, opts)
-  local alpha = (mode == "faded")
-    and (tonumber(Config.DEFAULTS.sprite_fade_alpha) or 0.72) or 1.0
-  writeOptionBucket(mod, game, "sprite_fade", mode)
-  writeOptionBucket(mod, game, "sprite_opacity", alpha)
-
-  local logic = opts.logic
-  if not logic and mod and mod.exports then
-    logic = mod.exports.logic
-  end
-  if logic and type(logic.onOptionsChanged) == "function" then
-    pcall(logic.onOptionsChanged, logic, {
-      mod = mod.id, key = "sprite_fade", value = mode, source = source,
-    })
-  end
-
-  local confirmMsg = opts.message
-  if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "FADE: " .. (SPRITE_FADE_CONFIRM[mode] or mode:upper())
-  end
-  confirmText(game, mod, confirmMsg)
-  return true, mode
 end
 
 -- ------- Sprite Color (removed)
@@ -1658,50 +1168,6 @@ function Config.setSpriteColor(mod, value, source, opts)
   end
   confirmText(game, mod, confirmMsg)
   return true, "colored", refreshed
-end
-
--- ------- Town Pokémon (ambient NPCs)
-
-function Config.townPokemonEnabled(mod)
-  local raw, present = Config.peekSavedOption(mod, "town_pokemon")
-  if present then
-    return raw == true
-  end
-  if mod and mod.options and type(mod.options.get) == "function" then
-    local v = mod.options:get("town_pokemon")
-    if v ~= nil then return v == true end
-  end
-  -- Do not treat Followers EX wilds_town_spawns (battleable borrow) as this.
-  return Config.DEFAULTS.town_pokemon == true
-end
-
-function Config.setTownPokemon(mod, value, source, opts)
-  opts = opts or {}
-  local on = (value == true or value == "on" or value == "ON" or value == "true")
-  if value == false or value == "off" or value == "OFF" or value == "false" then
-    on = false
-  elseif value ~= true and value ~= "on" and value ~= "ON" and value ~= "true" then
-    if type(value) ~= "boolean" then
-      return false, "invalid town_pokemon: " .. tostring(value)
-    end
-  end
-  local game = resolveGame(mod, opts)
-  writeOptionBucket(mod, game, "town_pokemon", on)
-
-  local ambient = opts.ambient
-  if not ambient and mod and mod.exports then
-    ambient = mod.exports.ambient
-  end
-  if ambient and type(ambient.onTownPokemonToggled) == "function" then
-    pcall(ambient.onTownPokemonToggled, ambient, on, game)
-  end
-
-  local confirmMsg = opts.message
-  if not confirmMsg and opts.confirm ~= false then
-    confirmMsg = "TOWN: " .. (on and "ON" or "OFF")
-  end
-  confirmText(game, mod, confirmMsg)
-  return true, on
 end
 
 function Config.indoorPokemonEnabled(mod)

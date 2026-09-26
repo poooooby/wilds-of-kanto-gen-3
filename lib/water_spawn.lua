@@ -8,7 +8,6 @@
 local V = ...
 local Config = V.require("config")
 local EncounterPick = V.require("encounter_pick")
-local Gen9Encounters = V.require("gen9_encounters")
 
 local WaterSpawn = {}
 
@@ -218,15 +217,6 @@ local function appendSlots(out, slots, tier, source, defaultWeight)
   end
 end
 
--- Super Rod group for `mapId`, routed through the modern encounter overlay (a no-op unless the
--- dex is expanded) so visible water/fishing spots agree with what the rod actually rolls.
-local function superRodGroup(game, mapId, group)
-  if type(group) ~= "table" then return group end
-  local ok, replaced = pcall(Gen9Encounters.fishingPool, V.mod, game, mapId, "SUPER_ROD", group)
-  if ok and type(replaced) == "table" then return replaced end
-  return group
-end
-
 local function fishingDef(game, rod)
   local field = game and game.data and game.data.field
   local fishing = field and field.fishing
@@ -273,10 +263,10 @@ function WaterSpawn.rodSlotsForMap(game, mapId)
 
   local superDef = fishingDef(game, "SUPER_ROD")
   local field = game and game.data and game.data.field
+  local Bridge = V.require("modern_spawns_bridge")
   if superDef and superDef.perMap and field then
     local groups = field[superDef.perMap]
-    local group = groups and mapId and groups[mapId]
-    group = superRodGroup(game, mapId, group)
+    local group = Bridge.superRod(mapId, groups and mapId and groups[mapId])
     if type(group) == "table" then
       for _, slot in ipairs(group) do
         out.super[#out.super + 1] = {
@@ -287,7 +277,7 @@ function WaterSpawn.rodSlotsForMap(game, mapId)
       end
     end
   elseif type(field) == "table" and type(field.superRod) == "table" and mapId then
-    local group = superRodGroup(game, mapId, field.superRod[mapId])
+    local group = Bridge.superRod(mapId, field.superRod[mapId])
     if type(group) == "table" then
       for _, slot in ipairs(group) do
         out.super[#out.super + 1] = {
@@ -401,8 +391,8 @@ end
 -- Build deduplicated visible water pool for a map.
 -- Returns { entries = {...}, bySource = {...}, diagnostics = {...} }
 function WaterSpawn.buildPool(game, mapId, encDef)
-  encDef = encDef or (game and game.data and game.data.encounters
-                      and mapId and game.data.encounters[mapId])
+  encDef = encDef or (game and game.data and game.data.encounters and mapId
+    and V.require("modern_spawns_bridge").gen1Def(mapId, game.data.encounters[mapId]))
   local raw = {}
 
   -- 1) Surf / water table (preserve bucket weights).

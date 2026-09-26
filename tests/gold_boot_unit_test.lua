@@ -60,8 +60,6 @@ local optionStore = {
   follow_control = "trainer",
   trainer_trail = false,
   follower_count = 1,
-  town_pokemon = true,
-  overworld_catching = true,
 }
 local wrapped = {}
 local events = {}
@@ -89,7 +87,7 @@ local goldGame = {
 
 local mod = {
   path = ".",
-  id = "overworld_wild_spawns",
+  id = "wilds_of_kanto_gen3",
   game = goldGame,
   log = {
     info = function(_, fmt, ...)
@@ -174,8 +172,8 @@ if GameCompat then
      "encounters capability true")
   eq(GameCompat.supportsFeature("followers", mod, goldGame), true,
      "followers capability true")
-  eq(GameCompat.supportsFeature("catching", mod, goldGame), true,
-     "catching capability true")
+  check(GameCompat.supportsFeature("catching", mod, goldGame) ~= true,
+        "overworld catching moved out of this mod")
   eq(GameCompat.supportsFeature("ambient", mod, goldGame), true,
      "ambient capability true")
   eq(GameCompat.supportsFeature("safari", mod, goldGame), false,
@@ -206,11 +204,7 @@ if follower then
   eq(follower._supported, true, "install recorded Gold support")
 end
 
-local catching = mod.exports.catching
-check(catching ~= nil, "catching object exists")
-if catching then
-  eq(catching._registered, true, "catching hooks registered on Gold")
-end
+check(mod.exports.catching == nil, "no catching export (moved out of this mod)")
 
 local ambient = mod.exports.ambient
 check(ambient ~= nil, "ambient object exists")
@@ -262,7 +256,6 @@ check(modsOk, "mods.loaded on Gold does not throw (" .. tostring(modsErr) .. ")"
 eq(wrappedHook("encounter.roll"), true, "map.entered keeps encounter.roll wrap")
 eq(follower._installed, true, "map.entered keeps followers installed")
 eq(ambient._installed, true, "map.entered keeps ambient installed")
-eq(catching._registered, true, "map.entered keeps catching registered")
 
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))

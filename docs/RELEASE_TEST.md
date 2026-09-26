@@ -27,16 +27,16 @@ wilds-of-kanto-v1.0.2.zip
 ## B. Gen1Recomp Mod Manager update path
 
 1. Install an older packaged build (or temporarily set the installed mod to an
-   older `version` while keeping id `overworld_wild_spawns`).
+   older `version` while keeping id `wilds_of_kanto_gen3`).
 2. Publish a newer GitHub Release (for example `v1.0.2` after a `1.0.0` install).
 3. Open or refresh the Gen1Recomp Mod Manager.
 4. Confirm the manager associates the mod with
-   `YoDrehDenSwagAuf/overworld-spawn-mod` via the manifest `github` field.
+   `poooooby/wilds-of-kanto-gen-3` via the manifest `github` field.
 5. Confirm the newer release is listed / offered as an update.
 6. Install the update.
 7. Confirm:
 
-   - Mod id remains `overworld_wild_spawns`
+   - Mod id remains `wilds_of_kanto_gen3`
    - Saved settings that still use the same internal keys remain intact
    - `manifest.json` version is `1.0.2`
    - Wild Pokemon still render via native SpriteRenderer sheets

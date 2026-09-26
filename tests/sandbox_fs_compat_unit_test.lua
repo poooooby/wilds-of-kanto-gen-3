@@ -52,13 +52,13 @@ debug = nil
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end, error = function() end },
     find = function() return nil end,
     read = function(_, rel) return readFile(rel) end,
     assets = {
-      path = function(_, rel) return "mods/overworld_wild_spawns/" .. rel end,
+      path = function(_, rel) return "mods/wilds_of_kanto_gen3/" .. rel end,
     },
     options = { get = function() return nil end },
   },

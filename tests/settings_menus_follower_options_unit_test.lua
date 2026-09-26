@@ -17,7 +17,7 @@ local function eq(a, b, msg)
 end
 
 local modOptions = {
-  overworld_wild_spawns = {
+  wilds_of_kanto_gen3 = {
     follow_control = "trainer",
     trainer_trail = false,
     follower_count = 1,
@@ -50,13 +50,13 @@ local game = {
 local modules = {}
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     world = { game = game },
     options = {
       get = function(_, k)
-        local b = modOptions.overworld_wild_spawns
+        local b = modOptions.wilds_of_kanto_gen3
         return b and b[k]
       end,
       -- intentionally no :set
@@ -143,7 +143,7 @@ menus:setOptionsChangedHandler(handleOptionsChanged)
 check(V.mod.options.set == nil, "no mod.options:set in test (engine parity)")
 
 menus:_applyFollowerCount(game, 3)
-eq(modOptions.overworld_wild_spawns.follower_count, 3,
+eq(modOptions.wilds_of_kanto_gen3.follower_count, 3,
    "test_custom_menu_follower_count_updates_option")
 eq(game.save.pokepcFollowerCount, 3,
    "test_custom_menu_follower_count_updates_save_mirror")
@@ -160,16 +160,16 @@ menus:_applyFollowerCount(game, 3)
 check(syncAllCalls == before + 1, "test_custom_menu_follower_count_syncs_runtime")
 eq(handlerCalls[#handlerCalls].source, "options_menu", "shared handler source")
 
-modOptions.overworld_wild_spawns.follow_control = "pokemon"
-modOptions.overworld_wild_spawns.trainer_trail = false
+-- Control Mode / Trainer Trail are locked (trainer, off): a stale saved "pokemon" is ignored.
+modOptions.wilds_of_kanto_gen3.follow_control = "pokemon"
+modOptions.wilds_of_kanto_gen3.trainer_trail = true
 menus:_applyFollowerCount(game, 0)
-eq(modOptions.overworld_wild_spawns.follower_count, 0,
+eq(modOptions.wilds_of_kanto_gen3.follower_count, 0,
    "test_custom_menu_follower_count_zero option")
-eq(settings:engineMode(game), "pokemon", "engineMode pokemon at 0")
-eq(game.save.pokepcControlMode, "pokemon", "save mode pokemon")
+eq(settings:engineMode(game), "follow", "locked trainer control at 0")
 
 menus:_applyFollowerCount(game, 2)
-eq(settings:engineMode(game), "pack", "engineMode pack at 2")
+eq(settings:engineMode(game), "follow", "locked trainer control at 2")
 
 menus:_applyFollowerCount(game, 5)
 local root = menus:_openFollowersRoot(game)
@@ -179,16 +179,16 @@ for _, it in ipairs(root.items) do
 end
 eq(right, "5", "test_custom_menu_follower_count_root_refresh")
 
-handlerCalls = {}
-menus:_applyControlMode(game, "pokemon")
-eq(modOptions.overworld_wild_spawns.follow_control, "pokemon", "control mode option")
-eq(handlerCalls[#handlerCalls].key, "follow_control", "control mode uses shared handler")
-
-handlerCalls = {}
-menus:_applyTrainerTrail(game, true)
-eq(modOptions.overworld_wild_spawns.trainer_trail, true, "trainer trail option")
-eq(handlerCalls[#handlerCalls].key, "trainer_trail", "trail uses shared handler")
-eq(settings:engineMode(game), "lead_trainer", "trail on → lead_trainer")
+-- The Followers menu only offers the follower count now.
+local labels = {}
+for _, it in ipairs(root.items) do labels[#labels + 1] = it.label end
+local joined = table.concat(labels, ",")
+check(not joined:find("CONTROL", 1, true), "no CONTROL row")
+check(not joined:find("TRAIL", 1, true), "no TRAIL row")
+check(menus._applyControlMode == nil and menus._applyTrainerTrail == nil,
+      "control / trail apply helpers removed")
+check(settings:setEngineMode(game, "pokemon") == true, "setEngineMode accepts a known mode")
+eq(settings:engineMode(game), "follow", "setEngineMode cannot leave trainer control")
 
 if failures > 0 then
   io.stderr:write(failures .. " failure(s)\n")

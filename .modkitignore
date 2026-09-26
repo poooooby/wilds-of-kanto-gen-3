@@ -11,7 +11,6 @@ tests/battle_art_variable_geometry_unit_test.lua
 tests/battle_return_reconcile_unit_test.lua
 tests/behavior_live_options_unit_test.lua
 tests/behavior_tick_perf_unit_test.lua
-tests/catch_hud_render_ownership_unit_test.lua
 tests/cave_ledge_tile_pair_unit_test.lua
 tests/cave_map_npc_blocking_unit_test.lua
 tests/cave_reachability_mixed_unit_test.lua
@@ -33,23 +32,13 @@ tests/followers_water_compat_unit_test.lua
 tests/follower_trail_spacing_unit_test.lua
 tests/follower_water_movement_unit_test.lua
 tests/game_compat_unit_test.lua
-tests/gen9_encounters_data_unit_test.lua
-tests/gen9_encounters_unit_test.lua
-tests/gen9_encounters_levels_audit_unit_test.lua
 tests/gen2_unown_unit_test.lua
 tests/ghost_disguise_unit_test.lua
-tests/overworld_catch_ghost_dodge_unit_test.lua
 tests/cave_reachability_gold_unit_test.lua
 tests/cave_reachability_gold_data_unit_test.lua
 tests/unown_forms_unit_test.lua
 tests/terrarium_swimmer_flag_unit_test.lua
-tests/gen1_catching_compat_unit_test.lua
 tests/gen2_aggro_unit_test.lua
-tests/gen2_catch_frame_unit_test.lua
-tests/gen2_catch_hud_layout_unit_test.lua
-tests/gen2_catching_compat_unit_test.lua
-tests/gen2_catch_projectile_unit_test.lua
-tests/gen2_catch_runtime_unit_test.lua
 tests/gen2_encounters_unit_test.lua
 tests/gen2_follower_runtime_unit_test.lua
 tests/gen2_followers_unit_test.lua
@@ -69,14 +58,6 @@ tests/manifest_targets_unit_test.lua
 tests/native_hgss_prototype_unit_test.lua
 tests/native_sprite_sheets_unit_test.lua
 tests/occupancy_dirty_unit_test.lua
-tests/overworld_catch_easter_unit_test.lua
-tests/overworld_catch_flow_unit_test.lua
-tests/overworld_catch_hud_sfx_unit_test.lua
-tests/overworld_catch_input_unit_test.lua
-tests/overworld_catch_math_unit_test.lua
-tests/overworld_catch_preview_unit_test.lua
-tests/overworld_catch_projectile_assets_unit_test.lua
-tests/overworld_catch_target_unit_test.lua
 tests/overworld_wild_spawns_test.lua
 tests/perf_bench_harness.lua
 tests/perf_stats_unit_test.lua
@@ -85,7 +66,6 @@ tests/player_pokemon_sprite_unit_test.lua
 tests/poke_followers_assets_unit_test.lua
 tests/public_settings_audit_unit_test.lua
 tests/random_enc_unit_test.lua
-tests/random_spawns_unit_test.lua
 tests/render_diagnostics_unit_test.lua
 tests/runtime_sheet_walk_frames_unit_test.lua
 tests/safari_compat_unit_test.lua
@@ -99,7 +79,6 @@ tests/shiny_unit_test.lua
 tests/shiny_gen2_unit_test.lua
 tests/special_spawn_safety_unit_test.lua
 tests/species_assets_unit_test.lua
-tests/species_flags_data_unit_test.lua
 tests/sprite_atlas_unit_test.lua
 tests/sprite_fade_color_unit_test.lua
 tests/sprite_presentation_unit_test.lua
@@ -147,16 +126,13 @@ assets/enhanced_overworld/Pokemon_Sprites/POKEMON 1.png
 
 # Mapping / sheet generators (repo tooling only; generated assets ship).
 tools/gen1_heights.json
-tools/data/gen9_location_map.json
 tools/generate_followsprites_mapping.ps1
-tools/generate_gen9_encounters.py
 tools/generate_hidden_water_shadow.py
 tools/generate_pika_follower_true_size.py
 tools/generate_runtime_sprite_sheets.ps1
 tools/generate_runtime_sprite_sheets.py
 tools/generate_sprite_atlases.py
 tools/validate_sprite_atlases.py
-tools/generate_species_flags.py
 tools/generate_true_size_runtime.py
 tools/generate_variable_size_prototype.py
 tools/generate_water_runtime_sheets.ps1
@@ -168,4 +144,4 @@ tools/validate_release_version.ps1
 tools/validate_release_zip_hygiene.py
 tools/validate_water_sprites.ps1
 tools/validate_water_sprites.py
-tests/fixtures/spritecollab_mini/
+tests/fixtures/spritecollab_mini/wilds_dev.flag

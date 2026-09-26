@@ -8,7 +8,6 @@ local V = ...
 local Config = V.require("config")
 local AmbientCries = V.require("ambient_cries")
 local EncounterIndex = V.require("encounter_index")
-local Gen9Encounters = V.require("gen9_encounters")
 local DebugLog = V.require("debug_log")
 
 local AmbientPokemon = {}
@@ -194,14 +193,9 @@ function AmbientPokemon.speciesPool(game, mapId, map)
   end
 
   local encounters = game and game.data and game.data.encounters
-  -- Route through the modern encounter overlay (a no-op unless the dex is expanded) so town
-  -- Pokemon borrowed from routes match what spawns there.
+  local Bridge = V.require("modern_spawns_bridge")
   local function tableFor(id)
-    local raw = encounters and encounters[id]
-    if type(raw) ~= "table" then return raw end
-    local ok, overlaid = pcall(Gen9Encounters.overlayFor, V.mod, game, id, raw)
-    if ok and type(overlaid) == "table" then return overlaid end
-    return raw
+    return encounters and Bridge.gen1Def(id, encounters[id])
   end
   local enc = tableFor(mapId)
   if type(enc) == "table" and type(enc.grass) == "table" and type(enc.grass.slots) == "table" then
@@ -237,19 +231,26 @@ function AmbientPokemon.pickSpecies(game, mapId, map)
   return pool[randInt(1, #pool)]
 end
 
-local function cellOccupied(ow, x, y, ignore)
+-- Any other entity/NPC (player included) within `radius` tiles (Chebyshev) of (x,y),
+-- other than `ignore`. Subsumes exact-cell occupancy (radius covers distance 0) and
+-- keeps a buffer around anything already standing nearby, so two ambient Pokemon can
+-- no longer park shoulder-to-shoulder across a narrow gap.
+local function nearAnyEntity(ow, x, y, ignore, radius)
   if not ow then return true end
-  if ow.player and ow.player.cellX == x and ow.player.cellY == y then
-    return true
+  local player = ow.player
+  if player and player.cellX ~= nil and player.cellY ~= nil then
+    if math.max(math.abs(player.cellX - x), math.abs(player.cellY - y)) <= radius then
+      return true
+    end
   end
   local lists = { ow.entities, ow.npcs }
   for _, list in ipairs(lists) do
     if type(list) == "table" then
       for _, e in ipairs(list) do
-        if e and e ~= ignore and e.cellX == x and e.cellY == y then
+        if e and e ~= ignore and e.cellX ~= nil and e.cellY ~= nil then
           if e.passable == true and e.overworldWildOverlay == true then
-            -- debug overlay
-          else
+            -- debug overlay, never blocks
+          elseif math.max(math.abs(e.cellX - x), math.abs(e.cellY - y)) <= radius then
             return true
           end
         end
@@ -258,6 +259,46 @@ local function cellOccupied(ow, x, y, ignore)
   end
   return false
 end
+
+-- Walkable ground only (no water), ignoring warps/doors/counters/occupancy -- just
+-- "can a foot land here at all". Used to measure passage width, not to gate a spawn
+-- outright (isBlockedSpecial already owns the full exact-cell rule).
+local function groundPassable(map, x, y)
+  if not map then return false end
+  if map.inBounds and not map:inBounds(x, y) then return false end
+  if map.isWalkableCell and not map:isWalkableCell(x, y) then return false end
+  if map.isWaterCell and map:isWaterCell(x, y) then return false end
+  return true
+end
+
+--- True when (x,y) is walkable ground reachable only through a single-tile-wide gap:
+-- both its left+right neighbors are blocked (a north-south passage) or both its
+-- up+down neighbors are blocked (an east-west passage) -- the doorway / counter-gap /
+-- bridge shape. Standing in or beside one of these lets a stationary entity fully
+-- block the only route through.
+function AmbientPokemon.isNarrowPassageCell(map, x, y)
+  if not groundPassable(map, x, y) then return false end
+  local vertPinch = not groundPassable(map, x - 1, y) and not groundPassable(map, x + 1, y)
+  local horizPinch = not groundPassable(map, x, y - 1) and not groundPassable(map, x, y + 1)
+  return vertPinch or horizPinch
+end
+
+-- True when a narrow-passage cell (see above) exists within `radius` tiles
+-- (Chebyshev, inclusive of (x,y) itself) of (x,y).
+local function nearNarrowPassage(map, x, y, radius)
+  for dy = -radius, radius do
+    for dx = -radius, radius do
+      if AmbientPokemon.isNarrowPassageCell(map, x + dx, y + dy) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- Buffer (tiles, Chebyshev) kept clear of both narrow passages and other entities so
+-- a stationary/wandering ambient Pokemon can never fully block the player's only route.
+AmbientPokemon.PROXIMITY_RADIUS = 2
 
 local function isBlockedSpecial(map, x, y)
   if not map then return true end
@@ -281,7 +322,8 @@ end
 
 function AmbientPokemon.isSafeSpawnCell(ow, map, x, y, ignore)
   if isBlockedSpecial(map, x, y) then return false end
-  if cellOccupied(ow, x, y, ignore) then return false end
+  if nearAnyEntity(ow, x, y, ignore, AmbientPokemon.PROXIMITY_RADIUS) then return false end
+  if nearNarrowPassage(map, x, y, AmbientPokemon.PROXIMITY_RADIUS) then return false end
   return true
 end
 
@@ -842,19 +884,6 @@ function AmbientPokemon:onBattleEnded(ev)
   return ok, info
 end
 
-function AmbientPokemon:onTownPokemonToggled(on, game)
-  local ow, liveGame = liveOw(self)
-  game = game or liveGame
-  if not on then
-    self:clearAll(ow)
-    return
-  end
-  if ow and ow.map then
-    self.activeMapId = nil -- force respawn
-    self:spawnForMap(game, ow)
-  end
-end
-
 function AmbientPokemon:refreshSprites(game)
   self._spriteCache = {}
   local world = self.mod.world
@@ -950,6 +979,19 @@ function AmbientPokemon:install()
   self:_installTalkWrap()
   self._installed = true
   return true
+end
+
+function AmbientPokemon:onTownPokemonToggled(on, game)
+  local ow, liveGame = liveOw(self)
+  game = game or liveGame
+  if not on then
+    self:clearAll(ow)
+    return
+  end
+  if ow and ow.map then
+    self.activeMapId = nil -- force respawn
+    self:spawnForMap(game, ow)
+  end
 end
 
 function AmbientPokemon:onOptionsChanged(payload)

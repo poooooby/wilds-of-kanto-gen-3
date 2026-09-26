@@ -244,8 +244,20 @@ do
   eq(stepped, 0, "fresh _lastT does not double-run AI")
 end
 
-eq(Config.DEFAULTS.enable_wander, true, "config wander default")
-eq(Config.DEFAULTS.enable_aggressive, true, "config chase default")
+-- Behaviour options are locked (Config.LOCKED): Idle + Roam on, Chase + Hidden off.
+eq(Config.LOCKED.enable_idle, true, "locked idle on")
+eq(Config.LOCKED.enable_wander, true, "locked wander on")
+eq(Config.LOCKED.enable_aggressive, false, "locked chase off")
+eq(Config.LOCKED.enable_hidden, false, "locked hidden off")
+do
+  -- An old save that still has Chase / Hidden on cannot re-enable them.
+  local oldSave = { options = { get = function(_, k)
+    if k == "enable_aggressive" or k == "enable_hidden" then return true end
+    return nil
+  end } }
+  eq(Config.get(oldSave, "enable_aggressive"), false, "saved chase ignored")
+  eq(Config.get(oldSave, "enable_hidden"), false, "saved hidden ignored")
+end
 
 if failures > 0 then
   io.stderr:write(failures .. " failure(s)\n")

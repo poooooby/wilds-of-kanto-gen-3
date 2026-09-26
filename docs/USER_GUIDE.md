@@ -1,16 +1,17 @@
 # Wilds of Kanto Revival — User Guide (1.3.0)
 
 Visible wild Pokemon appear in the overworld. Walk into one to start that exact
-wild battle. **Random Enc** (default ON) controls classic step-based random
-encounters independently of visible overworld Pokémon.
+wild battle. **Classic Enc** (Classic Encounters, default ON) controls classic step-based
+random encounters in grass, caves and water independently of visible overworld Pokémon.
 
 This mod never changes your player spawn point and never requires the Pokédex.
-Technical mod id: `overworld_wild_spawns` (stable for options/saves).
+Technical mod id: `wilds_of_kanto_gen3` (stable for options/saves; the upstream
+project this forks from keeps its own separate id, `overworld_wild_spawns`).
 
 ## 1. What the mod does
 
-- Spawns tangible wild Pokemon (or hidden grass/cave markers) from each map’s real encounter table
-- Behaviours: Idle Look, Grass Wander, Aggressive, Hidden markers, Water Idle/Wander
+- Spawns tangible wild Pokemon from each map’s real encounter table
+- Behaviours: Idle Look, Grass Wander, Water Idle/Wander
 - Density scales with encounter-area size so long routes feel fuller than tiny patches
 - Pokemon in tall grass use the same engine feet-overdraw as the player and NPCs
 - Sprites scale for readability but never exceed one map tile (16×16); transparent
@@ -53,18 +54,16 @@ On map enter the mod:
 4. Computes a target count from density settings
 5. Spawns Pokemon with species/level from the table and a behaviour type
 
-Touching a visible Pokemon (or a hidden marker) starts a battle with **that** species and level.
+Touching a visible Pokemon starts a battle with **that** species and level.
 
-## 7. The four behaviours
+## 7. Behaviours
 
 | Behaviour | What you see | Battle |
 |---|---|---|
 | **Idle Look** | Stands still; glances a new direction every 5–10s | Contact |
 | **Grass Wander** | Walks randomly inside its grass/cave/water region | Contact |
-| **Aggressive** | Spots you in a straight facing line, shows `!`, then chases (may leave grass) | Unavoidable after alert; contact |
-| **Hidden Grass / Cave** | No Pokemon sprite; grass shakes (or cave dust) | Step onto the tile |
 
-Default mix (approximate): Idle 30% · Wander 35% · Aggressive 15% · Hidden 20%. Aggressive weight can be lowered in options.
+Chase and Hidden behaviours are not used; wild Pokemon only idle and roam.
 
 ## 8. How battles are triggered
 
@@ -81,7 +80,7 @@ Target count is roughly:
 clamp(minVisible + floor(eligibleTiles / tilesPerAdditional), min, max)
 ```
 
-adjusted by **Spawn Amount** (Low / Normal / High / Very High).
+using the fixed Normal density.
 
 Long routes with many encounter tiles get more Pokemon. Tiny patches stay sparse. Pokemon are distributed across connected grass/cave/water regions, not all clustered next to you.
 
@@ -99,15 +98,14 @@ Gen1Recomp already draws tall-grass feet overdraw over every entity on a grass c
 |---|---|
 | Surf / water encounter tables | **Supported** for visible water Pokemon on water tiles |
 | Old / Good / Super Rod | Used for **visible** Water Mons pools (shore-distance zones); classic rod battles stay rod-triggered |
-| Land species on water | Only aggressive land chase into water when a Swimming/Levitates sprite exists |
 
-Water Pokemon stay on connected water. Classic Surf / fishing random encounters follow **Random Enc**. Aggressive water Pokemon never leave the water.
+Water Pokemon stay on connected water. Classic Surf random encounters follow **Classic Enc**, the same option as grass and caves. With **Silhouette** on, a wild in the water shows as a dark underwater shape and a wild on land is blacked out, decided by where it stands now.
 
 ## 12. Cave support
 
 Caves often have no tall-grass graphics but still use the grass encounter table indoors. The mod detects indoor/cave maps the same way Gen1Recomp does and spawns on walkable non-warp tiles.
 
-- Behaviours: Idle, Wander, Aggressive, Hidden Cave (dust/shadow — not grass shake)
+- Behaviours: Idle, Wander
 - Vanilla indoor encounter rolls remain the fail-safe if init fails
 
 ## 13. Options
@@ -123,25 +121,21 @@ Gameplay settings live in **Mod Settings** only (not duplicated in the Start men
 |---|---|---|---|---|
 | Show Wild Mons | `enabled` | true | on/off | Master switch |
 | Sprite Style | `sprite_style` | followers | Poke Followers / GSC · HGSS / PokeMMO | Overworld wild + follower land sprites. Size follows style (GSC Classic, HGSS True Size). |
-| Sprite Scale | `dyn_scale` | true | on/off | Custom per-species display-size tuning for HGSS/PokeMMO under Voxel renderers; off = native True Size. |
-| Spawn Amount | `spawn_density` | normal | Low / Normal / High / Very High | Visible land + water density |
-| Random Enc | `random_encounters` | true | on/off | Classic step RNG (grass / cave / water) |
-| Water Mons | `water_spawns` | swimming_sprites | Swim Sprites / Hid Silhouette / Silhouettes / Classic Enc / Disabled | Water presentation mode (default = current swimming sprites) |
-| Cave Spawns | `cave_spawns` | reachable | Reachable Only / Mixed | Player-reachable cave tiles only, or ~20% atmospheric scenery |
+| Classic Enc | `random_encounters` | true | on/off | Classic Encounters: step RNG in grass / cave / water (Surf) |
 | Grass View | `pokemon_grass_render_mode` | immersed | Above / Immersed | Tall-grass presentation |
-| Idle Mons | `enable_idle` | true | on/off | Allow Idle Look |
-| Roam Mons | `enable_wander` | true | on/off | Allow Wander |
-| Chase Mons | `enable_aggressive` | true | on/off | Allow Aggressive |
-| Hidden Mons | `enable_hidden` | true | on/off | Allow Hidden markers |
-| OW Catch | `overworld_catching` | true | on/off | Direct Poké Ball throws at visible wilds |
-| Catch Key | `catch_throw_key` | c | C / V / F / G / R / T | Desktop charge/throw key |
-| Ball Switch | `catch_cycle_key` | q | Q / E / R / F / G / T | Desktop Ball-cycle key |
-| Catch Combo | `catch_throw_combo` | b_a | B+A / Select+A / Disabled | Controller/touch throw combo |
-| Switch Combo | `catch_cycle_combo` | b_dpad | B+Left/Right / Select+Left/Right / Disabled | Controller/touch cycle combo |
-| Catch HUD Size | `catch_hud_size` | 5 | 0–10 | Top-screen Ball HUD size (0 = hidden; catching stays on) |
-| Dev Overlay | `dev_overlay` | false | on/off | Behaviour + facing labels above wild Pokémon |
+| Town Pokemon | `town_pokemon` | true | on/off | Peaceful ambient Pokemon in safe towns and interiors (never block your path) |
+| Shiny Rate | `shiny_rate` | off | Off, %s, Always | Shiny rolls for wild spawns |
+| Silhouette | `wild_silhouettes` | off | Off / Undiscovered / All | Land wilds blacked out; water wilds as a dark underwater shape |
+| Followers | `follower_count` | 1 | 0–6 | Party followers |
 
-**Test Spawn** is an OPTIONS activate row (no schema button type) that opens the
+### Fixed behaviour (no option)
+
+Idle ON, Roam ON, Chase OFF, Hidden OFF, Control Mode Trainer, Trainer Trail OFF, Sprite Scale ON,
+Sprite Fade Solid, Spawn Amount Normal, Shiny Sparkle ON, Water Mons Swim Sprites, Cave Spawns Reachable Only
+(`Config.LOCKED`).
+Overworld catching is no longer part of this mod.
+
+**Test Spawn** (developer only) is an OPTIONS activate row that opens the
 Pokémon list and spawns beside the player.
 
 Density fine-tuning, sprite opacity, legacy aliases, old strict billboard
@@ -150,7 +144,8 @@ runtime defaults remain in code.
 
 ## 14. Dev Overlay & Test Spawn
 
-Enable **Dev Overlay**, then:
+Developer only: create an empty `wilds_dev.flag` file in the mod folder (it is
+never shipped in release builds), then:
 
 1. Read behaviour / facing labels above wild Pokémon
 2. Optionally read the diagnostics HUD (cave reachability, water target/spacing,
@@ -178,7 +173,6 @@ Gen1 wild spawns currently always use the normal variant.
 ## 17. Known limitations
 
 - Battle-front art scaled for overworld is temporary until dedicated OW sheets ship
-- Aggressive AI uses tile steps (not full NPC pixel tweening)
 - Water Pokemon are a best-effort swim presentation; vanilla Surf rolls stay on
 - Fishing Pokemon never free-roam
 - With a Voxel overworld renderer, wild Pokemon use the same world billboards
@@ -188,7 +182,6 @@ Gen1 wild spawns currently always use the normal variant.
   Shape and any renderer without that public module stay Classic 16×16.
   Flat 2D keeps True Size. Stadium2 True Size is billboard/renderer
   compatibility only — not a claim of complete Gen 2 gameplay support.
-- Aggressive chase keeps a stable entity id and uses the engine `!` emote
 
 ## 17b. PMDCollab dialogue portraits
 
@@ -208,11 +201,9 @@ Credits / license: `THIRD_PARTY_ASSETS.md`, `assets/pmdcollab/CREDITS.txt`
 |---|---|
 | No visible Pokemon | Dev Mode HUD: encounter data? eligible tiles? renderer? |
 | Only random grass | Spawn system not READY → vanilla fail-safe is working |
-| Too empty on long routes | Raise **Spawn Amount** |
-| Too crowded | Lower **Spawn Amount** |
 | Prefer classic static sprites | Set **Sprite Style** to **Pokedex** |
 | Prefer Pokemon fully above grass | Set **Grass View** to Above |
-| Want classic feel | Disable Chase / Hidden Mons, or turn Show Wild Mons off |
+| Want classic feel | Turn Show Wild Mons off |
 
 ## 19. Uninstall
 

@@ -48,7 +48,7 @@ end
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     find = function() return nil end,
@@ -71,8 +71,8 @@ local V = {
     },
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -115,8 +115,8 @@ local game = {
   data = {
     pokemon = {},
   },
-  save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-  mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+  save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+  mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
 }
 for key, front in pairs(GOLD_FRONT) do
   game.data.pokemon[key] = {

@@ -22,7 +22,7 @@ local savedOpts = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -37,8 +37,8 @@ local V = {
     end,
     world = {
       game = {
-        save = { options = { modOptions = { overworld_wild_spawns = savedOpts } } },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        save = { options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
       },
     },
   },
@@ -83,30 +83,19 @@ end
 local schema = assert(loadfile("options.lua"))()
 local byKey = {}
 for _, row in ipairs(schema) do byKey[row.key] = row end
-check(byKey.cave_spawns ~= nil, "cave_spawns present")
-eq(byKey.cave_spawns.type, "choice", "cave_spawns is choice")
-eq(byKey.cave_spawns.default, "reachable", "default reachable")
-eq(byKey.cave_spawns.label, "Cave Spawns", "label")
-check(#byKey.cave_spawns.label <= 14, "label <= 14")
-for _, c in ipairs(byKey.cave_spawns.choices) do
-  check(#c[1] <= 14, "choice <= 14: " .. c[1])
-end
-
+-- Cave Spawns is locked to Reachable Only: no public option, old saves can't pick Mixed.
+check(byKey.cave_spawns == nil, "cave_spawns is not a public option")
+eq(Config.LOCKED.cave_spawns, "reachable", "cave_spawns locked reachable")
 savedOpts.cave_spawns = nil
 eq(Config.caveSpawnMode(V.mod), "reachable", "default mode reachable")
 check(not Config.caveSpawnsMixed(V.mod), "default not mixed")
-
-savedOpts.cave_spawns = true
-eq(Config.caveSpawnMode(V.mod), "reachable", "legacy true → reachable")
-savedOpts.cave_spawns = false
-eq(Config.caveSpawnMode(V.mod), "mixed", "legacy false → mixed")
-Config.migrateCaveSpawnMode(V.mod)
-eq(savedOpts.cave_spawns, "mixed", "migrate writes mixed")
-
-Config.setCaveSpawnMode(V.mod, "reachable", "test", {
-  game = V.mod.world.game, confirm = false,
-})
-eq(Config.caveSpawnMode(V.mod), "reachable", "setter reachable")
+for _, old in ipairs({ "mixed", false, "classic" }) do
+  savedOpts.cave_spawns = old
+  eq(Config.caveSpawnMode(V.mod), "reachable", "old save " .. tostring(old) .. " still reachable")
+end
+check(Config.setCaveSpawnMode == nil and Config.migrateCaveSpawnMode == nil,
+      "no cave setter / migration for the locked option")
+savedOpts.cave_spawns = nil
 
 -- ------- Mixed quota -------
 local r, s = CaveReachability.mixedTargets(1)
@@ -215,23 +204,27 @@ check(col[1] < 0.7 and col[3] > 0.5, "scenery purple-ish")
 
 -- ------- Water overlay presentation split -------
 local WaterDisplay = V.require("water_display")
-savedOpts.water_spawns = "silhouettes"
-local waterEnt = { surface = "WATER" }
+-- One Silhouette option: a wild standing in water gets the water silhouette.
+savedOpts.wild_silhouettes = "all"
+local waterEnt = { surface = "WATER", overworldWildSpawn = true, species = "MAGIKARP" }
 check(not WaterDisplay.needsOverlayPresentation(V.mod, waterEnt),
       "silhouettes do not force overlay")
 check(WaterDisplay.needsNativeSilhouetteSheet(V.mod, waterEnt),
-      "silhouettes need native sheet")
+      "water wild with Silhouette ALL needs native water sheet")
 check(WaterDisplay.useNativeSilhouetteSheet(V.mod, waterEnt, true),
-      "voxel silhouettes use native sheet")
+      "voxel water silhouettes use native sheet")
 check(not WaterDisplay.useNativeSilhouetteSheet(V.mod, waterEnt, false),
-      "flat silhouettes keep tint path")
-savedOpts.water_spawns = "hidden_silhouettes"
-check(not WaterDisplay.needsOverlayPresentation(V.mod, waterEnt),
-      "hidden no longer forces emergency overlay")
-check(WaterDisplay.needsNativeHiddenShadow(V.mod, waterEnt),
-      "hidden needs native flat shadow marker")
+      "flat water silhouettes keep tint path")
+check(not WaterDisplay.needsNativeSilhouetteSheet(V.mod,
+        { surface = "GRASS", overworldWildSpawn = true, species = "PIDGEY" }),
+      "land wild never uses the water silhouette sheet")
+check(not WaterDisplay.needsNativeSilhouetteSheet(V.mod, { surface = "WATER", species = "MAGIKARP" }),
+      "non-wild (follower) in water is never silhouetted")
+check(not WaterDisplay.needsNativeHiddenShadow(V.mod, waterEnt),
+      "hidden water marker mode is no longer selectable")
+savedOpts.wild_silhouettes = "off"
 check(not WaterDisplay.needsNativeSilhouetteSheet(V.mod, waterEnt),
-      "hidden does not use native silhouette sheet")
+      "Silhouette OFF: no water silhouette")
 local hiddenAsset = "assets/wilds_generated/water_hidden_runtime/hidden-water-shadow.png"
 local hf = io.open(hiddenAsset, "rb")
 check(hf ~= nil, "hidden water shadow asset exists")

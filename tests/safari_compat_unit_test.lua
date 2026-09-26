@@ -28,7 +28,7 @@ local savedOpts = {
 
 local V = {
   mod = {
-    id = "overworld_wild_spawns",
+    id = "wilds_of_kanto_gen3",
     path = ".",
     log = { info = function() end, warn = function() end },
     options = {
@@ -45,9 +45,9 @@ local V = {
       game = {
         save = {
           safari = { balls = 30, steps = 500 },
-          options = { modOptions = { overworld_wild_spawns = savedOpts } },
+          options = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
         },
-        mods = { modOptions = { overworld_wild_spawns = savedOpts } },
+        mods = { modOptions = { wilds_of_kanto_gen3 = savedOpts } },
         data = {
           maps = {
             SAFARI_ZONE_CENTER = { id = "SAFARI_ZONE_CENTER", region = "SAFARI" },

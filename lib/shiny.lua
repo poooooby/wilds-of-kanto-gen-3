@@ -9,7 +9,7 @@
 --     sprite) and hand the result to the battle they start (setPending / armForBattle), so the mon you
 --     fight is the one you saw;
 --   * classic encounters (steps, Surf, rods) roll inside BattleState.newWild.
--- A caught shiny keeps its shiny DVs (Gen1.createCaughtPokemon), so the follower and party use the
+-- A caught shiny keeps its shiny DVs, so the follower and party use the
 -- shiny sprite. Trainers, gifts, eggs and starters are never touched: Pokemon.new is only altered while
 -- BattleState.newWild is running.
 --
