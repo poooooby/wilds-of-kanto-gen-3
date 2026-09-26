@@ -48,10 +48,11 @@
 > Extended Dex recommendations:
 > - [Kanto Reforged](https://github.com/1Jamie/Kanto-Reforged) - Up to Gen 3 species
 >   OR
-> - [G1R National Dex](https://github.com/sanjinpepic/gen1recomp-national-dex) - National Dex framework
+> - [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
+>   + [G1R National Dex](https://github.com/sanjinpepic/gen1recomp-national-dex) - National Dex framework
 >   + [Gen9 Dex](https://github.com/tectorifter/Gen9Dex) - National dex **combat**
 >   + [G9 Battle Sprites](https://github.com/tectorifter/g9-battle-sprites/) - National dex combat **sprites**
->   + (Optional) [G9 Battle Forms](https://github.com/sanjinpepic/gen1recomp-battle-forms) - Mega, Dynamax, etc in **battle**
+>   + (Optional) [G9 Battle Forms](https://github.com/sanjinpepic/gen1recomp-battle-forms) - Mega, Dynamax, etc **battle**
 
 
 ## 🟨 Pokémon Gold / Gen 2 Support (Beta)

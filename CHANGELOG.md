@@ -8,7 +8,7 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
-## Unreleased (fork)
+## 2.8.0 (fork)
 
 ### Modern Spawns compatibility
 
