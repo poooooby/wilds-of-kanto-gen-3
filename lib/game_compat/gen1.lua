@@ -70,10 +70,47 @@ local function tryRequire(path)
   return nil
 end
 
+--- Case-insensitive sweep of the live species tables AnimatedSprites.
+-- resolveSpeciesId already consults with an EXACT key -- a species
+-- registered under a different casing than the key callers happen to pass
+-- in (e.g. a save's own species-key casing diverging from however a
+-- National Dex expansion mod registered it) would otherwise fall straight
+-- through to Gen1.SPECIES_TO_DEX, which only covers the 151 vanilla Gen1
+-- species and can NEVER resolve anything a National Dex mod adds (152+)
+-- regardless of casing. Checked only after the exact-key path misses, so
+-- this never changes behaviour for the common case.
+local function caseInsensitiveDexLookup(speciesUpper, game, mod)
+  if game and game.data and type(game.data.pokemon) == "table" then
+    for key, def in pairs(game.data.pokemon) do
+      if type(key) == "string" and key:upper() == speciesUpper
+          and def and def.dex ~= nil then
+        local dex = tonumber(def.dex)
+        if dex and dex >= 1 then return math.floor(dex) end
+      end
+    end
+  end
+  if mod and mod.content and mod.content.pokemon and mod.content.pokemon.each then
+    local ok, found = pcall(function()
+      for key, def in mod.content.pokemon:each() do
+        if type(key) == "string" and key:upper() == speciesUpper
+            and def and def.dex ~= nil then
+          local dex = tonumber(def.dex)
+          if dex and dex >= 1 then return math.floor(dex) end
+        end
+      end
+      return nil
+    end)
+    if ok and found then return found end
+  end
+  return nil
+end
+
 --- Resolve a species key to a numeric id using current Gen1 paths.
 -- 1. numeric id → return as-is if a positive integer
--- 2. engine species resolver (AnimatedSprites / game.data / content)
--- 3. existing Gen1 name mapping fallback
+-- 2. engine species resolver (AnimatedSprites / game.data / content), exact key
+-- 3. the same tables, case-insensitive (a National Dex species whose
+--    registered casing differs from the key passed in)
+-- 4. existing Gen1 name mapping fallback (vanilla 1..151 only)
 function Gen1.speciesId(species, game, mod)
   if species == nil then return nil end
   local n = tonumber(species)
@@ -93,7 +130,10 @@ function Gen1.speciesId(species, game, mod)
   end
 
   if type(species) == "string" and species ~= "" then
-    local mapped = Gen1.SPECIES_TO_DEX[species:upper()]
+    local upper = species:upper()
+    local ciDex = caseInsensitiveDexLookup(upper, game, mod)
+    if ciDex then return ciDex end
+    local mapped = Gen1.SPECIES_TO_DEX[upper]
     if mapped then return mapped end
   end
   return nil

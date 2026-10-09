@@ -8,6 +8,19 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.8.1 (fork)
+
+### Fixes
+
+- **National Dex follower sprites falling back to the "?" sprite** (e.g. Uxie) even though the
+  HGSS/True Size art exists on disk. Gen1 species resolution (`GameCompat.speciesId`) tried an
+  exact-key lookup against the live engine species tables, then fell straight through to a
+  hardcoded name→dex table that only covers the vanilla 151 Gen 1 species — which can never
+  resolve any National Dex species (152+) regardless of why the exact-key lookup missed (e.g. a
+  registered-casing mismatch). Added a case-insensitive sweep of those same tables before giving
+  up, so a species whose National Dex mod registration casing differs from the queried key still
+  resolves correctly instead of landing on the missing-sprite fallback.
+
 ## 2.8.0 (fork)
 
 ### Modern Spawns compatibility

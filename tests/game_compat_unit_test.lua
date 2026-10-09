@@ -239,6 +239,57 @@ do
 end
 
 do
+  -- National Dex species (e.g. Uxie, dex 480) resolve via the exact-key
+  -- engine path same as any other species -- the common case, unaffected
+  -- by the new case-insensitive fallback below.
+  setEngineVersion("blue")
+  local game = {
+    data = { pokemon = { UXIE = { name = "Uxie", dex = 480 } } },
+  }
+  eq(GameCompat.speciesId("UXIE", game, V.mod), 480, "exact-key UXIE → 480")
+end
+
+do
+  -- Regression: a National Dex species registered under a DIFFERENT casing
+  -- than the key callers query with must still resolve, not fall through
+  -- to Gen1.SPECIES_TO_DEX (which only covers the vanilla 151 and can never
+  -- help a dex-480 species regardless of casing) and produce a "?" sprite.
+  setEngineVersion("blue")
+  local game = {
+    data = { pokemon = { Uxie = { name = "Uxie", dex = 480 } } }, -- registered Title Case
+  }
+  eq(GameCompat.speciesId("UXIE", game, V.mod), 480,
+     "case-insensitive fallback: UXIE query resolves against a Title-Case game.data.pokemon key")
+
+  -- Same, but only mod.content.pokemon (not game.data.pokemon) carries it.
+  local modWithContent = {
+    path = ".", id = "wilds_of_kanto_gen3",
+    log = { info = function() end, warn = function() end },
+    content = {
+      pokemon = {
+        get = function() return nil end,
+        each = function()
+          local items = { { "Uxie", { name = "Uxie", dex = 480 } } }
+          local i = 0
+          return function()
+            i = i + 1
+            local item = items[i]
+            if not item then return nil end
+            return item[1], item[2]
+          end
+        end,
+      },
+    },
+  }
+  eq(GameCompat.speciesId("UXIE", {}, modWithContent), 480,
+     "case-insensitive fallback also sweeps mod.content.pokemon:each()")
+
+  -- A genuinely unknown species still resolves to nil, not a false match.
+  eq(GameCompat.speciesId("NOTAPOKEMON", game, V.mod), nil,
+     "case-insensitive fallback never invents a match for an unknown species")
+end
+
+do
   -- SpriteService.dexOf is a GameCompat wrapper (mapping still works).
   setEngineVersion("yellow")
   local svc = SpriteService.new(V.mod, {})
