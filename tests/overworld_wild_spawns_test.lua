@@ -15,8 +15,12 @@ T.check(modMeta ~= nil, "loader discovered mod by manifest id")
 T.eq(modMeta.state, "loaded", "mod reached loaded state")
 T.eq(modMeta.manifest.id, "wilds_of_kanto_gen3", "manifest id")
 T.eq(modMeta.manifest.name, "Wilds of Kanto Revival", "manifest name")
-T.check(tostring(modMeta.manifest.version):find("^%d+%.%d+%.%d+$") ~= nil,
-  "manifest declares a semver version (" .. tostring(modMeta.manifest.version) .. ")")
+-- X.Y.Z, or a pre-release X.Y.Z-beta.N / X.Y.Z-rc.N (scripts/release.py)
+local manifestVersion = tostring(modMeta.manifest.version)
+T.check(manifestVersion:find("^%d+%.%d+%.%d+$") ~= nil
+  or manifestVersion:find("^%d+%.%d+%.%d+%-beta%.%d+$") ~= nil
+  or manifestVersion:find("^%d+%.%d+%.%d+%-rc%.%d+$") ~= nil,
+  "manifest declares a semver version (" .. manifestVersion .. ")")
 T.eq(modMeta.manifest.entry, "main.lua", "entry path")
 T.eq(modMeta.manifest.category, "MECHANIC", "category")
 T.eq(modMeta.manifest.api, 2, "mod api version")
