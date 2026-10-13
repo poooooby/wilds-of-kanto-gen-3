@@ -227,7 +227,10 @@ check(tHigh > tLow, "high density > low density")
 local mf = io.open("manifest.json", "r")
 local mft = mf:read("*a")
 mf:close()
-check(mft:find('"version"%s*:%s*"%d+%.%d+%.%d+"') ~= nil, "manifest declares a semver version")
+-- X.Y.Z, or a pre-release X.Y.Z-beta.N / X.Y.Z-rc.N (scripts/release.py)
+check(mft:find('"version"%s*:%s*"%d+%.%d+%.%d+"') ~= nil
+  or mft:find('"version"%s*:%s*"%d+%.%d+%.%d+%-beta%.%d+"') ~= nil
+  or mft:find('"version"%s*:%s*"%d+%.%d+%.%d+%-rc%.%d+"') ~= nil, "manifest declares a semver version")
 
 -- Start menu no longer injects Wilds gameplay settings.
 do

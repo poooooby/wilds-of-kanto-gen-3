@@ -257,10 +257,11 @@ eq(fw.status.lastAction, "style_invalidated", "invalidateStyle works")
 -- manifest.json's, without hardcoding a literal that would go stale every release
 -- (tools/validate_release_version.py is the authoritative check for this).
 local mf = io.open("manifest.json", "r"):read("*a")
-local manifestVersion = mf:match('"version"%s*:%s*"([%d%.]+)"')
+-- (the whole quoted string: a pre-release is X.Y.Z-beta.N / X.Y.Z-rc.N)
+local manifestVersion = mf:match('"version"%s*:%s*"(%d[^"]*)"')
 check(manifestVersion ~= nil, "manifest declares a version")
 local main = io.open("main.lua", "r"):read("*a")
-local exportVersion = main:match('mod%.exports%.version%s*=%s*"([%d%.]+)"')
+local exportVersion = main:match('mod%.exports%.version%s*=%s*"(%d[^"]*)"')
 check(exportVersion ~= nil, "main.lua exports a version")
 eq(exportVersion, manifestVersion, "main.lua version export matches manifest.json")
 
