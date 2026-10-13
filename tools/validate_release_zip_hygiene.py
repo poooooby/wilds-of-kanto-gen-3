@@ -148,6 +148,10 @@ def self_test() -> int:
           "exclude tests/")
     check(build_mod.should_include(".github/workflows/release.yml") is False,
           "exclude .github/")
+    check(build_mod.should_include("docs/USER_GUIDE.md") is True, "include the players' guide")
+    check(build_mod.should_include("docs/DEVELOPER_GUIDE.md") is False, "exclude developer docs")
+    check(build_mod.should_include("docs/analysis/TRUE_SIZE_SYSTEM.md") is False, "exclude docs/analysis/")
+    check(build_mod.should_include("MANUAL_TEST.md") is False, "exclude MANUAL_TEST.md")
 
     dirty = [
         "overworld-spawn-mod-main/manifest.json",

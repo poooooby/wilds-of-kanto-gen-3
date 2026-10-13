@@ -57,12 +57,15 @@ INCLUDE_PREFIXES = (
     "THIRD_PARTY_ASSETS.md",
     "README.md",
     "CHANGELOG.md",
-    "MANUAL_TEST.md",
     "lib/",
     "assets/",
     "data/",
-    "docs/",
+    # the players' guide only: developer docs (DEVELOPER_GUIDE, ARCHITECTURE, RELEASE_TEST, analysis/ ...) and
+    # MANUAL_TEST.md stay in the repo, out of the release (verify_zip enforces it)
+    "docs/USER_GUIDE.md",
 )
+# docs/ files a release ZIP may carry (everything else under docs/ is developer material)
+PLAYER_DOCS = {"docs/USER_GUIDE.md"}
 
 # Source art the BUILD reads to generate the runtime sheets (assets/wilds_generated/...). The game itself
 # draws from those generated sheets, so these stay in the repo but out of the release ZIP. Only the
@@ -136,7 +139,7 @@ FORBIDDEN_EXACT = {
     "tests/overworld_wild_spawns_test.lua",
     "tests/voxel_aggressive_compat_test.lua",
     "tests/animated_sprites_unit_test.lua",
-    # Root pointer only; docs/ARCHITECTURE.md is shipped.
+    # Root pointer to docs/ARCHITECTURE.md (developer docs, not shipped either).
     "ARCHITECTURE.md",
 }
 
@@ -413,7 +416,9 @@ def verify_zip(out_zip: Path, manifest: dict) -> None:
         # GitHub "Code > Download ZIP" wraps the tree in overworld-spawn-mod-main/.
         if rel.startswith("overworld-spawn-mod-") or "/overworld-spawn-mod-" in rel:
             fail(f"ZIP looks like a GitHub source archive, not a packed mod: {name}")
-        # Allow docs/ARCHITECTURE.md; forbid only the root pointer file.
+        # developer docs never ship: only the players' guide from docs/, no MANUAL_TEST.md
+        if (rel.startswith("docs/") and rel not in PLAYER_DOCS and not name.endswith("/")) or rel == "MANUAL_TEST.md":
+            fail(f"ZIP contains developer documentation: {name}")
         # Nested repo layout leftovers
         if "/mods/" in f"/{rel}/" or rel.startswith("mods/"):
             fail(f"ZIP contains mods/ path: {name}")
