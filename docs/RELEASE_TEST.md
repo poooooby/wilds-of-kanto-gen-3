@@ -3,18 +3,19 @@
 Use this checklist before publishing a GitHub release and when verifying Mod
 Manager update detection.
 
-## A. Local / CI packaging
+## A. Packaging and publishing
 
-1. Set versions consistently to `1.0.2` in `manifest.json` and `main.lua`.
+1. Set versions consistently to `1.0.2` in `manifest.json` and `main.lua` (a beta: `1.0.2-beta.1`).
 2. Ensure `CHANGELOG.md` has a `## 1.0.2` section.
-3. Create and push the tag:
+3. Commit and push, then run the release script (it runs every check, builds, tags and publishes; a `-beta.N`
+   version goes out as a pre-release that is not an automatic update):
 
 ```sh
-git tag v1.0.2
-git push origin v1.0.2
+python3 scripts/release.py --notes-file notes.md --dry-run
+python3 scripts/release.py --notes-file notes.md
 ```
 
-4. Confirm `.github/workflows/release.yml` runs on the tag.
+4. Confirm every step printed ok.
 5. Confirm the GitHub Release appears with asset:
 
 ```text

@@ -458,7 +458,7 @@ Produces `dist/wilds-of-kanto-v1.0.2.zip` (plus local technical-id aliases) with
 `manifest.json` at ZIP root.
 Includes `docs/` and `LICENSE`. Excludes `tests/`, `scripts/`, `.deps/`, root `ARCHITECTURE.md`.
 
-**Slim ZIP.** The manual pack (which is what CI produces: the real modkit's `pack` runs `validate --strict` and
+**Slim ZIP.** The manual pack (which is what a release ships: the real modkit's `pack` runs `validate --strict` and
 refuses on its "dump check skipped" warnings, so `.modkitignore` never shapes the release) leaves out the
 **source art** the build uses to generate `assets/wilds_generated/`: `assets/enhanced_overworld/followsprites/`
 (atlas PNGs), `pokedex_mapping/` (legacy, unused), `pika_follower_mapping/` (tool input) and the water source PNGs
@@ -468,14 +468,25 @@ JSONs read at runtime (`followsprites_mapping.json`, the water swimming/levitate
 check requires those JSONs and the generated sheets, not the source PNGs. Pass `--with-source-art` to
 `scripts/build-mod.py` for a full archive.
 
-Tag-triggered GitHub Release (`.github/workflows/release.yml`):
+GitHub Release, from this checkout (`scripts/release.py`; there is no CI workflow):
 
 ```text
-git tag v1.0.2 && git push origin v1.0.2
+python3 scripts/release.py --notes-file notes.md --dry-run   # every check + the build, nothing published
+python3 scripts/release.py --notes-file notes.md             # then tag + publish
 ```
 
-Manifest field `github` = `YoDrehDenSwagAuf/overworld-spawn-mod` enables Mod Manager
-update detection. Upload only the public `wilds-of-kanto-v*.zip` asset.
+It runs what the old tag-triggered workflow did, in order: preflight (clean tracked files, on `main`, HEAD pushed,
+tag unused), `validate_release_version.py <tag>`, option labels, manager ASCII, the two harness tests and every
+`tests/*_unit_test.lua` with luajit, the runtime sprite sheets, `build-mod.py`, the ZIP root check and
+`validate_release_zip_hygiene.py`; then it tags `vVERSION`, pushes the tag and publishes
+`dist/wilds-of-kanto-vVERSION.zip` as "Wilds of Kanto Revival VERSION" on `poooooby/wilds-of-kanto-gen-3`
+(always named: `gh`'s default for this fork is the upstream repo). The version is manifest.json's: `X.Y.Z` is a
+normal release marked Latest (the Mod Manager offers it as an update); `X.Y.Z-beta.N` / `X.Y.Z-rc.N` is a GitHub
+pre-release never marked Latest, so not an automatic update. Tracked files the build rewrites (the runtime
+manifest's "cached" statuses) are restored afterwards.
+
+Manifest field `github` = `poooooby/wilds-of-kanto-gen-3` enables Mod Manager update detection. Upload only the
+public `wilds-of-kanto-v*.zip` asset.
 
 ### 25.1 Sprite atlases (default in `build-mod.py`)
 
@@ -498,6 +509,14 @@ some families and `--no-atlas` builds the old per-file ZIP (the fallback if a sp
   with a 32 KB deflate window, so mixing sprites in a row made a shelf-packed atlas 33-67% LARGER than the per-file sheets; a
   column is 4-16% smaller (measured). Every sprite is copied pixel for pixel; `tools/validate_sprite_atlases.py` re-slices all of
   them against the source PNGs, checks bounds, overlaps and coverage, and `build-mod.py` runs it every time.
+- **Colour numbers** (default; `generate_sprite_atlases.py --rgba` = the old full-colour shards): a sprite's normal and shiny
+  sheets (`-normal`/`-shiny`, `_normal`/`_shiny`, or the portraits' `normal/`/`shiny/` folders; same size) are stored ONCE as a
+  greyscale image of colour numbers, each number one (normal, shiny) RGBA pair (exact, transparent RGB included); the colours
+  are one row per sheet of `<family>_pal.png`. Family index version 2: shards carry `mode = "index" | "rgba"`, an index entry is
+  `[shard,x,y,w,h,paletteRow]`, and `palette = {file,w,h}`; a sprite with more than 256 pairs is tried alone, then kept full colour.
+  `sliceData` turns the numbers back into the exact RGBA (`SpriteAtlas._expand`: the number is the red byte; pure Lua, the
+  sandbox has no ffi). Atlas 20.8 -> 9.0 MB (ZIP 21.3 -> 9.3 MB); in game ~1 ms per new sprite vs ~3 ms (a greyscale shard is a
+  quarter of the bytes to decode), 259 sampled sprites byte-identical. The bake needs numpy (`pip install Pillow numpy`) and uses every core.
 - **Runtime** `lib/sprite_atlas.lua` (installed first in `main.lua`): wraps the engine's central `src.render.Assets`
   (`image`, `imageData`, `exists`), maps `mods/<folder>/assets/...` (or bare / `./` / backslash forms) to the index key, decodes a
   shard on demand into a byte-capped LRU (96 MB), cuts the sprite out into an ordinary small Image (a fresh ImageData copy for

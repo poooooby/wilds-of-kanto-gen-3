@@ -8,6 +8,17 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.8.2-beta.1 (fork)
+
+### Changed
+
+- **Less than half the download, same sprites: 21.3 MB → 9.3 MB.** The sprite atlases store each
+  Pokémon's normal and shiny sheets once, as colour numbers plus a small colour list, and rebuild
+  them pixel for pixel when sliced (every one of the 25,120 sprites is checked at build time).
+  Quality, colours and sizes are unchanged.
+- **Sprites load about 3× faster.** The packed files are a quarter of the size to unpack: about 1 ms
+  per new sprite instead of about 3 ms in testing.
+
 ## 2.8.1 (fork)
 
 ### Fixes

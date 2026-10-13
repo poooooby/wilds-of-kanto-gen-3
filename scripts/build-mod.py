@@ -343,6 +343,11 @@ def read_zip_atlas(zf: zipfile.ZipFile, names: list[str]) -> set[str]:
             shard_count += 1
             if shard.get("file") not in names:
                 fail(f"ZIP atlas family {fam}: missing shard {shard.get('file')}")
+        # colour-number shards (family index version 2) need their family's palette image
+        if any(s.get("mode") == "index" for s in idx.get("shards", [])):
+            pal = (idx.get("palette") or {}).get("file")
+            if pal not in names:
+                fail(f"ZIP atlas family {fam}: missing colour palette {pal}")
         for d, entries in idx.get("dirs", {}).items():
             for fname in entries:
                 covered.add(f"{d}/{fname}")

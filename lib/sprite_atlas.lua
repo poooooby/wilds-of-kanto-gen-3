@@ -11,6 +11,9 @@
 --   * A sprite is cut out of its decoded shard into an ordinary small image the first time it is asked for, so the engine
 --     still sees one small image per sprite and draws exactly as before. Only the shards holding sprites in use are decoded,
 --     kept in a byte-capped LRU.
+--   * Shards are full colour (family index version 1) or COLOUR NUMBERS (version 2, the default bake): a sprite's
+--     normal + shiny sheets stored once as numbers, the real colours in a small palette image, rebuilt exactly when
+--     sliced (SpriteAtlas._expand) -- under half the size of full-colour shards.
 --   * With no atlas (a repo checkout, or a --no-atlas build) install() does nothing. A family whose real files exist on disk is
 --     skipped too ("source mode"), so a stale atlas can never shadow freshly generated sheets during development.
 --
@@ -195,15 +198,56 @@ function SpriteAtlas.has(path)
   return lookup(path) ~= nil
 end
 
+-- ------------------------------------------------------------------ colour numbers (family index version 2)
+-- An "index" shard holds colour NUMBERS, not colours: a greyscale PNG, so the decoded RGBA has the number in red. The
+-- sheet's real colours are one row of the family's palette image (column = number); a sprite's normal and shiny sheets
+-- share the numbers and differ only in their row. See tools/generate_sprite_atlases.py.
+
+--- The exact RGBA bytes of a `count`-pixel sheet from its decoded number pixels (`numbers`, RGBA bytes, number in
+--- red) and its palette row (`row`, 4 bytes per colour). Pure: no love.
+function SpriteAtlas._expand(numbers, count, row)
+  local byte, sub = string.byte, string.sub
+  local colours = {}
+  for i = 0, math.floor(#row / 4) - 1 do colours[i] = sub(row, i * 4 + 1, i * 4 + 4) end
+  local out = {}
+  local transparent = "\0\0\0\0"
+  for i = 1, count do out[i] = colours[byte(numbers, i * 4 - 3)] or transparent end
+  return table.concat(out)
+end
+
+-- the family's whole palette image as one byte string (kept with the family index)
+local function paletteBytes(fam)
+  if fam.paletteBytes ~= nil then return fam.paletteBytes or nil end
+  fam.paletteBytes = false
+  local meta = fam.palette
+  if type(meta) ~= "table" or type(meta.file) ~= "string" then return nil end
+  local ok, bytes = pcall(function()
+    local data = state.deps.imageData(assetPath(state.mod, meta.file))
+    local s = data:getString()
+    if type(data.release) == "function" then data:release() end
+    return s
+  end)
+  if ok and type(bytes) == "string" and #bytes >= (meta.w or 0) * (meta.h or 0) * 4 then fam.paletteBytes = bytes end
+  return fam.paletteBytes or nil
+end
+
 local function sliceData(fam, entry)
   local data = shardData(fam, entry[1])
   if not data then return nil end
   local w, h = entry[4], entry[5]
   local t0 = nowMs()
+  local indexed = (fam.shards[entry[1] + 1] or {}).mode == "index"
+  local pal = indexed and paletteBytes(fam)
+  if indexed and not (pal and type(entry[6]) == "number") then return nil end
   local ok, out = pcall(function()
     local id = love.image.newImageData(w, h)
     id:paste(data, 0, 0, entry[2], entry[3], w, h)
-    return id
+    if not indexed then return id end
+    local rowLen = fam.palette.w * 4
+    local row = pal:sub(entry[6] * rowLen + 1, (entry[6] + 1) * rowLen)
+    local coloured = love.image.newImageData(w, h, "rgba8", SpriteAtlas._expand(id:getString(), w * h, row))
+    id:release()
+    return coloured
   end)
   if not ok or not out then return nil end
   state.stats.slices = state.stats.slices + 1

@@ -366,6 +366,19 @@ do
   check(not Atlas.has("assets/pmdcollab/portraits/001/normal/happy.png"), "prefix family: real files on disk win (source mode)")
 end
 
+-- ---------------------------------------------------------------- colour numbers: numbers + palette row -> exact RGBA
+do
+  local SA = V.require("sprite_atlas")
+  local function px(n) return string.char(n, n, n, 255) end
+  local numbers = px(0) .. px(2) .. px(1)
+  local normal = "\0\0\0\0" .. "\255\0\0\255" .. "\9\8\7\128"
+  local shiny = "\1\2\3\0" .. "\0\0\255\255" .. "\9\8\7\128"
+  eq(SA._expand(numbers, 3, normal), "\0\0\0\0" .. "\9\8\7\128" .. "\255\0\0\255", "_expand: normal row")
+  eq(SA._expand(numbers, 3, shiny), "\1\2\3\0" .. "\9\8\7\128" .. "\0\0\255\255",
+    "_expand: shiny from the same numbers, transparent keeps its own RGB")
+  eq(SA._expand(px(9), 1, normal), "\0\0\0\0", "_expand: a number past the row is transparent")
+end
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

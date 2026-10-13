@@ -21,7 +21,8 @@ MAIN = ROOT / "main.lua"
 MOD_CARD = ROOT / "mod.card"
 CHANGELOG = ROOT / "CHANGELOG.md"
 
-TAG_RE = re.compile(r"^v(\d+\.\d+\.\d+)$")
+# vX.Y.Z, or a pre-release vX.Y.Z-beta.N / vX.Y.Z-rc.N (scripts/release.py publishes those as GitHub pre-releases)
+TAG_RE = re.compile(r"^v(\d+\.\d+\.\d+(?:-(?:beta|rc)\.\d+)?)$")
 EXPORT_RE = re.compile(r'mod\.exports\.version\s*=\s*"([^"]+)"')
 CARD_VERSION_RE = re.compile(r'version\s*=\s*"([^"]+)"')
 
@@ -102,7 +103,7 @@ def main() -> int:
     if tag_arg:
         m = TAG_RE.match(tag_arg)
         if not m:
-            fail(f"Release tag must look like vMAJOR.MINOR.PATCH, got: {tag_arg!r}")
+            fail(f"Release tag must look like vMAJOR.MINOR.PATCH (optionally -beta.N / -rc.N), got: {tag_arg!r}")
         tag_version = m.group(1)
         print(f"Tag: {tag_arg}")
         if tag_version != manifest_version:

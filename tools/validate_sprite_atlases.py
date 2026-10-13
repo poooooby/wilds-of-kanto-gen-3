@@ -17,6 +17,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -52,10 +53,19 @@ def validate(atlas_dir: Path) -> tuple[list[str], dict]:
                 errors.append(f"{fam}: missing shard {s['file']}")
                 images.append(None)
                 continue
+            # colour-number shards are read the way the game reads them: as RGBA, the number in red
             im = Image.open(p).convert("RGBA")
             if im.size != (s["w"], s["h"]):
                 errors.append(f"{fam}: shard {s['file']} is {im.size}, index says {(s['w'], s['h'])}")
             images.append(im)
+        palette = None
+        if idx.get("palette"):
+            pp = ROOT / idx["palette"]["file"]
+            if pp.is_file():
+                palette = np.frombuffer(Image.open(pp).convert("RGBA").tobytes(), dtype="<u4").reshape(
+                    idx["palette"]["h"], idx["palette"]["w"])
+            else:
+                errors.append(f"{fam}: missing palette {idx['palette']['file']}")
 
         rects_by_shard: dict[int, list] = {}
         # The family index is the source of truth for its directories (a prefix family has none in the root index);
@@ -74,7 +84,9 @@ def validate(atlas_dir: Path) -> tuple[list[str], dict]:
                 errors.append(f"{fam}: {len(missing)} source sprites not indexed in {d} (first: {missing[0]})")
             if extra:
                 errors.append(f"{fam}: {len(extra)} indexed sprites have no source in {d} (first: {extra[0]})")
-            for name, (sh, x, y, w, h) in indexed.items():
+            for name, entry in indexed.items():
+                sh, x, y, w, h = entry[:5]
+                row = entry[5] if len(entry) > 5 else None
                 stats["sprites"] += 1
                 atlas = images[sh] if 0 <= sh < len(images) else None
                 if atlas is None:
@@ -92,12 +104,19 @@ def validate(atlas_dir: Path) -> tuple[list[str], dict]:
                 if want.size != (w, h):
                     errors.append(f"{fam}: {d}/{name} is {want.size}, index says {(w, h)}")
                     continue
-                got = atlas.crop((x, y, x + w, y + h))
-                if got.tobytes() != want.tobytes():
+                got = atlas.crop((x, y, x + w, y + h)).tobytes()
+                if shards[sh].get("mode", "rgba") == "index":
+                    if palette is None or row is None or not (0 <= row < palette.shape[0]):
+                        errors.append(f"{fam}: {d}/{name} has no usable palette row ({row})")
+                        continue
+                    numbers = np.frombuffer(got, dtype=np.uint8)[0::4]
+                    got = palette[row][numbers].astype("<u4").tobytes()
+                if got != want.tobytes():
                     errors.append(f"{fam}: {d}/{name} differs from its source PNG")
 
         for sh, rects in rects_by_shard.items():
-            rects.sort()
+            # a normal + shiny pair shares one colour-number rectangle: one entry per rectangle
+            rects = sorted({r[:4]: r for r in rects}.values())
             for i, a in enumerate(rects):
                 for b in rects[i + 1:]:
                     if b[0] >= a[0] + a[2]:
