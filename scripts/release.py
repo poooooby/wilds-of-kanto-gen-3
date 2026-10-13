@@ -69,7 +69,10 @@ def git(*args: str) -> str:
 
 
 def dirty_tracked() -> set[str]:
-    return {line[3:] for line in git("status", "--porcelain", "--untracked-files=no").splitlines() if line}
+    # not git(): its strip() would eat the first line's leading status column (" M path" -> "M path")
+    out = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=str(ROOT),
+                         capture_output=True, text=True).stdout
+    return {line[3:] for line in out.splitlines() if len(line) > 3}
 
 
 def main() -> int:
@@ -163,8 +166,11 @@ def main() -> int:
         # the build's own rewrites of tracked files (the runtime manifest's "cached" statuses)
         changed = sorted(dirty_tracked() - clean_before)
         if changed:
-            subprocess.run(["git", "checkout", "--", *changed], cwd=str(ROOT))
-            print(f"  restored {len(changed)} tracked file(s) the build rewrote: {', '.join(changed)}")
+            res = subprocess.run(["git", "checkout", "--", *changed], cwd=str(ROOT), capture_output=True, text=True)
+            if res.returncode == 0:
+                print(f"  restored {len(changed)} tracked file(s) the build rewrote: {', '.join(changed)}")
+            else:
+                print(f"  WARNING: could not restore {', '.join(changed)}: {res.stderr.strip()}", file=sys.stderr)
 
     if args.dry_run:
         print(f"\nDRY RUN OK: dist/{zip_name} is ready; nothing was tagged or published.")
