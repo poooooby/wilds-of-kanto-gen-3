@@ -125,6 +125,30 @@ function Gen2.isSurfing(game, ow)
   return state == "surf" or state == "surf_pika"
 end
 
+--- Current Gold bike detection.
+function Gen2.isBiking(game, ow)
+  local world = goldWorld(game, ow)
+  local state = (world and world.playerState)
+    or (game and game.save and game.save.playerState)
+
+  local FieldMoves = tryRequire("src.world.gen2.FieldMoves")
+  if FieldMoves and type(FieldMoves.isBiking) == "function" then
+    local ok, biking = pcall(FieldMoves.isBiking, state)
+    if ok then return biking == true end
+  end
+  -- Engine string value when FieldMoves is not on package.path (unit tests).
+  return state == "bike"
+end
+
+--- True while Gold's Fly takeoff/flight/landing animation is active --
+--- tracked as live World fields (src/world/gen2/World.lua's flyTo/
+--- stepFlyAnim), never a player flag.
+function Gen2.isFlying(game, ow)
+  local world = goldWorld(game, ow)
+  if not world then return false end
+  return world.flyAnim ~= nil or world.flyHidden ~= nil
+end
+
 function Gen2.isWaterCell(map, x, y)
   if map and type(map.isWaterCell) == "function" then
     local ok, water = pcall(map.isWaterCell, map, x, y)

@@ -191,6 +191,21 @@ function GameCompat.isSurfing(game, ow)
   return adapter.isSurfing(game, ow) == true
 end
 
+--- True while the player is riding the Bike.
+function GameCompat.isBiking(game, ow)
+  local adapter = GameCompat.current(nil, game)
+  if not (adapter and adapter.isBiking) then return false end
+  return adapter.isBiking(game, ow) == true
+end
+
+--- True while the Fly takeoff/flight/landing animation is active (the
+--- player is mid-transit between maps, not simply "has Fly learned").
+function GameCompat.isFlying(game, ow)
+  local adapter = GameCompat.current(nil, game)
+  if not (adapter and adapter.isFlying) then return false end
+  return adapter.isFlying(game, ow) == true
+end
+
 --- True while the Poké Center nurse heal-machine animation is active.
 -- Edge-trigger this from follower runtime (false→true / true→false).
 -- CANCELLED nurse dialog never sets healAnim — no false positives.

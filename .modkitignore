@@ -180,3 +180,7 @@ tests/modern_spawns_bridge_test.lua
 tools/generate_pokewilds_overworld.py
 tools/import_gen9_sprites.py
 tools/unown_forms.py
+.claude/agents/lua-expert.md
+.claude/overworld-spawn-mod.code-workspace
+.claude/settings.json
+.claude/skills/lua-developer/SKILL.md

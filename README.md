@@ -35,8 +35,9 @@ Pokémon Gold in beta.
 
 ### Your Party
 
-- 🐕 **Followers:** Your lead Pokémon walks behind you, and up to six more can trail along.
-  Choose the leader from the party menu.
+- 🐕 **Followers:** Your lead Pokémon walks behind you, and up to six more can trail along in
+  party order. They tuck in close while you Bike or Fly, and reappear right behind you once
+  you're back on foot.
 - 🌊 **Swimming and floating:** Followers and water Pokémon switch to swimming or levitating art
   on the water.
 - ⚡ **Yellow's Pikachu:** Dress your starter Pikachu in one of 12 costumes, from caps to Pop Star.
@@ -51,6 +52,9 @@ Pokémon Gold in beta.
 - 🌾 **Grass and silhouettes:** Pokémon sink into tall grass like trainers do. Optional
   silhouettes hide species you haven't caught, as dark shapes on land and in the water.
 - 🦁 **Safari Zone:** Wild Pokémon there notice you and flee.
+- 🐾 **Familiar faces:** The Pokémon-themed NPCs around Kanto — the Fuchsia City pens, the
+  Pokémon Fan Club's pets, and other named Pokémon in cities and buildings — show their real
+  species art instead of a stand-in sprite.
 
 ## ⚙️ Options
 

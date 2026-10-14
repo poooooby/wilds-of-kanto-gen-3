@@ -609,10 +609,12 @@ function ControlEngine:followerCount(game)
 end
 
 --- Configured follower count for trailer composition / visibility.
--- Returns 0 while Poké Center healing temporarily suppresses followers.
--- Never mutates options or save — settings UI still reads followerCount().
+-- Returns 0 while Poké Center healing, Biking, or Flying temporarily
+-- suppresses followers. Never mutates options or save — settings UI still
+-- reads followerCount().
 function ControlEngine:runtimeTrailerCount(game)
-  if self._healingSuppressFollowers == true then
+  if self._healingSuppressFollowers == true
+     or self._rideSuppressFollowers == true then
     return 0
   end
   return self:followerCount(game)
@@ -907,6 +909,11 @@ function ControlEngine:setLeaderBox(game, boxNum, slotIndex)
   self:bustLeaderVisual(game)
 end
 
+--- The lead/first follower is always the first healthy party mon, in
+--- party order -- no override. `save.pokepcLeader`/`save.followerPartyIndex`
+--- (a box-mon pick, an explicit party-slot pick, or Yellow's old
+--- forced-slot-2 case) are no longer consulted; old saved values are
+--- simply inert now, not actively migrated/cleared.
 function ControlEngine:getLeaderMon(game)
   game = game or self:_game()
   if not game or not game.save then return nil end
@@ -914,41 +921,6 @@ function ControlEngine:getLeaderMon(game)
   -- instead of ACTIVE for every healthy mon.
   if self:followerCount(game) <= 0 then return nil end
   local save = game.save
-  local lead = save.pokepcLeader
-
-  -- Box leader always wins when explicitly set (selection is party-only).
-  if lead and lead.source == "box" then
-    local Boxes = tryRequire("src.pokemon.Boxes")
-    if Boxes and Boxes.ensure then pcall(Boxes.ensure, save) end
-    local boxes = save.boxes or {}
-    local box = boxes[lead.box or save.currentBox or 1]
-    local mon = box and box[lead.index]
-    if mon then return mon, "box" end
-  end
-
-  -- Prefer Wilds selection when available. needHealthy=true so a fainted
-  -- leader is skipped — reconcile permanently fails over selection first.
-  if self.selection and type(self.selection.getActiveFollowerMon) == "function" then
-    local ok, mon, slot = pcall(self.selection.getActiveFollowerMon, self.selection, game, true)
-    if ok and mon then return mon, "party", slot end
-  end
-
-  if lead and lead.source == "party" then
-    local mon = save.party and save.party[lead.index]
-    if mon and (mon.hp or 0) >= 0 then return mon, "party" end
-  end
-
-  local idx = save.followerPartyIndex
-  if idx and save.party and save.party[idx] then
-    local mon = save.party[idx]
-    if not mon.stopFollowing then return mon, "party" end
-  end
-
-  if self:_isYellow() and save.party and save.party[1]
-     and save.party[1].species == "PIKACHU" and save.party[2]
-     and (save.party[2].hp or 0) > 0 then
-    return save.party[2], "party"
-  end
   for _, mon in ipairs(save.party or {}) do
     if (mon.hp or 0) > 0 then return mon, "party" end
   end
@@ -970,17 +942,10 @@ end
 function ControlEngine:_leaderPartyIndex(game, leader, leadSrc)
   local save = game and game.save
   if not save then return nil end
-  local lead = save.pokepcLeader
-  if lead and lead.source == "party" and type(lead.index) == "number" then
-    return lead.index
-  end
   if leadSrc == "party" and leader then
     for i, mon in ipairs(save.party or {}) do
       if mon == leader then return i end
     end
-  end
-  if type(save.followerPartyIndex) == "number" then
-    return save.followerPartyIndex
   end
   return nil
 end
@@ -3817,6 +3782,8 @@ function ControlEngine:update(game, ow, opts)
 
   -- Poké Center heal lifecycle (edge-triggered). Independent of battle flags.
   pcall(function() self:_pollPokecenterHeal(game, ow, { dt = opts.dt }) end)
+  -- Bike/Fly follower suppression (edge-triggered), same shape as heal.
+  pcall(function() self:_pollRideSuppress(game, ow, { dt = opts.dt }) end)
 
   -- Out-of-battle HP loss (poison, etc.) does not fire battle.ended.
   -- Reconcile on the existing trailer update cadence so a fainted selected
@@ -4420,6 +4387,57 @@ end
 function ControlEngine:_clearHealSuppress()
   self._healingSuppressFollowers = false
   self._wasHealMachineActive = false
+  self:_clearRideSuppress()
+end
+
+--- Edge-trigger Bike/Fly follower suppression -- same shape as
+--- _pollPokecenterHeal (recall on start, respawn-at-player on finish),
+--- reusing the same runtimeTrailerCount lever. Fly in particular changes
+--- maps entirely, so _pendingSpawnAtPlayer + syncAll on finish is what
+--- gets the trailers to reappear cleanly at the arrival point rather than
+--- wherever they stood before takeoff.
+function ControlEngine:_pollRideSuppress(game, ow, opts)
+  opts = opts or {}
+  local GameCompat = V.require("game_compat")
+  local active = GameCompat.isBiking(game, ow) == true or GameCompat.isFlying(game, ow) == true
+  local was = self._wasRideActive == true
+  if active and not was then
+    self:_onRideSuppressStarted(game, ow)
+  elseif not active and was then
+    self:_onRideSuppressFinished(game, ow)
+  end
+  self._wasRideActive = active
+  return active
+end
+
+function ControlEngine:_onRideSuppressStarted(game, ow)
+  if self._rideSuppressFollowers then return end
+  self._rideSuppressFollowers = true
+  local configured = self:followerCount(game) or 0
+  if configured <= 0 then
+    return
+  end
+  self:beginPresentationIntent("ride_suppress")
+  pcall(function() self:syncAll(game, ow) end)
+end
+
+function ControlEngine:_onRideSuppressFinished(game, ow)
+  if not self._rideSuppressFollowers then return end
+  self._rideSuppressFollowers = false
+  local configured = self:followerCount(game) or 0
+  if configured <= 0 then
+    return
+  end
+  self._pendingSpawnAtPlayer = true
+  self:beginPresentationIntent("ride_restore")
+  pcall(function() self:syncAll(game, ow) end)
+end
+
+--- Clear ride suppress on map transitions so it cannot stick across warps
+--- (e.g. a Fly landing that races the finished-edge check).
+function ControlEngine:_clearRideSuppress()
+  self._rideSuppressFollowers = false
+  self._wasRideActive = false
 end
 
 function ControlEngine:_installTalkWrap()
@@ -4581,6 +4599,7 @@ function ControlEngine:_installOverworldUpdateWrap()
           tickFx = true,
         })
       end)
+      pcall(function() engine:_pollRideSuppress(game, owSelf, { dt = dt }) end)
     else
       pcall(function()
         engine:update(game, owSelf, {

@@ -106,7 +106,7 @@ do
 end
 
 ----------------------------------------------------------------
--- Selection persistence + slot fallback
+-- Active follower always matches party order (no leader selection)
 ----------------------------------------------------------------
 do
   saveStore = {}
@@ -125,17 +125,22 @@ do
   }
   local game = { save = { party = { mon1, mon2 } } }
 
+  -- selectFollower still persists (state used elsewhere, e.g. menu-row
+  -- identity), but it must NOT change which mon is active -- that's
+  -- always party slot 1 (first healthy), full stop.
   local ok = selection:selectFollower(mon2, game)
-  check(ok == true, "selectFollower succeeds")
-  eq(state.selectedSlot, 2, "selected_slot persisted")
-  eq(state.selectedMonKey, Selection.monFingerprint(mon2), "selected_mon persisted")
+  check(ok == true, "selectFollower still succeeds (persists state)")
 
-  -- Party sort: swap slots, fingerprint must recover mon2 at new index.
-  game.save.party = { mon2, mon1 }
   local active, slot = selection:getActiveFollowerMon(game, true)
-  eq(active, mon2, "fingerprint recovers after party sort")
-  eq(slot, 1, "slot hint updated after sort")
-  eq(state.selectedSlot, 1, "persisted slot refreshed")
+  eq(active, mon1, "active mon is party slot 1, ignoring the selectFollower call above")
+  eq(slot, 1, "slot is always 1 here, regardless of selection")
+
+  -- Reordering the party changes who's active -- pure party order, no
+  -- fingerprint tracking of "the mon that was selected".
+  game.save.party = { mon2, mon1 }
+  active, slot = selection:getActiveFollowerMon(game, true)
+  eq(active, mon2, "active mon follows party order after a reorder")
+  eq(slot, 1, "slot is still 1 -- whichever mon is there now")
 end
 
 ----------------------------------------------------------------

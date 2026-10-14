@@ -69,39 +69,16 @@ function Selection:getParty(game)
   return GameCompat.party(game)
 end
 
---- Resolve the active follower mon.
+--- Resolve the active follower mon -- always the first party mon, in
+-- party order (first HEALTHY one when needHealthy). No override: the
+-- stored selection (`selectedMonKey`/`selectedSlot`) and the legacy
+-- `game.save.followerPartyIndex` are no longer consulted, so trail order
+-- can never disagree with party order.
 -- @param needHealthy when true, fainted mons are skipped
 -- @return mon, slot or nil
 function Selection:getActiveFollowerMon(game, needHealthy)
   local party = self:getParty(game)
   if not party or #party == 0 then return nil end
-
-  local selKey = self.state.selectedMonKey
-  local selSlot = tonumber(self.state.selectedSlot)
-
-  if selKey then
-    local atSlot = selSlot and party[selSlot]
-    if atSlot and fingerprintsMatch(selKey, atSlot)
-        and (not needHealthy or healthy(atSlot)) then
-      return atSlot, selSlot
-    end
-    for i, mon in ipairs(party) do
-      if fingerprintsMatch(selKey, mon) and (not needHealthy or healthy(mon)) then
-        -- Slot drifted (sort/swap); refresh stored slot hint + upgrade key.
-        local key = monFingerprint(mon)
-        if key and (i ~= selSlot or key ~= selKey) then
-          self.state:setSelection(key, i)
-        end
-        return mon, i
-      end
-    end
-  end
-
-  -- Legacy game.save.followerPartyIndex (do not delete; read-only fallback).
-  local idx = game.save and tonumber(game.save.followerPartyIndex)
-  if idx and party[idx] and (not needHealthy or healthy(party[idx])) then
-    return party[idx], idx
-  end
 
   for i, mon in ipairs(party) do
     if not needHealthy or healthy(mon) then

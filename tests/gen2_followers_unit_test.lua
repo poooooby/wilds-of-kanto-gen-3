@@ -318,7 +318,10 @@ do
 end
 
 ----------------------------------------------------------------
--- 2–4. Party FOLLOW creates a Gold guest trailer on npcs+entities
+-- 2–4. Setting Follower Count creates a Gold guest trailer on
+-- npcs+entities -- the trail always matches party order now, so there is
+-- no FOLLOW row/leader pick; Follower Count is the only on/off control
+-- (party-menu DISMISS still exists to turn it off quickly, see 14 below).
 ----------------------------------------------------------------
 do
   local world, player = goldWorld()
@@ -338,18 +341,23 @@ do
 
   local items = submenuWrap(function() return {} end, game, {}, mon, {})
   local labels = {}
-  local follow
+  local hasFollow = false
   for _, row in ipairs(items or {}) do
     labels[#labels + 1] = tostring(row.label)
-    if row.label == "FOLLOW" then follow = row end
+    if row.label == "FOLLOW" then hasFollow = true end
   end
-  check(follow ~= nil, "2. FOLLOW row present (" .. table.concat(labels, ",") .. ")")
-  if not follow then
-    io.stderr:write("FAIL: aborting FOLLOW flow\n")
-  else
-  follow.onSelect(mon, game)
+  check(not hasFollow,
+        "2. no FOLLOW row (leader selection removed): " .. table.concat(labels, ","))
+
+  do
+  follower.control:setFollowerCount(game, 1)
+  game.save.pokepcFollowerCount = 1
+  optionStore.follower_count = 1
+  follower.control._optCache.follower_count = 1
+  follower.control._pendingMapTrailerSync = true
+  follower.control:beginPresentationIntent("party_follow")
+  pcall(function() follower.control:syncAll(game, world) end)
   eq(game.save.pokepcFollowerCount, 1, "2. follower_count becomes 1")
-  check(game.save.followerPartyIndex == 1, "2. selected party slot stored")
   eq(#(world.pokepcTrailers or {}), 1, "3. follower entity created")
   local npc = world.pokepcTrailers[1]
   check(npc ~= nil, "3. trailer exists")
@@ -363,8 +371,6 @@ do
   for _, e in ipairs(world.entities) do if e == npc then inEnt = true end end
   check(inNpcs, "4. on world.npcs")
   check(inEnt, "4. on world.entities")
-  check(world._shownText and tostring(world._shownText):find("following", 1, true),
-        "2. confirmation text via world:showText")
 
   ----------------------------------------------------------------
   -- 5–6. One player step: trailer follows and keeps spacing
@@ -566,7 +572,8 @@ do
 end
 
 ----------------------------------------------------------------
--- A/B. Healthy Gold mon gets FOLLOW; fainted does not
+-- A/B. Healthy Gold mon can get DISMISS (when followers are on);
+-- fainted never gets any row at all (no FOLLOW exists anymore either way)
 ----------------------------------------------------------------
 do
   local world = select(1, goldWorld())
@@ -578,23 +585,26 @@ do
   submenuWrap = nil
   local follower = Follower.new(V.mod, {})
   follower:install({ game = game })
+  follower.control:setFollowerCount(game, 1)
   local vanilla = {
     { label = "STATS" }, { label = "SWITCH" }, { label = "MOVE" },
     { label = "ITEM" }, { label = "CANCEL" },
   }
   local healthyRows = submenuWrap(function() return vanilla end, game, vanilla, healthyMon, { battle = false })
-  local sawFollow = false
+  local sawDismiss, sawFollow = false, false
   for _, row in ipairs(healthyRows or {}) do
+    if row.label == "DISMISS" then sawDismiss = true end
     if row.label == "FOLLOW" then sawFollow = true end
   end
-  check(sawFollow, "A. healthy Gold SENTRET gets FOLLOW")
+  check(sawDismiss, "A. healthy Gold SENTRET gets DISMISS when followers are on")
+  check(not sawFollow, "A. FOLLOW row no longer exists")
 
   local faintRows = submenuWrap(function() return vanilla end, game, vanilla, fainted, { battle = false })
-  local faintFollow = false
+  local faintDismiss = false
   for _, row in ipairs(faintRows or {}) do
-    if row.label == "FOLLOW" then faintFollow = true end
+    if row.label == "DISMISS" or row.label == "FOLLOW" then faintDismiss = true end
   end
-  check(not faintFollow, "B. fainted Gold mon does not get FOLLOW")
+  check(not faintDismiss, "B. fainted Gold mon's own submenu gets no follower row at all")
   follower:restore()
 end
 
@@ -657,24 +667,24 @@ do
   check(follower.control._gen2WorldStepWrapped == true, "G. Gold World:step wrap installed")
   follower.control:setFollowerCount(game, 0)
   local items = submenuWrap(function() return {} end, game, {}, mon, {})
-  local labels = {}
-  local follow
+  local hasFollow = false
   for _, row in ipairs(items or {}) do
-    labels[#labels + 1] = tostring(row and row.label or "?")
-    if row.label == "FOLLOW" then follow = row end
+    if row.label == "FOLLOW" then hasFollow = true end
   end
-  check(follow ~= nil, "E. FOLLOW present for SENTRET (" .. table.concat(labels, ",") .. ")")
-  if not follow then
-    io.stderr:write("FAIL: aborting Gold World:step tick\n")
-  else
-  follow.onSelect(mon, game)
+  check(not hasFollow, "E. no FOLLOW row (leader selection removed)")
+
+  do
+  follower.control:setFollowerCount(game, 1)
+  follower.control._pendingMapTrailerSync = true
+  follower.control:beginPresentationIntent("party_follow")
   local ow = GameCompat.liveOverworld(V.mod, game)
+  pcall(function() follower.control:syncAll(game, ow) end)
   check(ow == world, "E. syncAll liveOverworld is game.world")
   check(game.overworld == nil, "E. game.overworld stays nil")
   check(ow ~= game.overworld, "E. not game.overworld")
 
   local npc = world.pokepcTrailers and world.pokepcTrailers[1]
-  check(npc ~= nil, "F. trailer attached after FOLLOW")
+  check(npc ~= nil, "F. trailer attached after setting Follower Count")
   npc.cellX, npc.cellY = 10, 9
   npc.px, npc.py = 160, 144
   npc.moving = false
@@ -774,14 +784,15 @@ do
   eq(player._pokepcAsPokemon, true, "Gold CONTROL=POKEMON marker set")
   eq(player._pokepcControlSpecies, "SENTRET", "Gold player species is SENTRET")
 
-  engine.selection:selectFollower(pidgey, game, {})
-  engine:setLeaderParty(game, 2)
+  -- The leader is always party slot 1 now -- no selection to switch, so
+  -- reorder the party itself to make Pidgey the leader.
+  game.save.party = { pidgey, sentret }
   engine:applyPlayerAsPokemon(game, world, true)
   local def2 = player.spriteDef or (player.sprite and player.sprite.def)
   check(def2 and def2.image, "Pidgey-in-Gold player SpriteDef has image")
   check(not tostring(def2.image):find("pokemon_missing.png", 1, true),
         "Gen1 species player-mode in Gold does not use pokemon_missing.png")
-  eq(player._pokepcControlSpecies, "PIDGEY", "Gold player species is PIDGEY")
+  eq(player._pokepcControlSpecies, "PIDGEY", "Gold player species is PIDGEY after a party reorder")
   optionStore.follow_control = "trainer"
   optionStore.follower_count = 1
 end

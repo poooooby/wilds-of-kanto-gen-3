@@ -1,5 +1,6 @@
--- Gold party FOLLOW via the REAL Gen2 PartyMenu Runtime.call path.
--- Also locks Gen1 FOLLOW/DISMISS labels and the support-cache install fix.
+-- Gold party DISMISS via the REAL Gen2 PartyMenu Runtime.call path, and
+-- that FOLLOW (leader selection) no longer exists anywhere -- the trail
+-- always matches party order now. Also locks the support-cache install fix.
 -- Run: luajit tests/gen2_party_follow_unit_test.lua
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
@@ -287,14 +288,18 @@ local function hasLabel(rows, want)
 end
 
 ----------------------------------------------------------------
--- A. Real Runtime.call arity against Wilds wrap
+-- A. Real Runtime.call arity against Wilds wrap -- no FOLLOW (leader
+-- selection removed, trail always matches party order); DISMISS only
+-- shows once followers are actually on.
 ----------------------------------------------------------------
 do
   local vanilla = goldVanillaRows(sentret)
   local ctx = { battle = false, overworld = game.world }
   local hooked = runtimeCall(sameItems, game, vanilla, sentret, ctx)
-  check(hasLabel(hooked, "FOLLOW") ~= nil,
-        "A. Runtime.call arity appends FOLLOW (" .. labelsOf(hooked) .. ")")
+  check(hasLabel(hooked, "FOLLOW") == nil,
+        "A. Runtime.call arity never appends FOLLOW (" .. labelsOf(hooked) .. ")")
+  check(hasLabel(hooked, "DISMISS") == nil,
+        "A. no DISMISS yet -- follower_count is still 0 (" .. labelsOf(hooked) .. ")")
 end
 
 ----------------------------------------------------------------
@@ -338,56 +343,59 @@ if root and hasBit then
   if okLoad and PartyMenu and PartyMenu.submenuItems then
     local menu = PartyMenu.new(game, { party = game.save.party, submenu = true })
     local rows = menu:submenuItems(sentret)
-    check(hasLabel(rows, "FOLLOW") ~= nil,
-          "A. real PartyMenu:submenuItems appends FOLLOW (" .. labelsOf(rows) .. ")")
+    check(hasLabel(rows, "FOLLOW") == nil,
+          "A. real PartyMenu:submenuItems never appends FOLLOW (" .. labelsOf(rows) .. ")")
     local faintRows = menu:submenuItems(fainted)
     check(hasLabel(faintRows, "FOLLOW") == nil,
           "B. real PartyMenu fainted mon has no FOLLOW")
+    check(hasLabel(faintRows, "DISMISS") == nil,
+          "B. real PartyMenu fainted mon has no DISMISS either")
   end
 end
 
 ----------------------------------------------------------------
--- B. Fainted Gold mon (shared wrap, Gen1-identical healthy() rule)
+-- B. Fainted Gold mon (shared wrap, Gen1-identical healthy() rule) --
+-- gets no follower row at all, regardless of follower_count.
 ----------------------------------------------------------------
 do
   local vanilla = goldVanillaRows(fainted)
   local hooked = runtimeCall(sameItems, game, vanilla, fainted, { battle = false })
   check(hasLabel(hooked, "FOLLOW") == nil, "B. fainted Gold mon has no FOLLOW")
+  check(hasLabel(hooked, "DISMISS") == nil, "B. fainted Gold mon has no DISMISS")
 end
 
 ----------------------------------------------------------------
--- C. FOLLOW persists selection on Wilds state + save mirror
+-- C. Setting Follower Count (not FOLLOW -- that row no longer exists)
+-- spawns a trailer for party slot 1.
 ----------------------------------------------------------------
 do
-  local vanilla = goldVanillaRows(sentret)
-  local hooked = runtimeCall(sameItems, game, vanilla, sentret, { battle = false })
-  local follow = hasLabel(hooked, "FOLLOW")
-  check(follow ~= nil, "C. FOLLOW row")
-  follow.onSelect(sentret, game)
-  eq(follower.selection.state.selectedSlot, 1, "C. selectedSlot=1")
-  check(follower.selection.state.selectedMonKey ~= nil, "C. selectedMonKey set")
-  eq(game.save.followerPartyIndex, 1, "C. followerPartyIndex mirrored")
+  follower.control:setFollowerCount(game, 1)
+  game.save.pokepcFollowerCount = 1
+  optionStore.follower_count = 1
+  follower.control._optCache.follower_count = 1
+  follower.control._pendingMapTrailerSync = true
+  follower.control:beginPresentationIntent("party_follow")
+  local ow = GameCompat.liveOverworld(V.mod, game)
+  pcall(function() follower.control:syncAll(game, ow) end)
   check((game.save.pokepcFollowerCount or 0) >= 1, "C. follower_count >= 1")
   eq(#(world.pokepcTrailers or {}), 1, "F. trailer spawned")
   local npc = world.pokepcTrailers[1]
   eq(npc.pokepcTrailer, true, "F. pokepcTrailer")
   eq(npc.overworldWildSpawn, false, "F. not a wild spawn")
-  local ow = GameCompat.liveOverworld(V.mod, game)
   check(ow == world, "E. liveOverworld is game.world")
   check(game.overworld == nil, "E. game.overworld is nil")
 end
 
 ----------------------------------------------------------------
--- D. DISMISS clears selection
+-- D. DISMISS turns followers off
 ----------------------------------------------------------------
 do
   local vanilla = goldVanillaRows(sentret)
   local hooked = runtimeCall(sameItems, game, vanilla, sentret, { battle = false })
   local dismiss = hasLabel(hooked, "DISMISS")
-  check(dismiss ~= nil, "D. DISMISS row after FOLLOW")
+  check(dismiss ~= nil, "D. DISMISS row present (follower_count > 0)")
+  check(hasLabel(hooked, "FOLLOW") == nil, "D. still no FOLLOW row")
   dismiss.onSelect(sentret, game)
-  eq(follower.selection.state.selectedMonKey, nil, "D. selectedMonKey cleared")
-  eq(follower.selection.state.selectedSlot, nil, "D. selectedSlot cleared")
   eq(game.save.pokepcFollowerCount, 0, "D. follower count 0")
   eq(#(world.pokepcTrailers or {}), 0, "D. trailer removed")
 end
@@ -411,7 +419,8 @@ do
 end
 
 ----------------------------------------------------------------
--- J. Red FOLLOW/DISMISS labels unchanged
+-- J/K/L. Red/Blue/Yellow: no FOLLOW row (leader selection removed);
+-- DISMISS still works once Follower Count is set directly.
 ----------------------------------------------------------------
 do
   package.loaded["src.core.GameVersion"] = {
@@ -446,12 +455,15 @@ do
   check(ok == true, "J. Red Follower:install")
   local vanilla = goldVanillaRows(redMon)
   local hooked = submenuWrap(sameItems, redGame, vanilla, redMon, { battle = false })
-  check(hasLabel(hooked, "FOLLOW") ~= nil, "J. Red FOLLOW label unchanged")
-  hasLabel(hooked, "FOLLOW").onSelect(redMon, redGame)
+  check(hasLabel(hooked, "FOLLOW") == nil, "J. Red: no FOLLOW row")
+  check(hasLabel(hooked, "DISMISS") == nil, "J. Red: no DISMISS yet (follower_count still 0)")
+
+  redFollower.control:setFollowerCount(redGame, 1)
   local hooked2 = submenuWrap(sameItems, redGame, vanilla, redMon, { battle = false })
-  check(hasLabel(hooked2, "DISMISS") ~= nil, "J. Red DISMISS label unchanged")
+  check(hasLabel(hooked2, "DISMISS") ~= nil, "J. Red: DISMISS appears once followers are on")
   eq(GameCompat.liveOverworld(V.mod, redGame), ow, "J. Red liveOverworld is OverworldState")
   hasLabel(hooked2, "DISMISS").onSelect(redMon, redGame)
+  eq(redGame.save.pokepcFollowerCount, 0, "J. Red: DISMISS turns followers back off")
   redFollower:restore()
 
   package.loaded["src.core.GameVersion"] = {
@@ -461,12 +473,11 @@ do
   }
   redGame.version = "blue"
   redGame.save.pokepcFollowerCount = 0
-  redGame.save.followerPartyIndex = nil
   submenuWrap = nil
   local blueFollower = Follower.new(V.mod, {})
   check(blueFollower:install({ game = redGame }) == true, "K. Blue install")
   local hookedB = submenuWrap(sameItems, redGame, vanilla, redMon, { battle = false })
-  check(hasLabel(hookedB, "FOLLOW") ~= nil, "K. Blue FOLLOW unchanged")
+  check(hasLabel(hookedB, "FOLLOW") == nil, "K. Blue: no FOLLOW row")
   blueFollower:restore()
 
   package.loaded["src.core.GameVersion"] = {
@@ -480,7 +491,7 @@ do
   local yelFollower = Follower.new(V.mod, {})
   check(yelFollower:install({ game = redGame }) == true, "L. Yellow install")
   local hookedY = submenuWrap(sameItems, redGame, vanilla, redMon, { battle = false })
-  check(hasLabel(hookedY, "FOLLOW") ~= nil, "L. Yellow FOLLOW unchanged")
+  check(hasLabel(hookedY, "FOLLOW") == nil, "L. Yellow: no FOLLOW row")
   yelFollower:restore()
 end
 

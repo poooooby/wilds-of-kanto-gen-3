@@ -10,6 +10,26 @@
 
 ## 2.8.2 (fork)
 
+### Added
+
+- **Named Pokémon NPCs around Kanto now show their real species art.** The Fuchsia City pens,
+  the Pokémon Fan Club's pets, Copycat's room, and a handful of other city/building NPCs that
+  represent a specific Pokémon drew a generic placeholder (or a real sprite standing in for the
+  wrong species) before; they now reskin to Wilds' own per-species overworld sprite via the
+  engine's own `NPC:setAppearance` seam, with the NPC's dialogue, cry, and any script trigger
+  left completely untouched. Gen 1 only (Red/Blue/Yellow). Celadon's Game Corner and Prize Room
+  have no Pokémon-display objects in the game data, so there's nothing to reskin there; Cerulean
+  Cave's Mewtwo decoy and Bill's teleporter-fusion event are deliberately left alone (giving them
+  a real species' art would spoil the disguise / misrepresent the scene).
+- **Followers hide while Biking or Flying**, the same way they already do during Poké Center
+  healing, and reappear right behind you when you're back on foot or land. Covers both
+  generations (Gen 1's `onBike`/Fly animation state, Gen 2's `FieldMoves.isBiking`/`World.flyAnim`).
+- **Follower trail order always matches party order now** — whichever Pokémon is in party slot 1
+  leads, slot 2 trails next, and so on, with no way for it to disagree (the old box-leader pick,
+  in-game leader selection, and Yellow's forced-second-slot case are gone). The party menu's
+  DISMISS action still turns followers off; FOLLOW (picking a specific leader) no longer exists,
+  since reordering your party is now the only — and always correct — way to change who leads.
+
 ### Changed
 
 - **Less than half the download, same sprites: 21.3 MB → 9.3 MB.** The sprite atlases store each

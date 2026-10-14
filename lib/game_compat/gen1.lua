@@ -159,6 +159,27 @@ function Gen1.isWaterCell(map, x, y)
   return ok and water == true
 end
 
+--- Current Red/Blue/Yellow bike detection. OverworldController mirrors
+--- Game.save.onBike onto self.player.onBike (and back) -- check both so
+--- this works whichever one a caller happens to hand in as `ow`/`game`.
+function Gen1.isBiking(game, ow)
+  ow = ow or (game and game.overworld)
+  local player = ow and ow.player
+  if player and player.onBike == true then return true end
+  if game and game.save and game.save.onBike == true then return true end
+  return false
+end
+
+--- Current Red/Blue/Yellow Fly takeoff/flight/landing detection. Fly is
+--- tracked as live OverworldState fields (home/overworld.asm's fly
+--- animation state), never a player flag -- pokered/src/world/
+--- OverworldController.lua's flyTo/stepFlyAnim set/clear these.
+function Gen1.isFlying(game, ow)
+  ow = ow or (game and game.overworld)
+  if not ow then return false end
+  return ow.flyAnim ~= nil or ow.flyArrive ~= nil or ow.flyFade ~= nil
+end
+
 function Gen1.party(game)
   if not (game and game.save and type(game.save.party) == "table") then
     return nil

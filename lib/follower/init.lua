@@ -195,7 +195,8 @@ local function findPartyIndex(mon, party, selection)
 end
 
 function Follower:_installPartyLeaderItems()
-  -- Extend party submenu: FOLLOW sets active follower mon, DISMISS clears it.
+  -- Extend party submenu: DISMISS turns followers off. The trail always
+  -- matches party order now, so there is no FOLLOW/leader-pick action.
   -- Gold PartyMenu.lua emits the same public hook as Gen1:
   --   Runtime.call("ui.party.submenu", sameItems, self.game, items, mon, ctx)
   local mod = self.mod
@@ -253,19 +254,11 @@ function Follower:_installPartyLeaderItems()
         return out
       end
 
-      -- Canonical active follower identity (fingerprint), not trailer index or
-      -- a stale legacy slot. After faint failover, DISMISS must land on the
-      -- newly selected healthy mon.
-      local active = control:getActiveFollowerMon(game)
-      local monKey = selection.monFingerprint and selection.monFingerprint(mon)
-      local activeKey = active and selection.monFingerprint
-        and selection.monFingerprint(active)
-
-      local isActive = active and mon and (
-        active == mon or (activeKey and monKey and activeKey == monKey)
-      )
-
-      if isActive then
+      -- The follower trail always matches party order now (no leader
+      -- selection) -- DISMISS is a plain "stop following" action, shown
+      -- whenever followers are configured on, independent of which party
+      -- mon's own submenu happens to be open.
+      if control:followerCount(game) > 0 then
         out[#out + 1] = {
           label = "DISMISS",
           onSelect = function(selected, selectedGame)
@@ -306,69 +299,6 @@ function Follower:_installPartyLeaderItems()
 
             local name = selected.nickname or selected.species or "It"
             local msg = name .. " is no longer following."
-            pcall(function()
-              GameCompat.presentText(mod, selectedGame, ow, msg)
-            end)
-          end,
-        }
-      else
-        out[#out + 1] = {
-          label = "FOLLOW",
-          onSelect = function(selected, selectedGame)
-            -- Ensure at least 1 follower is set if currently at 0
-            if control:followerCount(selectedGame) <= 0 then
-              control:setFollowerCount(selectedGame, 1)
-              control._optCache.follower_count = 1
-              if selectedGame and selectedGame.save then
-                selectedGame.save.pokepcFollowerCount = 1
-              end
-            end
-
-            if selectedGame and selectedGame.save then
-              selectedGame.save.followerPartyIndex = monIndex
-            end
-
-            control:setLeaderParty(selectedGame, monIndex)
-            local selOk, selSlot = selection:selectFollower(selected, selectedGame, {})
-            if not selOk then
-              logGen2(mod,
-                "select FAILED species=%s healthy=%s slot=%s",
-                tostring(selected and selected.species or "?"),
-                tostring(selection.healthy(selected)),
-                tostring(selSlot))
-            end
-            control._pendingMapTrailerSync = true
-            -- Selection already persisted; release/recall is presentation-only.
-            control:beginPresentationIntent("party_follow")
-
-            local GameCompat = V.require("game_compat")
-            local ow = GameCompat.liveOverworld(mod, selectedGame)
-            local worldKind = "nil"
-            if ow and selectedGame and selectedGame.world == ow then
-              worldKind = "game.world"
-            elseif ow and selectedGame and selectedGame.overworld == ow then
-              worldKind = "game.overworld"
-            elseif ow then
-              worldKind = "liveOverworld"
-            end
-            local syncOk, syncErr = pcall(function()
-              control:syncAll(selectedGame, ow)
-            end)
-            logGen2(mod,
-              "select slot=%s species=%s count=%s",
-              tostring(monIndex),
-              tostring(selected and selected.species or "?"),
-              tostring(control:followerCount(selectedGame)))
-            logGen2(mod, "world=%s map=%s sync=%s",
-              worldKind,
-              tostring(ow and ow.map and ow.map.id or "?"),
-              tostring(syncOk))
-            if not syncOk then
-              logGen2(mod, "select sync failed: %s", tostring(syncErr))
-            end
-
-            local name = selected.nickname or selected.species or "It"
-            local msg = name .. " is now following you!"
             pcall(function()
               GameCompat.presentText(mod, selectedGame, ow, msg)
             end)

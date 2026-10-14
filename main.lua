@@ -59,6 +59,7 @@ return function(mod)
   local BehaviorTick = V.require("behavior_tick")
   local DebugLog = V.require("debug_log")
   local Diagnostics = V.require("diagnostics")
+  local NpcReskin = V.require("npc_reskin")
 
   local function liveGame()
     return mod.game or (mod.world and mod.world.game)
@@ -137,6 +138,15 @@ return function(mod)
   if not regOk then
     error("wilds_of_kanto_gen3: sprite content registration failed: "
           .. tostring(regErr), 0)
+  end
+
+  -- Reskins a curated list of named vanilla NPCs (Fuchsia City zoo, Fan
+  -- Club, etc.) with real per-species art -- reads render's already
+  -- registered sprite ids, registers nothing new itself (lib/npc_reskin.lua).
+  local npcReskin = NpcReskin.new(mod, render)
+  local function currentMapId()
+    local ow = GameCompat.liveOverworld(mod, liveGame())
+    return ow and ow.map and ow.map.id
   end
 
   -- SHINY RATE (Red/Blue/Yellow): wrap Pokemon.new / BattleState.newWild so wild Pokemon roll shiny.
@@ -223,6 +233,9 @@ return function(mod)
 
   mod.events:on("map.entered", function(ev)
     pcall(Shiny.clearPending) -- a battle that never started must not leak its shiny roll
+    -- Independent of wild-spawn support -- a static NPC reskin should apply
+    -- even with Classic Enc / encounters off.
+    pcall(function() npcReskin:applyMap(ev and ev.mapId) end)
     if not supports("encounters") then
       noteGameplaySkipped()
       return
@@ -262,6 +275,9 @@ return function(mod)
   end)
 
   mod.events:on("map.reloaded", function(ev)
+    -- A script reloadmap/refreshmap can reset a vanilla NPC's sprite back
+    -- to its own default -- re-apply regardless of wild-spawn support.
+    pcall(function() npcReskin:applyMap(ev and ev.mapId) end)
     if not supports("encounters") then return end
     local ok, err = pcall(logic.onMapReloaded, logic, ev)
     if not ok then
@@ -340,6 +356,10 @@ return function(mod)
   end)
 
   mod.events:on("save.loaded", function()
+    -- Loading directly into a save does not fire map.entered -- catch the
+    -- "already on a map at load" case the same way, independent of
+    -- wild-spawn support.
+    pcall(function() npcReskin:applyMap(currentMapId()) end)
     if not supports("encounters") then return end
     local ok, err = pcall(logic.onSaveLoaded, logic)
     if not ok then
@@ -362,6 +382,9 @@ return function(mod)
 
   mod.events:on("game.ready", function()
     logGen2Event("game.ready")
+    -- Covers "already on a map when mods finished loading" too (belt and
+    -- suspenders alongside save.loaded -- cheap and idempotent either way).
+    pcall(function() npcReskin:applyMap(currentMapId()) end)
     hud:syncPipelineLevel()
     if devOverlay then devOverlay:syncPipelineLevel() end
     -- The engine's Pipelines.applyOptions restores pipeline levels from the
