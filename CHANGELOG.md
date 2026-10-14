@@ -8,7 +8,7 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
-## 2.8.2 (fork)
+## 2.8.3 (fork)
 
 ### Added
 
@@ -29,6 +29,8 @@
   in-game leader selection, and Yellow's forced-second-slot case are gone). The party menu's
   DISMISS action still turns followers off; FOLLOW (picking a specific leader) no longer exists,
   since reordering your party is now the only — and always correct — way to change who leads.
+
+## 2.8.2 (fork)
 
 ### Changed
 
