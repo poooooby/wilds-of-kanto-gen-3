@@ -315,8 +315,94 @@ function SpriteAtlas.installed()
 end
 
 -- ------------------------------------------------------------------ install
+local function activeAtlas(Assets)
+  return Assets._wildsSpriteAtlasActive or SpriteAtlas
+end
+
+-- Wrap the named engine loaders (`which` = set of image / imageData / exists) over `orig`, dispatching to the active
+-- atlas module at call time. Registers the session hooks once.
+local function installForwarders(Assets, orig, which)
+  if which.image and type(orig.image) == "function" then
+    Assets.image = function(path)
+      local img = activeAtlas(Assets).image(path)
+      if img then return img end
+      return orig.image(path)
+    end
+  end
+  if which.imageData and type(orig.imageData) == "function" then
+    Assets.imageData = function(path)
+      local id = activeAtlas(Assets).imageData(path)
+      if id then return id end
+      return orig.imageData(path)
+    end
+  end
+  if which.exists and type(orig.exists) == "function" then
+    Assets.exists = function(path)
+      if activeAtlas(Assets).has(path) then return true end
+      return orig.exists(path)
+    end
+  end
+  Assets._wildsSpriteAtlasForwarding = true
+  if type(Assets.register) == "function" then
+    -- The table form also lets the engine free our images at session end (Assets.releaseSession).
+    pcall(Assets.register, {
+      invalidate = function() activeAtlas(Assets).invalidate() end,
+      release = function() activeAtlas(Assets).release() end,
+    })
+  end
+end
+
+-- True when `fn` is a wrapper an older version of this module installed directly over `orig` (it closes over it).
+local function isLegacyWrapper(fn, orig)
+  if type(fn) ~= "function" or type(debug) ~= "table" or type(debug.getupvalue) ~= "function" then return false end
+  for i = 1, 16 do
+    local name, value = debug.getupvalue(fn, i)
+    if name == nil then return false end
+    if name == "orig" and value == orig then return true end
+  end
+  return false
+end
+
+-- Versions up to 2.8.3 wrapped once per process with closures bound to their own module copy, so after an in-app
+-- update the engine kept slicing the NEW shards with the OLD indexes (wrong or blank sprites until a restart).
+-- Replace those wrappers when they are still the outermost layer; otherwise another mod has wrapped over them and
+-- unwinding its layer is not ours to do.
+local function takeOverLegacyWrappers(Assets, orig, warn)
+  local which, blocked = {}, {}
+  for _, name in ipairs({ "image", "imageData", "exists" }) do
+    if type(orig[name]) == "function" then
+      if isLegacyWrapper(Assets[name], orig) then which[name] = true else blocked[#blocked + 1] = name end
+    end
+  end
+  installForwarders(Assets, orig, which)
+  if #blocked > 0 and warn then
+    warn(("[Atlas] an older Wilds atlas hook is still wrapped under another mod (%s); "
+      .. "restart the game if sprites look wrong after updating"):format(table.concat(blocked, ", ")))
+  end
+end
+
+-- The engine's Assets module outlives a session (return to launcher, in-app mod update), so the wrappers can outlive
+-- the copy of this module that installed them. Make THIS copy the one they dispatch to -- also when it has no atlas of
+-- its own (then it serves nothing and every path falls through to the real files) -- and free the old copy's images.
+local function claimHooks(Assets, warn)
+  local orig = Assets._wildsSpriteAtlas
+  if not orig then return end
+  if not Assets._wildsSpriteAtlasForwarding then takeOverLegacyWrappers(Assets, orig, warn) end
+  local previousActive = Assets._wildsSpriteAtlasActive
+  Assets._wildsSpriteAtlasActive = SpriteAtlas
+  if previousActive and previousActive ~= SpriteAtlas and type(previousActive.release) == "function" then
+    pcall(previousActive.release)
+  end
+end
+
+-- An install that found no usable atlas still has to retire an older copy's hooks.
+local function claimHooksWithoutAtlas(deps)
+  local A = deps.Assets or tryRequire("src.render.Assets")
+  if type(A) == "table" then claimHooks(A, deps.warn) end
+end
+
 --- Load the index and wrap the engine's Assets loader. Returns true, or false plus a reason (no atlas is a normal
--- "false": the game keeps using the per-file sheets). `deps` = { read, imageData, Assets, log } is injectable for tests.
+-- "false": the game keeps using the per-file sheets). `deps` = { read, imageData, Assets, log, warn } is injectable for tests.
 function SpriteAtlas.install(mod, deps)
   deps = deps or {}
   local previous = state
@@ -336,11 +422,13 @@ function SpriteAtlas.install(mod, deps)
   local raw = readMod(SpriteAtlas.ROOT_INDEX)
   if not raw then
     state = previous
+    claimHooksWithoutAtlas(deps)
     return false, "no atlas index"
   end
   local root = decodeJson(raw)
   if not (root and root.version == 1 and type(root.families) == "table") then
     state = previous
+    claimHooksWithoutAtlas(deps)
     return false, "unsupported atlas index"
   end
   local any = false
@@ -363,6 +451,7 @@ function SpriteAtlas.install(mod, deps)
   table.sort(state.prefixes, function(a, b) return #a[1] > #b[1] end) -- longest prefix wins
   if not any then
     state = previous
+    claimHooksWithoutAtlas(deps)
     return false, "empty atlas index"
   end
 
@@ -375,32 +464,9 @@ function SpriteAtlas.install(mod, deps)
   if not Assets._wildsSpriteAtlas then
     local orig = { image = Assets.image, imageData = Assets.imageData, exists = Assets.exists }
     Assets._wildsSpriteAtlas = orig
-    Assets.image = function(path)
-      local img = SpriteAtlas.image(path)
-      if img then return img end
-      return orig.image(path)
-    end
-    if type(orig.imageData) == "function" then
-      Assets.imageData = function(path)
-        local id = SpriteAtlas.imageData(path)
-        if id then return id end
-        return orig.imageData(path)
-      end
-    end
-    if type(orig.exists) == "function" then
-      Assets.exists = function(path)
-        if SpriteAtlas.has(path) then return true end
-        return orig.exists(path)
-      end
-    end
-    if type(Assets.register) == "function" then
-      -- The table form also lets the engine free our images at session end (Assets.releaseSession).
-      pcall(Assets.register, {
-        invalidate = function() SpriteAtlas.invalidate() end,
-        release = function() SpriteAtlas.release() end,
-      })
-    end
+    installForwarders(Assets, orig, { image = true, imageData = true, exists = true })
   end
+  claimHooks(Assets, deps.warn)
   state.installed = true
   return true
 end

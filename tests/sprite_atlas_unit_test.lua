@@ -379,6 +379,93 @@ do
   eq(SA._expand(px(9), 1, normal), "\0\0\0\0", "_expand: a number past the row is transparent")
 end
 
+-- ---------------------------------------------------------------- in-process reload (in-app update): the newest copy serves
+-- The engine's Assets module outlives a session, so a reloaded mod must take over hooks an older copy installed.
+local function freshCopy() return assert(loadfile("lib/sprite_atlas.lua"))(V) end
+local function installCopy(copy, A, extra)
+  local deps = { read = function(rel) return files[rel] end, imageData = shardLoader, Assets = A }
+  for k, v in pairs(extra or {}) do deps[k] = v end
+  return copy.install({ path = "mods/wilds_of_kanto_gen3" }, deps)
+end
+local MOVED_INDEX = HGSS_INDEX:gsub('"001%-normal.png":%[0,0,0,32,100%]', '"001-normal.png":[0,0,40,32,100]')
+assert(MOVED_INDEX ~= HGSS_INDEX, "fixture: moved index differs")
+
+do -- same Assets, two module copies: the second copy's index decides the slice
+  resetWorld()
+  local A = newAssets()
+  local old = freshCopy()
+  check(installCopy(old, A), "reload: old copy installs")
+  old.image(P .. "/001-normal.png") -- old copy has read (and cached) its family index
+  files["assets/atlas/hgss.json"] = MOVED_INDEX
+  local new = freshCopy()
+  check(installCopy(new, A), "reload: new copy installs")
+  pastes = {}
+  check(A.image(P .. "/001-normal.png") ~= nil, "reload: still served")
+  eq(pastes[1] and pastes[1].sy, 40, "reload: sliced with the NEW copy's index, not the old cached one")
+end
+
+do -- a newer copy with no atlas retires the old copy's hooks: paths fall through to the real files
+  resetWorld()
+  local A, calls = newAssets()
+  local old = freshCopy()
+  installCopy(old, A)
+  files = {}
+  local new = freshCopy()
+  local ok = installCopy(new, A)
+  eq(ok, false, "reload/no atlas: install reports no atlas")
+  local img = A.image(P .. "/001-normal.png")
+  check(img and img.real == P .. "/001-normal.png", "reload/no atlas: old atlas no longer serves")
+  eq(#calls.image, 1, "reload/no atlas: engine loader reached")
+end
+
+-- A <= 2.8.3 install: closure-bound wrappers over `orig`, no forwarding flag.
+local function legacyInstall(A, oldModule)
+  local orig = { image = A.image, imageData = A.imageData, exists = A.exists }
+  A._wildsSpriteAtlas = orig
+  A.image = function(path)
+    local img = oldModule.image(path)
+    if img then return img end
+    return orig.image(path)
+  end
+  A.imageData = function(path)
+    local id = oldModule.imageData(path)
+    if id then return id end
+    return orig.imageData(path)
+  end
+  A.exists = function(path)
+    if oldModule.has(path) then return true end
+    return orig.exists(path)
+  end
+end
+local STALE = { stale = true }
+local staleModule = {
+  image = function() return STALE end, imageData = function() return STALE end, has = function() return true end,
+}
+
+do -- legacy wrappers on top: replaced, the new copy serves
+  resetWorld()
+  local A = newAssets()
+  legacyInstall(A, staleModule)
+  check(installCopy(freshCopy(), A), "legacy: new copy installs")
+  local img = A.image(P .. "/001-normal.png")
+  check(img ~= STALE and img ~= nil, "legacy: the stale copy no longer serves atlased paths")
+  check(A.imageData(P .. "/001-normal.png") ~= STALE, "legacy: imageData taken over")
+  eq(A.exists(DIR .. "/nope.png"), false, "legacy: exists taken over")
+  eq(A._wildsSpriteAtlasForwarding, true, "legacy: forwarding installed")
+end
+
+do -- legacy wrapper under another mod's wrapper: left alone, warned
+  resetWorld()
+  local A = newAssets()
+  legacyInstall(A, staleModule)
+  local under = A.image
+  A.image = function(path) return under(path) end -- another mod wraps on top
+  local warned
+  installCopy(freshCopy(), A, { warn = function(msg) warned = msg end })
+  check(warned and warned:find("image", 1, true), "legacy/blocked: warns naming the blocked hook")
+  check(A.imageData(P .. "/001-normal.png") ~= STALE, "legacy/blocked: unblocked hooks still taken over")
+end
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

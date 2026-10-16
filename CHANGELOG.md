@@ -8,6 +8,18 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.8.4 (fork)
+
+### Fixed
+
+- **Followers and wild Pokémon no longer vanish (or show the wrong art) after an in-app update.**
+  Updating from the launcher without restarting the game kept the previous version's sprite-atlas
+  code running against the new version's re-packed sprite files, so some species (e.g. Cyndaquil,
+  Quilava) were cut from empty space and drew invisible until a full restart or reinstall. The
+  newly loaded version now always takes over, and a build without atlases switches the old one
+  off. Coming from 2.8.3 or older, one restart may still be needed if another mod has wrapped
+  over the old hook (the log says so).
+
 ## 2.8.3 (fork)
 
 ### Added
