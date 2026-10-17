@@ -8,6 +8,16 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.8.5 (fork)
+
+### Fixed
+
+- **A follower sent back with Ball can be called out again.** Since 2.8.3 removed the party
+  menu's FOLLOW (leader pick), nothing could undo a talk → Ball recall, so that Pokémon never
+  followed again. FOLLOW is back in the party menu, but only on a Pokémon that was sent back
+  with Ball: it rejoins the trail in its own party slot and takes back the follower slot the
+  recall gave up. Pokémon already stuck in a save get the row too.
+
 ## 2.8.4 (fork)
 
 ### Fixed

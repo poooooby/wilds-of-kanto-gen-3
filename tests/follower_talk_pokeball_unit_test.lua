@@ -869,6 +869,35 @@ do
 end
 
 --------------------------------------------------------------------
+-- CASE 18: party-menu FOLLOW undoes a Ball recall (rejoins in party order)
+--------------------------------------------------------------------
+do
+  local ow = makeOw()
+  local party = makeParty(3)
+  local game = {
+    save = { party = party, pokepcFollowerCount = 3, pokepcControlMode = "follow" },
+    data = {}, overworld = ow, generation = 1,
+  }
+  local engine = makeEngine(game, 3)
+  engine:syncAll(game, ow)
+  local mid = party[2] -- CHARIZARD
+  engine:manualRecallFollower(game, ow, mid, { source = "talk_pokeball" })
+  check(not hasSpecies(speciesInTrail(ow), "CHARIZARD"), "CASE18 recalled first")
+  local ok = engine:resumeFollower(game, ow, mid)
+  eq(ok, true, "CASE18 resume ok")
+  eq(mid.stopFollowing, false, "CASE18 exclusion cleared")
+  eq(engine:followerCount(game), 3, "CASE18 slot given back")
+  local trail = speciesInTrail(ow)
+  eq(#trail, 3, "CASE18 three trailers again")
+  check(hasSpecies(trail, "CHARIZARD"), "CASE18 Charizard back")
+  engine:syncAll(game, ow)
+  check(hasSpecies(speciesInTrail(ow), "CHARIZARD"), "CASE18 survives a later sync")
+  local again = engine:resumeFollower(game, ow, party[1])
+  eq(again, false, "CASE18 resume on a mon never recalled is a no-op")
+  eq(engine:followerCount(game), 3, "CASE18 no-op leaves count alone")
+end
+
+--------------------------------------------------------------------
 -- Ambient fragment regression spot-check
 --------------------------------------------------------------------
 do

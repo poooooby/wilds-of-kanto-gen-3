@@ -883,6 +883,20 @@ function ControlEngine:manualRecallFollower(game, ow, mon, opts)
   return true
 end
 
+--- Undo a talk → Ball recall (party menu FOLLOW): the mon rejoins the trail in its own party slot and takes back the
+-- follower slot the recall gave up.
+function ControlEngine:resumeFollower(game, ow, mon)
+  if not (mon and mon.stopFollowing == true) then return false, "not_recalled" end
+  game = game or self:_game()
+  ow = ow or self:_liveOw(game)
+  mon.stopFollowing = false
+  self:setFollowerCount(game, (self:followerCount(game) or 0) + 1)
+  self._pendingMapTrailerSync = true
+  self:beginPresentationIntent("party_follow")
+  pcall(function() self:syncAll(game, ow) end)
+  return true
+end
+
 function ControlEngine:setLeaderParty(game, partyIndex)
   if not game or not game.save then return end
   -- Wilds owns the trailer pack independently of party order, so the

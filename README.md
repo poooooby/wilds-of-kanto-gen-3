@@ -37,7 +37,8 @@ Pokémon Gold in beta.
 
 - 🐕 **Followers:** Your lead Pokémon walks behind you, and up to six more can trail along in
   party order. They tuck in close while you Bike or Fly, and reappear right behind you once
-  you're back on foot.
+  you're back on foot. Talk to one and pick **Ball** to send it back, then pick **FOLLOW** on it
+  in the party menu whenever you want it out again.
 - 🌊 **Swimming and floating:** Followers and water Pokémon switch to swimming or levitating art
   on the water.
 - ⚡ **Yellow's Pikachu:** Dress your starter Pikachu in one of 12 costumes, from caps to Pop Star.

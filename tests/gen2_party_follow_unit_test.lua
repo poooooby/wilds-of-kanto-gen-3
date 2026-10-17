@@ -401,6 +401,36 @@ do
 end
 
 ----------------------------------------------------------------
+-- D2. A mon sent back with talk -> Ball gets a FOLLOW row (only that mon,
+-- only while recalled) that brings it back.
+----------------------------------------------------------------
+do
+  local ow = GameCompat.liveOverworld(V.mod, game)
+  follower.control:setFollowerCount(game, 1)
+  follower.control._pendingMapTrailerSync = true
+  pcall(function() follower.control:syncAll(game, ow) end)
+  eq(#(world.pokepcTrailers or {}), 1, "D2. following before Ball")
+  follower.control:manualRecallFollower(game, ow, sentret, { source = "talk_pokeball" })
+  eq(#(world.pokepcTrailers or {}), 0, "D2. Ball sent it back")
+  eq(sentret.stopFollowing, true, "D2. marked recalled")
+
+  local hooked = runtimeCall(sameItems, game, goldVanillaRows(sentret), sentret, { battle = false })
+  local follow = hasLabel(hooked, "FOLLOW")
+  check(follow ~= nil, "D2. FOLLOW row on the recalled mon (" .. labelsOf(hooked) .. ")")
+  follow.onSelect(sentret, game)
+  eq(sentret.stopFollowing, false, "D2. FOLLOW clears the recall")
+  eq(game.save.pokepcFollowerCount, 1, "D2. follower slot restored")
+  eq(#(world.pokepcTrailers or {}), 1, "D2. following again")
+
+  local after = runtimeCall(sameItems, game, goldVanillaRows(sentret), sentret, { battle = false })
+  check(hasLabel(after, "FOLLOW") == nil, "D2. no FOLLOW once it follows again")
+
+  follower.control:setFollowerCount(game, 0)
+  follower.control._pendingMapTrailerSync = true
+  pcall(function() follower.control:syncAll(game, ow) end)
+end
+
+----------------------------------------------------------------
 -- 7 / 8. Settings: Config.setOption is canonical without options:set
 ----------------------------------------------------------------
 do

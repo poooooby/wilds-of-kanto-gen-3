@@ -195,8 +195,9 @@ local function findPartyIndex(mon, party, selection)
 end
 
 function Follower:_installPartyLeaderItems()
-  -- Extend party submenu: DISMISS turns followers off. The trail always
-  -- matches party order now, so there is no FOLLOW/leader-pick action.
+  -- Extend party submenu: DISMISS turns followers off; FOLLOW appears only on
+  -- a mon sent back with talk → Ball, to let it follow again. The trail always
+  -- matches party order, so there is no leader-pick action.
   -- Gold PartyMenu.lua emits the same public hook as Gen1:
   --   Runtime.call("ui.party.submenu", sameItems, self.game, items, mon, ctx)
   local mod = self.mod
@@ -252,6 +253,24 @@ function Follower:_installPartyLeaderItems()
         logGen2(mod,
           "rows=%s (no FOLLOW: party index unresolved)", table.concat(labels, ","))
         return out
+      end
+
+      -- FOLLOW only undoes a talk → Ball recall for THIS mon: it rejoins in
+      -- its own party slot (never picks a leader; the trail is party order).
+      local partyMon = party[monIndex]
+      if partyMon and partyMon.stopFollowing == true then
+        out[#out + 1] = {
+          label = "FOLLOW",
+          onSelect = function(selected, selectedGame)
+            local GameCompat = V.require("game_compat")
+            local ow = GameCompat.liveOverworld(mod, selectedGame)
+            control:resumeFollower(selectedGame, ow, partyMon)
+            local name = partyMon.nickname or partyMon.species or "It"
+            pcall(function()
+              GameCompat.presentText(mod, selectedGame, ow, name .. " is following you again.")
+            end)
+          end,
+        }
       end
 
       -- The follower trail always matches party order now (no leader
