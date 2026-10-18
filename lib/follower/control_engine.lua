@@ -935,8 +935,12 @@ function ControlEngine:getLeaderMon(game)
   -- instead of ACTIVE for every healthy mon.
   if self:followerCount(game) <= 0 then return nil end
   local save = game.save
+  -- A mon sent back with talk -> Ball is not following, so it cannot lead;
+  -- the next healthy mon in party order takes the lead instead.
   for _, mon in ipairs(save.party or {}) do
-    if (mon.hp or 0) > 0 then return mon, "party" end
+    if mon and (tonumber(mon.hp) or 0) > 0 and mon.stopFollowing ~= true then
+      return mon, "party"
+    end
   end
   return nil, "party"
 end
@@ -1411,88 +1415,27 @@ function ControlEngine:partyTrailMons(game)
   local save = game and game.save
   if not save then return {} end
 
-  local leader, leadSrc = self:getLeaderMon(game)
-  local leadIdx = self:_leaderPartyIndex(game, leader, leadSrc)
-  local leadKey = ControlEngine.monIdentityKey(leader)
-  -- After permanent faint failover, selectedMonKey always matches the
-  -- healthy leader. leadIsSubstitute remains for rare mid-frame races
-  -- before reconcile runs (should be false once reconcile has settled).
-  --
-  -- NOTE: selKey is Selection's monFingerprint (colon-separated
-  -- species:otId:dv:...), NOT ControlEngine.monIdentityKey (pipe-separated
-  -- species|level|nickname|otId|...). Compare the leader's own fingerprint
-  -- in the selection format instead of mixing key formats.
-  local selKey = self.selection and self.selection.state
-    and self.selection.state.selectedMonKey
-  local leadIsSubstitute = false
-  if selKey and leader and self.selection
-     and type(self.selection.monFingerprint) == "function" then
-    local leadFp = self.selection.monFingerprint(leader)
-    leadIsSubstitute = leadFp ~= nil and leadFp ~= selKey
-  end
+  -- The trail is party order, full stop: walk the party top to bottom and
+  -- take every healthy mon that has not been sent back with talk -> Ball,
+  -- until the follower count is filled. The leader is simply the first such
+  -- mon (getLeaderMon), so there is nothing to look up or reconcile here.
+  local leader = self:getLeaderMon(game)
   local front = self:isPokemonFront(game)
 
-  -- Identify if stock Pikachu is active. In Yellow follow mode the stock
-  -- NPC renders the ACTIVE leader's art (forceYellowStockPikachuArt), so the
-  -- leader must not also trail (that would render the spot-1 mon twice) —
-  -- and when the leader IS Pikachu, the party Pikachu is reserved for the
-  -- stock NPC. Any other party Pikachu trails like a normal party mon.
+  -- Yellow follow mode: the stock Pikachu NPC is slot 1 of the pack and
+  -- renders the leader's art (forceYellowStockPikachuArt), so the leader must
+  -- not also trail. Any other party Pikachu trails like a normal party mon.
   local isStockPikaActive = self:yellowStockFollowActive(game)
-  local pikaIdx = self:_partyPikachuIndex(save)
-  local pikaIsLeader = pikaIdx ~= nil and leadKey ~= nil
-    and ControlEngine.monIdentityKey(save.party[pikaIdx]) == leadKey
-  local skipPikaIdx = (isStockPikaActive and pikaIsLeader) and pikaIdx or nil
 
   local out = {}
-  local pushed = {}  -- party indexes already in the trail (dedupe guard)
-  local function push(mon, i)
-    out[#out + 1] = { mon = mon, partyIndex = i }
-    pushed[i] = true
-  end
-
-  local function isControlledLeader(mon, i)
-    if not mon then return false end
-    if leadIdx and i == leadIdx then return true end
-    if leader and mon == leader then return true end
-    if leadKey and ControlEngine.monIdentityKey(mon) == leadKey then return true end
-    return false
-  end
-
-  local function skipMon(i, mon)
-    if skipPikaIdx and i == skipPikaIdx then return true end
-    -- Stock NPC already renders the leader; skip it from the trail.
-    if isStockPikaActive and leadIdx and i == leadIdx then return true end
-    if mon and mon.stopFollowing == true then return true end
-    return false
-  end
-
-  if not front and leader and not leadIsSubstitute then
-    -- The stock NPC (when active) renders the leader and reserves slot 1, so
-    -- the leader push is skipped here (skipMon blocks it below); the other
-    -- party mons — including Pikachu — trail behind in party order.
-    if leadIdx and save.party and save.party[leadIdx]
-       and (save.party[leadIdx].hp or 0) > 0
-       and not skipMon(leadIdx, save.party[leadIdx]) then
-      push(save.party[leadIdx], leadIdx)
-    else
-      for i, mon in ipairs(save.party or {}) do
-        if isControlledLeader(mon, i) and (mon.hp or 0) > 0
-           and not skipMon(i, mon) then
-          push(mon, i)
-          break
-        end
-      end
-    end
-  end
-
   for i, mon in ipairs(save.party or {}) do
-    -- pushed[i] guards against a slot already added by the leader push above
-    -- (e.g. a box leader whose followerPartyIndex aliases a normal party slot,
-    -- or a leader whose party identity collides): one mon per party slot.
-    if (mon.hp or 0) > 0 and not pushed[i]
-       and not isControlledLeader(mon, i)
-       and not skipMon(i, mon) then
-      push(mon, i)
+    if mon and (tonumber(mon.hp) or 0) > 0 and mon.stopFollowing ~= true then
+      local isLeader = leader ~= nil and mon == leader
+      -- Pokemon-front modes: the player IS the leader, so it never trails.
+      local skip = isLeader and (front or isStockPikaActive)
+      if not skip then
+        out[#out + 1] = { mon = mon, partyIndex = i }
+      end
     end
   end
 
@@ -2768,6 +2711,10 @@ local function compositionDirty(trailers, want)
       local sp = spec.mon and spec.mon.species
       local cur = t.pokepcMon and t.pokepcMon.species
       if sp ~= cur then return true end
+      -- Same species is not the same mon: swapping two Pidgey (or a shiny
+      -- and a normal one) in the party must still re-bind the trail. The
+      -- in-place species_swap path keeps positions and refreshes the art.
+      if spec.mon ~= t.pokepcMon then return true end
     end
   end
   return false

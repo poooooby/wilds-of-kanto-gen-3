@@ -11,6 +11,12 @@ local function healthy(mon)
   return type(mon) == "table" and (tonumber(mon.hp) or 0) > 0
 end
 
+-- Can this mon be in the follower trail right now? Healthy, and not sent
+-- back with talk -> Ball (mon.stopFollowing, undone by party-menu FOLLOW).
+local function following(mon)
+  return healthy(mon) and mon.stopFollowing ~= true
+end
+
 -- Fingerprint from stable engine fields. Species alone is insufficient when
 -- the party has duplicates; include species + OT + DVs + catchRate.
 -- Gold Mon.new (src/battle/gen2/Mon.lua) still stores otId (via stampOT) and
@@ -33,27 +39,6 @@ local function monFingerprint(mon)
 end
 
 -- Legacy PokéPC key without species (ot:dvs:catchRate).
-local function monFingerprintLegacy(mon)
-  if type(mon) ~= "table" then return nil end
-  local dvs = type(mon.dvs) == "table" and mon.dvs or {}
-  return table.concat({
-    tostring(mon.otId or -1),
-    tostring(dvs.attack or -1),
-    tostring(dvs.defense or -1),
-    tostring(dvs.speed or -1),
-    tostring(dvs.special or -1),
-    tostring(mon.catchRate or -1),
-  }, ":")
-end
-
-local function fingerprintsMatch(stored, mon)
-  if not stored or not mon then return false end
-  if monFingerprint(mon) == stored then return true end
-  -- Accept legacy keys missing species.
-  if monFingerprintLegacy(mon) == stored then return true end
-  return false
-end
-
 function Selection.new(mod, state)
   local self = setmetatable({}, Selection)
   self.mod = mod
@@ -62,6 +47,7 @@ function Selection.new(mod, state)
 end
 
 Selection.healthy = healthy
+Selection.following = following
 Selection.monFingerprint = monFingerprint
 
 function Selection:getParty(game)
@@ -70,10 +56,11 @@ function Selection:getParty(game)
 end
 
 --- Resolve the active follower mon -- always the first party mon, in
--- party order (first HEALTHY one when needHealthy). No override: the
--- stored selection (`selectedMonKey`/`selectedSlot`) and the legacy
--- `game.save.followerPartyIndex` are no longer consulted, so trail order
--- can never disagree with party order.
+-- party order, that is actually following (first HEALTHY one when
+-- needHealthy; a mon sent back with talk -> Ball is always skipped). No
+-- override: the stored selection (`selectedMonKey`/`selectedSlot`) and the
+-- legacy `game.save.followerPartyIndex` are no longer consulted, so trail
+-- order can never disagree with party order.
 -- @param needHealthy when true, fainted mons are skipped
 -- @return mon, slot or nil
 function Selection:getActiveFollowerMon(game, needHealthy)
@@ -81,7 +68,9 @@ function Selection:getActiveFollowerMon(game, needHealthy)
   if not party or #party == 0 then return nil end
 
   for i, mon in ipairs(party) do
-    if not needHealthy or healthy(mon) then
+    if needHealthy then
+      if following(mon) then return mon, i end
+    elseif type(mon) == "table" and mon.stopFollowing ~= true then
       return mon, i
     end
   end
@@ -136,11 +125,10 @@ local function clearPersistedSelection(self, game)
   end
 end
 
---- Ensure selection still points at a valid party mon after party mutations.
--- When the selected mon is fainted (HP <= 0, still in party), permanently
--- fail over to the topmost healthy party mon via selectFollower. Revival of
--- the original mon must NOT reclaim selection — ownership has changed.
--- Sprite / render availability is irrelevant; only HP is consulted.
+--- Keep the stored selection mirrored to party order after any party change.
+-- The selection is derived, never chosen: it is always the first party mon
+-- that is following (healthy, not sent back with talk -> Ball). A reorder,
+-- faint, revive, recall or FOLLOW simply moves it to whoever is first now.
 function Selection:reconcile(game)
   local party = self:getParty(game)
   if not party or #party == 0 then
@@ -148,45 +136,22 @@ function Selection:reconcile(game)
     return nil
   end
 
-  local selKey = self.state.selectedMonKey
-  if selKey then
-    for i, m in ipairs(party) do
-      if fingerprintsMatch(selKey, m) then
-        if healthy(m) then
-          -- Selected mon is healthy — refresh fingerprint/slot if needed.
-          local key = monFingerprint(m)
-          if key and (key ~= selKey or i ~= self.state.selectedSlot) then
-            self:selectFollower(m, game)
-          elseif game and game.save then
-            -- Keep compatibility mirrors aligned even when key/slot match.
-            game.save.followerPartyIndex = i
-            game.save.followerSpecies = m.species
-            game.save.pokepcLeader = { source = "party", index = i }
-          end
-          return m, i
-        end
-        -- Selected mon is fainted: permanent failover to first healthy mon.
-        for j, m2 in ipairs(party) do
-          if healthy(m2) then
-            self:selectFollower(m2, game)
-            return m2, j
-          end
-        end
-        -- Entire party fainted: no active follower, no bogus slot.
-        clearPersistedSelection(self, game)
-        return nil
-      end
-    end
-  end
-
-  -- No selection, or selected mon is gone from party.
-  -- Pick first healthy as new permanent leader.
   for i, mon in ipairs(party) do
-    if healthy(mon) then
-      self:selectFollower(mon, game)
+    if following(mon) then
+      local key = monFingerprint(mon)
+      if key and (key ~= self.state.selectedMonKey or i ~= self.state.selectedSlot) then
+        self:selectFollower(mon, game)
+      elseif game and game.save then
+        -- Keep compatibility mirrors aligned even when key/slot match.
+        game.save.followerPartyIndex = i
+        game.save.followerSpecies = mon.species
+        game.save.pokepcLeader = { source = "party", index = i }
+      end
       return mon, i
     end
   end
+
+  -- Nobody can follow (all fainted or all sent back): no leader, no bogus slot.
   clearPersistedSelection(self, game)
   return nil
 end

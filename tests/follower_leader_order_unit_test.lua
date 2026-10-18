@@ -219,5 +219,52 @@ do
   eq((engine:getLeaderMon(game)), m2, "leader follows the party reorder instantly")
 end
 
+--------------------------------------------------------------------
+-- The whole TRAIL follows a party reorder, not just getLeaderMon: a stored
+-- selection on the old lead must not drop the new slot-1 mon from the trail
+--------------------------------------------------------------------
+local function trailNames(engine, game)
+  local t = {}
+  for _, e in ipairs(engine:partyTrailMons(game)) do t[#t + 1] = e.mon.species end
+  return table.concat(t, ",")
+end
+
+do
+  local a, b, c = makeMon("CHARMANDER", 1), makeMon("SQUIRTLE", 2), makeMon("PIDGEY", 3)
+  local game = { save = { party = { a, b, c }, pokepcFollowerCount = 3 } }
+  local engine = makeEngine(game, 3)
+  engine.selection:reconcile(game)
+  eq(trailNames(engine, game), "CHARMANDER,SQUIRTLE,PIDGEY", "trail: party order before reorder")
+  game.save.party = { b, a, c }
+  engine.selection:reconcile(game)
+  eq(trailNames(engine, game), "SQUIRTLE,CHARMANDER,PIDGEY", "trail: swapped lead walks first, old lead second")
+  game.save.party = { c, b, a }
+  engine.selection:reconcile(game)
+  eq(trailNames(engine, game), "PIDGEY,SQUIRTLE,CHARMANDER", "trail: a full reverse is followed exactly")
+end
+
+do -- a lead sent back with talk -> Ball hands the lead to the next mon in party order
+  local a, b, c = makeMon("CHARMANDER", 1), makeMon("SQUIRTLE", 2), makeMon("PIDGEY", 3)
+  local game = { save = { party = { a, b, c }, pokepcFollowerCount = 3 } }
+  local engine = makeEngine(game, 3)
+  a.stopFollowing = true
+  engine.selection:reconcile(game)
+  eq((engine:getLeaderMon(game)), b, "ball: next mon in party order leads")
+  eq(trailNames(engine, game), "SQUIRTLE,PIDGEY", "ball: recalled lead left out, rest in order")
+end
+
+do -- two of the same species swapped: the trail re-binds to the moved mons
+  local p1, p2 = makeMon("PIDGEY", 1), makeMon("PIDGEY", 2)
+  local game = { save = { party = { p1, p2 }, pokepcFollowerCount = 2 } }
+  local engine = makeEngine(game, 2)
+  engine.selection:reconcile(game)
+  local before = engine:partyTrailMons(game)
+  eq(before[1] and before[1].mon, p1, "same species: first Pidgey leads")
+  game.save.party = { p2, p1 }
+  engine.selection:reconcile(game)
+  local after = engine:partyTrailMons(game)
+  eq(after[1] and after[1].mon, p2, "same species: the swapped-in Pidgey leads")
+end
+
 print(string.format("\n%d failures", failures))
 os.exit(failures == 0 and 0 or 1)

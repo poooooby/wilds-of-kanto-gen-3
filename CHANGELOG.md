@@ -8,6 +8,17 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.8.6 (fork)
+
+### Fixed
+
+- **Followers follow a party reorder again.** Since 2.8.3, moving a different Pokémon into the
+  lead slot left the old lead walking first and dropped the new lead from the trail entirely.
+  The trail is now built straight from party order every time: the first Pokémon that can
+  follow leads and the rest follow in order. A lead sent back with Ball hands the lead to the
+  next Pokémon, and swapping two of the same species (or a shiny and a normal one) updates
+  the trail too.
+
 ## 2.8.5 (fork)
 
 ### Fixed
