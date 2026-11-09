@@ -86,6 +86,10 @@ local SPECIES_TO_ASSET_ID = {
   RAYQUAZA=384, JIRACHI=385, DEOXYS_NORMAL=386,
 }
 
+-- Gold/Silver/Crystal spell these keys differently from Gen 1. Kept out of SPECIES_TO_ASSET_ID so the reverse map stays
+-- one key per asset id.
+local GEN2_KEY_ALIASES = { FARFETCH_D = 83, MR__MIME = 122 }
+
 local ASSET_TO_SPECIES = {}
 for species, id in pairs(SPECIES_TO_ASSET_ID) do
   ASSET_TO_SPECIES[id] = species
@@ -129,10 +133,11 @@ function SpeciesAssets.idFor(species)
   end
   -- Internal keys only (MEWTWO / mewtwo). Reject Title Case display names
   -- like "Mewtwo" / localized labels — those are not mon.species.
-  local exact = SPECIES_TO_ASSET_ID[species]
+  local exact = SPECIES_TO_ASSET_ID[species] or GEN2_KEY_ALIASES[species]
   if exact then return exact end
   if species == species:lower() then
-    return SPECIES_TO_ASSET_ID[species:upper()]
+    local upper = species:upper()
+    return SPECIES_TO_ASSET_ID[upper] or GEN2_KEY_ALIASES[upper]
   end
   return nil
 end

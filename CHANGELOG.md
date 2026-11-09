@@ -8,6 +8,15 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## Unreleased (fork)
+
+### Fixed
+
+- **Farfetch'd and Mr. Mime have their sprites in Gold, Silver and Crystal.** Those games spell
+  the two species' internal names differently from Red, Blue and Yellow, so Wilds couldn't match
+  them to their art: Poke Followers / GSC had no sheet to draw and HGSS / PokeMMO fell back to
+  the battle picture. Their names in follower and town Pokémon dialogue read correctly too.
+
 ## 2.8.6 (fork)
 
 ### Fixed

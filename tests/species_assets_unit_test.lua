@@ -547,6 +547,32 @@ eq(SpeciesAssets.idForRuntime("MEWTWO",
     GameCompat.speciesId("MEWTWO", nationalDexGame, V.mod)), 150,
   "MEWTWO identical under national-dex shape")
 
+-- Gen 2 spells two keys differently from Gen 1; both spellings share the art.
+eq(SpeciesAssets.idFor("FARFETCH_D"), 83, "Gen 2 key FARFETCH_D maps to dex 83")
+eq(SpeciesAssets.idFor("MR__MIME"), 122, "Gen 2 key MR__MIME maps to dex 122")
+eq(SpeciesAssets.idFor("farfetch_d"), 83, "lowercase Gen 2 key resolves")
+eq(SpeciesAssets.idFor("FARFETCHD"), 83, "Gen 1 key FARFETCHD unchanged")
+eq(SpeciesAssets.idFor("MR_MIME"), 122, "Gen 1 key MR_MIME unchanged")
+eq(SpeciesAssets.speciesFor(83), "FARFETCHD", "reverse map keeps one key per id (83)")
+eq(SpeciesAssets.speciesFor(122), "MR_MIME", "reverse map keeps one key per id (122)")
+
+-- Real game data, when an engine checkout with extracted ROM data sits beside the repo.
+for _, g in ipairs({ "gold", "silver", "crystal" }) do
+  local path = "../gen1recomp/" .. g .. "/data/generated/pokemon.lua"
+  local ok, pokemon = pcall(dofile, path)
+  if ok and type(pokemon) == "table" then
+    local bad = {}
+    for key, def in pairs(pokemon) do
+      local dex = tonumber(def.dex) or tonumber(def.index)
+      if SpeciesAssets.idFor(key) ~= dex then bad[#bad + 1] = key end
+    end
+    table.sort(bad)
+    eq(table.concat(bad, ","), "", g .. ": every species key maps to its own dex art")
+  else
+    print("skip " .. g .. " real-data check (no extracted data at " .. path .. ")")
+  end
+end
+
 if failures > 0 then
   io.stderr:write(string.format("\n%d failure(s)\n", failures))
   os.exit(1)

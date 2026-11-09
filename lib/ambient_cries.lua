@@ -29,7 +29,9 @@ AmbientCries.CURATED = {
 -- Readable display overrides for awkward internal keys (identity stays canonical).
 AmbientCries.DISPLAY_NAME = {
   MR_MIME = "Mr. Mime",
+  MR__MIME = "Mr. Mime",
   FARFETCHD = "Farfetchd",
+  FARFETCH_D = "Farfetchd",
   HO_OH = "Ho-Oh",
   PORYGON2 = "Porygon2",
   NIDOQUEEN = "Nidoqueen",
