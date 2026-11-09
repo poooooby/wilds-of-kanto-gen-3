@@ -109,9 +109,9 @@ local function stackTop(game)
   return nil
 end
 
---- Shared follower dialog + Ok / Ball choice.
--- Ok → close, no change.
--- Ball → manual recall of THAT mon (stopFollowing + count - 1 + recall FX).
+--- Shared follower dialog + Recall / Cancel choice.
+-- Cancel (also the B button: ChoiceBox always answers B with the second option) → close, no change.
+-- Recall → manual recall of THAT mon (stopFollowing + count - 1 + recall FX).
 -- Gen1 only marks a pending recall request here. World mutation runs on the
 -- next Overworld-owned ControlEngine:update (same owner as Poké Center heal).
 -- Gold keeps the immediate recall path that already works.
@@ -157,13 +157,16 @@ function Interaction:showFollowMessage(game, ow, npc, mon, done)
 
   local gen = GameCompat.generation(self.mod, game)
   local gen1 = GameCompat.isGen1(self.mod, game) == true
+  local Theme = tryRequire("src.ui.Theme")
 
   local dialogOpts = {
     species = mon.species,
     mon = mon,
     randomGeneric = false,
     mood = "normal",
-    labels = { "Ok", "Ball" },
+    labels = { "Recall", "Cancel" },
+    -- The default YES/NO box only fits 3 letters; this one is built for CANCEL.
+    box = Theme and Theme.healCancelBox,
   }
 
   if not allowBall then
@@ -173,15 +176,15 @@ function Interaction:showFollowMessage(game, ow, npc, mon, done)
 
   talkPhase(self.mod, "choice_open", { generation = gen })
 
-  PokemonDialogue.presentTextChoice(self.mod, game, ow, text, function(okay)
+  PokemonDialogue.presentTextChoice(self.mod, game, ow, text, function(recall)
     setChoiceCallbackFlag(interaction, true)
     talkPhase(interaction.mod, "CHOICE_CALLBACK_ENTER", {
       generation = gen,
       stackTop = stackTop(game) == ow and "overworld" or tostring(stackTop(game)),
       overworldTop = GameCompat.overworldOwnsStack(game, ow),
     })
-    if okay then
-      -- Ok: TextBox.choice already popped ChoiceBox+TextBox. Gen1 talk has
+    if not recall then
+      -- Cancel: TextBox.choice already popped ChoiceBox+TextBox. Gen1 talk has
       -- no external completion callback on the interact path.
       if not gen1 and done then
         talkPhase(interaction.mod, "BEFORE_DONE", { generation = gen })

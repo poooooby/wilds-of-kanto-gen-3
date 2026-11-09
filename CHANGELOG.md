@@ -16,6 +16,9 @@
   the two species' internal names differently from Red, Blue and Yellow, so Wilds couldn't match
   them to their art: Poke Followers / GSC had no sheet to draw and HGSS / PokeMMO fell back to
   the battle picture. Their names in follower and town Pokémon dialogue read correctly too.
+- **Talking to a follower now offers Recall and Cancel, inside the box.** "Ball" ran over the
+  edge of the message box, and backing out with B sent the Pokémon back by accident. B now
+  always cancels.
 
 ## 2.8.6 (fork)
 

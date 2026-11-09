@@ -1,4 +1,4 @@
--- Follower talk Ok/Ball + manual recall selection.
+-- Follower talk Recall/Cancel + manual recall selection.
 -- Run: luajit tests/follower_talk_pokeball_unit_test.lua
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
@@ -63,6 +63,11 @@ local function setEngineVersion(v)
 end
 setEngineVersion("red")
 
+-- Same geometry as the engine's Theme.healCancelBox.
+package.loaded["src.ui.Theme"] = {
+  healCancelBox = { tx = 11, ty = 6, tw = 9, th = 6, firstItem = 2 },
+}
+
 local lastChoice = nil
 package.loaded["src.render.TextBox"] = {
   new = function(game, text, onDone, opts)
@@ -72,6 +77,7 @@ package.loaded["src.render.TextBox"] = {
       onDone = onDone,
       choice = opts and opts.choice,
       choiceLabels = opts and opts.choiceLabels,
+      choiceBox = opts and opts.choiceBox,
       isTextBox = true,
     }
     lastChoice = box
@@ -269,7 +275,7 @@ end
 
 local function pushFaithfulChoice(game, textBox)
   local choiceBox = {
-    labels = textBox.choiceLabels or { "Ok", "Ball" },
+    labels = textBox.choiceLabels or { "Recall", "Cancel" },
     index = 1,
     onChoose = function(yes)
       game.stack:pop() -- TextBox under the choice
@@ -305,14 +311,20 @@ do
   interaction:showFollowMessage(game, ow, npc, party[1])
   check(lastChoice ~= nil, "talk opens choice textbox")
   check(lastChoice.choice ~= nil, "choice callback present")
-  eq(lastChoice.choiceLabels[1], "Ok", "Ok label")
-  eq(lastChoice.choiceLabels[2], "Ball", "Ball label")
+  eq(lastChoice.choiceLabels[1], "Recall", "Recall label")
+  eq(lastChoice.choiceLabels[2], "Cancel", "Cancel label")
+  local box = lastChoice.choiceBox
+  check(box ~= nil, "talk choice uses a wider box than YES/NO")
+  for _, label in ipairs(lastChoice.choiceLabels) do
+    -- ChoiceBox draws labels from column tx + 2; the right border is tx + tw - 1.
+    check(box and box.tx + 2 + #label - 1 < box.tx + box.tw - 1, label .. " fits inside the box border")
+  end
   check(tostring(lastChoice.text or ""):find("following", 1, true) ~= nil,
     "follow message precedes choice")
 end
 
 --------------------------------------------------------------------
--- CASE 1: Ok keeps follower
+-- CASE 1: Cancel keeps follower
 --------------------------------------------------------------------
 do
   local ow = makeOw()
@@ -328,7 +340,7 @@ do
   eq(#(ow.pokepcTrailers or {}), 1, "CASE1 one trailer")
   local interaction = Interaction.new(V.mod, engine.selection, engine)
   interaction:showFollowMessage(game, ow, ow.pokepcTrailers[1], party[1])
-  lastChoice.choice(true) -- Ok
+  lastChoice.choice(false) -- Cancel
   eq(party[1].stopFollowing, false, "CASE1 not stopFollowing")
   eq(engine:followerCount(game), 1, "CASE1 count unchanged")
   eq(#(ow.pokepcTrailers or {}), 1, "CASE1 trailer remains")
@@ -350,7 +362,7 @@ do
   engine:syncAll(game, ow)
   local interaction = Interaction.new(V.mod, engine.selection, engine)
   interaction:showFollowMessage(game, ow, ow.pokepcTrailers[1], party[1])
-  lastChoice.choice(false) -- Ball
+  lastChoice.choice(true) -- Recall
   eq(party[1].stopFollowing, false, "CASE2 exclusion not applied in ChoiceBox callback")
   eq(engine:followerCount(game), 1, "CASE2 count unchanged in callback")
   eq(#(ow.pokepcTrailers or {}), 1, "CASE2 trailer not removed while dialog callback runs")
@@ -486,7 +498,7 @@ do
 end
 
 --------------------------------------------------------------------
--- CASE 8: Ok no mutation (already covered; assert party fields)
+-- CASE 8: Cancel no mutation (already covered; assert party fields)
 --------------------------------------------------------------------
 do
   local ow = makeOw()
@@ -502,7 +514,7 @@ do
   engine:syncAll(game, ow)
   local interaction = Interaction.new(V.mod, engine.selection, engine)
   interaction:showFollowMessage(game, ow, ow.pokepcTrailers[1], party[1])
-  lastChoice.choice(true)
+  lastChoice.choice(false)
   eq(party[1].hp, hp0, "CASE8 HP untouched")
   eq(party[1].otId, ot0, "CASE8 OT untouched")
   eq(game.save.party[1], party[1], "CASE8 party order untouched")
@@ -609,7 +621,7 @@ do
     "CASE10 Gen1 defers recall")
 
   events[#events + 1] = "choice_ball"
-  selectChoiceViaStack(game, false)
+  selectChoiceViaStack(game, true)
 
   check(doneCalled == 0, "CASE10 Gen1 does not invent/call done()")
   check(table.concat(events, ","):find("recall_started", 1, true) == nil,
@@ -690,10 +702,10 @@ do
   local interaction = Interaction.new(V.mod, engine.selection, engine)
   lastChoice = nil
   interaction:showFollowMessage(game, ow, { facing = "down" }, party[1])
-  check(lastChoice ~= nil, "CASE11 Gold opens Ok/Ball")
-  eq(lastChoice.choiceLabels[1], "Ok", "CASE11 Ok label")
-  eq(lastChoice.choiceLabels[2], "Ball", "CASE11 Ball label")
-  lastChoice.choice(false)
+  check(lastChoice ~= nil, "CASE11 Gold opens Recall/Cancel")
+  eq(lastChoice.choiceLabels[1], "Recall", "CASE11 Recall label")
+  eq(lastChoice.choiceLabels[2], "Cancel", "CASE11 Cancel label")
+  lastChoice.choice(true)
   eq(queued, 0, "CASE11 Gold did not queue")
   eq(recalled, 1, "CASE11 Gold recalled immediately")
   setEngineVersion("red")
@@ -724,7 +736,7 @@ do
     error("Isolation A must not call done()")
   end)
   pushFaithfulChoice(game, lastChoice)
-  local ok, err = pcall(selectChoiceViaStack, game, false)
+  local ok, err = pcall(selectChoiceViaStack, game, true)
   check(ok, "CASE12 Isolation A ChoiceBox path: " .. tostring(err))
   eq(party[1].stopFollowing, false, "CASE12 no mutation")
   eq(#(ow.pokepcTrailers or {}), 1, "CASE12 follower remains")
@@ -752,7 +764,7 @@ do
     error("done() is not a valid Gen1 interact completion callback")
   end)
   pushFaithfulChoice(game, lastChoice)
-  local ok, err = pcall(selectChoiceViaStack, game, false)
+  local ok, err = pcall(selectChoiceViaStack, game, true)
   check(ok, "CASE13 Isolation B callback: " .. tostring(err))
   check(not doneCalled, "CASE13 Gen1 Ball does not call done()")
 end
@@ -778,7 +790,7 @@ do
   local interaction = Interaction.new(V.mod, engine.selection, engine)
   interaction:showFollowMessage(game, ow, ow.pokepcTrailers[1], party[1])
   pushFaithfulChoice(game, lastChoice)
-  selectChoiceViaStack(game, false)
+  selectChoiceViaStack(game, true)
   check(engine._pendingManualRecall ~= nil, "CASE14 pending queued")
   eq(#(ow.pokepcTrailers or {}), 1, "CASE14 trailer still present after Ball")
   engine:update(game, ow, { force = true, dt = 1 / 60 })
@@ -825,8 +837,8 @@ do
   wrapped(game, ow, npc) -- interact arity: no done
   check(lastChoice ~= nil, "CASE15 wrapper presents follow message")
   eq(origCalls, 0, "CASE15 Wilds trailer does not fall through to vanilla talk")
-  eq(lastChoice.choiceLabels[1], "Ok", "CASE15 Ok label")
-  eq(lastChoice.choiceLabels[2], "Ball", "CASE15 Ball label")
+  eq(lastChoice.choiceLabels[1], "Recall", "CASE15 Recall label")
+  eq(lastChoice.choiceLabels[2], "Cancel", "CASE15 Cancel label")
 end
 
 --------------------------------------------------------------------

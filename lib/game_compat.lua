@@ -680,7 +680,7 @@ end
 
 --- Present dialogue ending in a two-option ChoiceBox (shared TextBox path).
 -- onChoose(yes): yes == true → first label; yes == false → second label.
--- opts.labels = { "Ok", "Ball" } (default YES/NO if omitted).
+-- opts.labels = { "Recall", "Cancel" } (default YES/NO if omitted).
 -- Works for Gen1 and Gold: TextBox.choice stacks ChoiceBox over the text.
 function GameCompat.presentTextChoice(mod, game, ow, text, onChoose, opts)
   opts = opts or {}
