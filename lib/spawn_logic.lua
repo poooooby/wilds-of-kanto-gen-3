@@ -584,7 +584,9 @@ end
 --- Shiny roll for a new battle-capable visible spawn (Gen 1 and Gold). Forced/test spawns are
 -- never random shinies unless the caller asks (`opts.shiny`). The result rides on the record so the
 -- entity shows the shiny sprite and the battle it starts fights the same shiny (lib/shiny.lua).
-function SpawnLogic:_rollShiny(game, opts)
+function SpawnLogic:_rollShiny(game, opts, roamer)
+  -- A roaming beast keeps the game's own DVs for life, so it is shiny only when those already are (no SHINY RATE).
+  if roamer then return Shiny.dvsAreShiny(roamer.dvs) end
   if opts and opts.shiny ~= nil then return opts.shiny == true end
   if opts and (opts.species or opts.testSpawn or opts.readinessProbe) then return false end
   local ok, shiny = pcall(Shiny.roll, self.mod)
@@ -1934,6 +1936,7 @@ function SpawnLogic:trySpawn(game, opts)
   end
 
   local species, level
+  local roamer
   if opts.species then
     species = opts.species
     level = opts.level or 5
@@ -1951,9 +1954,19 @@ function SpawnLogic:trySpawn(game, opts)
       return nil, "rejected: no encounter data"
     end
     species, level = pick.species, pick.level
+    -- Gold's roaming beasts are in no wild table: on the route a beast is on, it replaces the pick at the game's own
+    -- odds (lib/gen2/roamers.lua), ahead of Modern Spawns the way the game checks it ahead of the slot roll.
+    if not (opts.testSpawn or opts.readinessProbe) then
+      -- _roamerRandom: nil in play (the engine's random); tests inject a fixed roll.
+      roamer = GameCompat.roamerForSpawn(game, mapId, encounterKind, {
+        taken = self:_visibleRoamers(), random = self._roamerRandom,
+      })
+    end
+    if roamer then
+      species, level = roamer.species, roamer.level
     -- Modern Spawns' LEGENDARIES: the same rare roll a step encounter gets,
     -- at the level the table picked (nil unless that mod is active and ON).
-    if not (opts.testSpawn or opts.readinessProbe) then
+    elseif not (opts.testSpawn or opts.readinessProbe) then
       local legend = V.require("modern_spawns_bridge").legendary(mapId,
         encounterKind == "water" and "water" or "grass")
       if legend then species = legend end
@@ -2025,7 +2038,8 @@ function SpawnLogic:trySpawn(game, opts)
     homeRegionId = region and region.id or nil,
     visibleSprite = not hidden,
     hiddenEncounter = hidden,
-    shiny = self:_rollShiny(game, opts),
+    shiny = self:_rollShiny(game, opts, roamer),
+    roamerIndex = roamer and roamer.index or nil,
     unownLetter = wildVar and wildVar.unownLetter or nil,
     unownForm = wildVar and wildVar.unownForm or nil,
     unownDvs = wildVar and wildVar.dvs or nil,
@@ -3082,6 +3096,33 @@ function SpawnLogic:onOptionsChanged(payload)
   end
 end
 
+-- Roaming beasts already on screen ({ [roster index] = true }), so one individual is never visible twice.
+function SpawnLogic:_visibleRoamers()
+  local taken = {}
+  for _, record in pairs(self.spawns) do
+    if record.roamerIndex and record.state ~= Config.STATE.REMOVED then
+      taken[record.roamerIndex] = true
+    end
+  end
+  return taken
+end
+
+--- roamer.moved (Gold): a visible beast leaves the route with the beast itself.
+function SpawnLogic:onRoamerMoved(ev)
+  local index = ev and tonumber(ev.index)
+  if not index then return end
+  local doomed = {}
+  for id, record in pairs(self.spawns) do
+    if record.roamerIndex == index and record.state == Config.STATE.AVAILABLE and record.mapId ~= ev.to then
+      doomed[#doomed + 1] = id
+    end
+  end
+  for _, id in ipairs(doomed) do
+    self:_despawn(id, true)
+  end
+  if #doomed > 0 then self:_recountRegions() end
+end
+
 function SpawnLogic:_spawnAt(x, y)
   for id, record in pairs(self.spawns) do
     if record.state == Config.STATE.AVAILABLE
@@ -3126,6 +3167,13 @@ function SpawnLogic:_startBattle(record)
                  or entity.wildsCatchPending
                  or entity.wildsCatchState == "capturing"
                  or entity.wildsCatchState == "pending") then
+    return false
+  end
+
+  -- A roaming beast that has moved on since it spawned (the drift after another battle) is simply gone.
+  if record.roamerIndex and not GameCompat.roamerOnMap(game, record.roamerIndex, mapId) then
+    self:_despawn(record.id, true)
+    self:_recountRegions()
     return false
   end
 
@@ -3202,6 +3250,26 @@ function SpawnLogic:_startBattle(record)
     self.mod.log:info("triggered safari encounter: %s Lv%d (%s) id=%s",
                       record.species, record.level, tostring(record.behavior),
                       tostring(record.id))
+    return true
+  end
+
+  -- Gold's roaming beast: the engine's own roaming battle, so its saved HP and DVs, its flee and its move to a new
+  -- route afterwards are the game's. No Wilds shiny token: the beast's DVs decide, as on a step.
+  if record.roamerIndex then
+    pcall(Shiny.armWild, nil)
+    ok, err = GameCompat.startRoamerBattle(game, ow, record.roamerIndex)
+    if not ok then
+      self:_warn("could not start roaming battle: %s", tostring(err))
+      self.pendingBattle = nil
+      self.state:markError(err)
+      self:_restoreVanillaEncounters("roaming battle failed")
+      return false
+    end
+    if self.pendingBattle then
+      self.pendingBattle.state = Config.STATE.IN_BATTLE
+    end
+    self.mod.log:info("triggered roaming battle: %s Lv%d slot=%s id=%s",
+                      record.species, record.level, tostring(record.roamerIndex), tostring(record.id))
     return true
   end
 

@@ -348,6 +348,44 @@ function GameCompat.wildGhostMasked(game, mapDef)
   return false
 end
 
+--- Gold's roaming legendaries (lib/gen2/roamers.lua). nil / false for adapters without roamers (Gen 1).
+-- roamerForSpawn: the beast that replaces this spawn's pick ({ index, species, level, dvs }) or nil.
+-- ctx = { random = fn(n) -> 0..n-1, taken = { [index] = true } for beasts already visible }.
+function GameCompat.roamerForSpawn(game, mapId, kind, ctx)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.roamerForSpawn then
+    return adapter.roamerForSpawn(game, mapId, kind, ctx)
+  end
+  return nil
+end
+
+--- True while roamer `index` is still out there on `mapId`.
+function GameCompat.roamerOnMap(game, index, mapId)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.roamerOnMap then
+    return adapter.roamerOnMap(game, index, mapId) == true
+  end
+  return false
+end
+
+--- The engine's own roaming battle with roamer `index` (saved HP / DVs, flee, move on afterwards).
+function GameCompat.startRoamerBattle(game, ow, index)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.startRoamerBattle then
+    return adapter.startRoamerBattle(game, ow, index)
+  end
+  return nil, "no roamer battle adapter"
+end
+
+--- Gate the engine's step roll for a roaming beast (see Roam.installStepGate). Returns an unwrap function or nil.
+function GameCompat.installRoamerStepGate(game, shouldBlock)
+  local adapter = GameCompat.current(nil, game)
+  if adapter and adapter.installRoamerStepGate then
+    return adapter.installRoamerStepGate(shouldBlock)
+  end
+  return nil, "no roamers in this game"
+end
+
 --- Ghost battle for a visible spawn (see Gen1.startGhostBattle). Never falls back to a normal battle.
 function GameCompat.startGhostBattle(game, ow, species, level, mapId)
   local adapter = GameCompat.current(nil, game)

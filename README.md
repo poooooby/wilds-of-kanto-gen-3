@@ -29,6 +29,9 @@ Pokémon Gold in beta.
   and on Surf alongside the visible ones, or only meet what you can see.
 - ✨ **Shinies on the overworld:** A shiny shows its colours before the battle, sparkles when it
   starts, stays shiny when caught and follows you as a shiny. Choose how often they appear.
+- 🌩️ **Roaming legendaries:** In Gold, Silver and Crystal, Raikou and Entei (and Suicune in Gold
+  and Silver) turn up as rare visible Pokémon on whichever route they're roaming. Walk into one
+  for the game's own roaming battle: it remembers its HP, flees, and runs off to another route.
 - 🗺️ **Modern Spawns ready:** With [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns),
   visible Pokémon, town Pokémon and Super Rod spots use its generated tables, rare legendaries
   included.

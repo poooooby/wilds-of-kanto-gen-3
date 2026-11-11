@@ -356,6 +356,15 @@ return function(mod)
     end
   end)
 
+  -- Gold: a visible roaming beast leaves with the beast. roamer.moved is not an event in Gen 1 (subscribing errors).
+  if GameCompat.isGen2(mod, liveGame()) then
+    pcall(function()
+      mod.events:on("roamer.moved", function(ev)
+        if supports("encounters") then pcall(logic.onRoamerMoved, logic, ev) end
+      end)
+    end)
+  end
+
   mod.events:on("save.loaded", function()
     -- Loading directly into a save does not fire map.entered -- catch the
     -- "already on a map at load" case the same way, independent of
@@ -499,6 +508,17 @@ return function(mod)
       DebugLog.warn(mod, "gen2 shiny hooks unavailable: %s", tostring(okShinyG2 and shinyG2Err or unwrapShinyG2))
     end
 
+    -- Gold's roaming beasts: the engine rolls one on a step BEFORE encounter.roll, so Classic Enc off has to gate
+    -- that roll too, or a beast still jumps the player unseen. Gen 1 has no roamers.
+    if GameCompat.isGen2(mod, liveGame()) then
+      local okRoam, unwrapRoam = pcall(GameCompat.installRoamerStepGate, liveGame(), function()
+        return logic:shouldSuppressClassicEncounter(nil)
+      end)
+      if okRoam and type(unwrapRoam) == "function" then
+        unwraps.roamerGate = unwrapRoam
+      end
+    end
+
     unwraps.collision = mod.hooks:wrap("movement.collision", function(next, allowed, ctx)
       local ok, result = pcall(function()
         local base = next(allowed, ctx)
@@ -573,7 +593,7 @@ return function(mod)
 
   -- ------- exports (companion / debug / test surface)
 
-  mod.exports.version = "2.8.7"
+  mod.exports.version = "2.8.8"
   mod.exports.gameCompat = GameCompat
   mod.exports.supportsFeature = function(feature)
     return supports(feature)

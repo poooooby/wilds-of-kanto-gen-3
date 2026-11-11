@@ -195,6 +195,24 @@ function Gen2.pickEncounter(game, mapId, kind, ctx)
   return Enc.pick(game, mapId, kind, ctx)
 end
 
+-- Roaming legendaries (lib/gen2/roamers.lua): the engine's save.roamers, battled through its own roaming battle.
+function Gen2.roamerForSpawn(game, mapId, kind, ctx)
+  ctx = ctx or {}
+  return V.require("gen2/roamers").pickForSpawn(game and game.save, mapId, kind, ctx.random, ctx.taken)
+end
+
+function Gen2.roamerOnMap(game, index, mapId)
+  return V.require("gen2/roamers").onMap(game and game.save, index, mapId) ~= nil
+end
+
+function Gen2.startRoamerBattle(game, ow, index)
+  return V.require("gen2/roamers").startBattle(game, goldWorld(game, ow), index)
+end
+
+function Gen2.installRoamerStepGate(shouldBlock)
+  return V.require("gen2/roamers").installStepGate(shouldBlock)
+end
+
 --- Per-spawn variation the engine decides by DVs rather than by species. Only Unown today: the Ruins of Alph chambers
 -- roll an UNOWN slot, the LETTER (read off the DVs) is what the player sees, and which letters can appear depends on
 -- which wall puzzles are solved. Mirrors World:tryWildEncounter's Unown arm (src/world/gen2/World.lua):

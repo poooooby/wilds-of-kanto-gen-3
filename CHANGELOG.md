@@ -8,6 +8,23 @@
 > YoDrehDenSwagAuf and the original collaborators (see README.md). v2.3.0
 > onward is fork-specific work, marked **(fork)**.
 
+## 2.8.8 (fork)
+
+### Added
+
+- **Raikou, Entei and Suicune roam the overworld in Gold, Silver and Crystal.** The roaming
+  legendaries are in no route's wild list, so they never appeared as visible Pokémon. Now, on
+  whichever route a beast is roaming, it can turn up as a visible Pokémon at the game's own odds,
+  never twice at once. Walking into it starts the game's real roaming battle: it keeps its HP and
+  stats between meetings, flees, moves to another route afterwards, and is gone for good once
+  caught or beaten. If it wanders off while you're on its route, it leaves the screen too.
+
+### Fixed
+
+- **With Classic Enc off, a roaming legendary no longer jumps you on a step.** The game checked
+  for a roaming beast before Wilds could switch step encounters off, so one could still start a
+  surprise battle.
+
 ## 2.8.7 (fork)
 
 ### Fixed
